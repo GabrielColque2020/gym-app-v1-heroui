@@ -1,0 +1,58 @@
+/*
+ * HeroUI Pro Theme
+ * Add this to your globals.css after importing @heroui/styles
+ * @see https://heroui.com/docs/react/getting-started/theming
+ */
+
+/*
+ * Font: Inter
+ * Load this font in your app:
+ * <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+ */
+
+:root,
+.light,
+.default,
+[data-theme="light"],
+[data-theme="default"] {
+    /* Theme Colors */
+    --background: oklch(97.02% 0.0200 262.88);
+    --muted: oklch(55.17% 0.0400 262.88);
+    --scrollbar: oklch(87.10% 0.0200 262.88);
+    --surface-secondary: oklch(95.24% 0.0300 262.88);
+    --surface-tertiary: oklch(93.73% 0.0300 262.88);
+    --default: oklch(94.00% 0.0200 262.88);
+    --accent: oklch(52.82% 0.2629 262.88);
+    --field-border: oklch(90.00% 0.0200 262.88);
+    --border: oklch(90.00% 0.0200 262.88);
+    --separator: oklch(92.00% 0.0200 262.88);
+
+    /* Border Radius */
+    --field-radius: 0.5rem;
+
+    /* Font */
+    --font-sans: "Inter", sans-serif;
+}
+
+.dark,
+[data-theme="dark"] {
+    color-scheme: dark;
+    /* Theme Colors */
+    --background: oklch(12.00% 0.0200 262.88);
+    --muted: oklch(70.50% 0.0400 262.88);
+    --scrollbar: oklch(70.50% 0.0200 262.88);
+    --surface: oklch(21.03% 0.0400 262.88);
+    --surface-secondary: oklch(25.70% 0.0300 262.88);
+    --surface-secondary-foreground: oklch(25.70% 0.0000 262.88);
+    --surface-tertiary: oklch(27.21% 0.0300 262.88);
+    --surface-tertiary-foreground: oklch(27.21% 0.0000 262.88);
+    --overlay: oklch(21.03% 0.0400 262.88);
+    --default: oklch(27.40% 0.0200 262.88);
+    --accent: oklch(52.82% 0.2629 262.88);
+    --field-background: oklch(21.03% 0.0400 262.88);
+    --field-placeholder: oklch(70.50% 0.0000 262.88);
+    --field-border: oklch(28.00% 0.0200 262.88);
+    --segment: oklch(39.64% 0.0200 262.88);
+    --border: oklch(28.00% 0.0200 262.88);
+    --separator: oklch(25.00% 0.0200 262.88);
+}
