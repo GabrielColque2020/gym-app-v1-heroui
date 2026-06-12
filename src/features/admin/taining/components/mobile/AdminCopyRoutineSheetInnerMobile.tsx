@@ -13,7 +13,7 @@ import {
 	Select,
 	Separator,
 	Surface,
-	Text,
+	Typography,
 } from "@heroui/react";
 import { Copy } from "@gravity-ui/icons";
 import {
@@ -133,7 +133,7 @@ function Notice( { tone, children }: NoticeProps ) {
 
 	return (
 		<Surface className={ `${ toneClass } rounded-xl border px-3 py-2.5` }>
-			<Text className={ "text-sm leading-5" }>{ children }</Text>
+			<Typography className={ "text-sm leading-5" }>{ children }</Typography>
 		</Surface>
 	);
 }
@@ -271,7 +271,7 @@ export function AdminCopyRoutineSheetInnerMobile( {
 					<div className={ "min-w-0 flex-1" }>
 						<Sheet.Heading className={ "truncate text-base" }>Copiar rutina</Sheet.Heading>
 						<div className={ "mt-1 flex min-w-0 items-center gap-2" }>
-							<Text className={ "truncate text-sm font-medium" }>{ destLabel }</Text>
+							<Typography className={ "truncate text-sm font-medium" }>{ destLabel }</Typography>
 							{ hasActiveRoutine && (
 								<Chip className={ "shrink-0" } color={ "accent" } size={ "sm" } variant={ "soft" }>
 									Activa
@@ -312,7 +312,7 @@ export function AdminCopyRoutineSheetInnerMobile( {
 
 				{ sourceWeeksCount === null && sourceKey && !sameMonth && (
 					<EmptyState className={ "flex min-h-48 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-default-hover px-4 text-center" }>
-						<Text className={ "text-sm font-medium" }>No hay rutina en este origen.</Text>
+						<Typography className={ "text-sm font-medium" }>No hay rutina en este origen.</Typography>
 						<Description className={ "text-sm" }>Proba con otro mes.</Description>
 					</EmptyState>
 				) }
@@ -435,7 +435,7 @@ export function AdminCopyRoutineSheetInnerMobile( {
 														<Surface key={ orig }
 														         className={ "" }>
 															<div className={ "ml-2 pb-2" }>
-																<Text className={ "text-sm font-medium" }>S{ orig } </Text>
+																<Typography className={ "text-sm font-medium" }>S{ orig } </Typography>
 																<Description className={ "text-xs" }>Origen</Description>
 															</div>
 															<Select

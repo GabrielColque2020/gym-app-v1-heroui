@@ -43,7 +43,6 @@ export default function TrainingRoutinesFilter() {
 	return (
 		<Card
 			className={ " w-full items-stretch md:flex-row grid grid-cols-1 md:grid-cols-3 gap-4 p-4 shadow-sm" }
-			variant={ "secondary" }
 		>
 			<div className={ "form-control" }>
 				<FilterSelect

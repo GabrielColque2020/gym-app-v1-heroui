@@ -2,6 +2,7 @@ import type {Metadata} from "next";
 import type {ReactNode} from "react";
 
 import {Toast} from "@heroui/react";
+import { Providers } from "./providers";
 
 import "./globals.css";
 
@@ -12,10 +13,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: ReactNode}) {
   return (
-    <html suppressHydrationWarning className="bg-background text-foreground" lang="en" data-theme="light">
-      <body className="font-sans antialiased">
-        {children}
-        <Toast.Provider placement="bottom" />
+    <html
+      suppressHydrationWarning
+      className={ "bg-background text-foreground" }
+      lang={ "en" }
+      data-theme={ "light" }
+    >
+      <body className={ "font-sans antialiased" }>
+        <Providers>
+          { children }
+          <Toast.Provider placement={ "top end" } />
+        </Providers>
       </body>
     </html>
   );

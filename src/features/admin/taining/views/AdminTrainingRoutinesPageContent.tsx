@@ -2,6 +2,7 @@
 
 import { AdminTrainingRoutineFilter, AdminTrainingRoutineHeader } from "../components/shared";
 import { AdminTrainingRoutineCardDesktop } from "../components/desktop";
+import { AdminTrainingRoutineCardMobile } from "../components/mobile";
 
 export default function AdminTrainingRoutinesPageContent() {
 
@@ -16,8 +17,10 @@ export default function AdminTrainingRoutinesPageContent() {
 			<div className={ "hidden md:flex" }>
 				<AdminTrainingRoutineCardDesktop/>
 			</div>
-			{ /*Tabla de rutinas*/ }
-			{ /* Sección de Tabs de Semanas */ }
+
+			<div className={ "flex md:hidden" }>
+				<AdminTrainingRoutineCardMobile/>
+			</div>
 
 		</>
 	)

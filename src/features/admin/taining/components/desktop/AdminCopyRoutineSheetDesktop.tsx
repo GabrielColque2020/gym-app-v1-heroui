@@ -23,12 +23,8 @@ export function AdminCopyRoutineSheetDesktop( props: AdminCopyRoutineSheetDeskto
 					Copiar desde otro mes
 				</Button>
 			</Sheet.Trigger>
-			<Sheet.Backdrop>
-				<Sheet.Content
-					className={
-						"border-default-200 flex w-[min(100vw,820px)] flex-col overflow-hidden rounded-l-2xl border bg-white shadow-xl"
-					}
-				>
+			<Sheet.Backdrop variant={ "opaque" }>
+				<Sheet.Content>
 					<Sheet.Dialog className={ "flex h-full max-h-screen min-h-0 flex-col" }>
 						<AdminCopyRoutineSheetInnerDesktop { ...props } />
 					</Sheet.Dialog>

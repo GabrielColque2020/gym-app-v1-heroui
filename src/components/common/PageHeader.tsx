@@ -1,4 +1,5 @@
 import React from "react";
+import { Typography } from "@heroui/react";
 
 interface PageHeaderProps {
 	title: string;
@@ -8,14 +9,17 @@ interface PageHeaderProps {
 
 export const PageHeader: React.FC<PageHeaderProps> = ( { title, description, className = "" } ) => {
 	return (
-		<div className={ `items-start w-full ${ className }` }>
-			<h1 className={ "text-xl font-black sm:truncate sm:text-4xl sm:tracking-tight" }>
+		<div className={ `${ className }` }>
+			<Typography
+				type={ "h3" }
+				className={ "font-black" }
+			>
 				{ title }
-			</h1>
+			</Typography>
 			{ description && (
-				<p className={ "text-base sm:text-base mt-1 text-muted" }>
+				<Typography className={ "mt-2" } type={ "body-sm" } color={ "muted" } weight={ "medium" }>
 					{ description }
-				</p>
+				</Typography>
 			) }
 		</div>
 	);

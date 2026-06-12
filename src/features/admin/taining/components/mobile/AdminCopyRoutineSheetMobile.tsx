@@ -21,13 +21,13 @@ export function AdminCopyRoutineSheetMobile( props: AdminCopyRoutineSheetMobileP
 					className={ "bg-accent-foreground border border-accent/50 text-accent shadow-sm" }
 				>
 					<Copy className={ "size-4" }/>
-					Copiar desde otro mes
+
 				</Button>
 			</Sheet.Trigger>
 			<Sheet.Backdrop variant={ "blur" }>
 				<Sheet.Content className={ "mx-auto flex max-h-[92vh] w-full max-w-140 flex-col overflow-hidden rounded-t-2xl bg-white shadow-xl" }>
 					<Sheet.Handle/>
-					<Sheet.Dialog className={ "flex min-h-0 flex-1 flex-col" }>
+					<Sheet.Dialog className={ "flex min-h-0 flex-1 flex-col pr-2" }>
 						<AdminCopyRoutineSheetInnerMobile { ...props } />
 					</Sheet.Dialog>
 				</Sheet.Content>

@@ -32,3 +32,9 @@ next-env.d.ts
 
 # turbo
 .turbo
+
+# ia
+.ai
+
+/app/generated/prisma
+/prisma/migrations

@@ -21,6 +21,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
 	{ href: "/", icon: House, label: "Inicio" },
 	{ href: "/trainingRoutine", icon: Gear, label: "Rutina de Entrenamiento" },
 	{ href: "/admin/trainingRoutine", icon: Gear, label: "Admin - Rutina de Entrenamiento" },
+	{ href: "/admin/exercises", icon: Gear, label: "Admin - Ejercicios" },
 	{ href: "/settings2", icon: Gear, label: "Historial de Ejercicios" },
 	{ href: "/settings", icon: Gear, label: "Configuración" },
 ] as const;

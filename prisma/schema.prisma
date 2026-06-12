@@ -1,0 +1,200 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Partes del cuerpo
+enum BodyPart {
+  CHEST // PECHO
+  BACK // ESPALDA
+  LEGS // PIERNAS
+  TRICEPS // TRICEPS
+  BICEPS // BICEPS
+  SHOULDERS // HOMBROS
+}
+
+// Horarios de comida
+enum MealTime {
+  BREAKFAST // DESAYUNO
+  LUNCH // ALMUERZO
+  SNACK // MERIENDA
+  DINNER // CENA
+  OPTIONGREEN // OPCIÓN VERDE
+  SEVERAL // VARIOS
+}
+
+// Género
+enum Gender {
+  F
+  M
+  O
+}
+
+enum Role {
+  STUDENT
+  COACH
+  ADMIN
+}
+
+model User {
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  dni      Int     @unique
+  password String
+  gender   Gender?
+
+  role      Role
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relaciones
+  coachId  String?
+  coach    User?   @relation("CoachStudents", fields: [coachId], references: [id])
+  students User[]  @relation("CoachStudents")
+
+  DescriptionStudent DescriptionStudent?
+  MealPlan           MealPlan[]
+  TrainingRoutine    TrainingRoutine[]
+  ExerciseProgress   ExerciseProgress[]
+  Exercise           Exercise[]
+  StudentExercise    StudentExercise[]
+
+  @@index([email, active])
+  @@index([dni, active])
+}
+
+model DescriptionStudent {
+  id           String    @id @default(uuid())
+  height       Float     @default(0) // in centimeters
+  weight       Float     @default(0) // in kilograms
+  birthDate    DateTime?
+  objective    String?
+  observations String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  studentId String @unique
+  student   User   @relation(fields: [studentId], references: [id])
+}
+
+model MealPlan {
+  id           String   @id @default(uuid())
+  description  String
+  observations String?
+  title        MealTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  order        Int      @default(0)
+
+  // Relations
+  student   User?   @relation(fields: [studentId], references: [id])
+  studentId String?
+}
+
+model TrainingRoutine {
+  id        String   @id @default(uuid())
+  name      String
+  week      Int
+  month     Int
+  year      Int
+  objective String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student   User?   @relation(fields: [studentId], references: [id])
+  studentId String?
+
+  routineDays RoutineDay[]
+}
+
+model RoutineDay {
+  id                String          @id @default(uuid())
+  dayNumber         Int // 1 a 5
+  trainingRoutine   TrainingRoutine @relation(fields: [trainingRoutineId], references: [id], onDelete: Cascade)
+  trainingRoutineId String
+  isFinalized       Boolean         @default(false)
+
+  routines Routine[]
+}
+
+model StudentExercise {
+  id         String   @id @default(uuid())
+  student    User     @relation(fields: [studentId], references: [id])
+  studentId  String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId String
+  createdAt  DateTime @default(now())
+
+  @@unique([studentId, exerciseId])
+}
+
+model Routine {
+  id          String   @id @default(uuid())
+  observation String?
+  reps        String
+  sets        String
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  exercise     Exercise?   @relation(fields: [exerciseId], references: [id])
+  exerciseId   String?
+  RoutineDay   RoutineDay? @relation(fields: [routineDayId], references: [id], onDelete: Cascade)
+  routineDayId String?
+}
+
+model ExerciseProgress {
+  id            String   @id @default(uuid())
+  weightUsed    String
+  setsCompleted String
+  repsCompleted String
+  date          DateTime @default(now())
+  notes         String?
+
+  week      Int
+  month     Int
+  year      Int
+  dayNumber Int // 1 a 5
+
+  // Relations
+  student   User?   @relation(fields: [studentId], references: [id])
+  studentId String?
+
+  exercise   Exercise? @relation(fields: [exerciseId], references: [id])
+  exerciseId String?
+}
+
+model Exercise {
+  id         String   @id @default(uuid())
+  name       String
+  searchName String? // Nombre normalizado sin acentos y en minúsculas
+  tips       String?
+  bodyPart   BodyPart
+  imageUrl   String?
+  videoUrl   String?
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  routines         Routine[]
+  exerciseProgress ExerciseProgress[]
+
+  coachId         String?
+  coach           User?             @relation(fields: [coachId], references: [id])
+  StudentExercise StudentExercise[]
+
+  @@index([searchName])
+}

@@ -3,7 +3,7 @@ import { Card, Chip } from '@heroui/react';
 import type { Exercise } from '../../types/routine.types';
 import { ArrowRightArrowLeft } from "@gravity-ui/icons";
 import { EJERCICES } from "@/features/student/routine/data/exampleEjercices";
-import GenericSheet from "@/components/common/GenericSheet";
+import { GenericSheet } from "@/components/common";
 
 interface ExerciseCardProps {
 	exercise: Exercise;

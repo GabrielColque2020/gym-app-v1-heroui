@@ -6,7 +6,6 @@ export function AdminTrainingRoutineHeader() {
 		<PageHeader
 			title={ "Rutina de Entrenamiento" }
 			description={ "Organiza las rutinas semanales y los días de entrenamiento para tu alumno." }
-			className={ "flex-1" } // Expande PageHeader
 		/>
 	)
 }

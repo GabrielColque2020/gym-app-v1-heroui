@@ -20,16 +20,25 @@
   "dependencies": {
     "@gravity-ui/icons": "2.18.0",
     "@heroui-pro/react": "1.0.0-beta.4",
-    "@heroui/react": "3.0.3",
-    "@heroui/styles": "3.0.3",
+    "@heroui/react": "^3.1.0",
+    "@heroui/styles": "^3.1.0",
     "@number-flow/react": "^0.6.0",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@tanstack/query-async-storage-persister": "^5.101.0",
+    "@tanstack/react-query": "^5.101.0",
+    "@tanstack/react-query-persist-client": "^5.101.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "motion": "^12.38.0",
     "next": "16.2.3",
+    "pg": "^8.21.0",
     "react": "19.2.5",
     "react-aria-components": "^1.17.0",
     "react-dom": "19.2.5",
+    "react-hook-form": "^7.77.0",
     "react-resizable-panels": "^4.11.0",
     "recharts": "3.8.0",
     "tailwind-merge": "^3.5.0",
@@ -40,18 +49,21 @@
     "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "4.2.2",
     "@types/node": "24.7.1",
+    "@types/pg": "^8.20.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.59.2",
-    "@typescript-eslint/parser": "^8.59.2",
+    "@typescript-eslint/parser": "^8.60.1",
     "eslint": "9.26.0",
     "eslint-config-next": "16.2.3",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "postcss": "8.5.10",
+    "prisma": "^7.8.0",
     "tailwindcss": "4.2.2",
+    "tsx": "^4.22.4",
     "typescript": "5.9.3",
-    "typescript-eslint": "^8.59.2"
+    "typescript-eslint": "^8.60.1"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -60,5 +72,5 @@
       "heroui-native-pro"
     ]
   },
-  "packageManager": "pnpm@11.2.2+sha512.36e6621fad506178936455e70247b8808ef4ec25797a9f437a93281a020484e2607f6a469a22e982987c3dbb8866e3071514ab10a4a1749e06edcd1ec118436f"
+  "packageManager": "pnpm@11.5.1"
 }

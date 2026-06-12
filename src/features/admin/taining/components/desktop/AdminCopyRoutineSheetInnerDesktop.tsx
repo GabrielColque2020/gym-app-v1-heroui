@@ -13,7 +13,7 @@ import {
 	Select,
 	Separator,
 	Surface,
-	Text,
+	Typography,
 } from "@heroui/react";
 import { Copy } from "@gravity-ui/icons";
 import {
@@ -25,6 +25,7 @@ import {
 	padMonth,
 	ymKey,
 } from "../shared/adminCopyRoutineConstants";
+import { Notice } from "@/components/common";
 
 export type AdminCopyRoutineSheetInnerProps = {
 	destinationYear: string;
@@ -75,7 +76,7 @@ function OriginPicker( {
 				variant={ "secondary" }
 				onChange={ ( k ) => onYearChange( k as string ) }
 			>
-				<Label>Anio origen</Label>
+				<Label>Año origen</Label>
 				<Select.Trigger className={ "h-10 rounded-xl shadow-sm" }>
 					<Select.Value/>
 					<Select.Indicator/>
@@ -116,25 +117,6 @@ function OriginPicker( {
 				</Select.Popover>
 			</Select>
 		</div>
-	);
-}
-
-type NoticeProps = {
-	tone: "accent" | "success" | "warning";
-	children: React.ReactNode;
-};
-
-function Notice( { tone, children }: NoticeProps ) {
-	const toneClass = {
-		accent: "border-accent-soft bg-accent-soft/40",
-		success: "border-success-soft bg-success-soft/50",
-		warning: "border-warning-soft bg-warning-soft/60",
-	}[ tone ];
-
-	return (
-		<Surface className={ `${ toneClass } rounded-xl border px-3 py-2.5` }>
-			<Text className={ "text-sm leading-5" }>{ children }</Text>
-		</Surface>
 	);
 }
 
@@ -273,8 +255,8 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 					<div className={ "min-w-0 flex-1" }>
 						<Sheet.Heading>Copiar rutina</Sheet.Heading>
 						<div className={ "mt-1 flex min-w-0 flex-wrap items-center gap-2" }>
-							<Text className={ "text-sm text-muted" }>Destino</Text>
-							<Text className={ "text-sm font-semibold" }>{ destLabel }</Text>
+							<Typography className={ "text-sm text-muted" }>Destino</Typography>
+							<Typography className={ "text-sm font-semibold" }>{ destLabel }</Typography>
 							{ hasActiveRoutine && (
 								<Chip color={ "accent" } size={ "sm" } variant={ "soft" }>
 									Rutina activa
@@ -287,19 +269,21 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 
 			<Sheet.Body className={ "flex min-h-0 flex-1 flex-col gap-4 overflow-hidden px-6 py-5" }>
 				<div className={ "grid grid-cols-[240px_1fr] gap-4" }>
-					<Segment
-						aria-label={ "Modo de copia" }
-						className={ "w-full" }
-						selectedKey={ tab }
-						onSelectionChange={ ( key: any ) => setTab( String( key ) ) }
-					>
-						<Segment.Item className={ "flex-1" } id={ "month" }>
-							Mes
-						</Segment.Item>
-						<Segment.Item className={ "flex-1" } id={ "weeks" }>
-							Semanas
-						</Segment.Item>
-					</Segment>
+					<div className={ "flex items-end" }>
+						<Segment
+							aria-label={ "Modo de copia" }
+							className={ "w-full" }
+							selectedKey={ tab }
+							onSelectionChange={ ( key: any ) => setTab( String( key ) ) }
+						>
+							<Segment.Item className={ "flex-1" } id={ "month" }>
+								Mes
+							</Segment.Item>
+							<Segment.Item className={ "flex-1" } id={ "weeks" }>
+								Semanas
+							</Segment.Item>
+						</Segment>
+					</div>
 
 					<OriginPicker
 						sourceMonth={ sourceMonth }
@@ -316,7 +300,7 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 
 				{ sourceWeeksCount === null && sourceKey && !sameMonth && (
 					<EmptyState className={ "flex min-h-72 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-default-hover px-4 text-center" }>
-						<Text className={ "text-sm font-medium" }>No hay rutina en este origen.</Text>
+						<Typography className={ "text-sm font-medium" }>No hay rutina en este origen.</Typography>
 						<Description className={ "text-sm" }>Proba con otro mes para continuar.</Description>
 					</EmptyState>
 				) }
@@ -330,7 +314,7 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 										<Surface className={ "rounded-xl border border-default-hover bg-surface p-4" }>
 											<div className={ "mb-4 flex items-start justify-between gap-4" }>
 												<div>
-													<Text className={ "text-sm font-semibold" }>Rutina completa</Text>
+													<Typography className={ "text-sm font-semibold" }>Rutina completa </Typography>
 													<Description className={ "mt-1 text-sm" }>
 														Copia todas las semanas disponibles del mes origen.
 													</Description>
@@ -436,7 +420,7 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 															<Surface key={ orig } className={ "rounded-xl border border-default-hover bg-surface p-3" }>
 																<div className={ "mb-2 flex items-center justify-between gap-3" }>
 																	<div>
-																		<Text className={ "text-sm font-medium" }>Semana { orig }</Text>
+																		<Typography className={ "text-sm font-medium" }>Semana { orig }</Typography>
 																		<Description className={ "text-xs" }>Origen</Description>
 																	</div>
 																	<WeekPill>S{ orig }</WeekPill>
@@ -482,7 +466,7 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 
 						<Surface className={ "flex min-h-0 flex-col gap-3 rounded-xl border border-default-hover bg-surface p-4" }>
 							<div>
-								<Text className={ "text-sm font-semibold" }>Resumen</Text>
+								<Typography className={ "text-sm font-semibold" }>Resumen </Typography>
 								<Description className={ "mt-1 text-xs" }>{ sourceLabel } a { destLabel }</Description>
 							</div>
 
@@ -490,17 +474,17 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 
 							<div className={ "grid gap-2 text-sm" }>
 								<div className={ "flex items-center justify-between gap-3" }>
-									<Text className={ "text-muted text-sm" }>Modo</Text>
-									<Text className={ "text-sm font-medium" }>{ tab === "month" ? "Mes completo" : "Semanas" }</Text>
+									<Typography className={ "text-muted text-sm" }>Modo</Typography>
+									<Typography className={ "text-sm font-medium" }>{ tab === "month" ? "Mes completo" : "Semanas" }</Typography>
 								</div>
 								<div className={ "flex items-center justify-between gap-3" }>
-									<Text className={ "text-muted text-sm" }>Origen</Text>
-									<Text className={ "text-sm font-medium" }>{ sourceWeeksCount } semana{ sourceWeeksCount === 1 ? "" : "s" }</Text>
+									<Typography className={ "text-muted text-sm" }>Origen</Typography>
+									<Typography className={ "text-sm font-medium" }>{ sourceWeeksCount } semana{ sourceWeeksCount === 1 ? "" : "s" }</Typography>
 								</div>
 								{ tab === "weeks" && (
 									<div className={ "flex items-center justify-between gap-3" }>
-										<Text className={ "text-muted text-sm" }>Seleccionadas</Text>
-										<Text className={ "text-sm font-medium" }>{ selectedSorted.length || "-" }</Text>
+										<Typography className={ "text-muted text-sm" }>Seleccionadas</Typography>
+										<Typography className={ "text-sm font-medium" }>{ selectedSorted.length || "-" }</Typography>
 									</div>
 								) }
 							</div>

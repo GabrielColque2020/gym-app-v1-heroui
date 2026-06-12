@@ -1,5 +1,8 @@
 allowBuilds:
   '@heroui-pro/react': set this to true or false
+  '@prisma/engines': true
   '@zowe/secrets-for-zowe-sdk': set this to true or false
+  esbuild: false
+  prisma: true
   sharp: set this to true or false
   unrs-resolver: set this to true or false
