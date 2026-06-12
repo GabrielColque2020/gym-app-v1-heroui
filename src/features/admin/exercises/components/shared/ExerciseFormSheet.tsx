@@ -20,7 +20,7 @@ import {
 	TextField,
 } from "@heroui/react";
 import { CircleCheck, Pencil, Plus } from "@gravity-ui/icons";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useCreateExercise, useUpdateExercise } from "@/features/admin/exercises/hooks/useExercises";
 import { BODY_PART_OPTIONS } from "@/features/admin/exercises/services/exercise-form";
@@ -54,8 +54,12 @@ const DEFAULT_VALUES: ExerciseFormValues = {
 	tips: "",
 };
 
+function getDefaultValues(): ExerciseFormValues {
+	return { ...DEFAULT_VALUES };
+}
+
 function getInitialValues( exercise?: ExerciseListItem ): ExerciseFormValues {
-	if (!exercise) return DEFAULT_VALUES;
+	if (!exercise) return getDefaultValues();
 
 	return {
 		active: exercise.active,
@@ -86,6 +90,12 @@ export function ExerciseFormSheet( props: ExerciseFormSheetProps ) {
 	const setIsOpen = props.onOpenChange ?? setInternalIsOpen;
 	const placement = props.placement ?? "right";
 
+	const resetFormState = useCallback( () => {
+		setValues( getInitialValues( props.exercise ) );
+		createExercise.reset();
+		updateExercise.reset();
+	}, [ createExercise, props.exercise, updateExercise ] );
+
 	useEffect( () => {
 		if (!isOpen) {
 			wasOpenRef.current = false;
@@ -95,17 +105,22 @@ export function ExerciseFormSheet( props: ExerciseFormSheetProps ) {
 
 		if (wasOpenRef.current) return;
 
-		setValues( getInitialValues( props.exercise ) );
-		createExercise.reset();
-		updateExercise.reset();
+		resetFormState();
 		wasOpenRef.current = true;
-	}, [ createExercise, isOpen, props.exercise, updateExercise ] );
+	}, [ isOpen, resetFormState ] );
 
 	function openSheet() {
-		setValues( getInitialValues( props.exercise ) );
-		createExercise.reset();
-		updateExercise.reset();
+		resetFormState();
 		setIsOpen( true );
+	}
+
+	function handleOpenChange( nextIsOpen: boolean ) {
+		if (!nextIsOpen) {
+			resetFormState();
+			wasOpenRef.current = false;
+		}
+
+		setIsOpen( nextIsOpen );
 	}
 
 	function updateValue<Key extends keyof ExerciseFormValues>( key: Key, value: ExerciseFormValues[ Key ] ) {
@@ -131,7 +146,7 @@ export function ExerciseFormSheet( props: ExerciseFormSheetProps ) {
 				} );
 			} else {
 				await createExercise.mutateAsync( values );
-				setValues( DEFAULT_VALUES );
+				setValues( getDefaultValues() );
 				toast.success( "Ejercicio creado", {
 					description: "Se agrego al catalogo.",
 				} );
@@ -169,7 +184,7 @@ export function ExerciseFormSheet( props: ExerciseFormSheetProps ) {
 					</Button>
 				)
 			) }
-			<Sheet isDetached isOpen={ isOpen } placement={ placement } onOpenChange={ setIsOpen }>
+			<Sheet isDetached isOpen={ isOpen } placement={ placement } onOpenChange={ handleOpenChange }>
 				<Sheet.Backdrop variant={ "opaque" }>
 					<Sheet.Content className={ placement === "right" ? "w-105" : "mx-auto max-w-105" }>
 						<Sheet.Dialog className={ placement === "right" ? "h-full" : undefined }>

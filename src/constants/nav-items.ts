@@ -11,19 +11,26 @@ import {
 } from "@gravity-ui/icons";
 
 export type NavItem = {
-	readonly href: string;
+	readonly href?: string;
 	readonly label: string;
 	readonly icon: ComponentType<{ className?: string }>;
 	readonly badge?: string;
+	readonly children?: readonly NavItem[];
 };
 
 export const NAV_ITEMS: readonly NavItem[] = [
 	{ href: "/", icon: House, label: "Inicio" },
 	{ href: "/trainingRoutine", icon: Gear, label: "Rutina de Entrenamiento" },
-	{ href: "/admin/trainingRoutine", icon: Gear, label: "Admin - Rutina de Entrenamiento" },
-	{ href: "/admin/exercises", icon: Gear, label: "Admin - Ejercicios" },
 	{ href: "/settings2", icon: Gear, label: "Historial de Ejercicios" },
-	{ href: "/settings", icon: Gear, label: "Configuración" },
+	{
+		children: [
+			{ href: "/admin/exercises", icon: Gear, label: "Ejercicios" },
+			{ href: "/admin/student", icon: Gear, label: "Estudiantes" },
+			{ href: "/admin/trainingRoutine", icon: Gear, label: "Rutina de Entrenamiento" },
+		],
+		icon: Gear,
+		label: "Administración",
+	},
 ] as const;
 
 export const FOOTER_ITEMS: readonly NavItem[] = [

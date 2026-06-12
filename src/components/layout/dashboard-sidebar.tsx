@@ -74,7 +74,7 @@ function SidebarContents( {
 					<Sidebar.Menu aria-label={ "Dashboard navigation" }>
 						{ NAV_ITEMS.map( ( item ) => (
 							<SidebarNavItem
-								key={ item.href }
+								key={ item.href ?? item.label }
 								basePath={ basePath }
 								disableNavigation={ disableNavigation }
 								idPrefix={ idPrefix }
@@ -89,7 +89,7 @@ function SidebarContents( {
 				<Sidebar.Menu aria-label={ "Account" }>
 					{ FOOTER_ITEMS.map( ( item ) => (
 						<SidebarNavItem
-							key={ item.href }
+							key={ item.href ?? item.label }
 							basePath={ basePath }
 							disableNavigation={ disableNavigation }
 							idPrefix={ idPrefix }
@@ -119,16 +119,24 @@ function SidebarNavItem( {
 							 pathname,
 						 }: SidebarNavItemProps ) {
 	const Icon = item.icon;
-	const fullHref = basePath + item.href;
-	const isCurrent =
-		item.href === "/"
+	const fullHref = item.href ? basePath + item.href : undefined;
+	const isCurrent = item.href
+		? item.href === "/"
 			? pathname === fullHref || pathname === basePath || pathname === `${ basePath }/`
-			: pathname === fullHref || pathname.startsWith( `${ fullHref }/` );
+			: pathname === fullHref || pathname.startsWith( `${ fullHref }/` )
+		: item.children?.some( ( child ) => {
+			if (!child.href) return false;
+
+			const childFullHref = basePath + child.href;
+
+			return pathname === childFullHref || pathname.startsWith( `${ childFullHref }/` );
+		} ) ?? false;
+	const id = `${ idPrefix }${ item.href ?? item.label.toLowerCase().replace( /\s+/g, "-" ) }`;
 
 	return (
 		<Sidebar.MenuItem
 			href={ disableNavigation ? undefined : fullHref }
-			id={ `${ idPrefix }${ item.href }` }
+			id={ id }
 			isCurrent={ isCurrent }
 			textValue={ item.label }
 		>
@@ -142,6 +150,25 @@ function SidebarNavItem( {
 						{ item.badge }
 					</Chip>
 				</Sidebar.MenuChip>
+			) : null }
+			{ item.children ? (
+				<Sidebar.MenuTrigger aria-label={ `Desplegar ${ item.label }` }>
+					<Sidebar.MenuIndicator/>
+				</Sidebar.MenuTrigger>
+			) : null }
+			{ item.children ? (
+				<Sidebar.Submenu>
+					{ item.children.map( ( child ) => (
+						<SidebarNavItem
+							key={ child.href ?? child.label }
+							basePath={ basePath }
+							disableNavigation={ disableNavigation }
+							idPrefix={ idPrefix }
+							item={ child }
+							pathname={ pathname }
+						/>
+					) ) }
+				</Sidebar.Submenu>
 			) : null }
 		</Sidebar.MenuItem>
 	);

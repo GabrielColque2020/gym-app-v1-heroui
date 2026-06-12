@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import type { NavItem } from "../../constants/nav-items";
 
 import { Sidebar } from "@heroui-pro/react";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,10 +14,19 @@ import { DashboardSidebar } from "./dashboard-sidebar";
 
 const HOME_GREETING = "Good morning, Kate";
 
+function flattenNavItems( items: readonly NavItem[] ): NavItem[] {
+	return items.flatMap( ( item ) => [
+		item,
+		...(item.children ? flattenNavItems( item.children ) : []),
+	] );
+}
+
 // Combined lookup so every registered route maps to its label in O(1).
 // Hoisted per `server-hoist-static-io` — computed once at module load.
 const ROUTE_LABELS = new Map<string, string>(
-	[ ...NAV_ITEMS, ...FOOTER_ITEMS ].map( ( item ) => [ item.href, item.label ] ),
+	[ ...flattenNavItems( NAV_ITEMS ), ...flattenNavItems( FOOTER_ITEMS ) ]
+		.filter( ( item ): item is NavItem & { href: string } => Boolean( item.href ) )
+		.map( ( item ) => [ item.href, item.label ] ),
 );
 
 export interface AppShellProps {
