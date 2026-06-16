@@ -3,6 +3,7 @@
 import bcryptjs from "bcryptjs";
 
 import prisma from "@/lib/prisma";
+import { TEMP_COACH_ID } from "@/features/admin/shared/tempCoach";
 import {
 	NO_GENDER,
 	emptyToNull,
@@ -69,6 +70,7 @@ export async function createStudentAction( input: CreateStudentInput ) {
 		return await prisma.user.create( {
 			data: {
 				...userData,
+				coachId: TEMP_COACH_ID,
 				DescriptionStudent: {
 					create: descriptionData,
 				},
@@ -139,6 +141,7 @@ export async function updateStudentAction( input: UpdateStudentInput ) {
 				updatedAt: true,
 			},
 			where: {
+				coachId: TEMP_COACH_ID,
 				id: input.id,
 				role: "STUDENT",
 			},
@@ -177,6 +180,7 @@ export async function deactivateStudentAction( id: string ) {
 				updatedAt: true,
 			},
 			where: {
+				coachId: TEMP_COACH_ID,
 				id,
 				role: "STUDENT",
 			},
@@ -215,6 +219,7 @@ export async function restoreStudentAction( id: string ) {
 				updatedAt: true,
 			},
 			where: {
+				coachId: TEMP_COACH_ID,
 				id,
 				role: "STUDENT",
 			},

@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { TEMP_COACH_ID } from "@/features/admin/shared/tempCoach";
 import {
 	type CopyTrainingRoutineMonthInput,
 	type CopyTrainingRoutineWeeksInput,
@@ -17,6 +18,7 @@ async function assertStudentExists( studentId: string ) {
 		},
 		where: {
 			active: true,
+			coachId: TEMP_COACH_ID,
 			id: studentId,
 			role: "STUDENT",
 		},

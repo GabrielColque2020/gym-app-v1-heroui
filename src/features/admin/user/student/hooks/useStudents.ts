@@ -14,6 +14,7 @@ import {
 	STUDENTS_QUERY_KEY,
 	studentsQueryOptions,
 } from "@/features/admin/user/student/services/students-query";
+import { TRAINING_ROUTINES_STUDENTS_QUERY_KEY } from "@/features/admin/trainingRoutinesStudents/services/training-routines-students-query";
 
 export function useStudents() {
 	return useQuery( studentsQueryOptions() );
@@ -21,6 +22,7 @@ export function useStudents() {
 
 function refetchStudentsInBackground( queryClient: ReturnType<typeof useQueryClient> ) {
 	void queryClient.invalidateQueries( { queryKey: STUDENTS_QUERY_KEY } );
+	void queryClient.invalidateQueries( { queryKey: TRAINING_ROUTINES_STUDENTS_QUERY_KEY } );
 }
 
 function replaceStudentInCache( queryClient: ReturnType<typeof useQueryClient>, updatedStudent: Students[ number ] ) {

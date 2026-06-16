@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { TEMP_COACH_ID } from "@/features/admin/shared/tempCoach";
 
 export async function getStudentsAction() {
 	try {
@@ -29,6 +30,7 @@ export async function getStudentsAction() {
 				updatedAt: true,
 			},
 			where: {
+				coachId: TEMP_COACH_ID,
 				role: "STUDENT",
 			},
 		} );

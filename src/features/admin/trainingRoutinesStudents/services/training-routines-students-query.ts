@@ -1,8 +1,9 @@
 import { queryOptions } from "@tanstack/react-query";
 
+import { TEMP_COACH_ID } from "@/features/admin/shared/tempCoach";
 import { getTrainingRoutinesStudentsAction } from "@/features/admin/trainingRoutinesStudents/actions/get-training-routines-students";
 
-export const TRAINING_ROUTINES_STUDENTS_QUERY_KEY = [ "training-routines-students" ] as const;
+export const TRAINING_ROUTINES_STUDENTS_QUERY_KEY = [ "training-routines-students", TEMP_COACH_ID ] as const;
 
 export type TrainingRoutinesStudents = Awaited<ReturnType<typeof getTrainingRoutinesStudentsAction>>;
 

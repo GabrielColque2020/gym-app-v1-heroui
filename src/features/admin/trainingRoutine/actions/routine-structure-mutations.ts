@@ -1,15 +1,13 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { TEMP_COACH_ID } from "@/features/admin/shared/tempCoach";
 import {
 	validateRoutineStructureScopeInput,
 	validateRoutineStructureInput,
 	type RoutineStructureInput,
 	type RoutineStructureScopeInput,
 } from "@/features/admin/trainingRoutine/services/routine-structure";
-
-// Temporal hasta implementar la asociacion real de coach en esta pantalla.
-const TEMP_COACH_ID = "6a65e309-9b1c-495d-8424-fbe538359248";
 
 async function assertStudentExists( studentId: string ) {
 	const student = await prisma.user.findFirst( {
@@ -18,6 +16,7 @@ async function assertStudentExists( studentId: string ) {
 		},
 		where: {
 			active: true,
+			coachId: TEMP_COACH_ID,
 			id: studentId,
 			role: "STUDENT",
 		},
@@ -147,7 +146,6 @@ async function upsertRoutineStructure( input: RoutineStructureInput ) {
 
 export async function createTrainingRoutineStructureAction( input: RoutineStructureInput ) {
 	try {
-		void TEMP_COACH_ID;
 		await upsertRoutineStructure( input );
 
 		return {
@@ -162,7 +160,6 @@ export async function createTrainingRoutineStructureAction( input: RoutineStruct
 
 export async function updateTrainingRoutineStructureAction( input: RoutineStructureInput ) {
 	try {
-		void TEMP_COACH_ID;
 		await upsertRoutineStructure( input );
 
 		return {
