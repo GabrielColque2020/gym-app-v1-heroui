@@ -26,7 +26,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
 		children: [
 			{ href: "/admin/exercises", icon: Gear, label: "Ejercicios" },
 			{ href: "/admin/student", icon: Gear, label: "Estudiantes" },
-			{ href: "/admin/trainingRoutine", icon: Gear, label: "Rutina de Entrenamiento" },
+			{ href: "/admin/trainingRoutinesStudents", icon: Gear, label: "Rutinas por Estudiantes" },
 		],
 		icon: Gear,
 		label: "Administración",

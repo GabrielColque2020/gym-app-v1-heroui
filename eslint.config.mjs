@@ -3,6 +3,14 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactPlugin from "eslint-plugin-react";
 
 export default [
+    {
+        ignores: [
+            ".next/**",
+            "node_modules/**",
+            "dist/**",
+            "src/generated/**"
+        ]
+    },
     ...tseslint.configs.recommended,
     {
         files: ["**/*.{js,mjs,cjs,jsx,ts,tsx}"],
