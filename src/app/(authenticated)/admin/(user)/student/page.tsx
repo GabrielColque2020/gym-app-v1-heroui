@@ -9,8 +9,6 @@ export const metadata: Metadata = {
 
 export default function AdminStudentPage() {
 	return (
-		<div className={ "flex max-w-550 flex-col gap-4 px-5 pb-10 pt-4" }>
-			<AdminStudentsPageContent/>
-		</div>
+		<AdminStudentsPageContent/>
 	);
 }

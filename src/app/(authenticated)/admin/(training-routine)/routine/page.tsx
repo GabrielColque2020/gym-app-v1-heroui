@@ -40,13 +40,11 @@ export default async function AdminEditRoutinePage( { searchParams }: Props ) {
 	const year = parseYear( resolvedSearchParams.year );
 
 	return (
-		<div className={ "flex max-w-550 flex-col gap-4 px-5 pb-10 pt-4" }>
-			<EditRoutineDayPageContent
-				month={ month }
-				routineDayId={ routineDayId }
-				studentId={ studentId }
-				year={ year }
-			/>
-		</div>
+		<EditRoutineDayPageContent
+			month={ month }
+			routineDayId={ routineDayId }
+			studentId={ studentId }
+			year={ year }
+		/>
 	);
 }

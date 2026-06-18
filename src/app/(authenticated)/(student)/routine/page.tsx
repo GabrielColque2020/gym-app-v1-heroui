@@ -14,9 +14,6 @@ export const metadata: Metadata = {
 
 export default function RoutinePage() {
 	return (
-		<div className={ "flex sm:max-w-550 flex-col gap-4 px-5 pb-10 pt-4" }>
-			<RoutinePageContent/>
-
-		</div>
+		<RoutinePageContent/>
 	)
 }

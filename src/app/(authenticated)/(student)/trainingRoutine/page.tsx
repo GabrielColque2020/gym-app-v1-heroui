@@ -15,8 +15,6 @@ interface Props {
 
 export default function StudentTrainingRoutinePage() {
 	return (
-		<div className={ "flex max-w-550 flex-col gap-4 px-5 pb-10 pt-4" }>
-			<TrainingRoutinesPageContent/>
-		</div>
+		<TrainingRoutinesPageContent/>
 	)
 }

@@ -39,8 +39,6 @@ export default async function AdminTrainingRoutinePage( { searchParams }: Props 
 	const studentId = resolvedSearchParams.studentId?.trim() || null;
 
 	return (
-		<div className={ "flex max-w-550 flex-col gap-4 px-5 pb-10 pt-4" }>
-			<AdminTrainingRoutinesPageContent month={ month } studentId={ studentId } year={ year }/>
-		</div>
+		<AdminTrainingRoutinesPageContent month={ month } studentId={ studentId } year={ year }/>
 	);
 }
