@@ -50,6 +50,16 @@ src/
 
 Components are imported directly from `@heroui-pro/react` and `@heroui/react`. No barrel imports, no custom wrappers.
 
+## Routine day draft
+
+The routine editor persists per-`routineDayId` drafts in Zustand with `persist`.
+
+- Store: `src/features/admin/routine/stores/useRoutineDayDraftStore.ts`
+- Hook: `src/features/admin/routine/hooks/useRoutineDayDraft.ts`
+- Save flow: `useSaveRoutineDayExercises()` updates the React Query cache, waits for the save to confirm, then clears the matching draft key.
+
+This keeps edits available across refreshes and accidental navigation while still letting the UI fall back to server data when no draft exists.
+
 ## Prerequisites
 
 - Node 20+

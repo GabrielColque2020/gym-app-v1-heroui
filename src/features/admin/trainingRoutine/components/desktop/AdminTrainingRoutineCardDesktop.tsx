@@ -9,10 +9,18 @@ import { useTrainingRoutineSelection } from "@/features/admin/trainingRoutine/ho
 import { AdminTrainingRoutineDaysAccordion } from "@/features/admin/trainingRoutine/components/shared/AdminTrainingRoutineDaysAccordion";
 
 type AdminTrainingRoutineCardDesktopProps = {
+	month: number;
 	routines: AdminTrainingRoutine[];
+	studentId: string;
+	year: number;
 };
 
-export function AdminTrainingRoutineCardDesktop( { routines }: AdminTrainingRoutineCardDesktopProps ) {
+export function AdminTrainingRoutineCardDesktop( {
+	month,
+	routines,
+	studentId,
+	year,
+}: AdminTrainingRoutineCardDesktopProps ) {
 	const { selectedRoutine, selectedRoutineId, setSelectedRoutineId } = useTrainingRoutineSelection( routines );
 
 	return (
@@ -76,6 +84,9 @@ export function AdminTrainingRoutineCardDesktop( { routines }: AdminTrainingRout
 					<AdminTrainingRoutineDaysAccordion
 						days={ selectedRoutine?.routineDays ?? [] }
 						exerciseGridClassName={ "grid grid-cols-2 gap-2 rounded-xl bg-default/40 p-3" }
+						month={ month }
+						studentId={ studentId }
+						year={ year }
 					/>
 				</Card.Content>
 			</Card>

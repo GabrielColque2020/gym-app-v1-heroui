@@ -1,15 +1,40 @@
-import { PageHeader } from "@/components/common";
-import { Button } from "@heroui/react";
 import { FloppyDisk } from "@gravity-ui/icons";
+import { Button, Spinner } from "@heroui/react";
 
-export function AdminEditRoutineHeader() {
+import { PageHeader } from "@/components/common";
+import React from "react";
+
+type AdminEditRoutineHeaderProps = {
+	description: string;
+	isSaveDisabled?: boolean;
+	isSaving?: boolean;
+	onSave: () => void;
+	title: string;
+};
+
+export function AdminEditRoutineHeader( {
+											description,
+											isSaveDisabled = false,
+											isSaving = false,
+											onSave,
+											title,
+										}: AdminEditRoutineHeaderProps ) {
 	return (
 		<header className={ "flex flex-col gap-3 md:flex-row md:items-end md:justify-between" }>
-			<PageHeader
-				title={ "Editar Día 1" }
-				description={ "Semana 1 · Mayo 2026" }
-			/>
-			<Button className={ "bg-accent text-accent-foreground" }><FloppyDisk/>Guardar cambios</Button>
+			<div className={ "flex min-w-0 flex-col gap-3" }>
+
+				<PageHeader title={ title } description={ description }/>
+			</div>
+			<Button
+				className={ "bg-accent text-accent-foreground" }
+				isDisabled={ isSaveDisabled }
+				isPending={ isSaving }
+				onPress={ onSave }
+			>
+				{ isSaving ? <Spinner color={ "current" } size={ "sm" }/> :
+					<FloppyDisk className={ "size-4" }/> }
+				{ isSaving ? "Guardando..." : "Guardar cambios" }
+			</Button>
 		</header>
-	)
+	);
 }

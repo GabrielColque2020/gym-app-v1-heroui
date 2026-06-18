@@ -3,6 +3,7 @@
 import React from "react";
 import type { ExerciseListItem } from "@/features/admin/exercises/actions/get-exercises";
 import type { BodyPartValue, ExerciseFormValues } from "@/features/admin/exercises/services/exercise-form";
+import type { Exercises } from "@/features/admin/exercises/services/exercises-query";
 
 import { Sheet } from "@heroui-pro/react";
 import {
@@ -31,6 +32,7 @@ type ExerciseFormSheetProps =
 	hideTrigger?: boolean;
 	isOpen?: boolean;
 	mode: "create";
+	onSuccess?: ( exercise: Exercises[ number ] ) => void;
 	onOpenChange?: ( isOpen: boolean ) => void;
 	placement?: "bottom" | "right";
 	triggerClassName?: string;
@@ -41,6 +43,7 @@ type ExerciseFormSheetProps =
 	hideTrigger?: boolean;
 	isOpen?: boolean;
 	mode: "edit";
+	onSuccess?: ( exercise: Exercises[ number ] ) => void;
 	onOpenChange?: ( isOpen: boolean ) => void;
 	placement?: "bottom" | "right";
 	triggerClassName?: string;
@@ -137,19 +140,21 @@ export function ExerciseFormSheet( props: ExerciseFormSheetProps ) {
 
 		try {
 			if (isEditMode) {
-				await updateExercise.mutateAsync( {
+				const updatedExercise = await updateExercise.mutateAsync( {
 					...values,
 					id: props.exercise.id,
 				} );
 				toast.success( "Ejercicio actualizado", {
 					description: "Los cambios se guardaron correctamente.",
 				} );
+				props.onSuccess?.( updatedExercise );
 			} else {
-				await createExercise.mutateAsync( values );
+				const createdExercise = await createExercise.mutateAsync( values );
 				setValues( getDefaultValues() );
 				toast.success( "Ejercicio creado", {
 					description: "Se agrego al catalogo.",
 				} );
+				props.onSuccess?.( createdExercise );
 			}
 
 			setIsOpen( false );

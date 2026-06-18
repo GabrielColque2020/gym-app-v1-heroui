@@ -42,7 +42,8 @@
     "react-resizable-panels": "^4.11.0",
     "recharts": "3.8.0",
     "tailwind-merge": "^3.5.0",
-    "tailwind-variants": "^3.2.2"
+    "tailwind-variants": "^3.2.2",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",

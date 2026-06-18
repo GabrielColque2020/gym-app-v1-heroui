@@ -3,7 +3,7 @@
 import { Alert, Card, Spinner } from "@heroui/react";
 import React from "react";
 
-import { PageHeader } from "@/components/common";
+import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { StudentsContentDesktop } from "@/features/admin/user/student/components/desktop/StudentsContentDesktop";
 import { StudentsContentMobile } from "@/features/admin/user/student/components/mobile/StudentsContentMobile";
 import { StudentFormSheet } from "@/features/admin/user/student/components/shared/StudentFormSheet";
@@ -11,67 +11,92 @@ import { useStudents } from "@/features/admin/user/student/hooks/useStudents";
 
 export default function AdminStudentsPageContent() {
 	const { data: students = [], error, isError, isLoading } = useStudents();
+	const breadcrumbs = [
+		{ href: "/", label: "Inicio" },
+		{ label: "Estudiantes" },
+	];
 
 	if (isLoading) {
 		return (
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
-					<Spinner size={ "lg" }/>
-					<div className={ "space-y-1" }>
-						<p className={ "text-base font-semibold text-foreground" }>Cargando estudiantes</p>
-						<p className={ "text-sm text-muted" }>Consultando la base de datos y sincronizando la cache.</p>
-					</div>
-				</Card.Content>
-			</Card>
+			<div className={ "flex flex-col gap-4" }>
+				<PageBreadcrumbs
+					backHref={ "/" }
+					backLabel={ "Volver al inicio" }
+					crumbs={ breadcrumbs }
+				/>
+				<Card className={ "border border-border bg-surface" } variant={ "default" }>
+					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
+						<Spinner size={ "lg" }/>
+						<div className={ "space-y-1" }>
+							<p className={ "text-base font-semibold text-foreground" }>Cargando estudiantes</p>
+							<p className={ "text-sm text-muted" }>Consultando la base de datos y sincronizando la cache.</p>
+						</div>
+					</Card.Content>
+				</Card>
+			</div>
 		);
 	}
 
 	if (isError) {
 		return (
-			<Alert className={ "border border-danger/20" } status={ "danger" }>
-				<Alert.Content>
-					<Alert.Title>Error al cargar estudiantes</Alert.Title>
-					<Alert.Description>{ error.message }</Alert.Description>
-				</Alert.Content>
-			</Alert>
+			<div className={ "flex flex-col gap-4" }>
+				<PageBreadcrumbs
+					backHref={ "/" }
+					backLabel={ "Volver al inicio" }
+					crumbs={ breadcrumbs }
+				/>
+				<Alert className={ "border border-danger/20" } status={ "danger" }>
+					<Alert.Content>
+						<Alert.Title>Error al cargar estudiantes</Alert.Title>
+						<Alert.Description>{ error.message }</Alert.Description>
+					</Alert.Content>
+				</Alert>
+			</div>
 		);
 	}
 
 	return (
-		<Card className={ "border border-border bg-surface" } variant={ "default" }>
-			<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" }>
-				<PageHeader
-					description={ "Listado administrativo con DNI, contacto, estado y datos de seguimiento." }
-					title={ "Estudiantes" }
-				/>
-				<div className={ "w-full md:hidden" }>
-					<StudentFormSheet
-						mode={ "create" }
-						placement={ "bottom" }
-						triggerClassName={ "w-full bg-accent text-accent-foreground" }
+		<div className={ "flex flex-col gap-4" }>
+			<PageBreadcrumbs
+				backHref={ "/" }
+				backLabel={ "Volver al inicio" }
+				crumbs={ breadcrumbs }
+			/>
+			<Card className={ "border border-border bg-surface" } variant={ "default" }>
+				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" }>
+					<PageHeader
+						description={ "Listado administrativo con DNI, contacto, estado y datos de seguimiento." }
+						title={ "Estudiantes" }
 					/>
-				</div>
-				<div className={ "hidden md:block" }>
-					<StudentFormSheet
-						mode={ "create" }
-						placement={ "right" }
-						triggerClassName={ "bg-accent text-accent-foreground" }
-					/>
-				</div>
-			</Card.Header>
-			<Card.Content className={ "px-5 py-4 sm:px-6" }>
-				<div className={ "hidden w-full md:flex" }>
-					<StudentsContentDesktop students={ students }/>
-				</div>
-				<div className={ "w-full md:hidden" }>
-					<StudentsContentMobile students={ students }/>
-				</div>
-			</Card.Content>
-			<Card.Footer className={ "border-t border-border px-5 py-4 sm:px-6" }>
-				<div className={ "text-sm text-muted" }>
-					Desactivar conserva al estudiante y su informacion historica.
-				</div>
-			</Card.Footer>
-		</Card>
+					<div className={ "w-full md:hidden" }>
+						<StudentFormSheet
+							mode={ "create" }
+							placement={ "bottom" }
+							triggerClassName={ "w-full bg-accent text-accent-foreground" }
+						/>
+					</div>
+					<div className={ "hidden md:block" }>
+						<StudentFormSheet
+							mode={ "create" }
+							placement={ "right" }
+							triggerClassName={ "bg-accent text-accent-foreground" }
+						/>
+					</div>
+				</Card.Header>
+				<Card.Content className={ "px-5 py-4 sm:px-6" }>
+					<div className={ "hidden w-full md:flex" }>
+						<StudentsContentDesktop students={ students }/>
+					</div>
+					<div className={ "w-full md:hidden" }>
+						<StudentsContentMobile students={ students }/>
+					</div>
+				</Card.Content>
+				<Card.Footer className={ "border-t border-border px-5 py-4 sm:px-6" }>
+					<div className={ "text-sm text-muted" }>
+						Desactivar conserva al estudiante y su informacion historica.
+					</div>
+				</Card.Footer>
+			</Card>
+		</div>
 	);
 }

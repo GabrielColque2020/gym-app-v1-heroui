@@ -9,6 +9,9 @@ import { useRouter } from "next/navigation";
 type AdminTrainingRoutineDaysAccordionProps = {
 	days: AdminTrainingRoutineDay[];
 	exerciseGridClassName?: string;
+	month: number;
+	studentId: string;
+	year: number;
 };
 
 function formatExerciseMeta( sets: string, reps: string ) {
@@ -32,7 +35,14 @@ function getDayTitle( day: AdminTrainingRoutineDay ) {
 	return bodyParts.join( " + " );
 }
 
-function DayOptionsMenu() {
+type DayOptionsMenuProps = {
+	month: number;
+	routineDayId: string;
+	studentId: string;
+	year: number;
+};
+
+function DayOptionsMenu( { month, routineDayId, studentId, year }: DayOptionsMenuProps ) {
 	const router = useRouter();
 
 	return (
@@ -44,7 +54,14 @@ function DayOptionsMenu() {
 				<Dropdown.Menu
 					onAction={ ( key ) => {
 						if (key === "edit") {
-							router.push( "/admin/routine" );
+							const params = new URLSearchParams( {
+								month: String( month ),
+								routineDayId,
+								studentId,
+								year: String( year ),
+							} );
+
+							router.push( `/admin/routine?${ params.toString() }` );
 						}
 					} }
 				>
@@ -64,6 +81,9 @@ function DayOptionsMenu() {
 export function AdminTrainingRoutineDaysAccordion( {
 	days,
 	exerciseGridClassName = "grid gap-2 rounded-xl bg-default/40 p-3",
+	month,
+	studentId,
+	year,
 }: AdminTrainingRoutineDaysAccordionProps ) {
 	if (days.length === 0) {
 		return (
@@ -124,7 +144,12 @@ export function AdminTrainingRoutineDaysAccordion( {
 										</div>
 									) }
 									<div className={ "flex justify-end" }>
-										<DayOptionsMenu/>
+										<DayOptionsMenu
+											month={ month }
+											routineDayId={ day.id }
+											studentId={ studentId }
+											year={ year }
+										/>
 									</div>
 								</div>
 							</Accordion.Body>
