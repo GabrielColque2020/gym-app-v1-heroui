@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  UserLoginHistory: 'UserLoginHistory',
   DescriptionStudent: 'DescriptionStudent',
   MealPlan: 'MealPlan',
   TrainingRoutine: 'TrainingRoutine',
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "descriptionStudent" | "mealPlan" | "trainingRoutine" | "routineDay" | "studentExercise" | "routine" | "exerciseProgress" | "exercise"
+    modelProps: "user" | "userLoginHistory" | "descriptionStudent" | "mealPlan" | "trainingRoutine" | "routineDay" | "studentExercise" | "routine" | "exerciseProgress" | "exercise"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -483,6 +484,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    UserLoginHistory: {
+      payload: Prisma.$UserLoginHistoryPayload<ExtArgs>
+      fields: Prisma.UserLoginHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserLoginHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserLoginHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.UserLoginHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserLoginHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.UserLoginHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.UserLoginHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.UserLoginHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserLoginHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.UserLoginHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload>
+        }
+        update: {
+          args: Prisma.UserLoginHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserLoginHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserLoginHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserLoginHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserLoginHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserLoginHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.UserLoginHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserLoginHistory>
+        }
+        groupBy: {
+          args: Prisma.UserLoginHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserLoginHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserLoginHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserLoginHistoryCountAggregateOutputType> | number
         }
       }
     }
@@ -1134,6 +1209,17 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const UserLoginHistoryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  loggedAt: 'loggedAt'
+} as const
+
+export type UserLoginHistoryScalarFieldEnum = (typeof UserLoginHistoryScalarFieldEnum)[keyof typeof UserLoginHistoryScalarFieldEnum]
+
+
 export const DescriptionStudentScalarFieldEnum = {
   id: 'id',
   height: 'height',
@@ -1507,6 +1593,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  userLoginHistory?: Prisma.UserLoginHistoryOmit
   descriptionStudent?: Prisma.DescriptionStudentOmit
   mealPlan?: Prisma.MealPlanOmit
   trainingRoutine?: Prisma.TrainingRoutineOmit

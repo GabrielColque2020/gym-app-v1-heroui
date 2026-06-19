@@ -5,17 +5,20 @@ import type { NavItem } from "../../constants/nav-items";
 import { Avatar, Chip } from "@heroui/react";
 import { Sidebar } from "@heroui-pro/react";
 
+import type { Role } from "@/generated/prisma/client";
 import { FOOTER_ITEMS, NAV_ITEMS } from "../../constants/nav-items";
 
 interface DashboardSidebarProps {
 	pathname: string;
 	basePath: string;
 	disableNavigation?: boolean;
+	userRole: Role;
 }
 
 export function DashboardSidebar( {
 									  basePath,
 									  disableNavigation = false,
+									  userRole,
 									  pathname,
 								  }: DashboardSidebarProps ) {
 	return (
@@ -24,6 +27,7 @@ export function DashboardSidebar( {
 				<SidebarContents
 					basePath={ basePath }
 					disableNavigation={ disableNavigation }
+					userRole={ userRole }
 					pathname={ pathname }
 				/>
 			</Sidebar>
@@ -31,6 +35,7 @@ export function DashboardSidebar( {
 				<SidebarContents
 					basePath={ basePath }
 					disableNavigation={ disableNavigation }
+					userRole={ userRole }
 					idPrefix={ "mobile-" }
 					pathname={ pathname }
 				/>
@@ -42,6 +47,7 @@ export function DashboardSidebar( {
 interface SidebarContentsProps {
 	basePath: string;
 	disableNavigation: boolean;
+	userRole: Role;
 	pathname: string;
 	idPrefix?: string;
 }
@@ -49,9 +55,13 @@ interface SidebarContentsProps {
 function SidebarContents( {
 							  basePath,
 							  disableNavigation,
+							  userRole,
 							  idPrefix = "",
 							  pathname,
 						  }: SidebarContentsProps ) {
+	const visibleNavItems = NAV_ITEMS.filter( ( item ) => isNavItemVisible( item, userRole ) );
+	const visibleFooterItems = FOOTER_ITEMS.filter( ( item ) => isNavItemVisible( item, userRole ) );
+
 	return (
 		<>
 			<Sidebar.Header>
@@ -72,7 +82,7 @@ function SidebarContents( {
 			<Sidebar.Content>
 				<Sidebar.Group>
 					<Sidebar.Menu aria-label={ "Dashboard navigation" }>
-						{ NAV_ITEMS.map( ( item ) => (
+						{ visibleNavItems.map( ( item ) => (
 							<SidebarNavItem
 								key={ item.href ?? item.label }
 								basePath={ basePath }
@@ -87,7 +97,7 @@ function SidebarContents( {
 			</Sidebar.Content>
 			<Sidebar.Footer>
 				<Sidebar.Menu aria-label={ "Account" }>
-					{ FOOTER_ITEMS.map( ( item ) => (
+					{ visibleFooterItems.map( ( item ) => (
 						<SidebarNavItem
 							key={ item.href ?? item.label }
 							basePath={ basePath }
@@ -109,6 +119,19 @@ interface SidebarNavItemProps {
 	idPrefix: string;
 	item: NavItem;
 	pathname: string;
+	isChildren?: boolean;
+}
+
+function isNavItemVisible( item: NavItem, userRole: Role ): boolean {
+	if (item.roles && !item.roles.includes( userRole )) {
+		return false;
+	}
+
+	if (!item.children) {
+		return true;
+	}
+
+	return item.children.some( ( child ) => isNavItemVisible( child, userRole ) );
 }
 
 function SidebarNavItem( {
@@ -117,6 +140,7 @@ function SidebarNavItem( {
 							 idPrefix,
 							 item,
 							 pathname,
+							 isChildren = false,
 						 }: SidebarNavItemProps ) {
 	const Icon = item.icon;
 	const fullHref = item.href ? basePath + item.href : undefined;
@@ -125,12 +149,12 @@ function SidebarNavItem( {
 			? pathname === fullHref || pathname === basePath || pathname === `${ basePath }/`
 			: pathname === fullHref || pathname.startsWith( `${ fullHref }/` )
 		: item.children?.some( ( child ) => {
-			if (!child.href) return false;
+		if (!child.href) return false;
 
-			const childFullHref = basePath + child.href;
+		const childFullHref = basePath + child.href;
 
-			return pathname === childFullHref || pathname.startsWith( `${ childFullHref }/` );
-		} ) ?? false;
+		return pathname === childFullHref || pathname.startsWith( `${ childFullHref }/` );
+	} ) ?? false;
 	const id = `${ idPrefix }${ item.href ?? item.label.toLowerCase().replace( /\s+/g, "-" ) }`;
 
 	return (
@@ -139,18 +163,12 @@ function SidebarNavItem( {
 			id={ id }
 			isCurrent={ isCurrent }
 			textValue={ item.label }
+			className={ isChildren ? "py-px" : undefined }
 		>
 			<Sidebar.MenuIcon>
 				<Icon className={ "size-4" }/>
 			</Sidebar.MenuIcon>
 			<Sidebar.MenuLabel>{ item.label }</Sidebar.MenuLabel>
-			{ item.badge ? (
-				<Sidebar.MenuChip>
-					<Chip color={ "success" } size={ "sm" } variant={ "soft" }>
-						{ item.badge }
-					</Chip>
-				</Sidebar.MenuChip>
-			) : null }
 			{ item.children ? (
 				<Sidebar.MenuTrigger aria-label={ `Desplegar ${ item.label }` }>
 					<Sidebar.MenuIndicator/>
@@ -166,6 +184,7 @@ function SidebarNavItem( {
 							idPrefix={ idPrefix }
 							item={ child }
 							pathname={ pathname }
+							isChildren={ true }
 						/>
 					) ) }
 				</Sidebar.Submenu>

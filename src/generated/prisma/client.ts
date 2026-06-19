@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model UserLoginHistory
+ * 
+ */
+export type UserLoginHistory = Prisma.UserLoginHistoryModel
+/**
  * Model DescriptionStudent
  * 
  */

@@ -46,10 +46,10 @@ enum Role {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  name     String
-  email    String  @unique
-  dni      Int     @unique
+	id       String  @id @default(uuid())
+	name     String
+	email    String  @unique
+	dni      Int     @unique
   password String
   gender   Gender?
 
@@ -63,15 +63,27 @@ model User {
   coach    User?   @relation("CoachStudents", fields: [coachId], references: [id])
   students User[]  @relation("CoachStudents")
 
-  DescriptionStudent DescriptionStudent?
-  MealPlan           MealPlan[]
-  TrainingRoutine    TrainingRoutine[]
-  ExerciseProgress   ExerciseProgress[]
-  Exercise           Exercise[]
-  StudentExercise    StudentExercise[]
+	DescriptionStudent DescriptionStudent?
+	MealPlan           MealPlan[]
+	TrainingRoutine    TrainingRoutine[]
+	ExerciseProgress   ExerciseProgress[]
+	Exercise           Exercise[]
+	StudentExercise    StudentExercise[]
+	loginHistory       UserLoginHistory[]
 
-  @@index([email, active])
-  @@index([dni, active])
+	@@index([email, active])
+	@@index([dni, active])
+}
+
+model UserLoginHistory {
+	id        String   @id @default(uuid())
+	userId    String
+	user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+	ip        String?
+	userAgent String?
+	loggedAt  DateTime @default(now())
+
+	@@index([userId, loggedAt])
 }
 
 model DescriptionStudent {
