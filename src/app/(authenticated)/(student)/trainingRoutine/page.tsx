@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import TrainingRoutinesPageContent from "@/features/student/training/views/TrainingRoutinesPageContent";
 
 export const metadata: Metadata = {
@@ -10,11 +11,32 @@ interface Props {
 	searchParams: Promise<{
 		year?: string;
 		month?: string;
-	}>,
+	}>;
 }
 
-export default function StudentTrainingRoutinePage() {
+function getCurrentMonth() {
+	return new Date().getMonth() + 1;
+}
+
+function getCurrentYear() {
+	return new Date().getFullYear();
+}
+
+export default async function StudentTrainingRoutinePage( { searchParams }: Props ) {
+	const resolvedSearchParams = await searchParams;
+	const parsedMonth = Number( resolvedSearchParams.month );
+	const parsedYear = Number( resolvedSearchParams.year );
+	const initialMonth = Number.isInteger( parsedMonth ) && parsedMonth >= 1 && parsedMonth <= 12
+		? parsedMonth
+		: getCurrentMonth();
+	const initialYear = Number.isInteger( parsedYear ) && parsedYear >= 2000 && parsedYear <= 2100
+		? parsedYear
+		: getCurrentYear();
+
 	return (
-		<TrainingRoutinesPageContent/>
-	)
+		<TrainingRoutinesPageContent
+			initialMonth={ initialMonth }
+			initialYear={ initialYear }
+		/>
+	);
 }

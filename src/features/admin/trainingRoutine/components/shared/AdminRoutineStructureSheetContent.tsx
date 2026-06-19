@@ -70,7 +70,7 @@ export function AdminRoutineStructureSheetContent( {
 	const isSubmitDisabled = sortedSelectedWeeks.length === 0
 		|| sortedSelectedDays.length === 0
 		|| activeMutation.isPending;
-	const title = mode === "create" ? "Crear rutina" : "Editar estructura";
+	const title = mode === "create" ? "Crear rutina" : "Editar rutina";
 	const description = mode === "create"
 		? "Configura semanas y dias de entrenamiento para crear la base de la rutina."
 		: "Activa o desactiva semanas y dias sin modificar ejercicios desde la pantalla principal.";
@@ -104,7 +104,7 @@ export function AdminRoutineStructureSheetContent( {
 
 			onSaved();
 		} catch {
-			toast.danger( mode === "create" ? "Error al crear rutina" : "Error al editar estructura", {
+			toast.danger( mode === "create" ? "Error al crear rutina" : "Error al editar rutina", {
 				description: mode === "create"
 					? "No se pudo crear la estructura."
 					: "No se pudo guardar la estructura.",

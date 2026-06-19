@@ -27,12 +27,12 @@ export function AdminEditRoutineStructureSheetDesktop( {
 	return (
 		<Sheet isDetached isOpen={ isOpen } placement={ "right" } onOpenChange={ setIsOpen }>
 			<Button
-				className={ "bg-accent-foreground border border-accent/50 text-accent shadow-sm" }
-				variant={ "outline" }
+				className={ "bg-surface border border-accent/50 text-accent shadow-sm" }
+				variant={ "ghost" }
 				onPress={ () => setIsOpen( true ) }
 			>
 				<Pencil className={ "size-4" }/>
-				Editar estructura
+				Editar rutina
 			</Button>
 			<Sheet.Backdrop variant={ "opaque" }>
 				<Sheet.Content>

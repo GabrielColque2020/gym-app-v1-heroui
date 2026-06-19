@@ -1,8 +1,8 @@
 import { FilterSelect } from "@/components/common/FilterSelect";
 import { Button, Card } from "@heroui/react";
 import { useState } from "react";
+import { PageHeader } from "@/components/common";
 
-// Opciones para los meses
 const monthOptions = [
 	{ value: "01", label: "Enero" },
 	{ value: "02", label: "Febrero" },
@@ -18,60 +18,84 @@ const monthOptions = [
 	{ value: "12", label: "Diciembre" },
 ];
 
-export default function TrainingRoutinesFilter() {
-	// Opciones para el año (últimos 5 años y próximos 2)
+type TrainingRoutinesFilterProps = {
+	defaultMonth: string;
+	defaultYear: string;
+	onClear: () => void;
+	onSearch: ( value: { month: string; year: string } ) => void;
+};
+
+export default function TrainingRoutinesFilter( {
+													defaultMonth,
+													defaultYear,
+													onClear,
+													onSearch,
+												}: TrainingRoutinesFilterProps ) {
 	const currentYear = new Date().getFullYear();
 	const yearOptions = Array.from( { length: 8 }, ( _, i ) => ( {
-		value: ( currentYear - 3 + i ).toString(),
-		label: ( currentYear - 3 + i ).toString()
+		value: String( currentYear - 3 + i ),
+		label: String( currentYear - 3 + i ),
 	} ) );
 
-	const [ selectedYear, setSelectedYear ] = useState<string>( "" );
-	const [ selectedMonth, setSelectedMonth ] = useState<string>( "" );
+	const [ selectedYear, setSelectedYear ] = useState<string>( defaultYear );
+	const [ selectedMonth, setSelectedMonth ] = useState<string>( defaultMonth );
+	const [ resetVersion, setResetVersion ] = useState( 0 );
 
 	const handleSearch = () => {
-		console.log( "Buscar:", { year: selectedYear, month: selectedMonth } );
-		// Aquí iría tu lógica de búsqueda
+		onSearch( {
+			month: selectedMonth,
+			year: selectedYear,
+		} );
 	};
 
 	const handleClear = () => {
-		setSelectedYear( "" );
-		setSelectedMonth( "" );
+		setSelectedYear( defaultYear );
+		setSelectedMonth( defaultMonth );
+		setResetVersion( ( current ) => current + 1 );
+		onClear();
 	};
 
-
 	return (
-		<Card
-			className={ " w-full items-stretch md:flex-row grid grid-cols-1 md:grid-cols-3 gap-4 p-4 shadow-sm" }
-		>
-			<div className={ "form-control" }>
-				<FilterSelect
-					label={ "Año" }
-					placeholder={ "Todos los años" }
-					options={ yearOptions }
-					name={ "year" }
-					onSelectionChange={ setSelectedYear }
-				/>
-			</div>
+		<Card className={ "p-5" }>
+			<PageHeader
+				title={ "Plan de Entrenamiento Personal" }
+				description={ "Optimiza tu rendimiento con rutinas adaptadas a tus objetivos de temporada." }
+				showSeparator
+			/>
+			<div className={ "grid w-full grid-cols-1 gap-4 md:grid-cols-3" }>
+				<div className={ "form-control" }>
+					<FilterSelect
+						key={ `year-${ resetVersion }` }
+						label={ "Ano" }
+						placeholder={ "Todos los anos" }
+						options={ yearOptions }
+						name={ "year" }
+						defaultValue={ defaultYear }
+						onSelectionChange={ setSelectedYear }
+					/>
+				</div>
 
-			<div className={ "form-control" }>
-				<FilterSelect
-					label={ "Mes" }
-					placeholder={ "Todos los meses" }
-					options={ monthOptions }
-					name={ "month" }
-					onSelectionChange={ setSelectedMonth }
-				/>
-			</div>
+				<div className={ "form-control" }>
+					<FilterSelect
+						key={ `month-${ resetVersion }` }
+						label={ "Mes" }
+						placeholder={ "Todos los meses" }
+						options={ monthOptions }
+						name={ "month" }
+						defaultValue={ defaultMonth }
+						onSelectionChange={ setSelectedMonth }
+					/>
+				</div>
 
-			<div className={ "form-control flex flex-row items-end gap-2" }>
-				<Button className={ "flex-1 shadow-sm" } onPress={ handleSearch }>
-					Buscar
-				</Button>
-				<Button variant={ "ghost" } className={ "shadow-sm bg-surface" } onPress={ handleClear }>
-					Limpiar
-				</Button>
+				<div className={ "form-control flex flex-row items-end gap-2" }>
+					<Button className={ "flex-1 shadow-sm" } onPress={ handleSearch }>
+						Buscar
+					</Button>
+					<Button variant={ "ghost" } className={ "shadow-sm bg-surface border border-accent/50 text-accent" } onPress={ handleClear }>
+						Limpiar
+					</Button>
+				</div>
 			</div>
 		</Card>
-	)
+	);
 }

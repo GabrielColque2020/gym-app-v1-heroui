@@ -16,8 +16,8 @@ export function AdminCopyRoutineSheetDesktop( props: AdminCopyRoutineSheetDeskto
 		<Sheet isDetached placement={ "right" }>
 			<Sheet.Trigger>
 				<Button
-					variant={ "outline" }
-					className={ "bg-accent-foreground border border-accent/50 text-accent shadow-sm" }
+					variant={ "ghost" }
+					className={ "bg-surface border border-accent/50 text-accent shadow-sm" }
 				>
 					<Copy/>
 					Copiar desde otro mes
