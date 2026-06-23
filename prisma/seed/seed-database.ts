@@ -13,6 +13,7 @@ const prisma = new PrismaClient( {
 
 async function deleteAll() {
 	await prisma.mealPlan.deleteMany();
+	await prisma.routineExerciseVariant.deleteMany();
 	await prisma.routine.deleteMany();
 	await prisma.routineDay.deleteMany();
 	await prisma.trainingRoutine.deleteMany();
@@ -47,62 +48,62 @@ async function main(): Promise<void> {
 		} ) ),
 	} );
 
-	// // Get the first created client
-	// const firstStudent = await prisma.user.findFirst( { where: { email: "gabriel@gmail.com" } } );
-	//
+	// Get the first created client
+	const firstStudent = await prisma.user.findFirst( { where: { email: "gabriel@gmail.com" } } );
+
 	// Create the exercises
 	await prisma.exercise.createMany( { data: exercises.map( exercise => ( { ...exercise, coachId: createdCoach.id } ) ) } )
 	//
-	// // Create the Training Routine
-	// await prisma.trainingRoutine.createMany( {
-	// 	data: trainingRoutines.map( trainingRoutine => ( {
-	// 		...trainingRoutine,
-	// 		studentId: firstStudent?.id
-	// 	} ) )
-	// } )
-	//
-	// // Get the first created trainingRoutine
-	// const firstTrainingRoutine = await prisma.trainingRoutine.findFirst();
-	//
-	// // Create the Routine Days
-	// await prisma.routineDay.createMany( {
-	// 	data: routineDays.map( routineDay => ( {
-	// 		...routineDay,
-	// 		trainingRoutineId: firstTrainingRoutine?.id ?? ''
-	// 	} ) )
-	// } )
-	//
-	// const firstRoutineDay = await prisma.routineDay.findFirst();
-	//
-	// // Get the created exercises
-	// const exercisesDB = await prisma.exercise.findMany();
-	//
-	// routines[ 0 ].exerciseId = exercisesDB[ 0 ].id;
-	// routines[ 1 ].exerciseId = exercisesDB[ 1 ].id;
-	//
-	// // Create the routines
-	// await prisma.routine.createMany( {
-	// 	data: routines.map( routine => ( {
-	// 		...routine,
-	// 		routineDayId: firstRoutineDay?.id ?? ''
-	// 	} ) )
-	// } )
-	//
-	//
-	// await prisma.studentExercise.createMany( {
-	// 	data: exercisesDB.map( exercise => ( {
-	// 		exerciseId: exercise.id,
-	// 		studentId: firstStudent?.id ?? ""
-	// 	} ) ),
-	// } )
-	//
-	// // Create MealPlans
-	// await prisma.mealPlan.createMany( {
-	// 	data: mealPlans.map( m => ( {
-	// 		...m,
-	// 		studentId: firstStudent?.id ? firstStudent.id : "0"
-	// 	} ) )
-	// } )
+	// Create the Training Routine
+	await prisma.trainingRoutine.createMany( {
+		data: trainingRoutines.map( trainingRoutine => ( {
+			...trainingRoutine,
+			studentId: firstStudent?.id
+		} ) )
+	} )
+
+	// Get the first created trainingRoutine
+	const firstTrainingRoutine = await prisma.trainingRoutine.findFirst();
+
+	// Create the Routine Days
+	await prisma.routineDay.createMany( {
+		data: routineDays.map( routineDay => ( {
+			...routineDay,
+			trainingRoutineId: firstTrainingRoutine?.id ?? ''
+		} ) )
+	} )
+
+	const firstRoutineDay = await prisma.routineDay.findFirst();
+
+	// Get the created exercises
+	const exercisesDB = await prisma.exercise.findMany();
+
+	routines[ 0 ].exerciseId = exercisesDB[ 0 ].id;
+	routines[ 1 ].exerciseId = exercisesDB[ 1 ].id;
+
+	// Create the routines
+	await prisma.routine.createMany( {
+		data: routines.map( routine => ( {
+			...routine,
+			routineDayId: firstRoutineDay?.id ?? ''
+		} ) )
+	} )
+
+
+	await prisma.studentExercise.createMany( {
+		data: exercisesDB.map( exercise => ( {
+			exerciseId: exercise.id,
+			studentId: firstStudent?.id ?? ""
+		} ) ),
+	} )
+
+	// Create MealPlans
+	await prisma.mealPlan.createMany( {
+		data: mealPlans.map( m => ( {
+			...m,
+			studentId: firstStudent?.id ? firstStudent.id : "0"
+		} ) )
+	} )
 
 	console.log( "Seed executed successfully" );
 }

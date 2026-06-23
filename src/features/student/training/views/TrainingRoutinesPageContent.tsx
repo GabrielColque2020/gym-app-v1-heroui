@@ -202,7 +202,7 @@ export default function TrainingRoutinesPageContent( {
 										</Card.Description>
 									</Card.Header>
 									<Card.Footer className={ "mt-auto flex w-full flex-col items-end gap-3" }>
-										<Link href={ "/routine" } className={ "w-full sm:w-auto" }>
+										<Link href={ `/routine?routineDayId=${ day.id }` } className={ "w-full sm:w-auto" }>
 											<Button className={ "w-full sm:w-auto" }>
 												Ver Rutina
 											</Button>

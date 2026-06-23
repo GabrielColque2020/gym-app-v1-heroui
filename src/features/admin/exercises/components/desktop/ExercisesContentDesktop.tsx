@@ -89,7 +89,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 				cell: ( exercise ) => <ExerciseRowActions exercise={ exercise }/>,
 				header: "Acciones",
 				id: "actions",
-				minWidth: 120,
+				minWidth: 180,
 			},
 		],
 		[],

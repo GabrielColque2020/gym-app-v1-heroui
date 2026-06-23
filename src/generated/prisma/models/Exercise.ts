@@ -232,6 +232,8 @@ export type ExerciseWhereInput = {
   coachId?: Prisma.StringNullableFilter<"Exercise"> | string | null
   routines?: Prisma.RoutineListRelationFilter
   exerciseProgress?: Prisma.ExerciseProgressListRelationFilter
+  variantExerciseProgress?: Prisma.ExerciseProgressListRelationFilter
+  variantIn?: Prisma.RoutineExerciseVariantListRelationFilter
   coach?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   StudentExercise?: Prisma.StudentExerciseListRelationFilter
 }
@@ -250,6 +252,8 @@ export type ExerciseOrderByWithRelationInput = {
   coachId?: Prisma.SortOrderInput | Prisma.SortOrder
   routines?: Prisma.RoutineOrderByRelationAggregateInput
   exerciseProgress?: Prisma.ExerciseProgressOrderByRelationAggregateInput
+  variantExerciseProgress?: Prisma.ExerciseProgressOrderByRelationAggregateInput
+  variantIn?: Prisma.RoutineExerciseVariantOrderByRelationAggregateInput
   coach?: Prisma.UserOrderByWithRelationInput
   StudentExercise?: Prisma.StudentExerciseOrderByRelationAggregateInput
 }
@@ -271,6 +275,8 @@ export type ExerciseWhereUniqueInput = Prisma.AtLeast<{
   coachId?: Prisma.StringNullableFilter<"Exercise"> | string | null
   routines?: Prisma.RoutineListRelationFilter
   exerciseProgress?: Prisma.ExerciseProgressListRelationFilter
+  variantExerciseProgress?: Prisma.ExerciseProgressListRelationFilter
+  variantIn?: Prisma.RoutineExerciseVariantListRelationFilter
   coach?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   StudentExercise?: Prisma.StudentExerciseListRelationFilter
 }, "id">
@@ -322,6 +328,8 @@ export type ExerciseCreateInput = {
   updatedAt?: Date | string
   routines?: Prisma.RoutineCreateNestedManyWithoutExerciseInput
   exerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantCreateNestedManyWithoutVariantExerciseInput
   coach?: Prisma.UserCreateNestedOneWithoutExerciseInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutExerciseInput
 }
@@ -340,6 +348,8 @@ export type ExerciseUncheckedCreateInput = {
   coachId?: string | null
   routines?: Prisma.RoutineUncheckedCreateNestedManyWithoutExerciseInput
   exerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedCreateNestedManyWithoutVariantExerciseInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutExerciseInput
 }
 
@@ -356,6 +366,8 @@ export type ExerciseUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   routines?: Prisma.RoutineUpdateManyWithoutExerciseNestedInput
   exerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUpdateManyWithoutVariantExerciseNestedInput
   coach?: Prisma.UserUpdateOneWithoutExerciseNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutExerciseNestedInput
 }
@@ -374,6 +386,8 @@ export type ExerciseUncheckedUpdateInput = {
   coachId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   routines?: Prisma.RoutineUncheckedUpdateManyWithoutExerciseNestedInput
   exerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedUpdateManyWithoutVariantExerciseNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutExerciseNestedInput
 }
 
@@ -552,10 +566,26 @@ export type ExerciseUpdateOneWithoutRoutinesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ExerciseUpdateToOneWithWhereWithoutRoutinesInput, Prisma.ExerciseUpdateWithoutRoutinesInput>, Prisma.ExerciseUncheckedUpdateWithoutRoutinesInput>
 }
 
+export type ExerciseCreateNestedOneWithoutVariantExerciseProgressInput = {
+  create?: Prisma.XOR<Prisma.ExerciseCreateWithoutVariantExerciseProgressInput, Prisma.ExerciseUncheckedCreateWithoutVariantExerciseProgressInput>
+  connectOrCreate?: Prisma.ExerciseCreateOrConnectWithoutVariantExerciseProgressInput
+  connect?: Prisma.ExerciseWhereUniqueInput
+}
+
 export type ExerciseCreateNestedOneWithoutExerciseProgressInput = {
   create?: Prisma.XOR<Prisma.ExerciseCreateWithoutExerciseProgressInput, Prisma.ExerciseUncheckedCreateWithoutExerciseProgressInput>
   connectOrCreate?: Prisma.ExerciseCreateOrConnectWithoutExerciseProgressInput
   connect?: Prisma.ExerciseWhereUniqueInput
+}
+
+export type ExerciseUpdateOneWithoutVariantExerciseProgressNestedInput = {
+  create?: Prisma.XOR<Prisma.ExerciseCreateWithoutVariantExerciseProgressInput, Prisma.ExerciseUncheckedCreateWithoutVariantExerciseProgressInput>
+  connectOrCreate?: Prisma.ExerciseCreateOrConnectWithoutVariantExerciseProgressInput
+  upsert?: Prisma.ExerciseUpsertWithoutVariantExerciseProgressInput
+  disconnect?: Prisma.ExerciseWhereInput | boolean
+  delete?: Prisma.ExerciseWhereInput | boolean
+  connect?: Prisma.ExerciseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ExerciseUpdateToOneWithWhereWithoutVariantExerciseProgressInput, Prisma.ExerciseUpdateWithoutVariantExerciseProgressInput>, Prisma.ExerciseUncheckedUpdateWithoutVariantExerciseProgressInput>
 }
 
 export type ExerciseUpdateOneWithoutExerciseProgressNestedInput = {
@@ -572,6 +602,20 @@ export type EnumBodyPartFieldUpdateOperationsInput = {
   set?: $Enums.BodyPart
 }
 
+export type ExerciseCreateNestedOneWithoutVariantInInput = {
+  create?: Prisma.XOR<Prisma.ExerciseCreateWithoutVariantInInput, Prisma.ExerciseUncheckedCreateWithoutVariantInInput>
+  connectOrCreate?: Prisma.ExerciseCreateOrConnectWithoutVariantInInput
+  connect?: Prisma.ExerciseWhereUniqueInput
+}
+
+export type ExerciseUpdateOneRequiredWithoutVariantInNestedInput = {
+  create?: Prisma.XOR<Prisma.ExerciseCreateWithoutVariantInInput, Prisma.ExerciseUncheckedCreateWithoutVariantInInput>
+  connectOrCreate?: Prisma.ExerciseCreateOrConnectWithoutVariantInInput
+  upsert?: Prisma.ExerciseUpsertWithoutVariantInInput
+  connect?: Prisma.ExerciseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ExerciseUpdateToOneWithWhereWithoutVariantInInput, Prisma.ExerciseUpdateWithoutVariantInInput>, Prisma.ExerciseUncheckedUpdateWithoutVariantInInput>
+}
+
 export type ExerciseCreateWithoutCoachInput = {
   id?: string
   name: string
@@ -585,6 +629,8 @@ export type ExerciseCreateWithoutCoachInput = {
   updatedAt?: Date | string
   routines?: Prisma.RoutineCreateNestedManyWithoutExerciseInput
   exerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantCreateNestedManyWithoutVariantExerciseInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutExerciseInput
 }
 
@@ -601,6 +647,8 @@ export type ExerciseUncheckedCreateWithoutCoachInput = {
   updatedAt?: Date | string
   routines?: Prisma.RoutineUncheckedCreateNestedManyWithoutExerciseInput
   exerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedCreateNestedManyWithoutVariantExerciseInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutExerciseInput
 }
 
@@ -660,6 +708,8 @@ export type ExerciseCreateWithoutStudentExerciseInput = {
   updatedAt?: Date | string
   routines?: Prisma.RoutineCreateNestedManyWithoutExerciseInput
   exerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantCreateNestedManyWithoutVariantExerciseInput
   coach?: Prisma.UserCreateNestedOneWithoutExerciseInput
 }
 
@@ -677,6 +727,8 @@ export type ExerciseUncheckedCreateWithoutStudentExerciseInput = {
   coachId?: string | null
   routines?: Prisma.RoutineUncheckedCreateNestedManyWithoutExerciseInput
   exerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedCreateNestedManyWithoutVariantExerciseInput
 }
 
 export type ExerciseCreateOrConnectWithoutStudentExerciseInput = {
@@ -708,6 +760,8 @@ export type ExerciseUpdateWithoutStudentExerciseInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   routines?: Prisma.RoutineUpdateManyWithoutExerciseNestedInput
   exerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUpdateManyWithoutVariantExerciseNestedInput
   coach?: Prisma.UserUpdateOneWithoutExerciseNestedInput
 }
 
@@ -725,6 +779,8 @@ export type ExerciseUncheckedUpdateWithoutStudentExerciseInput = {
   coachId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   routines?: Prisma.RoutineUncheckedUpdateManyWithoutExerciseNestedInput
   exerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedUpdateManyWithoutVariantExerciseNestedInput
 }
 
 export type ExerciseCreateWithoutRoutinesInput = {
@@ -739,6 +795,8 @@ export type ExerciseCreateWithoutRoutinesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   exerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantCreateNestedManyWithoutVariantExerciseInput
   coach?: Prisma.UserCreateNestedOneWithoutExerciseInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutExerciseInput
 }
@@ -756,6 +814,8 @@ export type ExerciseUncheckedCreateWithoutRoutinesInput = {
   updatedAt?: Date | string
   coachId?: string | null
   exerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedCreateNestedManyWithoutVariantExerciseInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutExerciseInput
 }
 
@@ -787,6 +847,8 @@ export type ExerciseUpdateWithoutRoutinesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUpdateManyWithoutVariantExerciseNestedInput
   coach?: Prisma.UserUpdateOneWithoutExerciseNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutExerciseNestedInput
 }
@@ -804,7 +866,50 @@ export type ExerciseUncheckedUpdateWithoutRoutinesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coachId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedUpdateManyWithoutVariantExerciseNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutExerciseNestedInput
+}
+
+export type ExerciseCreateWithoutVariantExerciseProgressInput = {
+  id?: string
+  name: string
+  searchName?: string | null
+  tips?: string | null
+  bodyPart: $Enums.BodyPart
+  imageUrl?: string | null
+  videoUrl?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  routines?: Prisma.RoutineCreateNestedManyWithoutExerciseInput
+  exerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantCreateNestedManyWithoutVariantExerciseInput
+  coach?: Prisma.UserCreateNestedOneWithoutExerciseInput
+  StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutExerciseInput
+}
+
+export type ExerciseUncheckedCreateWithoutVariantExerciseProgressInput = {
+  id?: string
+  name: string
+  searchName?: string | null
+  tips?: string | null
+  bodyPart: $Enums.BodyPart
+  imageUrl?: string | null
+  videoUrl?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  coachId?: string | null
+  routines?: Prisma.RoutineUncheckedCreateNestedManyWithoutExerciseInput
+  exerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedCreateNestedManyWithoutVariantExerciseInput
+  StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutExerciseInput
+}
+
+export type ExerciseCreateOrConnectWithoutVariantExerciseProgressInput = {
+  where: Prisma.ExerciseWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExerciseCreateWithoutVariantExerciseProgressInput, Prisma.ExerciseUncheckedCreateWithoutVariantExerciseProgressInput>
 }
 
 export type ExerciseCreateWithoutExerciseProgressInput = {
@@ -819,6 +924,8 @@ export type ExerciseCreateWithoutExerciseProgressInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   routines?: Prisma.RoutineCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantCreateNestedManyWithoutVariantExerciseInput
   coach?: Prisma.UserCreateNestedOneWithoutExerciseInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutExerciseInput
 }
@@ -836,12 +943,61 @@ export type ExerciseUncheckedCreateWithoutExerciseProgressInput = {
   updatedAt?: Date | string
   coachId?: string | null
   routines?: Prisma.RoutineUncheckedCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutVariantExerciseInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedCreateNestedManyWithoutVariantExerciseInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutExerciseInput
 }
 
 export type ExerciseCreateOrConnectWithoutExerciseProgressInput = {
   where: Prisma.ExerciseWhereUniqueInput
   create: Prisma.XOR<Prisma.ExerciseCreateWithoutExerciseProgressInput, Prisma.ExerciseUncheckedCreateWithoutExerciseProgressInput>
+}
+
+export type ExerciseUpsertWithoutVariantExerciseProgressInput = {
+  update: Prisma.XOR<Prisma.ExerciseUpdateWithoutVariantExerciseProgressInput, Prisma.ExerciseUncheckedUpdateWithoutVariantExerciseProgressInput>
+  create: Prisma.XOR<Prisma.ExerciseCreateWithoutVariantExerciseProgressInput, Prisma.ExerciseUncheckedCreateWithoutVariantExerciseProgressInput>
+  where?: Prisma.ExerciseWhereInput
+}
+
+export type ExerciseUpdateToOneWithWhereWithoutVariantExerciseProgressInput = {
+  where?: Prisma.ExerciseWhereInput
+  data: Prisma.XOR<Prisma.ExerciseUpdateWithoutVariantExerciseProgressInput, Prisma.ExerciseUncheckedUpdateWithoutVariantExerciseProgressInput>
+}
+
+export type ExerciseUpdateWithoutVariantExerciseProgressInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  searchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tips?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyPart?: Prisma.EnumBodyPartFieldUpdateOperationsInput | $Enums.BodyPart
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  routines?: Prisma.RoutineUpdateManyWithoutExerciseNestedInput
+  exerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUpdateManyWithoutVariantExerciseNestedInput
+  coach?: Prisma.UserUpdateOneWithoutExerciseNestedInput
+  StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutExerciseNestedInput
+}
+
+export type ExerciseUncheckedUpdateWithoutVariantExerciseProgressInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  searchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tips?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyPart?: Prisma.EnumBodyPartFieldUpdateOperationsInput | $Enums.BodyPart
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  coachId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routines?: Prisma.RoutineUncheckedUpdateManyWithoutExerciseNestedInput
+  exerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedUpdateManyWithoutVariantExerciseNestedInput
+  StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutExerciseNestedInput
 }
 
 export type ExerciseUpsertWithoutExerciseProgressInput = {
@@ -867,6 +1023,8 @@ export type ExerciseUpdateWithoutExerciseProgressInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   routines?: Prisma.RoutineUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUpdateManyWithoutVariantExerciseNestedInput
   coach?: Prisma.UserUpdateOneWithoutExerciseNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutExerciseNestedInput
 }
@@ -884,6 +1042,96 @@ export type ExerciseUncheckedUpdateWithoutExerciseProgressInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coachId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   routines?: Prisma.RoutineUncheckedUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedUpdateManyWithoutVariantExerciseNestedInput
+  StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutExerciseNestedInput
+}
+
+export type ExerciseCreateWithoutVariantInInput = {
+  id?: string
+  name: string
+  searchName?: string | null
+  tips?: string | null
+  bodyPart: $Enums.BodyPart
+  imageUrl?: string | null
+  videoUrl?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  routines?: Prisma.RoutineCreateNestedManyWithoutExerciseInput
+  exerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutVariantExerciseInput
+  coach?: Prisma.UserCreateNestedOneWithoutExerciseInput
+  StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutExerciseInput
+}
+
+export type ExerciseUncheckedCreateWithoutVariantInInput = {
+  id?: string
+  name: string
+  searchName?: string | null
+  tips?: string | null
+  bodyPart: $Enums.BodyPart
+  imageUrl?: string | null
+  videoUrl?: string | null
+  active?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  coachId?: string | null
+  routines?: Prisma.RoutineUncheckedCreateNestedManyWithoutExerciseInput
+  exerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutExerciseInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutVariantExerciseInput
+  StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutExerciseInput
+}
+
+export type ExerciseCreateOrConnectWithoutVariantInInput = {
+  where: Prisma.ExerciseWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExerciseCreateWithoutVariantInInput, Prisma.ExerciseUncheckedCreateWithoutVariantInInput>
+}
+
+export type ExerciseUpsertWithoutVariantInInput = {
+  update: Prisma.XOR<Prisma.ExerciseUpdateWithoutVariantInInput, Prisma.ExerciseUncheckedUpdateWithoutVariantInInput>
+  create: Prisma.XOR<Prisma.ExerciseCreateWithoutVariantInInput, Prisma.ExerciseUncheckedCreateWithoutVariantInInput>
+  where?: Prisma.ExerciseWhereInput
+}
+
+export type ExerciseUpdateToOneWithWhereWithoutVariantInInput = {
+  where?: Prisma.ExerciseWhereInput
+  data: Prisma.XOR<Prisma.ExerciseUpdateWithoutVariantInInput, Prisma.ExerciseUncheckedUpdateWithoutVariantInInput>
+}
+
+export type ExerciseUpdateWithoutVariantInInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  searchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tips?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyPart?: Prisma.EnumBodyPartFieldUpdateOperationsInput | $Enums.BodyPart
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  routines?: Prisma.RoutineUpdateManyWithoutExerciseNestedInput
+  exerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutVariantExerciseNestedInput
+  coach?: Prisma.UserUpdateOneWithoutExerciseNestedInput
+  StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutExerciseNestedInput
+}
+
+export type ExerciseUncheckedUpdateWithoutVariantInInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  searchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tips?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyPart?: Prisma.EnumBodyPartFieldUpdateOperationsInput | $Enums.BodyPart
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  coachId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routines?: Prisma.RoutineUncheckedUpdateManyWithoutExerciseNestedInput
+  exerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutVariantExerciseNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutExerciseNestedInput
 }
 
@@ -913,6 +1161,8 @@ export type ExerciseUpdateWithoutCoachInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   routines?: Prisma.RoutineUpdateManyWithoutExerciseNestedInput
   exerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUpdateManyWithoutVariantExerciseNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutExerciseNestedInput
 }
 
@@ -929,6 +1179,8 @@ export type ExerciseUncheckedUpdateWithoutCoachInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   routines?: Prisma.RoutineUncheckedUpdateManyWithoutExerciseNestedInput
   exerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutExerciseNestedInput
+  variantExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutVariantExerciseNestedInput
+  variantIn?: Prisma.RoutineExerciseVariantUncheckedUpdateManyWithoutVariantExerciseNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutExerciseNestedInput
 }
 
@@ -953,12 +1205,16 @@ export type ExerciseUncheckedUpdateManyWithoutCoachInput = {
 export type ExerciseCountOutputType = {
   routines: number
   exerciseProgress: number
+  variantExerciseProgress: number
+  variantIn: number
   StudentExercise: number
 }
 
 export type ExerciseCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   routines?: boolean | ExerciseCountOutputTypeCountRoutinesArgs
   exerciseProgress?: boolean | ExerciseCountOutputTypeCountExerciseProgressArgs
+  variantExerciseProgress?: boolean | ExerciseCountOutputTypeCountVariantExerciseProgressArgs
+  variantIn?: boolean | ExerciseCountOutputTypeCountVariantInArgs
   StudentExercise?: boolean | ExerciseCountOutputTypeCountStudentExerciseArgs
 }
 
@@ -989,6 +1245,20 @@ export type ExerciseCountOutputTypeCountExerciseProgressArgs<ExtArgs extends run
 /**
  * ExerciseCountOutputType without action
  */
+export type ExerciseCountOutputTypeCountVariantExerciseProgressArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExerciseProgressWhereInput
+}
+
+/**
+ * ExerciseCountOutputType without action
+ */
+export type ExerciseCountOutputTypeCountVariantInArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RoutineExerciseVariantWhereInput
+}
+
+/**
+ * ExerciseCountOutputType without action
+ */
 export type ExerciseCountOutputTypeCountStudentExerciseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.StudentExerciseWhereInput
 }
@@ -1008,6 +1278,8 @@ export type ExerciseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   coachId?: boolean
   routines?: boolean | Prisma.Exercise$routinesArgs<ExtArgs>
   exerciseProgress?: boolean | Prisma.Exercise$exerciseProgressArgs<ExtArgs>
+  variantExerciseProgress?: boolean | Prisma.Exercise$variantExerciseProgressArgs<ExtArgs>
+  variantIn?: boolean | Prisma.Exercise$variantInArgs<ExtArgs>
   coach?: boolean | Prisma.Exercise$coachArgs<ExtArgs>
   StudentExercise?: boolean | Prisma.Exercise$StudentExerciseArgs<ExtArgs>
   _count?: boolean | Prisma.ExerciseCountOutputTypeDefaultArgs<ExtArgs>
@@ -1061,6 +1333,8 @@ export type ExerciseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type ExerciseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   routines?: boolean | Prisma.Exercise$routinesArgs<ExtArgs>
   exerciseProgress?: boolean | Prisma.Exercise$exerciseProgressArgs<ExtArgs>
+  variantExerciseProgress?: boolean | Prisma.Exercise$variantExerciseProgressArgs<ExtArgs>
+  variantIn?: boolean | Prisma.Exercise$variantInArgs<ExtArgs>
   coach?: boolean | Prisma.Exercise$coachArgs<ExtArgs>
   StudentExercise?: boolean | Prisma.Exercise$StudentExerciseArgs<ExtArgs>
   _count?: boolean | Prisma.ExerciseCountOutputTypeDefaultArgs<ExtArgs>
@@ -1077,6 +1351,8 @@ export type $ExercisePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     routines: Prisma.$RoutinePayload<ExtArgs>[]
     exerciseProgress: Prisma.$ExerciseProgressPayload<ExtArgs>[]
+    variantExerciseProgress: Prisma.$ExerciseProgressPayload<ExtArgs>[]
+    variantIn: Prisma.$RoutineExerciseVariantPayload<ExtArgs>[]
     coach: Prisma.$UserPayload<ExtArgs> | null
     StudentExercise: Prisma.$StudentExercisePayload<ExtArgs>[]
   }
@@ -1488,6 +1764,8 @@ export interface Prisma__ExerciseClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   routines<T extends Prisma.Exercise$routinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Exercise$routinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoutinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   exerciseProgress<T extends Prisma.Exercise$exerciseProgressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Exercise$exerciseProgressArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExerciseProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  variantExerciseProgress<T extends Prisma.Exercise$variantExerciseProgressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Exercise$variantExerciseProgressArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExerciseProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  variantIn<T extends Prisma.Exercise$variantInArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Exercise$variantInArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoutineExerciseVariantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   coach<T extends Prisma.Exercise$coachArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Exercise$coachArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   StudentExercise<T extends Prisma.Exercise$StudentExerciseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Exercise$StudentExerciseArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentExercisePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1976,6 +2254,54 @@ export type Exercise$exerciseProgressArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.ExerciseProgressScalarFieldEnum | Prisma.ExerciseProgressScalarFieldEnum[]
+}
+
+/**
+ * Exercise.variantExerciseProgress
+ */
+export type Exercise$variantExerciseProgressArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExerciseProgress
+   */
+  select?: Prisma.ExerciseProgressSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExerciseProgress
+   */
+  omit?: Prisma.ExerciseProgressOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExerciseProgressInclude<ExtArgs> | null
+  where?: Prisma.ExerciseProgressWhereInput
+  orderBy?: Prisma.ExerciseProgressOrderByWithRelationInput | Prisma.ExerciseProgressOrderByWithRelationInput[]
+  cursor?: Prisma.ExerciseProgressWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExerciseProgressScalarFieldEnum | Prisma.ExerciseProgressScalarFieldEnum[]
+}
+
+/**
+ * Exercise.variantIn
+ */
+export type Exercise$variantInArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RoutineExerciseVariant
+   */
+  select?: Prisma.RoutineExerciseVariantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RoutineExerciseVariant
+   */
+  omit?: Prisma.RoutineExerciseVariantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RoutineExerciseVariantInclude<ExtArgs> | null
+  where?: Prisma.RoutineExerciseVariantWhereInput
+  orderBy?: Prisma.RoutineExerciseVariantOrderByWithRelationInput | Prisma.RoutineExerciseVariantOrderByWithRelationInput[]
+  cursor?: Prisma.RoutineExerciseVariantWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RoutineExerciseVariantScalarFieldEnum | Prisma.RoutineExerciseVariantScalarFieldEnum[]
 }
 
 /**

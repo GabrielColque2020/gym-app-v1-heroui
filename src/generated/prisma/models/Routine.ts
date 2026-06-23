@@ -249,6 +249,7 @@ export type RoutineWhereInput = {
   exerciseId?: Prisma.StringNullableFilter<"Routine"> | string | null
   routineDayId?: Prisma.StringNullableFilter<"Routine"> | string | null
   exercise?: Prisma.XOR<Prisma.ExerciseNullableScalarRelationFilter, Prisma.ExerciseWhereInput> | null
+  variants?: Prisma.RoutineExerciseVariantListRelationFilter
   RoutineDay?: Prisma.XOR<Prisma.RoutineDayNullableScalarRelationFilter, Prisma.RoutineDayWhereInput> | null
 }
 
@@ -263,6 +264,7 @@ export type RoutineOrderByWithRelationInput = {
   exerciseId?: Prisma.SortOrderInput | Prisma.SortOrder
   routineDayId?: Prisma.SortOrderInput | Prisma.SortOrder
   exercise?: Prisma.ExerciseOrderByWithRelationInput
+  variants?: Prisma.RoutineExerciseVariantOrderByRelationAggregateInput
   RoutineDay?: Prisma.RoutineDayOrderByWithRelationInput
 }
 
@@ -280,6 +282,7 @@ export type RoutineWhereUniqueInput = Prisma.AtLeast<{
   exerciseId?: Prisma.StringNullableFilter<"Routine"> | string | null
   routineDayId?: Prisma.StringNullableFilter<"Routine"> | string | null
   exercise?: Prisma.XOR<Prisma.ExerciseNullableScalarRelationFilter, Prisma.ExerciseWhereInput> | null
+  variants?: Prisma.RoutineExerciseVariantListRelationFilter
   RoutineDay?: Prisma.XOR<Prisma.RoutineDayNullableScalarRelationFilter, Prisma.RoutineDayWhereInput> | null
 }, "id">
 
@@ -324,6 +327,7 @@ export type RoutineCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   exercise?: Prisma.ExerciseCreateNestedOneWithoutRoutinesInput
+  variants?: Prisma.RoutineExerciseVariantCreateNestedManyWithoutRoutineInput
   RoutineDay?: Prisma.RoutineDayCreateNestedOneWithoutRoutinesInput
 }
 
@@ -337,6 +341,7 @@ export type RoutineUncheckedCreateInput = {
   updatedAt?: Date | string
   exerciseId?: string | null
   routineDayId?: string | null
+  variants?: Prisma.RoutineExerciseVariantUncheckedCreateNestedManyWithoutRoutineInput
 }
 
 export type RoutineUpdateInput = {
@@ -348,6 +353,7 @@ export type RoutineUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exercise?: Prisma.ExerciseUpdateOneWithoutRoutinesNestedInput
+  variants?: Prisma.RoutineExerciseVariantUpdateManyWithoutRoutineNestedInput
   RoutineDay?: Prisma.RoutineDayUpdateOneWithoutRoutinesNestedInput
 }
 
@@ -361,6 +367,7 @@ export type RoutineUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   routineDayId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variants?: Prisma.RoutineExerciseVariantUncheckedUpdateManyWithoutRoutineNestedInput
 }
 
 export type RoutineCreateManyInput = {
@@ -451,6 +458,11 @@ export type RoutineSumOrderByAggregateInput = {
   order?: Prisma.SortOrder
 }
 
+export type RoutineScalarRelationFilter = {
+  is?: Prisma.RoutineWhereInput
+  isNot?: Prisma.RoutineWhereInput
+}
+
 export type RoutineCreateNestedManyWithoutRoutineDayInput = {
   create?: Prisma.XOR<Prisma.RoutineCreateWithoutRoutineDayInput, Prisma.RoutineUncheckedCreateWithoutRoutineDayInput> | Prisma.RoutineCreateWithoutRoutineDayInput[] | Prisma.RoutineUncheckedCreateWithoutRoutineDayInput[]
   connectOrCreate?: Prisma.RoutineCreateOrConnectWithoutRoutineDayInput | Prisma.RoutineCreateOrConnectWithoutRoutineDayInput[]
@@ -535,6 +547,20 @@ export type RoutineUncheckedUpdateManyWithoutExerciseNestedInput = {
   deleteMany?: Prisma.RoutineScalarWhereInput | Prisma.RoutineScalarWhereInput[]
 }
 
+export type RoutineCreateNestedOneWithoutVariantsInput = {
+  create?: Prisma.XOR<Prisma.RoutineCreateWithoutVariantsInput, Prisma.RoutineUncheckedCreateWithoutVariantsInput>
+  connectOrCreate?: Prisma.RoutineCreateOrConnectWithoutVariantsInput
+  connect?: Prisma.RoutineWhereUniqueInput
+}
+
+export type RoutineUpdateOneRequiredWithoutVariantsNestedInput = {
+  create?: Prisma.XOR<Prisma.RoutineCreateWithoutVariantsInput, Prisma.RoutineUncheckedCreateWithoutVariantsInput>
+  connectOrCreate?: Prisma.RoutineCreateOrConnectWithoutVariantsInput
+  upsert?: Prisma.RoutineUpsertWithoutVariantsInput
+  connect?: Prisma.RoutineWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RoutineUpdateToOneWithWhereWithoutVariantsInput, Prisma.RoutineUpdateWithoutVariantsInput>, Prisma.RoutineUncheckedUpdateWithoutVariantsInput>
+}
+
 export type RoutineCreateWithoutRoutineDayInput = {
   id?: string
   observation?: string | null
@@ -544,6 +570,7 @@ export type RoutineCreateWithoutRoutineDayInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   exercise?: Prisma.ExerciseCreateNestedOneWithoutRoutinesInput
+  variants?: Prisma.RoutineExerciseVariantCreateNestedManyWithoutRoutineInput
 }
 
 export type RoutineUncheckedCreateWithoutRoutineDayInput = {
@@ -555,6 +582,7 @@ export type RoutineUncheckedCreateWithoutRoutineDayInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   exerciseId?: string | null
+  variants?: Prisma.RoutineExerciseVariantUncheckedCreateNestedManyWithoutRoutineInput
 }
 
 export type RoutineCreateOrConnectWithoutRoutineDayInput = {
@@ -606,6 +634,7 @@ export type RoutineCreateWithoutExerciseInput = {
   order: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  variants?: Prisma.RoutineExerciseVariantCreateNestedManyWithoutRoutineInput
   RoutineDay?: Prisma.RoutineDayCreateNestedOneWithoutRoutinesInput
 }
 
@@ -618,6 +647,7 @@ export type RoutineUncheckedCreateWithoutExerciseInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   routineDayId?: string | null
+  variants?: Prisma.RoutineExerciseVariantUncheckedCreateNestedManyWithoutRoutineInput
 }
 
 export type RoutineCreateOrConnectWithoutExerciseInput = {
@@ -646,6 +676,70 @@ export type RoutineUpdateManyWithWhereWithoutExerciseInput = {
   data: Prisma.XOR<Prisma.RoutineUpdateManyMutationInput, Prisma.RoutineUncheckedUpdateManyWithoutExerciseInput>
 }
 
+export type RoutineCreateWithoutVariantsInput = {
+  id?: string
+  observation?: string | null
+  reps: string
+  sets: string
+  order: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  exercise?: Prisma.ExerciseCreateNestedOneWithoutRoutinesInput
+  RoutineDay?: Prisma.RoutineDayCreateNestedOneWithoutRoutinesInput
+}
+
+export type RoutineUncheckedCreateWithoutVariantsInput = {
+  id?: string
+  observation?: string | null
+  reps: string
+  sets: string
+  order: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  exerciseId?: string | null
+  routineDayId?: string | null
+}
+
+export type RoutineCreateOrConnectWithoutVariantsInput = {
+  where: Prisma.RoutineWhereUniqueInput
+  create: Prisma.XOR<Prisma.RoutineCreateWithoutVariantsInput, Prisma.RoutineUncheckedCreateWithoutVariantsInput>
+}
+
+export type RoutineUpsertWithoutVariantsInput = {
+  update: Prisma.XOR<Prisma.RoutineUpdateWithoutVariantsInput, Prisma.RoutineUncheckedUpdateWithoutVariantsInput>
+  create: Prisma.XOR<Prisma.RoutineCreateWithoutVariantsInput, Prisma.RoutineUncheckedCreateWithoutVariantsInput>
+  where?: Prisma.RoutineWhereInput
+}
+
+export type RoutineUpdateToOneWithWhereWithoutVariantsInput = {
+  where?: Prisma.RoutineWhereInput
+  data: Prisma.XOR<Prisma.RoutineUpdateWithoutVariantsInput, Prisma.RoutineUncheckedUpdateWithoutVariantsInput>
+}
+
+export type RoutineUpdateWithoutVariantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  observation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reps?: Prisma.StringFieldUpdateOperationsInput | string
+  sets?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  exercise?: Prisma.ExerciseUpdateOneWithoutRoutinesNestedInput
+  RoutineDay?: Prisma.RoutineDayUpdateOneWithoutRoutinesNestedInput
+}
+
+export type RoutineUncheckedUpdateWithoutVariantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  observation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reps?: Prisma.StringFieldUpdateOperationsInput | string
+  sets?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  exerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routineDayId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
 export type RoutineCreateManyRoutineDayInput = {
   id?: string
   observation?: string | null
@@ -666,6 +760,7 @@ export type RoutineUpdateWithoutRoutineDayInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exercise?: Prisma.ExerciseUpdateOneWithoutRoutinesNestedInput
+  variants?: Prisma.RoutineExerciseVariantUpdateManyWithoutRoutineNestedInput
 }
 
 export type RoutineUncheckedUpdateWithoutRoutineDayInput = {
@@ -677,6 +772,7 @@ export type RoutineUncheckedUpdateWithoutRoutineDayInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   exerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variants?: Prisma.RoutineExerciseVariantUncheckedUpdateManyWithoutRoutineNestedInput
 }
 
 export type RoutineUncheckedUpdateManyWithoutRoutineDayInput = {
@@ -709,6 +805,7 @@ export type RoutineUpdateWithoutExerciseInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  variants?: Prisma.RoutineExerciseVariantUpdateManyWithoutRoutineNestedInput
   RoutineDay?: Prisma.RoutineDayUpdateOneWithoutRoutinesNestedInput
 }
 
@@ -721,6 +818,7 @@ export type RoutineUncheckedUpdateWithoutExerciseInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   routineDayId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variants?: Prisma.RoutineExerciseVariantUncheckedUpdateManyWithoutRoutineNestedInput
 }
 
 export type RoutineUncheckedUpdateManyWithoutExerciseInput = {
@@ -735,6 +833,35 @@ export type RoutineUncheckedUpdateManyWithoutExerciseInput = {
 }
 
 
+/**
+ * Count Type RoutineCountOutputType
+ */
+
+export type RoutineCountOutputType = {
+  variants: number
+}
+
+export type RoutineCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  variants?: boolean | RoutineCountOutputTypeCountVariantsArgs
+}
+
+/**
+ * RoutineCountOutputType without action
+ */
+export type RoutineCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RoutineCountOutputType
+   */
+  select?: Prisma.RoutineCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * RoutineCountOutputType without action
+ */
+export type RoutineCountOutputTypeCountVariantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RoutineExerciseVariantWhereInput
+}
+
 
 export type RoutineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -747,7 +874,9 @@ export type RoutineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   exerciseId?: boolean
   routineDayId?: boolean
   exercise?: boolean | Prisma.Routine$exerciseArgs<ExtArgs>
+  variants?: boolean | Prisma.Routine$variantsArgs<ExtArgs>
   RoutineDay?: boolean | Prisma.Routine$RoutineDayArgs<ExtArgs>
+  _count?: boolean | Prisma.RoutineCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["routine"]>
 
 export type RoutineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -793,7 +922,9 @@ export type RoutineSelectScalar = {
 export type RoutineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "observation" | "reps" | "sets" | "order" | "createdAt" | "updatedAt" | "exerciseId" | "routineDayId", ExtArgs["result"]["routine"]>
 export type RoutineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   exercise?: boolean | Prisma.Routine$exerciseArgs<ExtArgs>
+  variants?: boolean | Prisma.Routine$variantsArgs<ExtArgs>
   RoutineDay?: boolean | Prisma.Routine$RoutineDayArgs<ExtArgs>
+  _count?: boolean | Prisma.RoutineCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RoutineIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   exercise?: boolean | Prisma.Routine$exerciseArgs<ExtArgs>
@@ -808,6 +939,7 @@ export type $RoutinePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Routine"
   objects: {
     exercise: Prisma.$ExercisePayload<ExtArgs> | null
+    variants: Prisma.$RoutineExerciseVariantPayload<ExtArgs>[]
     RoutineDay: Prisma.$RoutineDayPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1215,6 +1347,7 @@ readonly fields: RoutineFieldRefs;
 export interface Prisma__RoutineClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   exercise<T extends Prisma.Routine$exerciseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Routine$exerciseArgs<ExtArgs>>): Prisma.Prisma__ExerciseClient<runtime.Types.Result.GetResult<Prisma.$ExercisePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  variants<T extends Prisma.Routine$variantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Routine$variantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoutineExerciseVariantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   RoutineDay<T extends Prisma.Routine$RoutineDayArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Routine$RoutineDayArgs<ExtArgs>>): Prisma.Prisma__RoutineDayClient<runtime.Types.Result.GetResult<Prisma.$RoutineDayPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1671,6 +1804,30 @@ export type Routine$exerciseArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.ExerciseInclude<ExtArgs> | null
   where?: Prisma.ExerciseWhereInput
+}
+
+/**
+ * Routine.variants
+ */
+export type Routine$variantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RoutineExerciseVariant
+   */
+  select?: Prisma.RoutineExerciseVariantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RoutineExerciseVariant
+   */
+  omit?: Prisma.RoutineExerciseVariantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RoutineExerciseVariantInclude<ExtArgs> | null
+  where?: Prisma.RoutineExerciseVariantWhereInput
+  orderBy?: Prisma.RoutineExerciseVariantOrderByWithRelationInput | Prisma.RoutineExerciseVariantOrderByWithRelationInput[]
+  cursor?: Prisma.RoutineExerciseVariantWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RoutineExerciseVariantScalarFieldEnum | Prisma.RoutineExerciseVariantScalarFieldEnum[]
 }
 
 /**

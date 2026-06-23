@@ -60,7 +60,8 @@ export const ModelName = {
   StudentExercise: 'StudentExercise',
   Routine: 'Routine',
   ExerciseProgress: 'ExerciseProgress',
-  Exercise: 'Exercise'
+  Exercise: 'Exercise',
+  RoutineExerciseVariant: 'RoutineExerciseVariant'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -198,6 +199,7 @@ export const ExerciseProgressScalarFieldEnum = {
   year: 'year',
   dayNumber: 'dayNumber',
   studentId: 'studentId',
+  variantExerciseId: 'variantExerciseId',
   exerciseId: 'exerciseId'
 } as const
 
@@ -219,6 +221,16 @@ export const ExerciseScalarFieldEnum = {
 } as const
 
 export type ExerciseScalarFieldEnum = (typeof ExerciseScalarFieldEnum)[keyof typeof ExerciseScalarFieldEnum]
+
+
+export const RoutineExerciseVariantScalarFieldEnum = {
+  id: 'id',
+  routineId: 'routineId',
+  variantExerciseId: 'variantExerciseId',
+  createdAt: 'createdAt'
+} as const
+
+export type RoutineExerciseVariantScalarFieldEnum = (typeof RoutineExerciseVariantScalarFieldEnum)[keyof typeof RoutineExerciseVariantScalarFieldEnum]
 
 
 export const SortOrder = {

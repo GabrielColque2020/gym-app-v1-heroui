@@ -1,53 +1,118 @@
 "use client";
 
-import React from 'react';
-import type { Exercise } from '../../types/routine.types';
-import { Button, Card, Checkbox, Input, Label, ScrollShadow, Spinner } from '@heroui/react';
+import { useEffect, useState } from "react";
+
+import type { EmblaCarouselType } from "embla-carousel";
+import type { Exercise } from "../../types/routine.types";
+import { ArrowLeft, ArrowRight, Calendar, ChartLine, FloppyDisk } from "@gravity-ui/icons";
+import { Button, Spinner, ScrollShadow, Card, Checkbox, Input, Label } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react";
+
 import { TipsCard } from "@/features/student/routine/components/shared";
-import { FloppyDisk } from '@gravity-ui/icons';
 import MobileExerciseCard from "@/features/student/routine/components/mobile/MobileExerciseCard";
 
 interface MobileRoutineViewProps {
 	exercises: Exercise[];
 	isPending: boolean;
+	latestProgressDate: Date | null;
+	routineStatusDescription: string;
 	onSave: () => void;
-	onSetUpdate: ( exerciseId: string, setId: string, updates: Partial<{ weight: number; reps: number; completed: boolean }> ) => void;
+	onSetUpdate: ( exerciseId: string, setId: string, updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }> ) => void;
+	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
+}
+
+// Formatea la ultima fecha registrada para mostrarla como referencia rapida.
+function formatDateLabel( date: Date | null ) {
+	if (!date) return "Sin sesion registrada";
+
+	return new Intl.DateTimeFormat( "es-AR", {
+		day: "numeric",
+		month: "long",
+		year: "numeric",
+	} ).format( date );
 }
 
 export default function MobileRoutineView( {
 											   exercises,
 											   isPending,
+											   latestProgressDate,
+											   routineStatusDescription,
 											   onSave,
-											   onSetUpdate
+											   onSetUpdate,
+											   onVariantChange,
 										   }: MobileRoutineViewProps ) {
+	const [ api, setApi ] = useState<EmblaCarouselType>();
+	const [ activeExerciseIndex, setActiveExerciseIndex ] = useState( 1 );
+
+	useEffect( () => {
+		if (!api) return;
+
+		const syncActiveIndex = () => {
+			setActiveExerciseIndex( api.selectedScrollSnap() + 1 );
+		};
+
+		syncActiveIndex();
+		api.on( "select", syncActiveIndex );
+		api.on( "reInit", syncActiveIndex );
+
+		return () => {
+			api.off( "select", syncActiveIndex );
+			api.off( "reInit", syncActiveIndex );
+		};
+	}, [ api ] );
+
 	return (
 		<div className={ "flex flex-col sm:hidden" }>
-			<Carousel opts={ { loop: true } }>
+			<div className={ "mb-4 grid gap-3" }>
+				<TipsCard tips={ exercises[ 0 ]?.notes }/>
+
+				<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
+					<Card.Content className={ "flex h-full items-start justify-center p-1" }>
+						<div className={ "flex items-center gap-3" }>
+							<div className={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }>
+								<ChartLine className={ "size-5" }/>
+							</div>
+
+							<div className={ "min-w-0" }>
+								<p className={ "text-sm font-semibold text-foreground" }>Resumen de la sesion</p>
+								<p className={ "text-sm text-muted" }>{ routineStatusDescription }</p>
+							</div>
+						</div>
+					</Card.Content>
+				</Card>
+
+				<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
+					<Card.Content className={ "flex h-full items-start justify-center p-1" }>
+						<div className={ "flex items-center gap-3" }>
+							<div className={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }>
+								<Calendar className={ "size-5" }/>
+							</div>
+
+							<div className={ "min-w-0" }>
+								<p className={ "text-sm font-semibold text-foreground" }>Ultima sesion completa</p>
+								<p className={ "text-sm text-muted" }>{ formatDateLabel( latestProgressDate ) }</p>
+							</div>
+						</div>
+					</Card.Content>
+				</Card>
+			</div>
+
+			<Carousel opts={ { loop: true } } setApi={ setApi }>
 				<Carousel.Content>
 					{ exercises.map( ( exercise ) => (
 						<Carousel.Item key={ exercise.id } className={ "px-2" }>
-							<div className={ "mb-4" }>
-								<TipsCard tips={ exercise.notes }/>
-
-							</div>
-							<MobileExerciseCard exercise={ exercise }>
-								<ScrollShadow className={ "h-75 pr-4" } size={ 80 }>
+							<MobileExerciseCard exercise={ exercise } onVariantChange={ onVariantChange }>
+								<ScrollShadow className={ "h-75 pr-4" } size={ 80 } visibility={ "none" }>
 									<div className={ "space-y-4" }>
 										{ exercise.sets.map( ( set ) => (
 											<Card key={ set.id } className={ "border border-accent-soft-hover" }>
 												<Card.Header>
 													<Card.Title>
-														<div className={ "flex justify-between items-center w-full mb-4" }>
+														<div className={ "mb-4 flex w-full items-center justify-between" }>
 															<span className={ "text-xl font-bold text-foreground" }>
 																Serie { set.setNumber }
 															</span>
-															<Checkbox
-																isSelected={ set.completed }
-																onChange={ ( isSelected ) =>
-																	onSetUpdate( exercise.id, set.id, { completed: isSelected } )
-																}
-															>
+															<Checkbox isDisabled isSelected={ set.completed }>
 																<Checkbox.Control className={ "border-2 border-accent" }>
 																	<Checkbox.Indicator/>
 																</Checkbox.Control>
@@ -55,37 +120,66 @@ export default function MobileRoutineView( {
 														</div>
 													</Card.Title>
 													<Card.Content>
-														<div className={ "grid grid-cols-2 gap-10 mb-2" }>
+														<div className={ "mb-2 grid grid-cols-2 gap-10" }>
 															<div className={ "flex flex-col space-y-2" }>
-																<Label className={ "text-muted text-sm ml-2" }>Reps</Label>
+																<Label className={ "ml-2 text-sm text-muted" }>Reps</Label>
 																<Input
 																	fullWidth
 																	placeholder={ "Reps" }
 																	type={ "number" }
-																	value={ set.currentReps?.toString() || '' }
-																	onChange={ ( e ) =>
-																		onSetUpdate( exercise.id, set.id, { reps: parseInt( e.target.value ) || 0 } )
-																	}
+																	value={ set.currentReps?.toString() || "" }
+																	onChange={ ( e ) => {
+																		const nextValue = e.target.value.trim() === "" ? null : Number.parseInt( e.target.value, 10 );
+
+																		onSetUpdate( exercise.id, set.id, {
+																			reps: Number.isNaN( nextValue ) ? null : nextValue,
+																		} );
+																	} }
 																/>
-																<span className={ "px-1 text-sm text-muted" }>
-																	{ set.previousReps } reps Anterior
-																</span>
+																{ set.previousReps === null && set.previousWeight === null ? (
+																	<span className={ "text-muted" }>Sin registro anterior</span>
+																) : (
+																	<span className={ "px-1 text-sm text-muted" }>
+																		{ `${ set.previousReps ?? 0 } reps Anterior` }
+																	</span>
+																) }
 															</div>
+
 															<div className={ "flex flex-col space-y-2" }>
-																<Label className={ "text-muted text-sm ml-2" }>Peso</Label>
+																<Label className={ "ml-2 text-sm text-muted" }>Peso</Label>
 																<Input
 																	fullWidth
 																	placeholder={ "Peso (Kg)" }
 																	type={ "number" }
-																	value={ set.currentWeight?.toString() || '' }
-																	onChange={ ( e ) =>
-																		onSetUpdate( exercise.id, set.id, { weight: parseInt( e.target.value ) || 0 } )
-																	}
+																	value={ set.currentWeight?.toString() || "" }
+																	onChange={ ( e ) => {
+																		const nextValue = e.target.value.trim() === "" ? null : Number.parseInt( e.target.value, 10 );
+
+																		onSetUpdate( exercise.id, set.id, {
+																			weight: Number.isNaN( nextValue ) ? null : nextValue,
+																		} );
+																	} }
 																/>
-																<span className={ "px-1 text-sm text-muted" }>
-																	{ set.previousWeight } Kg Anterior
-																</span>
+																{ set.previousReps === null && set.previousWeight === null ? (
+																	<span className={ "text-muted" }>Sin registro anterior</span>
+																) : (
+																	<span className={ "px-1 text-sm text-muted" }>
+																		{ `${ set.previousWeight ?? 0 } Kg Anterior` }
+																	</span>
+																) }
 															</div>
+														</div>
+
+														<div className={ "flex flex-col space-y-2" }>
+															<Label className={ "ml-2 text-sm text-muted" }>Notas</Label>
+															<Input
+																fullWidth
+																placeholder={ "Opcional" }
+																value={ set.notes ?? "" }
+																onChange={ ( e ) => {
+																	onSetUpdate( exercise.id, set.id, { notes: e.target.value } );
+																} }
+															/>
 														</div>
 													</Card.Content>
 												</Card.Header>
@@ -97,34 +191,41 @@ export default function MobileRoutineView( {
 						</Carousel.Item>
 					) ) }
 				</Carousel.Content>
-				<Carousel.Dots/>
 			</Carousel>
 
-			{ isPending ? (
+			<div className={ "flex items-center justify-between gap-3 px-2" }>
 				<Button
-					isPending
-					size={ "lg" }
-					className={ "font-semibold flex sm:hidden mt-4" }
-					fullWidth
+					className={ "bg-primary text-primary-foreground" }
+					onPress={ () => api?.scrollPrev() }
+					variant={ "secondary" }
 				>
-					{ ( { isPending } ) => (
-						<>
-							{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : null }
-							Guardando...
-						</>
-					) }
+					<ArrowLeft className={ "size-4" }/>
+					Anterior
 				</Button>
-			) : (
+
+				<p className={ "min-w-20 text-center text-sm font-semibold text-muted" }>
+					{ `${ activeExerciseIndex } / ${ exercises.length }` }
+				</p>
+
 				<Button
-					size={ "lg" }
-					className={ "font-semibold flex sm:hidden mt-4" }
-					fullWidth
-					onClick={ onSave }
+					className={ "bg-primary text-primary-foreground" }
+					onPress={ () => api?.scrollNext() }
+					variant={ "secondary" }
 				>
-					<FloppyDisk/>
-					Finalizar rutina
+					Siguiente
+					<ArrowRight className={ "size-4" }/>
 				</Button>
-			) }
+			</div>
+
+			<Button
+				className={ "mt-4 flex w-full font-semibold sm:hidden" }
+				fullWidth
+				size={ "lg" }
+				onPress={ onSave }
+			>
+				<FloppyDisk/>
+				Guardar progreso
+			</Button>
 		</div>
 	);
 }

@@ -3,7 +3,7 @@
 import type { DraftRoutineDayExercise } from "@/features/admin/routine/services/routine-day-editor";
 import type { DataGridColumn } from "@heroui-pro/react";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
 	Button,
 	Card,
@@ -15,8 +15,9 @@ import {
 	TextField,
 } from "@heroui/react";
 import { DataGrid } from "@heroui-pro/react";
-import { EllipsisVertical, TrashBin } from "@gravity-ui/icons";
+import { CircleLink, EllipsisVertical, TrashBin } from "@gravity-ui/icons";
 
+import { ExerciseVariantsSheet } from "@/features/admin/exercises/components/shared/ExerciseVariantsSheet";
 import { BODY_PART_OPTIONS } from "@/features/admin/exercises/services/exercise-form";
 
 type RoutineDayExerciseEditorProps = {
@@ -82,31 +83,56 @@ function EditableExerciseField( {
 }
 
 type RoutineExerciseActionsProps = {
+	exercise: DraftRoutineDayExercise[ "exercise" ];
 	exerciseName: string;
+	routineId: string | null;
 	onDelete: () => void;
 };
 
-function RoutineExerciseActions( { exerciseName, onDelete }: RoutineExerciseActionsProps ) {
+function RoutineExerciseActions( { exercise, exerciseName, routineId, onDelete }: RoutineExerciseActionsProps ) {
+	const [ isVariantsOpen, setIsVariantsOpen ] = useState( false );
+
 	return (
-		<Dropdown>
-			<Button
-				isIconOnly
-				aria-label={ `Opciones de ${ exerciseName }` }
-				className={ "size-8 shrink-0 text-foreground" }
-				variant={ "ghost" }
-			>
-				<EllipsisVertical className={ "size-4" }/>
-			</Button>
-			<Dropdown.Popover placement={ "bottom end" }>
-				<Dropdown.Menu onAction={ ( key ) => key === "delete" ? onDelete() : undefined }>
-					<Header>Opciones</Header>
-					<Dropdown.Item id={ "delete" } textValue={ "Eliminar" } variant={ "danger" }>
-						<TrashBin className={ "size-4 shrink-0 text-danger" }/>
-						<Label>Eliminar</Label>
-					</Dropdown.Item>
-				</Dropdown.Menu>
-			</Dropdown.Popover>
-		</Dropdown>
+		<>
+			<Dropdown>
+				<Button
+					isIconOnly
+					aria-label={ `Opciones de ${ exerciseName }` }
+					className={ "size-8 shrink-0 text-foreground" }
+					variant={ "ghost" }
+				>
+					<EllipsisVertical className={ "size-4" }/>
+				</Button>
+				<Dropdown.Popover placement={ "bottom end" }>
+					<Dropdown.Menu onAction={ ( key ) => {
+						if (key === "variants" && exercise && routineId) {
+							setIsVariantsOpen( true );
+						}
+
+						if (key === "delete") onDelete();
+					} }>
+						<Header>Opciones</Header>
+						<Dropdown.Item id={ "variants" } textValue={ "Variantes" } isDisabled={ !exercise || !routineId }>
+							<CircleLink className={ "size-4 shrink-0 text-accent" }/>
+							<Label className={ "text-accent" }>Variantes</Label>
+						</Dropdown.Item>
+						<Dropdown.Item id={ "delete" } textValue={ "Eliminar" } variant={ "danger" }>
+							<TrashBin className={ "size-4 shrink-0 text-danger" }/>
+							<Label>Eliminar</Label>
+						</Dropdown.Item>
+					</Dropdown.Menu>
+				</Dropdown.Popover>
+			</Dropdown>
+			{ exercise ? (
+				<ExerciseVariantsSheet
+					hideTrigger
+					exercise={ exercise }
+					routineId={ routineId }
+					isOpen={ isVariantsOpen }
+					onOpenChange={ setIsVariantsOpen }
+				/>
+			) : null }
+		</>
 	);
 }
 
@@ -207,7 +233,9 @@ export function RoutineDayExercisesDesktop( {
 			{
 				cell: ( routine ) => (
 					<RoutineExerciseActions
+						exercise={ routine.exercise }
 						exerciseName={ getExerciseName( routine ) }
+						routineId={ routine.id }
 						onDelete={ () => onDelete( routine.clientId ) }
 					/>
 				),
@@ -252,7 +280,9 @@ function RoutineExerciseMobileCard( {
 						<p className={ "truncate text-sm text-muted" }>{ formatBodyPartValue( routine.exercise?.bodyPart ) }</p>
 					</div>
 					<RoutineExerciseActions
+						exercise={ routine.exercise }
 						exerciseName={ exerciseName }
+						routineId={ routine.id }
 						onDelete={ () => onDelete( routine.clientId ) }
 					/>
 				</div>

@@ -67,3 +67,8 @@ export type ExerciseProgress = Prisma.ExerciseProgressModel
  * 
  */
 export type Exercise = Prisma.ExerciseModel
+/**
+ * Model RoutineExerciseVariant
+ * 
+ */
+export type RoutineExerciseVariant = Prisma.RoutineExerciseVariantModel

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { getAuthenticatedSession } from "@/features/auth/session";
 import RoutinePageContent from "@/features/student/routine/views/RoutinePageContent";
 
 export const metadata: Metadata = {
@@ -6,8 +8,21 @@ export const metadata: Metadata = {
 	description: "Detalles de la rutina de ejercicio",
 };
 
-export default function RoutinePage() {
+interface Props {
+	searchParams: Promise<{
+		routineDayId?: string;
+	}>;
+}
+
+export default async function StudentRoutinePage( { searchParams }: Props ) {
+	const resolvedSearchParams = await searchParams;
+	const session = await getAuthenticatedSession();
+	const routineDayId = resolvedSearchParams.routineDayId?.trim() || null;
+
 	return (
-		<RoutinePageContent/>
-	)
+		<RoutinePageContent
+			routineDayId={ routineDayId }
+			studentId={ session?.sub ?? null }
+		/>
+	);
 }

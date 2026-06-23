@@ -21,17 +21,33 @@ export async function getRoutineDayAction( { routineDayId, studentId }: GetRouti
 			include: {
 				routines: {
 					include: {
-						exercise: {
-							select: {
-								active: true,
-								bodyPart: true,
-								id: true,
-								imageUrl: true,
-								name: true,
-								videoUrl: true,
+						variants: {
+							include: {
+								variantExercise: {
+									select: {
+										active: true,
+										bodyPart: true,
+										id: true,
+										name: true,
+									},
+								},
+							},
+							orderBy: {
+								createdAt: "desc",
 							},
 						},
-					},
+						exercise: {
+									select: {
+										active: true,
+										bodyPart: true,
+										id: true,
+										imageUrl: true,
+										name: true,
+										tips: true,
+										videoUrl: true,
+									},
+								},
+							},
 					orderBy: {
 						order: "asc",
 					},

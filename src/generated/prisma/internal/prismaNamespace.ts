@@ -393,7 +393,8 @@ export const ModelName = {
   StudentExercise: 'StudentExercise',
   Routine: 'Routine',
   ExerciseProgress: 'ExerciseProgress',
-  Exercise: 'Exercise'
+  Exercise: 'Exercise',
+  RoutineExerciseVariant: 'RoutineExerciseVariant'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userLoginHistory" | "descriptionStudent" | "mealPlan" | "trainingRoutine" | "routineDay" | "studentExercise" | "routine" | "exerciseProgress" | "exercise"
+    modelProps: "user" | "userLoginHistory" | "descriptionStudent" | "mealPlan" | "trainingRoutine" | "routineDay" | "studentExercise" | "routine" | "exerciseProgress" | "exercise" | "routineExerciseVariant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1153,6 +1154,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RoutineExerciseVariant: {
+      payload: Prisma.$RoutineExerciseVariantPayload<ExtArgs>
+      fields: Prisma.RoutineExerciseVariantFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RoutineExerciseVariantFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RoutineExerciseVariantFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload>
+        }
+        findFirst: {
+          args: Prisma.RoutineExerciseVariantFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RoutineExerciseVariantFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload>
+        }
+        findMany: {
+          args: Prisma.RoutineExerciseVariantFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload>[]
+        }
+        create: {
+          args: Prisma.RoutineExerciseVariantCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload>
+        }
+        createMany: {
+          args: Prisma.RoutineExerciseVariantCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RoutineExerciseVariantCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload>[]
+        }
+        delete: {
+          args: Prisma.RoutineExerciseVariantDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload>
+        }
+        update: {
+          args: Prisma.RoutineExerciseVariantUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload>
+        }
+        deleteMany: {
+          args: Prisma.RoutineExerciseVariantDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RoutineExerciseVariantUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RoutineExerciseVariantUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload>[]
+        }
+        upsert: {
+          args: Prisma.RoutineExerciseVariantUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineExerciseVariantPayload>
+        }
+        aggregate: {
+          args: Prisma.RoutineExerciseVariantAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRoutineExerciseVariant>
+        }
+        groupBy: {
+          args: Prisma.RoutineExerciseVariantGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoutineExerciseVariantGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RoutineExerciseVariantCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoutineExerciseVariantCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1311,6 +1386,7 @@ export const ExerciseProgressScalarFieldEnum = {
   year: 'year',
   dayNumber: 'dayNumber',
   studentId: 'studentId',
+  variantExerciseId: 'variantExerciseId',
   exerciseId: 'exerciseId'
 } as const
 
@@ -1332,6 +1408,16 @@ export const ExerciseScalarFieldEnum = {
 } as const
 
 export type ExerciseScalarFieldEnum = (typeof ExerciseScalarFieldEnum)[keyof typeof ExerciseScalarFieldEnum]
+
+
+export const RoutineExerciseVariantScalarFieldEnum = {
+  id: 'id',
+  routineId: 'routineId',
+  variantExerciseId: 'variantExerciseId',
+  createdAt: 'createdAt'
+} as const
+
+export type RoutineExerciseVariantScalarFieldEnum = (typeof RoutineExerciseVariantScalarFieldEnum)[keyof typeof RoutineExerciseVariantScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1602,6 +1688,7 @@ export type GlobalOmitConfig = {
   routine?: Prisma.RoutineOmit
   exerciseProgress?: Prisma.ExerciseProgressOmit
   exercise?: Prisma.ExerciseOmit
+  routineExerciseVariant?: Prisma.RoutineExerciseVariantOmit
 }
 
 /* Types for Logging */

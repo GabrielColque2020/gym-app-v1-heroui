@@ -46,10 +46,10 @@ enum Role {
 }
 
 model User {
-	id       String  @id @default(uuid())
-	name     String
-	email    String  @unique
-	dni      Int     @unique
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  dni      Int     @unique
   password String
   gender   Gender?
 
@@ -63,27 +63,27 @@ model User {
   coach    User?   @relation("CoachStudents", fields: [coachId], references: [id])
   students User[]  @relation("CoachStudents")
 
-	DescriptionStudent DescriptionStudent?
-	MealPlan           MealPlan[]
-	TrainingRoutine    TrainingRoutine[]
-	ExerciseProgress   ExerciseProgress[]
-	Exercise           Exercise[]
-	StudentExercise    StudentExercise[]
-	loginHistory       UserLoginHistory[]
+  DescriptionStudent DescriptionStudent?
+  MealPlan           MealPlan[]
+  TrainingRoutine    TrainingRoutine[]
+  ExerciseProgress   ExerciseProgress[]
+  Exercise           Exercise[]
+  StudentExercise    StudentExercise[]
+  loginHistory       UserLoginHistory[]
 
-	@@index([email, active])
-	@@index([dni, active])
+  @@index([email, active])
+  @@index([dni, active])
 }
 
 model UserLoginHistory {
-	id        String   @id @default(uuid())
-	userId    String
-	user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-	ip        String?
-	userAgent String?
-	loggedAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ip        String?
+  userAgent String?
+  loggedAt  DateTime @default(now())
 
-	@@index([userId, loggedAt])
+  @@index([userId, loggedAt])
 }
 
 model DescriptionStudent {
@@ -161,10 +161,11 @@ model Routine {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  exercise     Exercise?   @relation(fields: [exerciseId], references: [id])
-  exerciseId   String?
-  RoutineDay   RoutineDay? @relation(fields: [routineDayId], references: [id], onDelete: Cascade)
-  routineDayId String?
+  exercise           Exercise?                @relation(fields: [exerciseId], references: [id])
+  exerciseId         String?
+  variants           RoutineExerciseVariant[]
+  RoutineDay         RoutineDay?              @relation(fields: [routineDayId], references: [id], onDelete: Cascade)
+  routineDayId       String?
 }
 
 model ExerciseProgress {
@@ -184,8 +185,14 @@ model ExerciseProgress {
   student   User?   @relation(fields: [studentId], references: [id])
   studentId String?
 
-  exercise   Exercise? @relation(fields: [exerciseId], references: [id])
+  variantExercise   Exercise? @relation("ExerciseProgressVariantExercise", fields: [variantExerciseId], references: [id], onDelete: Cascade)
+  variantExerciseId String?
+
+  exercise   Exercise? @relation("ExerciseProgressExercise", fields: [exerciseId], references: [id])
   exerciseId String?
+
+  @@index([studentId, variantExerciseId, date])
+  @@index([studentId, exerciseId, date])
 }
 
 model Exercise {
@@ -202,11 +209,30 @@ model Exercise {
 
   // Relations
   routines         Routine[]
-  exerciseProgress ExerciseProgress[]
+  exerciseProgress ExerciseProgress[] @relation("ExerciseProgressExercise")
+  variantExerciseProgress ExerciseProgress[] @relation("ExerciseProgressVariantExercise")
+  variantIn        RoutineExerciseVariant[] @relation("RoutineExerciseVariantVariantExercise")
 
   coachId         String?
   coach           User?             @relation(fields: [coachId], references: [id])
   StudentExercise StudentExercise[]
 
   @@index([searchName])
+}
+
+model RoutineExerciseVariant {
+  id String @id @default(uuid())
+
+  routine   Routine @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  routineId String
+
+  variantExercise   Exercise @relation("RoutineExerciseVariantVariantExercise", fields: [variantExerciseId], references: [id], onDelete: Cascade)
+  variantExerciseId String
+
+  createdAt DateTime @default(now())
+
+  @@unique([routineId, variantExerciseId])
+  @@index([routineId])
+  @@index([variantExerciseId])
+  @@map("routine_exercise_variants")
 }
