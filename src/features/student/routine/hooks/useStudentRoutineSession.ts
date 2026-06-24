@@ -21,6 +21,6 @@ export function useStudentRoutineSession( { routineDayId, studentId }: UseStuden
 		} ),
 		queryKey: studentRoutineSessionQueryKey( routineDayId ?? "", studentId ),
 		refetchOnWindowFocus: true,
-		staleTime: 30_000,
+		staleTime: 60_000,
 	} );
 }

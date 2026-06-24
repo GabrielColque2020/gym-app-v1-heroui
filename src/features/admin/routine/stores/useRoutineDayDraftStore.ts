@@ -36,6 +36,7 @@ type AddExerciseParams = {
 type RoutineDayDraftStoreState = {
 	hasHydrated: boolean;
 	drafts: Record<string, DayExercise[]>;
+	clearAllDrafts: () => void;
 	setDraft: ( routineDayId: string, draft: DayExercise[] ) => void;
 	hydrateDraftFromSource: ( routineDayId: string, routines: AdminRoutineDayExercise[] ) => void;
 	updateExercise: ( params: UpdateExerciseParams ) => void;
@@ -70,6 +71,12 @@ export const useRoutineDayDraftStore = create<RoutineDayDraftStoreState>()(
 
 			return {
 				...initialState,
+				clearAllDrafts: () => {
+					set( {
+						drafts: {},
+						hasHydrated: true,
+					} );
+				},
 				setDraft: ( routineDayId, draft ) => {
 					set( ( state ) => ( {
 						drafts: {

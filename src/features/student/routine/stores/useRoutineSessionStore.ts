@@ -25,6 +25,7 @@ type RoutineSessionStoreState = {
 	hasHydrated: boolean;
 	routinePagesByRoutineDayId: Record<string, RoutinePageStudent[]>;
 	trainingRoutineNameStore: Record<string, string>;
+	clearAll: () => void;
 	clearDraft: ( routineDayId: string ) => void;
 	existsRoutineByRoutineDayId: ( routineDayId: string ) => boolean;
 	getRoutinesByRoutineDayId: ( routineDayId: string ) => RoutinePageStudent[];
@@ -194,6 +195,14 @@ export const useRoutineSessionStore = create<RoutineSessionStoreState>()(
 			hasHydrated: false,
 			routinePagesByRoutineDayId: {},
 			trainingRoutineNameStore: {},
+			clearAll: () => {
+				set( {
+					drafts: {},
+					hasHydrated: true,
+					routinePagesByRoutineDayId: {},
+					trainingRoutineNameStore: {},
+				} );
+			},
 			clearDraft: ( routineDayId ) => {
 				set( ( state ) => {
 					const nextDrafts = { ...state.drafts };

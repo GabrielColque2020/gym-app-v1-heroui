@@ -12,7 +12,7 @@ import {
 	normalizeSearchName,
 } from "@/features/admin/exercises/services/exercise-form";
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 5;
 const SEARCH_DEBOUNCE_MS = 400;
 
 function useDebouncedValue<TValue>( value: TValue, delayMs: number ) {

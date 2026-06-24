@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { AUTH_SESSION_COOKIE_NAME, loginUser } from "@/features/login/services/login-service";
+import { AUTH_SESSION_COOKIE_NAME, AUTH_SESSION_TTL_SECONDS, loginUser } from "@/features/login/services/login-service";
 import prisma from "@/lib/prisma";
 import type { LoginErrorResponse, LoginRequest, LoginResponse } from "@/types/auth";
 
@@ -54,7 +54,7 @@ export async function POST( request: NextRequest ) {
 
 		response.cookies.set( {
 			httpOnly: true,
-			maxAge: 60 * 60 * 24 * 7,
+			maxAge: AUTH_SESSION_TTL_SECONDS,
 			name: AUTH_SESSION_COOKIE_NAME,
 			path: "/",
 			sameSite: "lax",

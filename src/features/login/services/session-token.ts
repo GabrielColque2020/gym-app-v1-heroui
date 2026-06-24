@@ -1,7 +1,7 @@
 import type { AuthenticatedUser } from "@/types/auth";
 
 export const AUTH_SESSION_COOKIE_NAME = "gym_app_session";
-export const AUTH_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
+export const AUTH_SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 Horas
 
 export function getSessionSecret() {
 	return process.env.AUTH_SESSION_SECRET

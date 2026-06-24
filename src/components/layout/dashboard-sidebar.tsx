@@ -168,7 +168,13 @@ function SidebarNavItem( {
 			<Sidebar.MenuIcon>
 				<Icon className={ "size-4" }/>
 			</Sidebar.MenuIcon>
-			<Sidebar.MenuLabel>{ item.label }</Sidebar.MenuLabel>
+			<Sidebar.MenuLabel
+				className={
+					"whitespace-normal break-words leading-snug [&_[data-slot=sidebar-menu-label-text]]:whitespace-normal [&_[data-slot=sidebar-menu-label-text]]:break-words [&_[data-slot=sidebar-menu-label-text]]:overflow-visible [&_[data-slot=sidebar-menu-label-text]]:text-clip"
+				}
+			>
+				{ item.label }
+			</Sidebar.MenuLabel>
 			{ item.children ? (
 				<Sidebar.MenuTrigger aria-label={ `Desplegar ${ item.label }` }>
 					<Sidebar.MenuIndicator/>
