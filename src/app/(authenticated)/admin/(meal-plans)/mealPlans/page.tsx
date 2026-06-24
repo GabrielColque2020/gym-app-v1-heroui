@@ -13,7 +13,7 @@ type Props = {
 	}>;
 };
 
-export default async function MealPlansPage( { searchParams }: Props ) {
+export default async function AdminMealPlansPage( { searchParams }: Props ) {
 	const resolvedSearchParams = await searchParams;
 	const studentId = resolvedSearchParams.studentId?.trim() || null;
 

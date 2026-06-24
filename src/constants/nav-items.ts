@@ -19,6 +19,7 @@ export type NavItem = {
 export const NAV_ITEMS: readonly NavItem[] = [
 	{ href: "/dashboard", icon: House, label: "Inicio" },
 	{ href: "/trainingRoutine", icon: Gear, label: "Rutina de Entrenamiento" },
+	{ href: "/mealPlans", icon: Gear, label: "Planes Alimenticios por Estudiantes" },
 	{ href: "/settings2", icon: Gear, label: "Historial de Ejercicios" },
 	{
 		children: [

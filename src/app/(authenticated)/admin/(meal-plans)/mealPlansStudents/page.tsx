@@ -7,6 +7,6 @@ export const metadata: Metadata = {
 	description: "Estudiantes con planes alimenticios",
 };
 
-export default function MealPlansStudentsPage() {
+export default function AdminMealPlansStudentsPage() {
 	return <AdminMealPlansStudentsPageContent/>;
 }
