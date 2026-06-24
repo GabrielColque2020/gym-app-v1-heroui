@@ -31,17 +31,22 @@ export function AdminEditRoutineSheet( {
 	return (
 		<>
 			<Button
+				variant={ "outline" }
 				className={ isMobile
-					? "bg-surface border border-accent/50 text-accent shadow-sm"
-					: "bg-accent-foreground border border-accent/50 text-accent shadow-sm"
+					? "bg-accent-foreground border border-accent/50 text-accent shadow-sm"
+					: "bg-surface border border-accent/50 text-accent shadow-sm"
 				}
-				variant={ "ghost" }
 				onPress={ () => setIsOpen( true ) }
 			>
 				<Pencil className={ "size-4" }/>
 				{ !isMobile && "Editar rutina" }
 			</Button>
-			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ setIsOpen }>
+			<FeatureSheetLayout
+				isOpen={ isOpen }
+				placement={ placement }
+				onOpenChange={ setIsOpen }
+				rightContentClassName={ "w-[42rem]" }
+			>
 				<AdminRoutineStructure
 					mode={ "edit" }
 					month={ month }

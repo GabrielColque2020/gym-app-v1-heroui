@@ -39,7 +39,9 @@ export function AdminCreateRoutineSheet( {
 			<FeatureSheetLayout
 				isOpen={ isOpen }
 				placement={ placement }
-				onOpenChange={ setIsOpen }>
+				onOpenChange={ setIsOpen }
+				rightContentClassName={ "w-[42rem]" }
+			>
 				<AdminRoutineStructure
 					mode={ "create" }
 					month={ month }

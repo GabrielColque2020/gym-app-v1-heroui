@@ -20,6 +20,7 @@ export function AdminCopyRoutineSheet( props: AdminCopyRoutineSheetContentProps 
 	return (
 		<FeatureSheetLayout
 			placement={ placement }
+			rightContentClassName={ "w-[42rem]" }
 			trigger={
 				<Button
 					variant={ "outline" }
