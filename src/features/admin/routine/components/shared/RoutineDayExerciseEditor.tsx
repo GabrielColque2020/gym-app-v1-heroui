@@ -48,15 +48,15 @@ function getExerciseName( routine: DraftRoutineDayExercise ) {
 }
 
 function EditableExerciseField( {
-	ariaLabel,
-	className,
-	inputClassName,
-	isMultiline = false,
-	label,
-	name,
-	onChange,
-	value,
-}: EditableExerciseFieldProps ) {
+									ariaLabel,
+									className,
+									inputClassName,
+									isMultiline = false,
+									label,
+									name,
+									onChange,
+									value,
+								}: EditableExerciseFieldProps ) {
 	return (
 		<TextField
 			aria-label={ ariaLabel }
@@ -137,9 +137,9 @@ function RoutineExerciseActions( { exercise, exerciseName, routineId, onDelete }
 }
 
 function OrderField( {
-	routine,
-	onUpdateField,
-}: {
+						 routine,
+						 onUpdateField,
+					 }: {
 	onUpdateField: RoutineDayExerciseEditorProps[ "onUpdateField" ];
 	routine: DraftRoutineDayExercise;
 } ) {
@@ -156,10 +156,10 @@ function OrderField( {
 }
 
 export function RoutineDayExercisesDesktop( {
-	onDelete,
-	onUpdateField,
-	routines,
-}: RoutineDayExerciseEditorProps ) {
+												onDelete,
+												onUpdateField,
+												routines,
+											}: RoutineDayExerciseEditorProps ) {
 	const columns = useMemo<DataGridColumn<DraftRoutineDayExercise>[]>(
 		() => [
 			{
@@ -261,10 +261,10 @@ export function RoutineDayExercisesDesktop( {
 }
 
 function RoutineExerciseMobileCard( {
-	routine,
-	onDelete,
-	onUpdateField,
-}: {
+										routine,
+										onDelete,
+										onUpdateField,
+									}: {
 	onDelete: RoutineDayExerciseEditorProps[ "onDelete" ];
 	onUpdateField: RoutineDayExerciseEditorProps[ "onUpdateField" ];
 	routine: DraftRoutineDayExercise;
@@ -327,10 +327,10 @@ function RoutineExerciseMobileCard( {
 }
 
 export function RoutineDayExercisesMobile( {
-	onDelete,
-	onUpdateField,
-	routines,
-}: RoutineDayExerciseEditorProps ) {
+											   onDelete,
+											   onUpdateField,
+											   routines,
+										   }: RoutineDayExerciseEditorProps ) {
 	return (
 		<div className={ "grid gap-3 md:hidden" }>
 			{ routines.map( ( routine ) => (

@@ -12,7 +12,7 @@ import {
 
 import { PageBreadcrumbs } from "@/components/common";
 import { AdminEditRoutineHeader } from "@/features/admin/routine/components/shared";
-import { AddExerciseSheet } from "@/features/admin/routine/components/shared/AddExerciseSheet";
+import { SearchAndCreateExerciseSheet } from "@/features/admin/routine/components/shared/SearchAndCreateExerciseSheet";
 import {
 	RoutineDayExercisesDesktop,
 	RoutineDayExercisesMobile,
@@ -175,7 +175,7 @@ function EditRoutineDayLoaded( {
 							{ draftRoutines.length } ejercicios en borrador
 						</p>
 					</div>
-					<AddExerciseSheet
+					<SearchAndCreateExerciseSheet
 						addedExerciseIds={ addedExerciseIds }
 						onAddExercise={ handleAddExercise }
 						suggestedOrder={ getSuggestedOrder() }

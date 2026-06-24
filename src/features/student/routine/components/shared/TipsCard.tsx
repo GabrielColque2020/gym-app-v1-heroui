@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Bulb } from "@gravity-ui/icons";
 import { Card } from "@heroui/react";
 
@@ -7,6 +5,7 @@ interface TipsCardProps {
 	tips?: string;
 }
 
+// Muestra el consejo del entrenador asociado a la rutina o al ejercicio.
 export default function TipsCard( {
 									  tips = "Mantén una buena técnica durante todo el ejercicio. Controla el movimiento y respira correctamente.",
 								  }: TipsCardProps ) {

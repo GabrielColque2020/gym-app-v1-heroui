@@ -26,6 +26,8 @@ import {
 	useExerciseVariants,
 	useSaveExerciseVariants,
 } from "@/features/admin/exercises/hooks/useExerciseVariants";
+import { FeatureSheetLayout } from "@/features/shared/components/FeatureSheetLayout";
+import { useResponsiveSheetPlacement } from "@/features/shared/hooks/useResponsiveSheetPlacement";
 
 type ExerciseVariantsTarget = {
 	active: boolean;
@@ -50,27 +52,6 @@ type DraftVariantItem = {
 	relationId: string | null;
 };
 
-// Decide la orientación del Sheet según el ancho disponible en pantalla.
-function useResponsiveSheetPlacement() {
-	const [ isDesktop, setIsDesktop ] = useState( false );
-
-	useEffect( () => {
-		if (typeof window === "undefined") return;
-
-		const mediaQuery = window.matchMedia( "(min-width: 768px)" );
-
-		const updatePlacement = () => {
-			setIsDesktop( mediaQuery.matches );
-		};
-
-		updatePlacement();
-		mediaQuery.addEventListener( "change", updatePlacement );
-
-		return () => mediaQuery.removeEventListener( "change", updatePlacement );
-	}, [] );
-
-	return isDesktop ? "right" : "bottom";
-}
 
 // Retrasa la actualización de un valor para evitar consultas en cada pulsación.
 function useDebouncedValue<TValue>( value: TValue, delayMs: number ) {
@@ -92,12 +73,12 @@ const EMPTY_ARRAY: never[] = [];
 
 // Renderiza el botón disparador que abre el panel de variantes.
 function ExerciseVariantsTrigger( {
-	exercise,
-	isDisabled,
-	onPress,
-	showLabel,
-	className,
-}: {
+									  exercise,
+									  isDisabled,
+									  onPress,
+									  showLabel,
+									  className,
+								  }: {
 	className?: string;
 	exercise: ExerciseVariantsTarget;
 	isDisabled?: boolean;
@@ -122,11 +103,11 @@ function ExerciseVariantsTrigger( {
 
 // Contiene el formulario y la lógica de edición de variantes dentro del Sheet.
 function ExerciseVariantsSheetContent( {
-	exercise,
-	routineId,
-	initialVariants,
-	onClose,
-}: {
+										   exercise,
+										   routineId,
+										   initialVariants,
+										   onClose,
+									   }: {
 	exercise: ExerciseVariantsTarget;
 	initialVariants: DraftVariantItem[];
 	routineId: string;
@@ -430,82 +411,74 @@ export function ExerciseVariantsSheet( props: ExerciseVariantsSheetProps ) {
 				/>
 			) }
 
-			<Sheet isDetached isOpen={ isOpen } placement={ placement } onOpenChange={ handleOpenChange }>
-				<Sheet.Backdrop variant={ "opaque" }>
-					<Sheet.Content className={ placement === "right" ? "w-105" : "w-full max-h-[90vh]" }>
-						<Sheet.Dialog className={ placement === "right" ? "h-full" : "flex min-h-0 flex-col" }>
-							{ placement === "bottom" ? <Sheet.Handle/> : null }
-							<Sheet.CloseTrigger/>
+			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ handleOpenChange }>
+				<Sheet.Header className={ "border-default-100 relative border-b pb-4" }>
+					<div className={ "flex gap-3" }>
+						<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
+							<CircleLink className={ "size-5" }/>
+						</div>
+						<div className={ "min-w-0" }>
+							<Sheet.Heading>{ props.exercise.name }</Sheet.Heading>
+							<Description className={ "mt-1 text-sm" }>
+								Gestiona las variantes asociadas y guarda la lista cuando termines de editar.
+							</Description>
+							<Chip className={ "mt-2" } color={ "accent" } size={ "sm" } variant={ "soft" }>
+								{ formatBodyPart( props.exercise.bodyPart ) }
+							</Chip>
+						</div>
+					</div>
+				</Sheet.Header>
 
-							<Sheet.Header className={ "border-default-100 relative border-b pb-4" }>
-								<div className={ "flex gap-3" }>
-									<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
-										<CircleLink className={ "size-5" }/>
-									</div>
-									<div className={ "min-w-0" }>
-										<Sheet.Heading>{ props.exercise.name }</Sheet.Heading>
-										<Description className={ "mt-1 text-sm" }>
-											Gestiona las variantes asociadas y guarda la lista cuando termines de editar.
-										</Description>
-										<Chip className={ "mt-2" } color={ "accent" } size={ "sm" } variant={ "soft" }>
-											{ formatBodyPart( props.exercise.bodyPart ) }
-										</Chip>
-									</div>
-								</div>
-							</Sheet.Header>
-
-							{ variantsQuery.isError ? (
-								<Sheet.Body className={ "min-h-0 flex-1 px-6 py-5" }>
-									<Alert className={ "border border-danger/20" } status={ "danger" }>
-										<Alert.Content>
-											<Alert.Title>Error al cargar variantes</Alert.Title>
-											<Alert.Description>{ variantsQuery.error.message }</Alert.Description>
-										</Alert.Content>
-									</Alert>
-								</Sheet.Body>
-							) : variantsQuery.isLoading ? (
-								<Sheet.Body className={ "min-h-0 flex-1 px-6 py-5" }>
-									<div className={ "flex min-h-56 flex-col items-center justify-center gap-3 text-center" }>
-										<Spinner size={ "lg" }/>
-										<div className={ "space-y-1" }>
-											<p className={ "text-base font-semibold text-foreground" }>Cargando variantes</p>
-											<p className={ "text-sm text-muted" }>Consultando las relaciones asociadas al ejercicio.</p>
-										</div>
-									</div>
-								</Sheet.Body>
-							) : !props.routineId ? (
-								<Sheet.Body className={ "min-h-0 flex-1 px-6 py-5" }>
-									<Alert className={ "border border-warning/20" } status={ "warning" }>
-										<Alert.Content>
-											<Alert.Title>Guarda la rutina primero</Alert.Title>
-											<Alert.Description>
-												Las variantes ahora se guardan por rutina. Necesitas guardar el ejercicio antes de poder asociarle variantes.
-											</Alert.Description>
-										</Alert.Content>
-									</Alert>
-								</Sheet.Body>
-							) : (
-								<ExerciseVariantsSheetContent
-									exercise={ props.exercise }
-									routineId={ props.routineId }
-									initialVariants={
-										( variantsQuery.data ?? EMPTY_ARRAY ).map( ( relation ) => ( {
-											exercise: {
-												active: relation.variantExercise.active,
-												bodyPart: relation.variantExercise.bodyPart,
-												id: relation.variantExercise.id,
-												name: relation.variantExercise.name,
-											},
-											relationId: relation.id,
-										} ) )
-									}
-									onClose={ () => setIsOpen( false ) }
-								/>
-							) }
-						</Sheet.Dialog>
-					</Sheet.Content>
-				</Sheet.Backdrop>
-			</Sheet>
+				{ variantsQuery.isError ? (
+					<Sheet.Body className={ "min-h-0 flex-1 px-6 py-5" }>
+						<Alert className={ "border border-danger/20" } status={ "danger" }>
+							<Alert.Content>
+								<Alert.Title>Error al cargar variantes</Alert.Title>
+								<Alert.Description>{ variantsQuery.error.message }</Alert.Description>
+							</Alert.Content>
+						</Alert>
+					</Sheet.Body>
+				) : variantsQuery.isLoading ? (
+					<Sheet.Body className={ "min-h-0 flex-1 px-6 py-5" }>
+						<div className={ "flex min-h-56 flex-col items-center justify-center gap-3 text-center" }>
+							<Spinner size={ "lg" }/>
+							<div className={ "space-y-1" }>
+								<p className={ "text-base font-semibold text-foreground" }>Cargando variantes</p>
+								<p className={ "text-sm text-muted" }>Consultando las relaciones asociadas al ejercicio.</p>
+							</div>
+						</div>
+					</Sheet.Body>
+				) : !props.routineId ? (
+					<Sheet.Body className={ "min-h-0 flex-1 px-6 py-5" }>
+						<Alert className={ "border border-warning/20" } status={ "warning" }>
+							<Alert.Content>
+								<Alert.Title>Guarda la rutina primero</Alert.Title>
+								<Alert.Description>
+									Las variantes ahora se guardan por rutina. Necesitas guardar el ejercicio antes de poder asociarle variantes.
+								</Alert.Description>
+							</Alert.Content>
+						</Alert>
+					</Sheet.Body>
+				) : (
+					<ExerciseVariantsSheetContent
+						exercise={ props.exercise }
+						routineId={ props.routineId }
+						initialVariants={
+							( variantsQuery.data ?? EMPTY_ARRAY ).map( ( relation ) => ( {
+								exercise: {
+									active: relation.variantExercise.active,
+									bodyPart: relation.variantExercise.bodyPart,
+									id: relation.variantExercise.id,
+									name: relation.variantExercise.name,
+								},
+								relationId: relation.id,
+							} ) )
+						}
+						onClose={ () => setIsOpen( false ) }
+					/>
+				) }
+			</FeatureSheetLayout>
 		</>
 	);
 }
+

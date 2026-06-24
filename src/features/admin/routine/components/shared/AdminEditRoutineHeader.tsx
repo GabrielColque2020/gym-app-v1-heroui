@@ -2,7 +2,6 @@ import { FloppyDisk } from "@gravity-ui/icons";
 import { Button, Spinner } from "@heroui/react";
 
 import { PageHeader } from "@/components/common";
-import React from "react";
 
 type AdminEditRoutineHeaderProps = {
 	description: string;
@@ -12,6 +11,7 @@ type AdminEditRoutineHeaderProps = {
 	title: string;
 };
 
+// Muestra el encabezado de edicion de rutina con su accion de guardado.
 export function AdminEditRoutineHeader( {
 											description,
 											isSaveDisabled = false,

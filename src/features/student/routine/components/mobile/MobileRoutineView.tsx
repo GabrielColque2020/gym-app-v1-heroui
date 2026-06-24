@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import type { EmblaCarouselType } from "embla-carousel";
 import type { Exercise } from "../../types/routine.types";
 import { ArrowLeft, ArrowRight, Calendar, ChartLine, FloppyDisk } from "@gravity-ui/icons";
-import { Button, Spinner, ScrollShadow, Card, Checkbox, Input, Label } from "@heroui/react";
+import { Button, ScrollShadow, Card, Checkbox, Input, Label } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react";
 
 import { TipsCard } from "@/features/student/routine/components/shared";
@@ -193,7 +193,7 @@ export default function MobileRoutineView( {
 				</Carousel.Content>
 			</Carousel>
 
-			<div className={ "flex items-center justify-between gap-3 px-2" }>
+			<div className={ "flex items-center justify-between gap-3 px-2 pt-4" }>
 				<Button
 					className={ "bg-primary text-primary-foreground" }
 					onPress={ () => api?.scrollPrev() }
@@ -220,6 +220,7 @@ export default function MobileRoutineView( {
 			<Button
 				className={ "mt-4 flex w-full font-semibold sm:hidden" }
 				fullWidth
+				isPending={ isPending }
 				size={ "lg" }
 				onPress={ onSave }
 			>

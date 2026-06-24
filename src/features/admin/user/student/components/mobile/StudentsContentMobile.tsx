@@ -17,7 +17,7 @@ import { useState } from "react";
 
 import { ListPagination } from "@/components/common";
 import { StudentFilters } from "@/features/admin/user/student/components/shared/StudentFilters";
-import { StudentFormSheet } from "@/features/admin/user/student/components/shared/StudentFormSheet";
+import { StudentSheet } from "@/features/admin/user/student/components/shared/StudentSheet";
 import { useStudentList } from "@/features/admin/user/student/hooks/useStudentList";
 import { useStudentStatusAction } from "@/features/admin/user/student/hooks/useStudentStatusAction";
 
@@ -102,7 +102,7 @@ function StudentMobileCard( { student }: { student: StudentListItem } ) {
 				</div>
 			</Card.Content>
 
-			<StudentFormSheet
+			<StudentSheet
 				hideTrigger
 				isOpen={ isEditOpen }
 				mode={ "edit" }

@@ -1,14 +1,14 @@
 "use client";
 
 import { Alert, Card, Spinner } from "@heroui/react";
-import React from "react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { StudentsContentDesktop } from "@/features/admin/user/student/components/desktop/StudentsContentDesktop";
 import { StudentsContentMobile } from "@/features/admin/user/student/components/mobile/StudentsContentMobile";
-import { StudentFormSheet } from "@/features/admin/user/student/components/shared/StudentFormSheet";
+import { StudentSheet } from "@/features/admin/user/student/components/shared/StudentSheet";
 import { useStudents } from "@/features/admin/user/student/hooks/useStudents";
 
+// Renderiza el listado administrativo de estudiantes y sus estados de carga.
 export default function AdminStudentsPageContent() {
 	const { data: students = [], error, isError, isLoading } = useStudents();
 	const breadcrumbs = [
@@ -69,14 +69,14 @@ export default function AdminStudentsPageContent() {
 						title={ "Estudiantes" }
 					/>
 					<div className={ "w-full md:hidden" }>
-						<StudentFormSheet
+						<StudentSheet
 							mode={ "create" }
 							placement={ "bottom" }
 							triggerClassName={ "w-full bg-accent text-accent-foreground" }
 						/>
 					</div>
 					<div className={ "hidden md:block" }>
-						<StudentFormSheet
+						<StudentSheet
 							mode={ "create" }
 							placement={ "right" }
 							triggerClassName={ "bg-accent text-accent-foreground" }

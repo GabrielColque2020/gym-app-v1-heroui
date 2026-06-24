@@ -1,13 +1,13 @@
 "use client";
 
 import { Alert, Card, Spinner } from "@heroui/react";
-import React from "react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { TrainingRoutinesStudentsContentDesktop } from "@/features/admin/trainingRoutinesStudents/components/desktop/TrainingRoutinesStudentsContentDesktop";
 import { TrainingRoutinesStudentsContentMobile } from "@/features/admin/trainingRoutinesStudents/components/mobile/TrainingRoutinesStudentsContentMobile";
 import { useTrainingRoutinesStudents } from "@/features/admin/trainingRoutinesStudents/hooks/useTrainingRoutinesStudents";
 
+// Renderiza la seleccion de estudiantes para consultar sus rutinas asignadas.
 export default function AdminTrainingRoutinesStudentsPageContent() {
 	const { data: students = [], error, isError, isLoading } = useTrainingRoutinesStudents();
 	const breadcrumbs = [

@@ -17,7 +17,7 @@ import { useState } from "react";
 
 import { ListPagination } from "@/components/common";
 import { ExerciseFilters } from "@/features/admin/exercises/components/shared/ExerciseFilters";
-import { ExerciseFormSheet } from "@/features/admin/exercises/components/shared/ExerciseFormSheet";
+import { ExerciseSheet } from "@/features/admin/exercises/components/shared/ExerciseSheet";
 import { useExerciseList } from "@/features/admin/exercises/hooks/useExerciseList";
 import { useExerciseStatusAction } from "@/features/admin/exercises/hooks/useExerciseStatusAction";
 import { formatBodyPart } from "@/features/admin/exercises/services/exercise-form";
@@ -127,7 +127,7 @@ function ExerciseMobileCard( { exercise }: { exercise: ExerciseListItem } ) {
 				</div>
 			</Card.Content>
 
-			<ExerciseFormSheet
+			<ExerciseSheet
 				hideTrigger
 				exercise={ exercise }
 				isOpen={ isEditOpen }

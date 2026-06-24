@@ -3,12 +3,12 @@
 import { Alert, Card, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
-import { ExerciseFormSheet } from "@/features/admin/exercises/components/shared/ExerciseFormSheet";
+import { ExerciseSheet } from "@/features/admin/exercises/components/shared/ExerciseSheet";
 import { ExercisesContentDesktop } from "@/features/admin/exercises/components/desktop/ExercisesContentDesktop";
 import { useExercises } from "@/features/admin/exercises/hooks/useExercises";
-import React from "react";
 import { ExercisesContentMobile } from "@/features/admin/exercises/components/mobile/ExercisesContentMobile";
 
+// Renderiza el listado administrativo de ejercicios y sus estados de carga.
 export default function AdminExercisesPageContent() {
 	const { data: exercises = [], error, isError, isLoading } = useExercises();
 	const breadcrumbs = [
@@ -69,14 +69,14 @@ export default function AdminExercisesPageContent() {
 						description={ "Listado administrativo con estado, grupo muscular y fecha de alta." }
 					/>
 					<div className={ "w-full md:hidden" }>
-						<ExerciseFormSheet
+						<ExerciseSheet
 							mode={ "create" }
 							placement={ "bottom" }
 							triggerClassName={ "w-full bg-accent text-accent-foreground" }
 						/>
 					</div>
 					<div className={ "hidden md:block" }>
-						<ExerciseFormSheet
+						<ExerciseSheet
 							mode={ "create" }
 							placement={ "right" }
 							triggerClassName={ "bg-accent text-accent-foreground" }

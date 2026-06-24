@@ -2,7 +2,6 @@ import type { AdminRoutineDayDetail } from "@/features/admin/routine/actions/get
 import { formatBodyPart } from "@/features/admin/exercises/services/exercise-form";
 import type {
 	ExerciseProgressRoutine,
-	ExerciseProgressRoutineOld,
 	RoutinePageStudent,
 	ExerciseSessionHistory,
 	ExerciseSessionHistorySet,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { AdminTrainingRoutine } from "@/features/admin/trainingRoutine/actions/get-training-routines-by-student";
 
 import { CheckboxButtonGroup } from "@heroui-pro/react";
@@ -32,7 +32,7 @@ import {
 	useUpdateTrainingRoutineStructure,
 } from "@/features/admin/trainingRoutine/hooks/useTrainingRoutineStructure";
 
-type AdminRoutineStructureSheetContentProps = {
+type AdminRoutineStructureProps = {
 	mode: "create" | "edit";
 	month: number;
 	onSaved: () => void;
@@ -41,14 +41,15 @@ type AdminRoutineStructureSheetContentProps = {
 	year: number;
 };
 
-export function AdminRoutineStructureSheetContent( {
-													   mode,
-													   month,
-													   onSaved,
-													   routines = [],
-													   studentId,
-													   year,
-												   }: AdminRoutineStructureSheetContentProps ) {
+// Renderiza el formulario para crear o editar la estructura semanal de una rutina.
+export function AdminRoutineStructure( {
+										   mode,
+										   month,
+										   onSaved,
+										   routines = [],
+										   studentId,
+										   year,
+									   }: AdminRoutineStructureProps ) {
 	const [ selectedWeeks, setSelectedWeeks ] = useState<string[]>( () =>
 		mode === "edit" ? buildSelectedWeeks( routines ) : []
 	);
@@ -76,14 +77,17 @@ export function AdminRoutineStructureSheetContent( {
 		: "Activa o desactiva semanas y dias sin modificar ejercicios desde la pantalla principal.";
 	const Icon = mode === "create" ? Plus : Pencil;
 
+	// Actualiza las semanas seleccionadas manteniendo el orden numerico.
 	function handleWeeksChange( value: string[] ) {
 		setSelectedWeeks( [ ...value ].sort( ( a, b ) => Number( a ) - Number( b ) ) );
 	}
 
+	// Actualiza los dias seleccionados manteniendo el orden numerico.
 	function handleDaysChange( value: string[] ) {
 		setSelectedDays( [ ...value ].sort( ( a, b ) => Number( a ) - Number( b ) ) );
 	}
 
+	// Persiste la estructura de rutina segun el modo activo.
 	async function handleSave() {
 		if (isSubmitDisabled) return;
 

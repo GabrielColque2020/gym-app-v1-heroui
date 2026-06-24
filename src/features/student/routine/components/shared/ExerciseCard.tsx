@@ -1,14 +1,14 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Card, Chip } from '@heroui/react';
 import type { Exercise } from '../../types/routine.types';
 import { ArrowRightArrowLeft } from "@gravity-ui/icons";
 
 interface ExerciseCardProps {
 	exercise: Exercise;
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
-
+// Renderiza una tarjeta base de ejercicio con historial resumido.
 export default function ExerciseCard( { exercise, children }: ExerciseCardProps ) {
 	return (
 		<>
@@ -34,7 +34,7 @@ export default function ExerciseCard( { exercise, children }: ExerciseCardProps 
 								) ) }
 							</div>
 							<div className={ "flex  mt-2" }>
-								{/*// agregar boton para cambiar ejercicio*/ }
+								{ /* agregar boton para cambiar ejercicio */ }
 							</div>
 						</div>
 

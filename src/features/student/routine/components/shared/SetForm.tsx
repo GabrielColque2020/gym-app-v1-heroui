@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ExerciseSet } from '../../types/routine.types';
 import { Input, Label } from '@heroui/react';
 
@@ -10,12 +9,11 @@ interface SetFormProps {
 	onCompleteChange: ( setId: string, completed: boolean ) => void;
 }
 
+// Renderiza los inputs de repeticiones para una serie de ejercicio.
 export default function SetForm( {
 									 set,
 									 showLabels = false,
-									 onWeightChange,
 									 onRepsChange,
-									 onCompleteChange
 								 }: SetFormProps ) {
 	return (
 		<div className={ `${ showLabels ? 'flex flex-col space-y-2' : 'flex items-center justify-center' }` }>

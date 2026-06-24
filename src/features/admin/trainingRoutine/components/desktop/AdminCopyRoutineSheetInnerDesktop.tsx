@@ -100,7 +100,6 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 
 	return (
 		<>
-			<Sheet.CloseTrigger className={ "absolute inset-e-4 top-4 z-10" }/>
 			<Sheet.Header className={ "border-default-100 relative border-b px-4 pb-3 pt-3 sm:px-6 sm:pb-5 sm:pt-5" }>
 				<div className={ "flex min-w-0 items-start gap-3 pe-10" }>
 					<div className={ "flex size-9 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent sm:size-10" }>

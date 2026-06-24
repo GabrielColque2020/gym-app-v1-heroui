@@ -8,17 +8,10 @@ import { Button, Card } from "@heroui/react";
 import { Magnifier } from "@gravity-ui/icons";
 
 import { FilterSelect, PageHeader } from "@/components/common";
-import { AdminDeleteRoutineAction } from "@/features/admin/trainingRoutine/components/shared/AdminDeleteRoutineAction";
-import {
-	AdminCopyRoutineSheetDesktop,
-	AdminCreateRoutineSheetDesktop,
-	AdminEditRoutineStructureSheetDesktop,
-} from "@/features/admin/trainingRoutine/components/desktop";
-import {
-	AdminCopyRoutineSheetMobile,
-	AdminCreateRoutineSheetMobile,
-	AdminEditRoutineStructureSheetMobile,
-} from "@/features/admin/trainingRoutine/components/mobile";
+import { AdminDeleteRoutineSheet } from "@/features/admin/trainingRoutine/components/shared/AdminDeleteRoutineSheet";
+import { AdminCreateRoutineSheet } from "@/features/admin/trainingRoutine/components/shared/AdminCreateRoutineSheet";
+import { AdminCopyRoutineSheet } from "@/features/admin/trainingRoutine/components/shared/AdminCopyRoutineSheet";
+import { AdminEditRoutineSheet } from "@/features/admin/trainingRoutine/components/shared/AdminEditRoutineSheet";
 
 type AdminTrainingRoutineFilterProps = {
 	month: number;
@@ -119,61 +112,29 @@ export function AdminTrainingRoutineFilter( {
 					</Button>
 
 					{ routineCount === 0 ? (
-						<>
-							<div className={ "hidden md:flex" }>
-								<AdminCreateRoutineSheetDesktop
-									month={ Number( selectedMonth ) }
-									studentId={ studentId }
-									year={ Number( selectedYear ) }
-								/>
-							</div>
-							<div className={ "flex md:hidden" }>
-								<AdminCreateRoutineSheetMobile
-									month={ Number( selectedMonth ) }
-									studentId={ studentId }
-									year={ Number( selectedYear ) }
-								/>
-							</div>
-						</>
+						<AdminCreateRoutineSheet
+							month={ Number( selectedMonth ) }
+							studentId={ studentId }
+							year={ Number( selectedYear ) }
+						/>
 					) : (
 						<>
-							<div className={ "hidden md:flex" }>
-								<AdminEditRoutineStructureSheetDesktop
-									month={ Number( selectedMonth ) }
-									routines={ routines }
-									studentId={ studentId }
-									year={ Number( selectedYear ) }
-								/>
-							</div>
-							<div className={ "flex md:hidden" }>
-								<AdminEditRoutineStructureSheetMobile
-									month={ Number( selectedMonth ) }
-									routines={ routines }
-									studentId={ studentId }
-									year={ Number( selectedYear ) }
-								/>
-							</div>
+							<AdminEditRoutineSheet
+								month={ Number( selectedMonth ) }
+								routines={ routines }
+								studentId={ studentId }
+								year={ Number( selectedYear ) }
+							/>
 
-							<div className={ "hidden md:flex" }>
-								<AdminCopyRoutineSheetDesktop
-									destinationMonth={ selectedMonth }
-									destinationWeeksOccupied={ routineCount }
-									destinationYear={ selectedYear }
-									hasActiveRoutine
-									studentId={ studentId }
-								/>
-							</div>
-							<div className={ "flex md:hidden" }>
-								<AdminCopyRoutineSheetMobile
-									destinationMonth={ selectedMonth }
-									destinationWeeksOccupied={ routineCount }
-									destinationYear={ selectedYear }
-									hasActiveRoutine
-									studentId={ studentId }
-								/>
-							</div>
+							<AdminCopyRoutineSheet
+								destinationMonth={ selectedMonth }
+								destinationWeeksOccupied={ routineCount }
+								destinationYear={ selectedYear }
+								hasActiveRoutine
+								studentId={ studentId }
+							/>
 
-							<AdminDeleteRoutineAction
+							<AdminDeleteRoutineSheet
 								month={ Number( selectedMonth ) }
 								routines={ routines }
 								studentId={ studentId }

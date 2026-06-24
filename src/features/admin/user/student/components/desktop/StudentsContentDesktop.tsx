@@ -10,7 +10,7 @@ import { useMemo } from "react";
 
 import { ListPagination } from "@/components/common";
 import { StudentFilters } from "@/features/admin/user/student/components/shared/StudentFilters";
-import { StudentFormSheet } from "@/features/admin/user/student/components/shared/StudentFormSheet";
+import { StudentSheet } from "@/features/admin/user/student/components/shared/StudentSheet";
 import { useStudentList } from "@/features/admin/user/student/hooks/useStudentList";
 import { useStudentStatusAction } from "@/features/admin/user/student/hooks/useStudentStatusAction";
 
@@ -23,7 +23,7 @@ function StudentRowActions( { student }: { student: StudentListItem } ) {
 
 	return (
 		<div className={ "flex items-center justify-start gap-2" }>
-			<StudentFormSheet mode={ "edit" } student={ student }/>
+			<StudentSheet mode={ "edit" } student={ student }/>
 			<Button
 				isIconOnly
 				aria-label={ `${ statusLabel } ${ student.name }` }
