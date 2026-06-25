@@ -173,6 +173,7 @@ model ExerciseProgress {
   weightUsed    String
   setsCompleted String
   repsCompleted String
+  repsNumber    Int?
   date          DateTime @default(now())
   notes         String?
 
@@ -193,6 +194,7 @@ model ExerciseProgress {
 
   @@index([studentId, variantExerciseId, date])
   @@index([studentId, exerciseId, date])
+  @@index([studentId, year, month, week, dayNumber, exerciseId, repsNumber])
 }
 
 model Exercise {

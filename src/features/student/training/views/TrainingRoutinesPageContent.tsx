@@ -181,7 +181,7 @@ export default function TrainingRoutinesPageContent( {
 						{ selectedRoutine?.routineDays.map( ( day ) => (
 							<Card
 								key={ day.id }
-								className={ "w-full border border-accent/90 border-l-4 shadow-sm" }
+								className={ "w-full border border-border/70 shadow-sm" }
 							>
 								<div className={ "flex flex-1 flex-col gap-3" }>
 									<Card.Header className={ "gap-1" }>

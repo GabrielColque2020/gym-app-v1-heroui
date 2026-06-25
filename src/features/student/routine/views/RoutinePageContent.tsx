@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import { FloppyDisk } from "@gravity-ui/icons";
 import { Alert, Button, Card, Spinner, toast } from "@heroui/react";
 
+import { PageBreadcrumbs } from "@/components/common";
 import DesktopRoutineView from "../components/desktop/DesktopRoutineView";
 import MobileRoutineView from "../components/mobile/MobileRoutineView";
 import { RoutineHeader, RoutineSaveSheet } from "@/features/student/routine/components/shared";
@@ -134,6 +135,7 @@ export default function RoutinePageContent( {
 					? {
 						...exercise,
 						variantExerciseId,
+						variantSelectionExplicit: true,
 					}
 					: exercise
 			) ),
@@ -219,8 +221,20 @@ export default function RoutinePageContent( {
 		return null;
 	}
 
+	const backHref = `/trainingRoutine?month=${ data?.trainingRoutine.month ?? "" }&year=${ data?.trainingRoutine.year ?? "" }`;
+
 	return (
 		<div className={ "flex w-full flex-col gap-4" }>
+			<PageBreadcrumbs
+				backHref={ backHref }
+				backLabel={ "Volver" }
+				crumbs={ [
+					{ href: "/dashboard", label: "Inicio" },
+					{ href: backHref, label: "Rutina de entrenamiento" },
+					{ label: "Rutina" },
+				] }
+			/>
+
 			<Card className={ "px-5" }>
 				<div className={ "sm:hidden" }>
 					<RoutineHeader

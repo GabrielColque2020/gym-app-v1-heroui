@@ -35,6 +35,7 @@ export interface Exercise {
 	equipment: string;
 	muscleGroup: string;
 	variantExerciseId: string | null;
+	variantSelectionExplicit: boolean;
 	restTime: number;
 	sets: ExerciseSet[];
 	notes?: string;

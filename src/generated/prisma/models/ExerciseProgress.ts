@@ -27,6 +27,7 @@ export type AggregateExerciseProgress = {
 }
 
 export type ExerciseProgressAvgAggregateOutputType = {
+  repsNumber: number | null
   week: number | null
   month: number | null
   year: number | null
@@ -34,6 +35,7 @@ export type ExerciseProgressAvgAggregateOutputType = {
 }
 
 export type ExerciseProgressSumAggregateOutputType = {
+  repsNumber: number | null
   week: number | null
   month: number | null
   year: number | null
@@ -45,6 +47,7 @@ export type ExerciseProgressMinAggregateOutputType = {
   weightUsed: string | null
   setsCompleted: string | null
   repsCompleted: string | null
+  repsNumber: number | null
   date: Date | null
   notes: string | null
   week: number | null
@@ -61,6 +64,7 @@ export type ExerciseProgressMaxAggregateOutputType = {
   weightUsed: string | null
   setsCompleted: string | null
   repsCompleted: string | null
+  repsNumber: number | null
   date: Date | null
   notes: string | null
   week: number | null
@@ -77,6 +81,7 @@ export type ExerciseProgressCountAggregateOutputType = {
   weightUsed: number
   setsCompleted: number
   repsCompleted: number
+  repsNumber: number
   date: number
   notes: number
   week: number
@@ -91,6 +96,7 @@ export type ExerciseProgressCountAggregateOutputType = {
 
 
 export type ExerciseProgressAvgAggregateInputType = {
+  repsNumber?: true
   week?: true
   month?: true
   year?: true
@@ -98,6 +104,7 @@ export type ExerciseProgressAvgAggregateInputType = {
 }
 
 export type ExerciseProgressSumAggregateInputType = {
+  repsNumber?: true
   week?: true
   month?: true
   year?: true
@@ -109,6 +116,7 @@ export type ExerciseProgressMinAggregateInputType = {
   weightUsed?: true
   setsCompleted?: true
   repsCompleted?: true
+  repsNumber?: true
   date?: true
   notes?: true
   week?: true
@@ -125,6 +133,7 @@ export type ExerciseProgressMaxAggregateInputType = {
   weightUsed?: true
   setsCompleted?: true
   repsCompleted?: true
+  repsNumber?: true
   date?: true
   notes?: true
   week?: true
@@ -141,6 +150,7 @@ export type ExerciseProgressCountAggregateInputType = {
   weightUsed?: true
   setsCompleted?: true
   repsCompleted?: true
+  repsNumber?: true
   date?: true
   notes?: true
   week?: true
@@ -244,6 +254,7 @@ export type ExerciseProgressGroupByOutputType = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber: number | null
   date: Date
   notes: string | null
   week: number
@@ -283,6 +294,7 @@ export type ExerciseProgressWhereInput = {
   weightUsed?: Prisma.StringFilter<"ExerciseProgress"> | string
   setsCompleted?: Prisma.StringFilter<"ExerciseProgress"> | string
   repsCompleted?: Prisma.StringFilter<"ExerciseProgress"> | string
+  repsNumber?: Prisma.IntNullableFilter<"ExerciseProgress"> | number | null
   date?: Prisma.DateTimeFilter<"ExerciseProgress"> | Date | string
   notes?: Prisma.StringNullableFilter<"ExerciseProgress"> | string | null
   week?: Prisma.IntFilter<"ExerciseProgress"> | number
@@ -302,6 +314,7 @@ export type ExerciseProgressOrderByWithRelationInput = {
   weightUsed?: Prisma.SortOrder
   setsCompleted?: Prisma.SortOrder
   repsCompleted?: Prisma.SortOrder
+  repsNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   date?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   week?: Prisma.SortOrder
@@ -324,6 +337,7 @@ export type ExerciseProgressWhereUniqueInput = Prisma.AtLeast<{
   weightUsed?: Prisma.StringFilter<"ExerciseProgress"> | string
   setsCompleted?: Prisma.StringFilter<"ExerciseProgress"> | string
   repsCompleted?: Prisma.StringFilter<"ExerciseProgress"> | string
+  repsNumber?: Prisma.IntNullableFilter<"ExerciseProgress"> | number | null
   date?: Prisma.DateTimeFilter<"ExerciseProgress"> | Date | string
   notes?: Prisma.StringNullableFilter<"ExerciseProgress"> | string | null
   week?: Prisma.IntFilter<"ExerciseProgress"> | number
@@ -343,6 +357,7 @@ export type ExerciseProgressOrderByWithAggregationInput = {
   weightUsed?: Prisma.SortOrder
   setsCompleted?: Prisma.SortOrder
   repsCompleted?: Prisma.SortOrder
+  repsNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   date?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   week?: Prisma.SortOrder
@@ -367,6 +382,7 @@ export type ExerciseProgressScalarWhereWithAggregatesInput = {
   weightUsed?: Prisma.StringWithAggregatesFilter<"ExerciseProgress"> | string
   setsCompleted?: Prisma.StringWithAggregatesFilter<"ExerciseProgress"> | string
   repsCompleted?: Prisma.StringWithAggregatesFilter<"ExerciseProgress"> | string
+  repsNumber?: Prisma.IntNullableWithAggregatesFilter<"ExerciseProgress"> | number | null
   date?: Prisma.DateTimeWithAggregatesFilter<"ExerciseProgress"> | Date | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"ExerciseProgress"> | string | null
   week?: Prisma.IntWithAggregatesFilter<"ExerciseProgress"> | number
@@ -383,6 +399,7 @@ export type ExerciseProgressCreateInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -399,6 +416,7 @@ export type ExerciseProgressUncheckedCreateInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -415,6 +433,7 @@ export type ExerciseProgressUpdateInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -431,6 +450,7 @@ export type ExerciseProgressUncheckedUpdateInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -447,6 +467,7 @@ export type ExerciseProgressCreateManyInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -463,6 +484,7 @@ export type ExerciseProgressUpdateManyMutationInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -476,6 +498,7 @@ export type ExerciseProgressUncheckedUpdateManyInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -502,6 +525,7 @@ export type ExerciseProgressCountOrderByAggregateInput = {
   weightUsed?: Prisma.SortOrder
   setsCompleted?: Prisma.SortOrder
   repsCompleted?: Prisma.SortOrder
+  repsNumber?: Prisma.SortOrder
   date?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   week?: Prisma.SortOrder
@@ -514,6 +538,7 @@ export type ExerciseProgressCountOrderByAggregateInput = {
 }
 
 export type ExerciseProgressAvgOrderByAggregateInput = {
+  repsNumber?: Prisma.SortOrder
   week?: Prisma.SortOrder
   month?: Prisma.SortOrder
   year?: Prisma.SortOrder
@@ -525,6 +550,7 @@ export type ExerciseProgressMaxOrderByAggregateInput = {
   weightUsed?: Prisma.SortOrder
   setsCompleted?: Prisma.SortOrder
   repsCompleted?: Prisma.SortOrder
+  repsNumber?: Prisma.SortOrder
   date?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   week?: Prisma.SortOrder
@@ -541,6 +567,7 @@ export type ExerciseProgressMinOrderByAggregateInput = {
   weightUsed?: Prisma.SortOrder
   setsCompleted?: Prisma.SortOrder
   repsCompleted?: Prisma.SortOrder
+  repsNumber?: Prisma.SortOrder
   date?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   week?: Prisma.SortOrder
@@ -553,6 +580,7 @@ export type ExerciseProgressMinOrderByAggregateInput = {
 }
 
 export type ExerciseProgressSumOrderByAggregateInput = {
+  repsNumber?: Prisma.SortOrder
   week?: Prisma.SortOrder
   month?: Prisma.SortOrder
   year?: Prisma.SortOrder
@@ -599,6 +627,14 @@ export type ExerciseProgressUncheckedUpdateManyWithoutStudentNestedInput = {
   update?: Prisma.ExerciseProgressUpdateWithWhereUniqueWithoutStudentInput | Prisma.ExerciseProgressUpdateWithWhereUniqueWithoutStudentInput[]
   updateMany?: Prisma.ExerciseProgressUpdateManyWithWhereWithoutStudentInput | Prisma.ExerciseProgressUpdateManyWithWhereWithoutStudentInput[]
   deleteMany?: Prisma.ExerciseProgressScalarWhereInput | Prisma.ExerciseProgressScalarWhereInput[]
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type ExerciseProgressCreateNestedManyWithoutExerciseInput = {
@@ -690,6 +726,7 @@ export type ExerciseProgressCreateWithoutStudentInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -705,6 +742,7 @@ export type ExerciseProgressUncheckedCreateWithoutStudentInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -749,6 +787,7 @@ export type ExerciseProgressScalarWhereInput = {
   weightUsed?: Prisma.StringFilter<"ExerciseProgress"> | string
   setsCompleted?: Prisma.StringFilter<"ExerciseProgress"> | string
   repsCompleted?: Prisma.StringFilter<"ExerciseProgress"> | string
+  repsNumber?: Prisma.IntNullableFilter<"ExerciseProgress"> | number | null
   date?: Prisma.DateTimeFilter<"ExerciseProgress"> | Date | string
   notes?: Prisma.StringNullableFilter<"ExerciseProgress"> | string | null
   week?: Prisma.IntFilter<"ExerciseProgress"> | number
@@ -765,6 +804,7 @@ export type ExerciseProgressCreateWithoutExerciseInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -780,6 +820,7 @@ export type ExerciseProgressUncheckedCreateWithoutExerciseInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -805,6 +846,7 @@ export type ExerciseProgressCreateWithoutVariantExerciseInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -820,6 +862,7 @@ export type ExerciseProgressUncheckedCreateWithoutVariantExerciseInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -877,6 +920,7 @@ export type ExerciseProgressCreateManyStudentInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -892,6 +936,7 @@ export type ExerciseProgressUpdateWithoutStudentInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -907,6 +952,7 @@ export type ExerciseProgressUncheckedUpdateWithoutStudentInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -922,6 +968,7 @@ export type ExerciseProgressUncheckedUpdateManyWithoutStudentInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -937,6 +984,7 @@ export type ExerciseProgressCreateManyExerciseInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -952,6 +1000,7 @@ export type ExerciseProgressCreateManyVariantExerciseInput = {
   weightUsed: string
   setsCompleted: string
   repsCompleted: string
+  repsNumber?: number | null
   date?: Date | string
   notes?: string | null
   week: number
@@ -967,6 +1016,7 @@ export type ExerciseProgressUpdateWithoutExerciseInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -982,6 +1032,7 @@ export type ExerciseProgressUncheckedUpdateWithoutExerciseInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -997,6 +1048,7 @@ export type ExerciseProgressUncheckedUpdateManyWithoutExerciseInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1012,6 +1064,7 @@ export type ExerciseProgressUpdateWithoutVariantExerciseInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1027,6 +1080,7 @@ export type ExerciseProgressUncheckedUpdateWithoutVariantExerciseInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1042,6 +1096,7 @@ export type ExerciseProgressUncheckedUpdateManyWithoutVariantExerciseInput = {
   weightUsed?: Prisma.StringFieldUpdateOperationsInput | string
   setsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
   repsCompleted?: Prisma.StringFieldUpdateOperationsInput | string
+  repsNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   week?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1059,6 +1114,7 @@ export type ExerciseProgressSelect<ExtArgs extends runtime.Types.Extensions.Inte
   weightUsed?: boolean
   setsCompleted?: boolean
   repsCompleted?: boolean
+  repsNumber?: boolean
   date?: boolean
   notes?: boolean
   week?: boolean
@@ -1078,6 +1134,7 @@ export type ExerciseProgressSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   weightUsed?: boolean
   setsCompleted?: boolean
   repsCompleted?: boolean
+  repsNumber?: boolean
   date?: boolean
   notes?: boolean
   week?: boolean
@@ -1097,6 +1154,7 @@ export type ExerciseProgressSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   weightUsed?: boolean
   setsCompleted?: boolean
   repsCompleted?: boolean
+  repsNumber?: boolean
   date?: boolean
   notes?: boolean
   week?: boolean
@@ -1116,6 +1174,7 @@ export type ExerciseProgressSelectScalar = {
   weightUsed?: boolean
   setsCompleted?: boolean
   repsCompleted?: boolean
+  repsNumber?: boolean
   date?: boolean
   notes?: boolean
   week?: boolean
@@ -1127,7 +1186,7 @@ export type ExerciseProgressSelectScalar = {
   exerciseId?: boolean
 }
 
-export type ExerciseProgressOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "weightUsed" | "setsCompleted" | "repsCompleted" | "date" | "notes" | "week" | "month" | "year" | "dayNumber" | "studentId" | "variantExerciseId" | "exerciseId", ExtArgs["result"]["exerciseProgress"]>
+export type ExerciseProgressOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "weightUsed" | "setsCompleted" | "repsCompleted" | "repsNumber" | "date" | "notes" | "week" | "month" | "year" | "dayNumber" | "studentId" | "variantExerciseId" | "exerciseId", ExtArgs["result"]["exerciseProgress"]>
 export type ExerciseProgressInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.ExerciseProgress$studentArgs<ExtArgs>
   variantExercise?: boolean | Prisma.ExerciseProgress$variantExerciseArgs<ExtArgs>
@@ -1156,6 +1215,7 @@ export type $ExerciseProgressPayload<ExtArgs extends runtime.Types.Extensions.In
     weightUsed: string
     setsCompleted: string
     repsCompleted: string
+    repsNumber: number | null
     date: Date
     notes: string | null
     week: number
@@ -1595,6 +1655,7 @@ export interface ExerciseProgressFieldRefs {
   readonly weightUsed: Prisma.FieldRef<"ExerciseProgress", 'String'>
   readonly setsCompleted: Prisma.FieldRef<"ExerciseProgress", 'String'>
   readonly repsCompleted: Prisma.FieldRef<"ExerciseProgress", 'String'>
+  readonly repsNumber: Prisma.FieldRef<"ExerciseProgress", 'Int'>
   readonly date: Prisma.FieldRef<"ExerciseProgress", 'DateTime'>
   readonly notes: Prisma.FieldRef<"ExerciseProgress", 'String'>
   readonly week: Prisma.FieldRef<"ExerciseProgress", 'Int'>

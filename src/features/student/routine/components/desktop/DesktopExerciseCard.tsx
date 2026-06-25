@@ -131,9 +131,9 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 											<Chip.Label>{ formatSessionDateLabel( displayedSessionHistory.date ) }</Chip.Label>
 										</Chip>
 
-										{ displayedSessionHistory.sets.map( ( set ) => (
+										{ displayedSessionHistory.sets.map( ( set, index ) => (
 											<Chip
-												key={ `${ displayedSessionHistory.date.toISOString() }-${ set.setNumber }` }
+												key={ `${ displayedSessionHistory.date.toISOString() }-${ set.setNumber }-${ index }` }
 												className={ "shrink-0" }
 												size={ "sm" }
 												variant={ "soft" }

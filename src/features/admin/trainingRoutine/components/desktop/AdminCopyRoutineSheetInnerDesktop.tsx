@@ -49,9 +49,9 @@ function WeekPill( { children }: { children: React.ReactNode } ) {
 
 function SummaryRow( { label, value }: { label: string; value: React.ReactNode } ) {
 	return (
-		<div className={ "flex min-w-0 items-center justify-between gap-3" }>
-			<Typography className={ "min-w-0 truncate text-xs text-muted sm:text-sm" }>{ label }</Typography>
-			<Typography className={ "min-w-0 truncate text-right text-xs font-medium sm:text-sm" }>{ value }</Typography>
+		<div className={ "flex min-w-0 items-start justify-between gap-3" }>
+			<Typography className={ "min-w-0 whitespace-normal break-words text-xs text-muted sm:text-sm" }>{ label }</Typography>
+			<Typography className={ "min-w-0 whitespace-normal break-words text-right text-xs font-medium sm:text-sm" }>{ value }</Typography>
 		</div>
 	);
 }
@@ -189,7 +189,7 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 					</div>
 				</div>
 
-				{ sameMonth ? <Notice tone={ "warning" }>No podes copiar desde el mismo mes destino.</Notice> : null }
+				{ mode === "month" && sameMonth ? <Notice tone={ "warning" }>No podes copiar desde el mismo mes destino.</Notice> : null }
 				{ hasActiveRoutine ? (
 					<Notice tone={ "warning" }>
 						{ destLabel } ya tiene una rutina configurada. La copia puede reemplazar contenido existente.
@@ -209,14 +209,14 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 					<Surface className={ "flex min-h-48 items-center justify-center rounded-xl border border-default-hover" }>
 						<Spinner size={ "lg" }/>
 					</Surface>
-				) : source && !source.hasRoutine && !sameMonth ? (
+				) : source && !source.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<EmptyState className={ "flex min-h-48 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-default-hover px-4 text-center" }>
 						<Typography className={ "text-sm font-medium" }>No hay rutina en este origen.</Typography>
 						<Description className={ "text-sm" }>Proba con otro mes para continuar.</Description>
 					</EmptyState>
-				) : source?.hasRoutine && !sameMonth ? (
+				) : source?.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<div className={ "grid min-h-0 gap-3 md:flex-1 md:grid-cols-[1fr_260px] md:gap-4" }>
-						<ScrollShadow className={ "min-h-0 overflow-y-auto" }>
+						<ScrollShadow className={ "min-h-0 overflow-y-auto px-2" } visibility={ "none" }>
 							<div className={ "grid gap-3 pb-2 sm:gap-4" }>
 								{ mode === "month" ? (
 									<Surface className={ "rounded-xl border border-default-hover bg-surface p-3 sm:p-4" }>
@@ -245,14 +245,15 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 										<div className={ "grid gap-2" }>
 											<Label className={ "text-sm font-semibold" }>Semanas de origen</Label>
 											<CheckboxButtonGroup
-												className={ "grid-cols-2 gap-2 [--checkbox-button-group-item-radius:0.75rem] sm:grid-cols-4" }
+												className={ "grid-cols-2 gap-2 [--checkbox-button-group-item-radius:0.75rem]" }
 												layout={ "grid" }
 												value={ selectedSourceWeeks }
 												variant={ "secondary" }
 												onChange={ ( value ) => setSelectedSourceWeeks( value as string[] ) }
 											>
 												{ sourceWeeks.map( ( routine ) => (
-													<CheckboxButtonGroup.Item key={ routine.week } className={ "min-h-16 gap-2 px-3 py-2 sm:min-h-0 sm:py-3" } value={ String( routine.week ) }>
+													<CheckboxButtonGroup.Item key={ routine.week } className={ "min-h-16 gap-2 px-3 py-2 sm:min-h-0 sm:py-3" }
+													                          value={ String( routine.week ) }>
 														<CheckboxButtonGroup.Indicator/>
 														<CheckboxButtonGroup.ItemContent>
 															<Label className={ "text-sm" }>Semana { routine.week }</Label>
@@ -274,13 +275,13 @@ export function AdminCopyRoutineSheetInnerDesktop( {
 										) : isSingleWeek ? (
 											<div className={ "grid gap-3" }>
 												<div>
-													<Label className={ "text-sm font-semibold" }>Copiar en</Label>
+													<Label className={ "text-sm font-semibold pr-1" }>Copiar en:</Label>
 													<Description className={ "mt-1 text-sm" }>
 														Ideal para repetir una misma semana en varias semanas del mes actual.
 													</Description>
 												</div>
 												<CheckboxButtonGroup
-													className={ "grid-cols-2 gap-2 [--checkbox-button-group-item-radius:0.75rem] sm:grid-cols-4" }
+													className={ "grid-cols-[repeat(auto-fit,minmax(8.5rem,1fr))] gap-2 [--checkbox-button-group-item-radius:0.75rem]" }
 													layout={ "grid" }
 													value={ singleDestWeeks }
 													variant={ "secondary" }

@@ -192,6 +192,7 @@ export const ExerciseProgressScalarFieldEnum = {
   weightUsed: 'weightUsed',
   setsCompleted: 'setsCompleted',
   repsCompleted: 'repsCompleted',
+  repsNumber: 'repsNumber',
   date: 'date',
   notes: 'notes',
   week: 'week',

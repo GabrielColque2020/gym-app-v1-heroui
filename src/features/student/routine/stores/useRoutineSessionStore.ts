@@ -93,17 +93,18 @@ function serializeSession( session: StudentRoutineSession ): PersistedDraftSessi
 		completed: session.completed,
 		date: session.date.toISOString(),
 		dayNumber: session.dayNumber,
-		exercises: session.exercises.map( ( exercise ) => ( {
-			equipment: exercise.equipment,
-			id: exercise.id,
-			baseName: exercise.baseName,
-			muscleGroup: exercise.muscleGroup,
-			name: exercise.name,
-			variantExerciseId: exercise.variantExerciseId,
-			notes: exercise.notes,
-			restTime: exercise.restTime,
-			sets: exercise.sets.map( ( set ) => ( {
-				completed: set.completed,
+			exercises: session.exercises.map( ( exercise ) => ( {
+				equipment: exercise.equipment,
+				id: exercise.id,
+				baseName: exercise.baseName,
+				muscleGroup: exercise.muscleGroup,
+				name: exercise.name,
+				variantExerciseId: exercise.variantExerciseId,
+				variantSelectionExplicit: exercise.variantSelectionExplicit,
+				notes: exercise.notes,
+				restTime: exercise.restTime,
+				sets: exercise.sets.map( ( set ) => ( {
+					completed: set.completed,
 				currentReps: set.currentReps,
 				currentWeight: set.currentWeight,
 				id: set.id,
@@ -123,13 +124,14 @@ function hydrateSession( session: PersistedDraftSession ): StudentRoutineSession
 	return {
 		...session,
 		date: new Date( session.date ),
-		exercises: session.exercises.map( ( exercise ) => ( {
-			...exercise,
-			baseName: exercise.baseName ?? exercise.name,
-			lastSession: exercise.lastSession ?? null,
-			variantExerciseId: exercise.variantExerciseId ?? null,
-			variantOptions: exercise.variantOptions ?? [],
-		} ) ),
+			exercises: session.exercises.map( ( exercise ) => ( {
+				...exercise,
+				baseName: exercise.baseName ?? exercise.name,
+				lastSession: exercise.lastSession ?? null,
+				variantExerciseId: exercise.variantExerciseId ?? null,
+				variantSelectionExplicit: exercise.variantSelectionExplicit ?? false,
+				variantOptions: exercise.variantOptions ?? [],
+			} ) ),
 	};
 }
 

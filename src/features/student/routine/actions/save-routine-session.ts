@@ -1,5 +1,6 @@
 "use server";
 
+import { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 
 import { getAuthenticatedSession } from "@/features/auth/session";
@@ -88,19 +89,15 @@ export async function saveStudentRoutineSessionAction( {
 		const allowedExerciseIds = new Set( [ ...baseExerciseIds, ...variantExerciseIds ] );
 
 		const resolvedExercises = exercises.map( ( exercise ) => {
-			const routine = routineDay.routines.find( ( item ) =>
-				item.exerciseId === exercise.exerciseId
-				|| item.variants.some( ( variant ) => variant.variantExerciseId === exercise.exerciseId ),
-			) ?? null;
+			const baseExerciseId = exercise.exerciseId;
+			const routine = routineDay.routines.find( ( item ) => item.exerciseId === baseExerciseId ) ?? null;
 
 			if (!routine) {
 				throw new Error( "Uno o mas ejercicios no pertenecen al dia seleccionado." );
 			}
 
-			const baseExerciseId = routine.exerciseId ?? exercise.exerciseId;
 			const variantExerciseId = exercise.variantExerciseId?.trim() || null;
-			const legacyVariantExerciseId = !variantExerciseId && exercise.exerciseId !== baseExerciseId ? exercise.exerciseId : null;
-			const selectedVariantExerciseId = variantExerciseId ?? legacyVariantExerciseId;
+			const selectedVariantExerciseId = variantExerciseId;
 
 			if (selectedVariantExerciseId && !allowedExerciseIds.has( selectedVariantExerciseId )) {
 				throw new Error( "Uno o mas ejercicios no pertenecen al dia seleccionado." );
@@ -122,58 +119,47 @@ export async function saveStudentRoutineSessionAction( {
 				dayNumber: routineDay.dayNumber,
 				exerciseId: item.baseExerciseId,
 				month: routineDay.trainingRoutine.month,
-				notes: JSON.stringify( {
-					setNumber: set.setNumber,
-					notes: normalizeSetNotes( set.notes ),
-				} ),
-				variantExerciseId: item.selectedVariantExerciseId,
+				notes: normalizeSetNotes( set.notes ),
 				repsCompleted: normalizeSetValue( set.currentReps ),
+				repsNumber: set.setNumber,
 				setsCompleted: set.completed ? "1" : "0",
 				studentId: activeStudentId,
+				variantExerciseId: item.selectedVariantExerciseId,
 				week: routineDay.trainingRoutine.week,
 				weightUsed: normalizeSetValue( set.currentWeight ),
 				year: routineDay.trainingRoutine.year,
 			} ) ),
 		);
 
-		await prisma.$transaction( async ( tx ) => {
-			await tx.exerciseProgress.deleteMany( {
-				where: {
-					dayNumber: routineDay.dayNumber,
-					month: routineDay.trainingRoutine.month,
-					studentId: activeStudentId,
-					week: routineDay.trainingRoutine.week,
-					year: routineDay.trainingRoutine.year,
-					OR: [
-						{
-							exerciseId: {
-								in: [ ...baseExerciseIds, ...variantExerciseIds ],
-							},
-						},
-						{
-							variantExerciseId: {
-								in: variantExerciseIds,
-							},
-						},
-					],
-				},
-			} );
-
-			if (progressRows.length > 0) {
-				await tx.exerciseProgress.createMany( {
-					data: progressRows,
+		await prisma.$transaction(
+			async ( tx ) => {
+				await tx.exerciseProgress.deleteMany( {
+					where: {
+						dayNumber: routineDay.dayNumber,
+						month: routineDay.trainingRoutine.month,
+						studentId: activeStudentId,
+						week: routineDay.trainingRoutine.week,
+						year: routineDay.trainingRoutine.year,
+					},
 				} );
-			}
 
-			await tx.routineDay.update( {
-				data: {
-					isFinalized: true,
-				},
-				where: {
-					id: routineDay.id,
-				},
-			} );
-		} );
+				if (progressRows.length > 0) {
+					await tx.exerciseProgress.createMany( {
+						data: progressRows as never,
+					} );
+				}
+
+				await tx.routineDay.update( {
+					data: {
+						isFinalized: true,
+					},
+					where: {
+						id: routineDay.id,
+					},
+				} );
+			},
+			{ isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+		);
 
 		return await getStudentRoutineSessionAction( {
 			routineDayId: routineDay.id,

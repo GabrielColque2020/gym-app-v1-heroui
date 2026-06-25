@@ -80,7 +80,7 @@ export async function getStudentRoutineSessionAction( {
 						: undefined,
 				].filter( Boolean ) as Array<Record<string, unknown>>,
 			},
-		} ) ) as StudentRoutineProgressEntry[];
+		} ) ) as unknown as StudentRoutineProgressEntry[];
 
 		return {
 			...routineDay,

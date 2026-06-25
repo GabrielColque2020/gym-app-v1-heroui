@@ -30,7 +30,7 @@ export function AdminCopyRoutineSheet( props: AdminCopyRoutineSheetContentProps 
 					}
 				>
 					<Copy className={ "size-4" }/>
-					{ !isMobile && "Copiar desde otro mes" }
+					{ !isMobile && "Copiar rutina" }
 				</Button>
 			}
 		>

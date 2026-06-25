@@ -14,6 +14,7 @@ export type StudentRoutineProgressEntry = {
 	notes: string | null;
 	dayNumber: number;
 	month: number;
+	repsNumber: number | null;
 	variantExerciseId: string | null;
 	week: number;
 	year: number;
@@ -43,6 +44,7 @@ export type StudentRoutineExercise = {
 	notes?: string;
 	lastSession: StudentRoutineSessionHistory | null;
 	variantExerciseId: string | null;
+	variantSelectionExplicit: boolean;
 	restTime: number;
 	sets: StudentRoutineSet[];
 	variantOptions: StudentRoutineVariantOption[];
@@ -157,9 +159,22 @@ function buildSessionHistory( entries: StudentRoutineProgressEntry[] ): StudentR
 	const sessions = [ ...groupedEntries.values() ].map( ( sessionEntries ) => {
 		const orderedEntries = [ ...sessionEntries ].sort( sortByDateDesc );
 		const latestEntry = orderedEntries[ 0 ];
-		const sets = orderedEntries
-			.map( ( entry ) => {
+		const latestEntriesBySet = new Map<number, StudentRoutineProgressEntry>();
+
+		for (const entry of orderedEntries) {
+			const repsNumber = getProgressRepsNumber( entry );
+			if (repsNumber === null) continue;
+
+			if (!latestEntriesBySet.has( repsNumber )) {
+				latestEntriesBySet.set( repsNumber, entry );
+			}
+		}
+
+		const sets = [ ...latestEntriesBySet.entries() ]
+			.sort( ( [ leftSetNumber ], [ rightSetNumber ] ) => leftSetNumber - rightSetNumber )
+			.map( ( [ , entry ] ) => {
 				const parsedNotes = parseProgressNotes( entry.notes );
+				const repsNumber = getProgressRepsNumber( entry );
 				const repsCompleted = toHistoryInteger( entry.repsCompleted );
 				const weightUsed = toHistoryDecimal( entry.weightUsed );
 
@@ -167,11 +182,10 @@ function buildSessionHistory( entries: StudentRoutineProgressEntry[] ): StudentR
 					completed: repsCompleted !== null || weightUsed !== null,
 					notes: parsedNotes.notes,
 					repsCompleted,
-					setNumber: parsedNotes.setNumber ?? 0,
+					setNumber: repsNumber ?? parsedNotes.repsNumber ?? 0,
 					weightUsed,
 				};
-			} )
-			.sort( ( left, right ) => left.setNumber - right.setNumber );
+			} );
 
 		return {
 			completed: sets.length > 0 && sets.every( ( set ) => set.completed ),
@@ -253,32 +267,36 @@ function parseDecimal( value: string | number | null | undefined ) {
 
 type ParsedProgressNotes = {
 	notes: string | null;
-	setNumber: number | null;
+	repsNumber: number | null;
 };
 
 function parseProgressNotes( notes: string | null ): ParsedProgressNotes {
 	if (!notes) {
 		return {
 			notes: null,
-			setNumber: null,
+			repsNumber: null,
 		};
 	}
 
 	try {
 		const parsed = JSON.parse( notes ) as Partial<{ notes: string | null; setNumber: number }>;
 		const parsedSetNumber: number | null = typeof parsed.setNumber === "number" ? parsed.setNumber : null;
-		const setNumber: number | null = Number.isInteger( parsedSetNumber ) ? parsedSetNumber : null;
+		const repsNumber: number | null = Number.isInteger( parsedSetNumber ) ? parsedSetNumber : null;
 
 		return {
 			notes: typeof parsed.notes === "string" ? parsed.notes : null,
-			setNumber,
+			repsNumber,
 		};
 	} catch {
 		return {
 			notes,
-			setNumber: null,
+			repsNumber: null,
 		};
 	}
+}
+
+function getProgressRepsNumber( entry: StudentRoutineProgressEntry ) {
+	return Number.isInteger( entry.repsNumber ) ? entry.repsNumber : parseProgressNotes( entry.notes ).repsNumber;
 }
 
 function sortByDateDesc( left: StudentRoutineProgressEntry, right: StudentRoutineProgressEntry ) {
@@ -292,6 +310,41 @@ function getProgressEntriesByVariant(
 ) {
 	return detail.progressEntries
 		.filter( ( entry ) => entry.variantExerciseId === variantExerciseId || entry.exerciseId === variantExerciseId )
+		.sort( sortByDateDesc );
+}
+
+// Recolecta el historial exacto de un ejercicio base sin mezclar variantes.
+function getProgressEntriesByExercise(
+	detail: StudentRoutineSessionDetail,
+	exerciseId: string,
+) {
+	return detail.progressEntries
+		.filter( ( entry ) => entry.exerciseId === exerciseId )
+		.sort( sortByDateDesc );
+}
+
+// Recolecta los registros de la sesion actual del dia seleccionado para poblar los inputs.
+function getCurrentProgressEntriesByExercise(
+	detail: StudentRoutineSessionDetail,
+	exerciseId: string,
+	variantExerciseId: string | null,
+) {
+	const currentSessionKey = getSessionKey( {
+		dayNumber: detail.dayNumber,
+		month: detail.trainingRoutine.month,
+		week: detail.trainingRoutine.week,
+		year: detail.trainingRoutine.year,
+	} as StudentRoutineProgressEntry );
+	const allowedExerciseIds = new Set(
+		[ exerciseId, variantExerciseId ]
+			.filter( ( value ): value is string => Boolean( value ) ),
+	);
+
+	return detail.progressEntries
+		.filter( ( entry ) => getSessionKey( entry ) === currentSessionKey )
+		.filter( ( entry ) =>
+			allowedExerciseIds.has( entry.exerciseId ) || ( entry.variantExerciseId !== null && allowedExerciseIds.has( entry.variantExerciseId ) ),
+		)
 		.sort( sortByDateDesc );
 }
 
@@ -325,7 +378,40 @@ function getLatestProgressEntryBySetNumber(
 ) {
 	return [ ...entries ]
 		.sort( sortByDateDesc )
-		.find( ( entry ) => parseProgressNotes( entry.notes ).setNumber === setNumber ) ?? null;
+		.find( ( entry ) => getProgressRepsNumber( entry ) === setNumber ) ?? null;
+}
+
+// Busca el registro previo de una serie concreta.
+function getPreviousProgressEntryBySetNumber(
+	historyEntries: StudentRoutineProgressEntry[],
+	currentEntry: StudentRoutineProgressEntry | null,
+	setNumber: number,
+) {
+	const orderedEntries = [ ...historyEntries ].sort( sortByDateDesc );
+
+	if (!currentEntry) {
+		return orderedEntries.find( ( entry ) => getProgressRepsNumber( entry ) === setNumber ) ?? null;
+	}
+
+	let seenCurrent = false;
+
+	for (const entry of orderedEntries) {
+		if (getProgressRepsNumber( entry ) !== setNumber) {
+			continue;
+		}
+
+		if (!seenCurrent) {
+			if (entry.id === currentEntry.id) {
+				seenCurrent = true;
+			}
+
+			continue;
+		}
+
+		return entry;
+	}
+
+	return null;
 }
 
 // Devuelve la variante activa a partir del ultimo progreso guardado para el slot.
@@ -361,20 +447,27 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 			const selectedVariant = variantExerciseId
 				? routine.variants.find( ( variant ) => variant.variantExercise.id === variantExerciseId )?.variantExercise ?? null
 				: null;
-			const lastSession = buildSessionHistory( progressEntries );
+			const currentExerciseEntries = getCurrentProgressEntriesByExercise( detail, exerciseId, selectedVariant?.id ?? null );
+			const historyExerciseEntries = selectedVariant
+				? getProgressEntriesByVariant( detail, selectedVariant.id )
+				: getProgressEntriesByExercise( detail, exerciseId );
+			const lastSession = buildSessionHistory(
+				historyExerciseEntries,
+			);
 			const setCount = Math.max(
-				parseInteger( routine.sets ) ?? progressEntries.length ?? 1,
+				parseInteger( routine.sets ) ?? 1,
 				1,
 			);
 			const currentSets = Array.from( { length: setCount }, ( _, index ) => {
 				const setNumber = index + 1;
-				const savedSet = getLatestProgressEntryBySetNumber( progressEntries, setNumber );
+				const savedSet = getLatestProgressEntryBySetNumber( currentExerciseEntries, setNumber );
+				const previousSavedSet = getPreviousProgressEntryBySetNumber( progressEntries, savedSet, setNumber );
 				const savedSetNotes = parseProgressNotes( savedSet?.notes ?? null ).notes;
 				const currentReps = parseInteger( savedSet?.repsCompleted );
 				const currentWeight = parseDecimal( savedSet?.weightUsed );
+				const previousReps = parseInteger( previousSavedSet?.repsCompleted );
+				const previousSeriesWeight = parseDecimal( previousSavedSet?.weightUsed );
 				const hasCurrentValues = currentReps !== null || currentWeight !== null;
-				const previousReps = savedSet ? currentReps : null;
-				const previousSeriesWeight = savedSet ? currentWeight : null;
 
 				return {
 					completed: Boolean( hasCurrentValues ),
@@ -389,26 +482,27 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				};
 			} );
 
-			return {
-				baseName: exercise?.name ?? routine.exercise?.name ?? "Ejercicio",
-				equipment: formatBodyPart( selectedVariant?.bodyPart ?? routine.exercise?.bodyPart ?? "CHEST" ),
-				id: exerciseId,
-				muscleGroup: routine.observation ?? detail.trainingRoutine.objective ?? "",
-				name: selectedVariant?.name ?? exercise?.name ?? "Ejercicio",
-				notes: exercise?.tips ?? routine.observation ?? undefined,
-				lastSession,
-				variantExerciseId,
-				restTime: Math.max( setCount * 30, 0 ),
-				sets: currentSets,
-				variantOptions: routine.variants.map( ( variant ) => ( {
-					active: variant.variantExercise.active,
-					bodyPart: variant.variantExercise.bodyPart,
-					id: variant.variantExercise.id,
-					lastSession: buildSessionHistory( getProgressEntriesByVariant( detail, variant.variantExercise.id ) ),
-					name: variant.variantExercise.name,
-				} ) ),
-			};
-		} );
+	return {
+		baseName: exercise?.name ?? routine.exercise?.name ?? "Ejercicio",
+		equipment: formatBodyPart( selectedVariant?.bodyPart ?? routine.exercise?.bodyPart ?? "CHEST" ),
+		id: exerciseId,
+		muscleGroup: routine.observation ?? detail.trainingRoutine.objective ?? "",
+		name: selectedVariant?.name ?? exercise?.name ?? "Ejercicio",
+		notes: exercise?.tips ?? routine.observation ?? undefined,
+		lastSession,
+		variantExerciseId,
+		variantSelectionExplicit: false,
+		restTime: Math.max( setCount * 30, 0 ),
+		sets: currentSets,
+			variantOptions: routine.variants.map( ( variant ) => ( {
+				active: variant.variantExercise.active,
+				bodyPart: variant.variantExercise.bodyPart,
+				id: variant.variantExercise.id,
+				lastSession: buildSessionHistory( getProgressEntriesByVariant( detail, variant.variantExercise.id ) ),
+				name: variant.variantExercise.name,
+			} ) ),
+		};
+	} );
 
 	const latestActivity = detail.progressEntries[ 0 ]?.date ?? new Date();
 
@@ -523,7 +617,7 @@ export function mapStudentRoutineSessionToSaveInput( session: StudentRoutineSess
 			.filter( ( exercise ) => exercise.sets.some( ( set ) => set.completed ) )
 			.map( ( exercise ) => ( {
 				exerciseId: exercise.id,
-				variantExerciseId: exercise.variantExerciseId,
+				variantExerciseId: exercise.variantSelectionExplicit ? exercise.variantExerciseId : null,
 				sets: exercise.sets
 					.filter( ( set ) => set.completed )
 					.slice()

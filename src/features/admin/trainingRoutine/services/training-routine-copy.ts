@@ -53,7 +53,16 @@ export function validateCopyMonthInput( input: CopyTrainingRoutineMonthInput ) {
 }
 
 export function validateCopyWeeksInput( input: CopyTrainingRoutineWeeksInput ) {
-	validateCopyMonthInput( input );
+	validateCopySourceInput( {
+		month: input.sourceMonth,
+		studentId: input.studentId,
+		year: input.sourceYear,
+	} );
+	validateCopySourceInput( {
+		month: input.destinationMonth,
+		studentId: input.studentId,
+		year: input.destinationYear,
+	} );
 
 	if (input.weekMappings.length === 0) {
 		throw new Error( "Selecciona al menos una semana para copiar." );

@@ -42,6 +42,7 @@ function mergeSessionVariants( draftSession: StudentRoutineSession | null, sourc
 				restTime: draftExercise.restTime ?? sourceExercise.restTime,
 				sets: draftExercise.sets,
 				variantExerciseId: draftExercise.variantExerciseId ?? sourceExercise.variantExerciseId ?? null,
+				variantSelectionExplicit: draftExercise.variantSelectionExplicit || sourceExercise.variantSelectionExplicit || false,
 				variantOptions: sourceExercise.variantOptions.length > 0
 					? sourceExercise.variantOptions
 					: draftExercise.variantOptions ?? [],

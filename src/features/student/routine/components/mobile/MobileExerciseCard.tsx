@@ -126,9 +126,9 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 											<Chip.Label>{ formatSessionDateLabel( displayedSessionHistory.date ) }</Chip.Label>
 										</Chip>
 
-										{ displayedSessionHistory.sets.map( ( set ) => (
+										{ displayedSessionHistory.sets.map( ( set, index ) => (
 											<Chip
-												key={ `${ displayedSessionHistory.date.toISOString() }-${ set.setNumber }` }
+												key={ `${ displayedSessionHistory.date.toISOString() }-${ set.setNumber }-${ index }` }
 												size={ "sm" }
 												variant={ "soft" }
 											>

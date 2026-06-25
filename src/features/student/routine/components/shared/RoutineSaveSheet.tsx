@@ -1,11 +1,12 @@
 "use client";
 
-import { CircleInfo } from "@gravity-ui/icons";
-import { Alert, Button, Card, Chip, Description } from "@heroui/react";
+import { CircleCheck, CircleInfo, FloppyDisk } from "@gravity-ui/icons";
+import { Alert, Button, Card, Chip, Description, Spinner } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
 
 import { FeatureSheetLayout } from "@/features/shared/components/FeatureSheetLayout";
 import { useResponsiveSheetPlacement } from "@/features/student/routine/components/shared/useResponsiveSheetPlacement";
+import React from "react";
 
 export type RoutineSaveSummaryItem = {
 	completedSets: number;
@@ -132,7 +133,14 @@ export default function RoutineSaveSheet( {
 					isPending={ isPending }
 					onPress={ onConfirm }
 				>
-					Guardar progreso
+					{ ( { isPending } ) => (
+						<>
+							{ isPending ? <Spinner color={ "current" } size={ "sm" }/> :
+								<FloppyDisk className={ "size-4" }/> }
+							{ isPending ? "Guardando..." : "Guardar progreso" }
+						</>
+					) }
+
 				</Button>
 			</Sheet.Footer>
 		</FeatureSheetLayout>

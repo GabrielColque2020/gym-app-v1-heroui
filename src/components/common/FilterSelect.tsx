@@ -12,6 +12,7 @@ interface FilterSelectProps {
 	defaultValue?: string;
 	className?: string;
 	name?: string;
+	value?: string;
 	onSelectionChange?: ( value: string ) => void;
 }
 
@@ -22,14 +23,19 @@ export function FilterSelect( {
 								  defaultValue = "",
 								  className = "w-full",
 								  name,
+								  value,
 								  onSelectionChange,
 							  }: FilterSelectProps ) {
+	const selectValueProps = value !== undefined
+		? { value }
+		: { defaultValue };
+
 	return (
 		<Select
 			className={ className }
 			placeholder={ placeholder }
 			name={ name }
-			defaultValue={ defaultValue }
+			{ ...selectValueProps }
 			onChange={ ( key ) => onSelectionChange?.( key as string ) }
 			variant={ "secondary" }
 		>

@@ -151,8 +151,7 @@ export function useAdminCopyRoutineSheetState( {
 		? `Semana ${ selectedSorted[ 0 ] } de ${ sourceLabel } sera copiada en ${ weekListLabel( singleDestWeeks ) }.`
 		: "Selecciona una o mas semanas destino.";
 	const monthPrimaryDisabled = sameMonth || sourceQuery.isLoading || !source?.hasRoutine || copyMonth.isPending;
-	const weeksPrimaryDisabled = sameMonth
-		|| sourceQuery.isLoading
+	const weeksPrimaryDisabled = sourceQuery.isLoading
 		|| !source?.hasRoutine
 		|| weekMappings.length === 0
 		|| copyWeeks.isPending;

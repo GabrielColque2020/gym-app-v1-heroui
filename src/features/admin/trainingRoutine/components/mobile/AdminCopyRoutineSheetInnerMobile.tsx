@@ -37,9 +37,9 @@ function Notice( { children }: { children: React.ReactNode } ) {
 
 function SummaryRow( { label, value }: { label: string; value: React.ReactNode } ) {
 	return (
-		<div className={ "grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-center gap-3" }>
-			<Typography className={ "min-w-0 truncate text-sm text-muted" }>{ label }</Typography>
-			<Typography className={ "min-w-0 truncate text-right text-sm font-medium" }>{ value }</Typography>
+		<div className={ "grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-3" }>
+			<Typography className={ "min-w-0 whitespace-normal wrap-break-word text-sm text-muted" }>{ label }</Typography>
+			<Typography className={ "min-w-0 whitespace-normal wrap-break-word text-right text-sm font-medium" }>{ value }</Typography>
 		</div>
 	);
 }
@@ -179,7 +179,7 @@ export function AdminCopyRoutineSheetInnerMobile( props: AdminCopyRoutineSheetIn
 					</div>
 				</div>
 
-				{ sameMonth ? <Notice>No podes copiar desde el mismo mes destino.</Notice> : null }
+				{ mode === "month" && sameMonth ? <Notice>No podes copiar desde el mismo mes destino.</Notice> : null }
 				{ props.hasActiveRoutine ? (
 					<Notice>
 						{ destLabel } ya tiene una rutina configurada. La copia puede reemplazar contenido existente.
@@ -199,12 +199,12 @@ export function AdminCopyRoutineSheetInnerMobile( props: AdminCopyRoutineSheetIn
 					<Surface className={ "flex min-h-36 items-center justify-center rounded-xl border border-default-hover" }>
 						<Spinner size={ "lg" }/>
 					</Surface>
-				) : source && !source.hasRoutine && !sameMonth ? (
+				) : source && !source.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<EmptyState className={ "flex min-h-36 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-default-hover px-4 text-center" }>
 						<Typography className={ "text-sm font-medium" }>No hay rutina en este origen.</Typography>
 						<Description className={ "text-sm" }>Proba con otro mes para continuar.</Description>
 					</EmptyState>
-				) : source?.hasRoutine && !sameMonth ? (
+				) : source?.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<div className={ "grid gap-3" }>
 						{ mode === "month" ? (
 							<Surface className={ "rounded-xl border border-default-hover bg-surface p-3" }>
@@ -262,7 +262,7 @@ export function AdminCopyRoutineSheetInnerMobile( props: AdminCopyRoutineSheetIn
 								) : isSingleWeek ? (
 									<div className={ "grid gap-3" }>
 										<div>
-											<Label className={ "text-sm font-semibold" }>Copiar en</Label>
+											<Label className={ "text-sm font-semibold pr-1" }>Copiar en:</Label>
 											<Description className={ "mt-1 text-sm" }>
 												Ideal para repetir una misma semana en varias semanas del mes actual.
 											</Description>

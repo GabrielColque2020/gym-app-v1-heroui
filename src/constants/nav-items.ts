@@ -37,6 +37,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
 				label: "Planes Alimenticios por Estudiantes",
 				roles: [ "COACH" ],
 			},
+			{
+				href: "/admin/historyRoutinesStudents",
+				icon: Gear,
+				label: "Historial de Rutina por Estudiantes",
+				roles: [ "COACH" ],
+			},
 		],
 		icon: Gear,
 		label: "Administración",
