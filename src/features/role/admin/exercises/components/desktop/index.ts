@@ -1,0 +1,1 @@
+export { ExercisesContentDesktop } from "./ExercisesContentDesktop";

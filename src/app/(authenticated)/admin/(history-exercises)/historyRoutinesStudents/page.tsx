@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import AdminHistoryRoutinesStudentsPageContent from "@/features/admin/historyRoutinesStudents/views/AdminHistoryRoutinesStudentsPageContent";
+import AdminHistoryRoutinesStudentsPageContent from "@/features/role/admin/history-routines-students/views/AdminHistoryRoutinesStudentsPageContent";
 
 export const metadata: Metadata = {
 	title: "Historial de rutinas por estudiante",

@@ -1,0 +1,106 @@
+"use server";
+
+import prisma from "@/lib/prisma";
+import { emptyToNull } from "@/features/exercises/services/exercise-form";
+import { getRoutineDayAction } from "@/features/routine/actions/get-routine-day";
+import { getRoutineDayDetailBase } from "@/features/routine/services/routine-day-detail";
+import { validateRoutineDayDraft, type SaveRoutineDayExerciseInput } from "@/features/routine/services/routine-day-editor";
+
+export type SaveRoutineDayExercisesActionInput = {
+	exercises: SaveRoutineDayExerciseInput[];
+	routineDayId: string;
+	studentId?: string | null;
+	coachId?: string | null;
+};
+
+function normalizeExercises( exercises: SaveRoutineDayExerciseInput[] ) {
+	return exercises.map( ( exercise ) => ( {
+		exerciseId: exercise.exerciseId.trim(),
+		observation: exercise.observation,
+		order: exercise.order,
+		reps: exercise.reps,
+		sets: exercise.sets,
+	} ) );
+}
+
+export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExercisesActionInput ) {
+	try {
+		const routineDayId = input.routineDayId.trim();
+		const studentId = input.studentId?.trim();
+		const exercises = normalizeExercises( input.exercises );
+
+		if (!routineDayId) {
+			throw new Error( "Selecciona un dia valido antes de guardar cambios." );
+		}
+
+		const validationError = validateRoutineDayDraft( exercises.map( ( exercise ) => ( {
+			clientId: exercise.exerciseId,
+			exercise: null,
+			exerciseId: exercise.exerciseId,
+			id: null,
+			observation: exercise.observation,
+			order: exercise.order,
+			reps: exercise.reps,
+			sets: exercise.sets,
+		} ) ) );
+
+		if (validationError) {
+			throw new Error( validationError );
+		}
+
+		const routineDay = await getRoutineDayDetailBase( {
+			coachId: input.coachId,
+			routineDayId,
+			studentId,
+		} );
+
+		if (exercises.length > 0) {
+			const existingExercises = await prisma.exercise.findMany( {
+				select: {
+					id: true,
+				},
+				where: {
+					active: true,
+					id: {
+						in: exercises.map( ( exercise ) => exercise.exerciseId ),
+					},
+				},
+			} );
+
+			if (existingExercises.length !== exercises.length) {
+				throw new Error( "Uno o mas ejercicios ya no estan disponibles en el catalogo activo." );
+			}
+		}
+
+		await prisma.$transaction( async ( transaction ) => {
+			await transaction.routine.deleteMany( {
+				where: {
+					routineDayId: routineDay.id,
+				},
+			} );
+
+			if (exercises.length === 0) return;
+
+			await transaction.routine.createMany( {
+				data: exercises.map( ( exercise ) => ( {
+					exerciseId: exercise.exerciseId,
+					observation: emptyToNull( exercise.observation ),
+					order: exercise.order,
+					reps: exercise.reps.trim(),
+					routineDayId: routineDay.id,
+					sets: exercise.sets.trim(),
+				} ) ),
+			} );
+		} );
+
+		return await getRoutineDayAction( {
+			coachId: input.coachId,
+			routineDayId: routineDay.id,
+			studentId,
+		} );
+	} catch (error) {
+		const message = error instanceof Error ? error.message : "Error desconocido al guardar la rutina del dia.";
+
+		throw new Error( `No se pudo guardar el dia de rutina. ${ message }` );
+	}
+}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import EditRoutineDayPageContent from "@/features/admin/routine/views/EditRoutineDayPageContent";
+import EditRoutineDayPageContent from "@/features/role/admin/routine/views/EditRoutineDayPageContent";
 
 export const metadata: Metadata = {
 	title: "Editar Rutina",

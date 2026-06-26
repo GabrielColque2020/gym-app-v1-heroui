@@ -5,11 +5,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Spinner, Typography } from "@heroui/react";
-import { useRoutineDayDraftStore } from "@/features/admin/routine/stores/useRoutineDayDraftStore";
-import { useRoutineSessionStore } from "@/features/student/routine/stores/useRoutineSessionStore";
-
-const ROUTINE_SESSION_STORAGE_KEY = "routineExerciseProgress-storage";
-const ROUTINE_DAY_DRAFT_STORAGE_KEY = "admin-routine-day-drafts";
+import { clearRoutineStateOnLogout } from "@/features/routine/services/routine-logout";
 
 export default function LogoutPageContent() {
 	const router = useRouter();
@@ -24,12 +20,8 @@ export default function LogoutPageContent() {
 					method: "POST",
 				} );
 
-				useRoutineSessionStore.getState().clearAll();
-				useRoutineDayDraftStore.getState().clearAllDrafts();
+				clearRoutineStateOnLogout();
 				queryClient.clear();
-
-				window.localStorage.removeItem( ROUTINE_SESSION_STORAGE_KEY );
-				window.localStorage.removeItem( ROUTINE_DAY_DRAFT_STORAGE_KEY );
 				window.sessionStorage.clear();
 			} finally {
 				if (isMounted) {

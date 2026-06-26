@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import AdminMealPlansStudentsPageContent from "@/features/admin/mealPlansStudents/views/AdminMealPlansStudentsPageContent";
+import AdminMealPlansStudentsPageContent from "@/features/role/admin/meal-plans-students/views/AdminMealPlansStudentsPageContent";
 
 export const metadata: Metadata = {
 	title: "Planes alimenticios por estudiante",

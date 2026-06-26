@@ -1,1 +1,0 @@
-export { AdminTrainingRoutineCardDesktop } from "./AdminTrainingRoutineCardDesktop";

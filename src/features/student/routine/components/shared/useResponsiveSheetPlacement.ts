@@ -1,6 +1,0 @@
-"use client";
-
-export {
-	type ResponsiveSheetPlacement as RoutineSheetPlacement,
-	useResponsiveSheetPlacement,
-} from "@/features/shared/hooks/useResponsiveSheetPlacement";

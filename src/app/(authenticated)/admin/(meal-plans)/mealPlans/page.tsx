@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import AdminMealPlansPageContent from "@/features/admin/mealPlans/views/AdminMealPlansPageContent";
+import AdminMealPlansPageContent from "@/features/role/admin/meal-plans/views/AdminMealPlansPageContent";
 
 export const metadata: Metadata = {
 	title: "Planes alimenticios",

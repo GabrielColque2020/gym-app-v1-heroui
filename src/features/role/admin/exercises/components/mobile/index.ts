@@ -1,0 +1,1 @@
+export { ExercisesContentMobile } from "./ExercisesContentMobile";

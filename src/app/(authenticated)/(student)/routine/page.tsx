@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { getAuthenticatedSession } from "@/features/auth/session";
-import RoutinePageContent from "@/features/student/routine/views/RoutinePageContent";
+import RoutinePageContent from "@/features/role/student/routine/views/RoutinePageContent";
 
 export const metadata: Metadata = {
 	title: "Rutina de Ejercicio",

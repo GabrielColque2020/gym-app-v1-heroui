@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import AdminHistoryRoutinesPageContent from "@/features/admin/historyRoutines/views/AdminHistoryRoutinesPageContent";
+import AdminHistoryRoutinesPageContent from "@/features/role/admin/history-routines/views/AdminHistoryRoutinesPageContent";
 
 type Props = {
 	searchParams: Promise<{

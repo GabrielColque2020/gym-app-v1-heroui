@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import TrainingRoutinesPageContent from "@/features/student/training/views/TrainingRoutinesPageContent";
+import TrainingRoutinesPageContent from "@/features/role/student/training-routine/views/TrainingRoutinesPageContent";
 
 export const metadata: Metadata = {
 	title: "Rutina de Entrenamiento",
