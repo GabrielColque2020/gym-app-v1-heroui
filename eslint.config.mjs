@@ -13,14 +13,14 @@ export default [
     },
     ...tseslint.configs.recommended,
     {
-        files: ["**/*.{js,mjs,cjs,jsx,ts,tsx}"],
+        files: [ "**/*.{js,mjs,cjs,jsx,ts,tsx}" ],
         plugins: {
             "react": reactPlugin,
             "react-hooks": reactHooks
         },
         rules: {
             ...reactHooks.configs.recommended.rules,
-            "@typescript-eslint/no-unused-vars": "off",
+            "@typescript-eslint/no-unused-vars": "on",
             "@typescript-eslint/no-explicit-any": "off",
             "react/jsx-curly-brace-presence": [
                 "error",

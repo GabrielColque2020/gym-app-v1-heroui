@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import type { EmblaCarouselType } from "embla-carousel";
 import { ArrowLeft, ArrowRight, Bulb, Calendar, ChartLine, FloppyDisk } from "@gravity-ui/icons";
-import { Button, ScrollShadow, Card, Checkbox, Input, Label } from "@heroui/react";
+import { Button, Card, Checkbox, Input, Label, ScrollShadow } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react";
-import { TipsCard } from "@/features/role/student/routine/components/shared";
 import MobileExerciseCard from "@/features/role/student/routine/components/mobile/MobileExerciseCard";
 import type { Exercise } from "@/features/routine/types/routine.types";
 

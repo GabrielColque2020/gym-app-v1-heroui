@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, Chip, ScrollShadow, Typography } from "@heroui/react";
-import { CircleFill } from "@gravity-ui/icons";
 
 import type { AdminHistoryRoutine } from "@/features/role/admin/history-routines/actions/get-history-routines-by-student";
 import { formatHistoryDate } from "@/features/role/admin/history-routines/services/history-routines-form";

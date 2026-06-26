@@ -1,13 +1,10 @@
 ﻿"use client";
-import { Alert, Button, Card, Chip, Spinner, Typography } from "@heroui/react";
+import { Alert, Card, Spinner } from "@heroui/react";
 import { CircleFill } from "@gravity-ui/icons";
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import type { StudentMealPlan } from "@/features/mealPlans/types/meal-plans.types";
 import { useMealPlans } from "@/features/role/student/meal-plans/hooks/useMealPlans";
-import {
-	formatMealPlanDescriptionLines,
-	formatMealTime,
-} from "@/features/mealPlans/services/meal-plan-formatters";
+import { formatMealPlanDescriptionLines, formatMealTime, } from "@/features/mealPlans/services/meal-plan-formatters";
 
 type StudentMealPlansPageContentProps = { studentId: string | null };
 
@@ -49,7 +46,7 @@ function MealPlanCard( { mealPlan }: { mealPlan: StudentMealPlan } ) {
 }
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
-	const { data, error, isError, isLoading, refetch } = useMealPlans( studentId );
+	const { data, error, isError, isLoading } = useMealPlans( studentId );
 	const crumbs = [
 		{ href: "/dashboard", label: "Inicio" },
 		{ label: "Mis planes alimenticios" },

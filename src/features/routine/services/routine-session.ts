@@ -1,15 +1,14 @@
 import { formatBodyPart } from "@/features/exercises/services/exercise-formatters";
 import type { RoutineDayDetail } from "@/features/routine/services/routine-day-detail";
 import type {
+	Exercise,
 	ExerciseProgressRoutine,
-	RoutinePageStudent,
 	ExerciseSessionHistory,
 	ExerciseSessionHistorySet,
-	Exercise,
 	ExerciseSet,
 	ExerciseVariantOption,
+	RoutinePageStudent,
 	WorkoutSession,
-	ExerciseProgressRoutineOld,
 } from "@/features/routine/types/routine.types";
 
 export type StudentRoutineProgressEntry = {
@@ -28,14 +27,11 @@ export type StudentRoutineProgressEntry = {
 	weightUsed: string;
 };
 
-export type StudentRoutineSet = ExerciseSet & {
-};
+export type StudentRoutineSet = ExerciseSet & {};
 
-export type StudentRoutineExercise = Exercise & {
-};
+export type StudentRoutineExercise = Exercise & {};
 
-export type StudentRoutineVariantOption = ExerciseVariantOption & {
-};
+export type StudentRoutineVariantOption = ExerciseVariantOption & {};
 
 export type StudentRoutineSessionHistorySet = ExerciseSessionHistorySet;
 export type StudentRoutineSessionHistory = ExerciseSessionHistory;
@@ -442,27 +438,27 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				};
 			} );
 
-	return {
-		baseName: exercise?.name ?? routine.exercise?.name ?? "Ejercicio",
-		equipment: formatBodyPart( selectedVariant?.bodyPart ?? routine.exercise?.bodyPart ?? "CHEST" ),
-		id: exerciseId,
-		muscleGroup: routine.observation ?? detail.trainingRoutine.objective ?? "",
-		name: selectedVariant?.name ?? exercise?.name ?? "Ejercicio",
-		notes: exercise?.tips ?? routine.observation ?? undefined,
-		lastSession,
-		variantExerciseId,
-		variantSelectionExplicit: false,
-		restTime: Math.max( setCount * 30, 0 ),
-		sets: currentSets,
-		variantOptions: routine.variants.map( ( variant ) => ( {
-			active: variant.variantExercise.active,
-			bodyPart: variant.variantExercise.bodyPart,
-			id: variant.variantExercise.id,
-			lastSession: buildSessionHistory( getProgressEntriesByVariant( detail, variant.variantExercise.id ) ),
-			name: variant.variantExercise.name,
-		} ) ),
-	};
-	} );
+			return {
+				baseName: exercise?.name ?? routine.exercise?.name ?? "Ejercicio",
+				equipment: formatBodyPart( selectedVariant?.bodyPart ?? routine.exercise?.bodyPart ?? "CHEST" ),
+				id: exerciseId,
+				muscleGroup: routine.observation ?? detail.trainingRoutine.objective ?? "",
+				name: selectedVariant?.name ?? exercise?.name ?? "Ejercicio",
+				notes: exercise?.tips ?? routine.observation ?? undefined,
+				lastSession,
+				variantExerciseId,
+				variantSelectionExplicit: false,
+				restTime: Math.max( setCount * 30, 0 ),
+				sets: currentSets,
+				variantOptions: routine.variants.map( ( variant ) => ( {
+					active: variant.variantExercise.active,
+					bodyPart: variant.variantExercise.bodyPart,
+					id: variant.variantExercise.id,
+					lastSession: buildSessionHistory( getProgressEntriesByVariant( detail, variant.variantExercise.id ) ),
+					name: variant.variantExercise.name,
+				} ) ),
+			};
+		} );
 
 	const latestActivity = detail.progressEntries[ 0 ]?.date ?? new Date();
 

@@ -4,7 +4,8 @@ import type { AdminTrainingRoutineDay } from "@/features/role/admin/training-rou
 
 import { Accordion, Button, Chip, Description, Dropdown, Header, Label, Typography } from "@heroui/react";
 import { CircleFill, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
+
 import { useRouter } from "next/navigation";
 
 type AdminTrainingRoutineDaysAccordionProps = {

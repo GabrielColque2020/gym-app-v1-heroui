@@ -1,8 +1,6 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-
-import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 import { normalizeSearchName } from "@/features/exercises/services/exercise-form";
 import type { ExerciseVariantListItem, ExerciseVariantSearchItem } from "@/features/exercises/types/exercise-variants.types";
@@ -38,7 +36,7 @@ type ExerciseVariantSaveInput = {
 	variantExerciseIds: string[];
 };
 
-function normalizeId(value: string) {
+function normalizeId( value: string ) {
 	return value.trim();
 }
 
@@ -51,8 +49,8 @@ function buildExerciseSearchWhere( { bodyPart, excludedIds, query }: ExerciseVar
 		id: {
 			notIn: excludedIds,
 		},
-		...(bodyPart && bodyPart !== "ALL" ? { bodyPart } : {} ),
-		...(normalizedQuery.length > 0
+		...( bodyPart && bodyPart !== "ALL" ? { bodyPart } : {} ),
+		...( normalizedQuery.length > 0
 			? {
 				OR: [
 					{
@@ -68,7 +66,7 @@ function buildExerciseSearchWhere( { bodyPart, excludedIds, query }: ExerciseVar
 					},
 				],
 			}
-			: {}),
+			: {} ),
 	};
 }
 
@@ -170,13 +168,13 @@ export async function createExerciseVariantAction( input: ExerciseVariantCreateI
 		}
 
 		const variantExercise = await prisma.exercise.findUnique( {
-				select: {
-					id: true,
-				},
-				where: {
-					id: variantExerciseId,
-				},
-			} );
+			select: {
+				id: true,
+			},
+			where: {
+				id: variantExerciseId,
+			},
+		} );
 
 		if (!variantExercise) {
 			throw new Error( "Uno de los ejercicios seleccionados no existe." );

@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import type { Key } from "@heroui/react";
-
-import { Alert, Button, Card, Chip, Dropdown, Header, Label, Spinner } from "@heroui/react";
+import { Alert, Button, Card, Dropdown, Header, Label, Spinner } from "@heroui/react";
 import { CircleFill, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
@@ -18,9 +17,9 @@ type AdminMealPlansPageContentProps = {
 };
 
 function MealPlanCard( {
-	mealPlan,
-	studentId,
-}: {
+						   mealPlan,
+						   studentId,
+					   }: {
 	mealPlan: AdminMealPlan;
 	studentId: string;
 } ) {

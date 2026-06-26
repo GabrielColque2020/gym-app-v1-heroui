@@ -1,6 +1,6 @@
 "use client";
 
-import { Accordion, Chip, Typography } from "@heroui/react";
+import { Accordion, Typography } from "@heroui/react";
 
 import type { HistoryRoutineWeekGroup } from "@/features/role/admin/history-routines/services/history-routines-view";
 import { HistoryRoutineDaysAccordion } from "@/features/role/admin/history-routines/components/desktop/HistoryRoutineDaysAccordion";

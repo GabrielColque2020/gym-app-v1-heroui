@@ -8,14 +8,8 @@ import { FilterSelect, PageBreadcrumbs, PageHeader } from "@/components/common";
 import { HistoryRoutineWeeksAccordion } from "@/features/role/admin/history-routines/components/desktop/HistoryRoutineWeeksAccordion";
 import { HistoryRoutineWeeksSelector } from "@/features/role/admin/history-routines/components/desktop/HistoryRoutineWeeksSelector";
 import { useHistoryRoutines } from "@/features/role/admin/history-routines/hooks/useHistoryRoutines";
-import {
-	buildYearOptions,
-	getCurrentMonth,
-	getCurrentYear,
-	MONTH_OPTIONS,
-} from "@/features/role/admin/history-routines/services/history-routines-form";
+import { buildYearOptions, getCurrentMonth, getCurrentYear, MONTH_OPTIONS, } from "@/features/role/admin/history-routines/services/history-routines-form";
 import { groupHistoryRoutinesByWeek } from "@/features/role/admin/history-routines/services/history-routines-view";
-import type { AdminHistoryRoutine } from "@/features/role/admin/history-routines/actions/get-history-routines-by-student";
 
 type AdminHistoryRoutinesPageContentProps = {
 	studentId: string | null;
@@ -96,7 +90,7 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 	];
 
 	return (
-		<div className={ "mx-auto flex w-full max-w-[1400px] flex-col gap-4" }>
+		<div className={ "mx-auto flex w-full max-w-350 flex-col gap-4" }>
 			<PageBreadcrumbs
 				backHref={ "/admin/historyRoutinesStudents" }
 				backLabel={ "Volver a estudiantes" }

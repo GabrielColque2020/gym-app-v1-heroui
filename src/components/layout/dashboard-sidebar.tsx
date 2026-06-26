@@ -1,12 +1,12 @@
 "use client";
 
-import type { NavItem } from "../../constants/nav-items";
+import type { NavItem } from "@/constants/nav-items";
+import { FOOTER_ITEMS, NAV_ITEMS } from "@/constants/nav-items";
 
-import { Avatar, Chip } from "@heroui/react";
+import { Avatar } from "@heroui/react";
 import { Sidebar } from "@heroui-pro/react";
 
 import type { Role } from "@/generated/prisma/client";
-import { FOOTER_ITEMS, NAV_ITEMS } from "../../constants/nav-items";
 
 interface DashboardSidebarProps {
 	pathname: string;
@@ -170,7 +170,7 @@ function SidebarNavItem( {
 			</Sidebar.MenuIcon>
 			<Sidebar.MenuLabel
 				className={
-					"whitespace-normal break-words leading-snug [&_[data-slot=sidebar-menu-label-text]]:whitespace-normal [&_[data-slot=sidebar-menu-label-text]]:break-words [&_[data-slot=sidebar-menu-label-text]]:overflow-visible [&_[data-slot=sidebar-menu-label-text]]:text-clip"
+					"whitespace-normal wrap-break-word leading-snug **:data-[slot=sidebar-menu-label-text]:whitespace-normal **:data-[slot=sidebar-menu-label-text]:wrap-break-word [&_[data-slot=sidebar-menu-label-text]]:overflow-visible [&_[data-slot=sidebar-menu-label-text]]:text-clip"
 				}
 			>
 				{ item.label }

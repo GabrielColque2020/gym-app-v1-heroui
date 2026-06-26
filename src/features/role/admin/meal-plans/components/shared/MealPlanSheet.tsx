@@ -1,58 +1,41 @@
 ﻿"use client";
 
 import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Sheet } from "@heroui-pro/react";
-import {
-	Alert,
-	Button,
-	Description,
-	FieldError,
-	Input,
-	Label,
-	ListBox,
-	Select,
-	Spinner,
-	TextArea,
-	TextField,
-	toast,
-} from "@heroui/react";
+import { Alert, Button, Description, FieldError, Label, ListBox, Select, Spinner, TextArea, TextField, toast, } from "@heroui/react";
 import { CircleCheck, Pencil, Plus } from "@gravity-ui/icons";
-import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { AdminMealPlan } from "@/features/mealPlans/types/meal-plans.types";
 import { useCreateMealPlan, useUpdateMealPlan } from "@/features/mealPlans/hooks/useMealPlanMutations";
-import {
-	MEAL_TIME_OPTIONS,
-	type MealPlanFormValues,
-	type MealTimeValue,
-} from "@/features/mealPlans/services/meal-plans-form";
+import { MEAL_TIME_OPTIONS, type MealPlanFormValues, type MealTimeValue, } from "@/features/mealPlans/services/meal-plans-form";
 import { FeatureSheetLayout } from "@/features/shared/components/FeatureSheetLayout";
 import { useResponsiveSheetPlacement } from "@/features/shared/hooks/useResponsiveSheetPlacement";
 
 type MealPlanSheetProps =
 	| {
-		hideTrigger?: boolean;
-		isOpen?: boolean;
-		mealPlan?: never;
-		mode: "create";
-		onOpenChange?: ( isOpen: boolean ) => void;
-		placement?: "bottom" | "right";
-		studentId: string;
-		triggerClassName?: string;
-		triggerVariant?: "button" | "icon";
-	}
+	hideTrigger?: boolean;
+	isOpen?: boolean;
+	mealPlan?: never;
+	mode: "create";
+	onOpenChange?: ( isOpen: boolean ) => void;
+	placement?: "bottom" | "right";
+	studentId: string;
+	triggerClassName?: string;
+	triggerVariant?: "button" | "icon";
+}
 	| {
-		hideTrigger?: boolean;
-		isOpen?: boolean;
-		mealPlan: AdminMealPlan;
-		mode: "edit";
-		onOpenChange?: ( isOpen: boolean ) => void;
-		placement?: "bottom" | "right";
-		studentId: string;
-		triggerClassName?: string;
-		triggerVariant?: "button" | "icon";
-	};
+	hideTrigger?: boolean;
+	isOpen?: boolean;
+	mealPlan: AdminMealPlan;
+	mode: "edit";
+	onOpenChange?: ( isOpen: boolean ) => void;
+	placement?: "bottom" | "right";
+	studentId: string;
+	triggerClassName?: string;
+	triggerVariant?: "button" | "icon";
+};
 
 const DEFAULT_VALUES: MealPlanFormValues = {
 	description: "",

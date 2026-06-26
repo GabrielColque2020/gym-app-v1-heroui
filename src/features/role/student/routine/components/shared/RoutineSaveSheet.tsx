@@ -1,11 +1,10 @@
 ﻿"use client";
 
-import { CircleCheck, CircleInfo, FloppyDisk } from "@gravity-ui/icons";
+import { CircleInfo, FloppyDisk } from "@gravity-ui/icons";
 import { Alert, Button, Card, Chip, Description, Spinner } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
 import { FeatureSheetLayout } from "@/features/shared/components/FeatureSheetLayout";
 import { useResponsiveSheetPlacement } from "@/features/role/student/routine/components/shared/useResponsiveSheetPlacement";
-import React from "react";
 
 export type RoutineSaveSummaryItem = {
 	completedSets: number;
@@ -28,13 +27,13 @@ function formatCompletionLabel( completedSets: number, totalSets: number ) {
 }
 
 export default function RoutineSaveSheet( {
-	isOpen,
-	isPending,
-	validationError,
-	summaryItems,
-	onConfirm,
-	onOpenChange,
-}: RoutineSaveSheetProps ) {
+											  isOpen,
+											  isPending,
+											  validationError,
+											  summaryItems,
+											  onConfirm,
+											  onOpenChange,
+										  }: RoutineSaveSheetProps ) {
 	const placement = useResponsiveSheetPlacement();
 	const hasCompletedSets = summaryItems.some( ( item ) => item.completedSets > 0 );
 	const canConfirmSave = hasCompletedSets && !validationError && !isPending;
