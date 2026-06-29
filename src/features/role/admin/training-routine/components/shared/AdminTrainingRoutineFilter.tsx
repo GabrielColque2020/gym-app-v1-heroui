@@ -1,4 +1,5 @@
 "use client";
+import { MONTH_OPTIONS } from "@/constants/months";
 import type { AdminTrainingRoutine } from "@/features/role/admin/training-routine/actions/get-training-routines-by-student";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -18,21 +19,6 @@ type AdminTrainingRoutineFilterProps = {
 	studentName: string;
 	year: number;
 };
-
-const monthOptions = [
-	{ value: "1", label: "Enero" },
-	{ value: "2", label: "Febrero" },
-	{ value: "3", label: "Marzo" },
-	{ value: "4", label: "Abril" },
-	{ value: "5", label: "Mayo" },
-	{ value: "6", label: "Junio" },
-	{ value: "7", label: "Julio" },
-	{ value: "8", label: "Agosto" },
-	{ value: "9", label: "Septiembre" },
-	{ value: "10", label: "Octubre" },
-	{ value: "11", label: "Noviembre" },
-	{ value: "12", label: "Diciembre" },
-];
 
 export function AdminTrainingRoutineFilter( {
 												month,
@@ -85,7 +71,7 @@ export function AdminTrainingRoutineFilter( {
 						defaultValue={ selectedMonth }
 						label={ "Mes" }
 						name={ "month" }
-						options={ monthOptions }
+						options={ MONTH_OPTIONS }
 						placeholder={ "Todos los meses" }
 						onSelectionChange={ setSelectedMonth }
 					/>

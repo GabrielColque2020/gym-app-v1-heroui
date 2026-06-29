@@ -2,8 +2,8 @@
 
 import bcryptjs from "bcryptjs";
 
+import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
-import { TEMP_COACH_ID } from "@/features/shared/temp-coach";
 import {
 	NO_GENDER,
 	emptyToNull,
@@ -65,12 +65,13 @@ function validateStudentInput( input: CreateStudentInput, mode: "create" | "edit
 
 export async function createStudentAction( input: CreateStudentInput ) {
 	try {
+		const session = await requireCoachSession( "gestionar estudiantes" );
 		const { descriptionData, password, userData } = validateStudentInput( input, "create" );
 
 		return await prisma.user.create( {
 			data: {
 				...userData,
-				coachId: TEMP_COACH_ID,
+				coachId: session.sub,
 				DescriptionStudent: {
 					create: descriptionData,
 				},
@@ -106,6 +107,7 @@ export async function createStudentAction( input: CreateStudentInput ) {
 
 export async function updateStudentAction( input: UpdateStudentInput ) {
 	try {
+		const session = await requireCoachSession( "gestionar estudiantes" );
 		const { descriptionData, password, userData } = validateStudentInput( input, "edit" );
 		const passwordData = password.length > 0 ? { password: bcryptjs.hashSync( password ) } : {};
 
@@ -141,7 +143,7 @@ export async function updateStudentAction( input: UpdateStudentInput ) {
 				updatedAt: true,
 			},
 			where: {
-				coachId: TEMP_COACH_ID,
+				coachId: session.sub,
 				id: input.id,
 				role: "STUDENT",
 			},
@@ -155,6 +157,7 @@ export async function updateStudentAction( input: UpdateStudentInput ) {
 
 export async function deactivateStudentAction( id: string ) {
 	try {
+		const session = await requireCoachSession( "gestionar estudiantes" );
 		return await prisma.user.update( {
 			data: {
 				active: false,
@@ -180,7 +183,7 @@ export async function deactivateStudentAction( id: string ) {
 				updatedAt: true,
 			},
 			where: {
-				coachId: TEMP_COACH_ID,
+				coachId: session.sub,
 				id,
 				role: "STUDENT",
 			},
@@ -194,6 +197,7 @@ export async function deactivateStudentAction( id: string ) {
 
 export async function restoreStudentAction( id: string ) {
 	try {
+		const session = await requireCoachSession( "gestionar estudiantes" );
 		return await prisma.user.update( {
 			data: {
 				active: true,
@@ -219,7 +223,7 @@ export async function restoreStudentAction( id: string ) {
 				updatedAt: true,
 			},
 			where: {
-				coachId: TEMP_COACH_ID,
+				coachId: session.sub,
 				id,
 				role: "STUDENT",
 			},

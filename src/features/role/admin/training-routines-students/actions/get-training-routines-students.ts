@@ -1,10 +1,12 @@
-﻿"use server";
+"use server";
 
+import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
-import { TEMP_COACH_ID } from "@/features/shared/temp-coach";
 
 export async function getTrainingRoutinesStudentsAction() {
 	try {
+		const session = await requireCoachSession( "consultar estudiantes" );
+
 		return await prisma.user.findMany( {
 			orderBy: {
 				createdAt: "desc",
@@ -31,7 +33,7 @@ export async function getTrainingRoutinesStudentsAction() {
 			},
 			where: {
 				active: true,
-				coachId: TEMP_COACH_ID,
+				coachId: session.sub,
 				role: "STUDENT",
 			},
 		} );

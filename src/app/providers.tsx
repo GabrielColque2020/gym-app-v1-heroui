@@ -11,14 +11,7 @@ type ProvidersProps = {
 
 export function Providers( { children }: ProvidersProps ) {
 	const [ queryClient ] = useState(
-		() =>
-			new QueryClient( {
-				defaultOptions: {
-					queries: {
-						refetchOnWindowFocus: true,
-					},
-				},
-			} ),
+		() => new QueryClient(),
 	);
 
 	return <QueryClientProvider client={ queryClient }>{ children }</QueryClientProvider>;

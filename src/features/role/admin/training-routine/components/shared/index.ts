@@ -6,4 +6,3 @@ export { AdminCreateRoutineSheet } from "./AdminCreateRoutineSheet";
 export { AdminDeleteRoutineSheet } from "./AdminDeleteRoutineSheet";
 export { AdminEditRoutineSheet } from "./AdminEditRoutineSheet";
 export { useAdminCopyRoutineSheetState } from "./useAdminCopyRoutineSheetState";
-export * from "./adminCopyRoutineConstants";

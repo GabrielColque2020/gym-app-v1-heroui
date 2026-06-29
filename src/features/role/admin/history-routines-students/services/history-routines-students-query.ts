@@ -1,5 +1,6 @@
-﻿import { queryOptions } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
+import { QUERY_DEFAULTS } from "@/constants/query";
 import { getHistoryRoutinesStudentsAction } from "@/features/role/admin/history-routines-students/actions/get-history-routines-students";
 
 export const HISTORY_ROUTINES_STUDENTS_QUERY_KEY = [ "history-routines-students" ] as const;
@@ -11,8 +12,7 @@ export async function fetchHistoryRoutinesStudents(): Promise<HistoryRoutinesStu
 }
 
 export const historyRoutinesStudentsQueryOptions = () => queryOptions( {
+	...QUERY_DEFAULTS.admin,
 	queryFn: fetchHistoryRoutinesStudents,
 	queryKey: HISTORY_ROUTINES_STUDENTS_QUERY_KEY,
-	refetchOnWindowFocus: true,
-	staleTime: 60_000,
 } );

@@ -1,7 +1,7 @@
 "use server";
 
+import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
-import { TEMP_COACH_ID } from "@/features/shared/temp-coach";
 import {
 	validateRoutineStructureScopeInput,
 	validateRoutineStructureInput,
@@ -9,14 +9,14 @@ import {
 	type RoutineStructureScopeInput,
 } from "@/features/trainingRoutine/services/routine-structure";
 
-async function assertStudentExists( studentId: string ) {
+async function assertStudentExists( studentId: string, coachId: string ) {
 	const student = await prisma.user.findFirst( {
 		select: {
 			id: true,
 		},
 		where: {
 			active: true,
-			coachId: TEMP_COACH_ID,
+			coachId,
 			id: studentId,
 			role: "STUDENT",
 		},
@@ -29,8 +29,9 @@ async function assertStudentExists( studentId: string ) {
 
 async function upsertRoutineStructure( input: RoutineStructureInput ) {
 	validateRoutineStructureInput( input );
+	const session = await requireCoachSession( "modificar rutinas" );
 
-	await assertStudentExists( input.studentId );
+	await assertStudentExists( input.studentId, session.sub );
 
 	const selectedWeeks = input.weeks.map( ( week ) => week.week );
 	const existingRoutines = await prisma.trainingRoutine.findMany( {
@@ -175,7 +176,8 @@ export async function updateTrainingRoutineStructureAction( input: RoutineStruct
 export async function deleteTrainingRoutineStructureAction( input: RoutineStructureScopeInput ) {
 	try {
 		validateRoutineStructureScopeInput( input );
-		await assertStudentExists( input.studentId );
+		const session = await requireCoachSession( "eliminar rutinas" );
+		await assertStudentExists( input.studentId, session.sub );
 
 		await prisma.trainingRoutine.deleteMany( {
 			where: {

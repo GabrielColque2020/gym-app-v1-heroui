@@ -1,7 +1,7 @@
 "use server";
 
+import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
-import { TEMP_COACH_ID } from "@/features/shared/temp-coach";
 import {
 	type CopyTrainingRoutineMonthInput,
 	type CopyTrainingRoutineWeeksInput,
@@ -11,14 +11,14 @@ import {
 	validateCopyWeeksInput,
 } from "@/features/trainingRoutine/services/training-routine-copy";
 
-async function assertStudentExists( studentId: string ) {
+async function assertStudentExists( studentId: string, coachId: string ) {
 	const student = await prisma.user.findFirst( {
 		select: {
 			id: true,
 		},
 		where: {
 			active: true,
-			coachId: TEMP_COACH_ID,
+			coachId,
 			id: studentId,
 			role: "STUDENT",
 		},
@@ -60,7 +60,8 @@ async function getSourceRoutines( studentId: string, month: number, year: number
 export async function getTrainingRoutineCopySourceAction( input: TrainingRoutineCopySourceInput ) {
 	try {
 		validateCopySourceInput( input );
-		await assertStudentExists( input.studentId );
+		const session = await requireCoachSession( "consultar la rutina origen" );
+		await assertStudentExists( input.studentId, session.sub );
 
 		const routines = await getSourceRoutines( input.studentId, input.month, input.year );
 		const dayCount = routines.reduce( ( count, routine ) => count + routine.routineDays.length, 0 );
@@ -94,7 +95,8 @@ export async function getTrainingRoutineCopySourceAction( input: TrainingRoutine
 export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutineMonthInput ) {
 	try {
 		validateCopyMonthInput( input );
-		await assertStudentExists( input.studentId );
+		const session = await requireCoachSession( "copiar la rutina" );
+		await assertStudentExists( input.studentId, session.sub );
 
 		const sourceRoutines = await getSourceRoutines( input.studentId, input.sourceMonth, input.sourceYear );
 
@@ -167,7 +169,8 @@ export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutine
 export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutineWeeksInput ) {
 	try {
 		validateCopyWeeksInput( input );
-		await assertStudentExists( input.studentId );
+		const session = await requireCoachSession( "copiar semanas" );
+		await assertStudentExists( input.studentId, session.sub );
 
 		const sourceWeeks = input.weekMappings.map( ( mapping ) => mapping.sourceWeek );
 		const sourceRoutines = await getSourceRoutines(

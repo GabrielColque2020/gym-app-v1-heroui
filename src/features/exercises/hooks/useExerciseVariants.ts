@@ -12,7 +12,7 @@ import type { BodyPartFilter } from "@/features/exercises/services/exercise-form
 
 function invalidateExerciseVariantQueries( queryClient: ReturnType<typeof useQueryClient>, routineId: string ) {
 	void queryClient.invalidateQueries( {
-		queryKey: [ "admin-exercise-variants", routineId ],
+		queryKey: exerciseVariantsQueryKey( routineId ),
 	} );
 }
 

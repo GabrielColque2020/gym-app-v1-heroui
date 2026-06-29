@@ -2,6 +2,7 @@
 
 import type React from "react";
 
+import { MONTH_OPTIONS_PADDED as MONTH_OPTIONS } from "@/constants/months";
 import { CheckboxButtonGroup, Segment, Sheet } from "@heroui-pro/react";
 import {
 	Alert,
@@ -19,7 +20,6 @@ import {
 } from "@heroui/react";
 import { Calendar, Copy, Layers } from "@gravity-ui/icons";
 
-import { MONTH_OPTIONS } from "@/features/role/admin/training-routine/components/shared/adminCopyRoutineConstants";
 import {
 	type AdminCopyRoutineSheetProps,
 	useAdminCopyRoutineSheetState,

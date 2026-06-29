@@ -1,9 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 
-import {
-	getExerciseVariantsAction,
-	searchExerciseVariantCandidatesAction,
-} from "@/features/exercises/actions/exercise-variants";
+import { QUERY_VOLATILE_DEFAULTS } from "@/constants/query";
+import { getExerciseVariantsAction, searchExerciseVariantCandidatesAction, } from "@/features/exercises/actions/exercise-variants";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 
 export const exerciseVariantsQueryKey = ( routineId: string ) =>
@@ -18,11 +16,10 @@ export const exerciseVariantCandidatesQueryKey = (
 
 export function exerciseVariantsQueryOptions( routineId: string, enabled = true ) {
 	return queryOptions( {
+		...QUERY_VOLATILE_DEFAULTS,
 		enabled: enabled && Boolean( routineId ),
 		queryFn: () => getExerciseVariantsAction( { routineId } ),
-		queryKey: exerciseVariantsQueryKey( routineId ),
-		refetchOnWindowFocus: true,
-		staleTime: 0,
+		queryKey: exerciseVariantsQueryKey( routineId )
 	} );
 }
 
@@ -33,6 +30,7 @@ export function exerciseVariantCandidatesQueryOptions(
 	enabled = true,
 ) {
 	return queryOptions( {
+		...QUERY_VOLATILE_DEFAULTS,
 		enabled: enabled && Boolean( exerciseId ),
 		queryFn: () => searchExerciseVariantCandidatesAction( {
 			exerciseId,
@@ -41,6 +39,5 @@ export function exerciseVariantCandidatesQueryOptions(
 		} ),
 		queryKey: exerciseVariantCandidatesQueryKey( exerciseId, query, bodyPart ),
 		refetchOnWindowFocus: false,
-		staleTime: 0,
 	} );
 }

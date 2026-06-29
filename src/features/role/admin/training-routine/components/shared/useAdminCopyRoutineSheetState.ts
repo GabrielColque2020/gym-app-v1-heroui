@@ -1,44 +1,46 @@
-﻿"use client";
-import { useMemo, useState } from "react";
+"use client";
+
+import { monthYearLabel, padMonth } from "@/constants/months";
 import { toast } from "@heroui/react";
-import {
-	monthYearLabel,
-	padMonth,
-} from "@/features/role/admin/training-routine/components/shared/adminCopyRoutineConstants";
-import { useTrainingRoutineCopySource } from "@/features/trainingRoutine/hooks/useTrainingRoutineCopySource";
+import { useMemo, useState } from "react";
+
 import {
 	useCopyTrainingRoutineMonth,
 	useCopyTrainingRoutineWeeks,
 } from "@/features/trainingRoutine/hooks/useTrainingRoutineCopy";
+import { useTrainingRoutineCopySource } from "@/features/trainingRoutine/hooks/useTrainingRoutineCopySource";
 
 export type AdminCopyRoutineSheetProps = {
-	destinationYear: string;
 	destinationMonth: string;
-	hasActiveRoutine?: boolean;
 	destinationWeeksOccupied?: number;
+	destinationYear: string;
+	hasActiveRoutine?: boolean;
 	studentId: string;
 };
+
 type CopyRoutineMode = "month" | "weeks";
 
 function buildYearOptions() {
 	const currentYear = new Date().getFullYear();
+
 	return Array.from( { length: 8 }, ( _, i ) => ( {
-		value: ( currentYear - 3 + i ).toString(),
 		label: ( currentYear - 3 + i ).toString(),
+		value: ( currentYear - 3 + i ).toString(),
 	} ) );
 }
 
 function weekListLabel( weeks: string[] ) {
 	if (weeks.length === 0) return "-";
+
 	return weeks.map( ( week ) => `Semana ${ week }` ).join( ", " );
 }
 
 export function useAdminCopyRoutineSheetState( {
-												   destinationYear,
-												   destinationMonth,
-												   destinationWeeksOccupied = 0,
-												   studentId,
-											   }: AdminCopyRoutineSheetProps ) {
+	destinationMonth,
+	destinationWeeksOccupied = 0,
+	destinationYear,
+	studentId,
+}: AdminCopyRoutineSheetProps ) {
 	const yearOptions = useMemo( () => buildYearOptions(), [] );
 	const destinationMonthNumber = Number( destinationMonth );
 	const destinationYearNumber = Number( destinationYear );
@@ -54,9 +56,7 @@ export function useAdminCopyRoutineSheetState( {
 	);
 	const [ selectedSourceWeeks, setSelectedSourceWeeks ] = useState<string[]>( [] );
 	const [ singleDestWeeks, setSingleDestWeeks ] = useState<string[]>( [] );
-	const [ multiDestByOrigin, setMultiDestByOrigin ] = useState<
-		Record<string, string>
-	>( {} );
+	const [ multiDestByOrigin, setMultiDestByOrigin ] = useState<Record<string, string>>( {} );
 	const sourceMonthNumber = Number( sourceMonth );
 	const sourceYearNumber = Number( sourceYear );
 	const sameMonth =
@@ -79,21 +79,27 @@ export function useAdminCopyRoutineSheetState( {
 	const isSingleWeek = selectedSorted.length === 1;
 	const assignedDestByOrigin = useMemo( () => {
 		if (selectedSorted.length < 2) return {};
+
 		const used = new Set<string>();
 		const next: Record<string, string> = {};
+
 		for (const origin of selectedSorted) {
 			const stored = multiDestByOrigin[ origin ];
+
 			if (stored && !used.has( stored )) {
 				next[ origin ] = stored;
 				used.add( stored );
 				continue;
 			}
+
 			const fallback = [ "1", "2", "3", "4" ].find( ( week ) => !used.has( week ) );
+
 			if (fallback) {
 				next[ origin ] = fallback;
 				used.add( fallback );
 			}
 		}
+
 		return next;
 	}, [ multiDestByOrigin, selectedSorted ] );
 	const weekMappings = useMemo( () => {
@@ -103,6 +109,7 @@ export function useAdminCopyRoutineSheetState( {
 				sourceWeek: Number( selectedSorted[ 0 ] ),
 			} ) );
 		}
+
 		return Object.entries( assignedDestByOrigin ).map(
 			( [ sourceWeek, destinationWeek ] ) => ( {
 				destinationWeek: Number( destinationWeek ),
@@ -112,13 +119,16 @@ export function useAdminCopyRoutineSheetState( {
 	}, [ assignedDestByOrigin, isSingleWeek, selectedSorted, singleDestWeeks ] );
 	const selectedSourceRoutineStats = useMemo( () => {
 		if (!source) return { dayCount: 0, exerciseCount: 0 };
+
 		if (mode === "month") {
 			return { dayCount: source.dayCount, exerciseCount: source.exerciseCount };
 		}
+
 		const selectedSet = new Set( selectedSorted );
 		const routines = source.routines.filter( ( routine ) =>
 			selectedSet.has( String( routine.week ) ),
 		);
+
 		return routines.reduce(
 			( totals, routine ) => ( {
 				dayCount: totals.dayCount + routine.dayCount,
@@ -133,9 +143,11 @@ export function useAdminCopyRoutineSheetState( {
 				? `${ destinationWeeksOccupied } semanas en ${ destLabel }`
 				: destLabel;
 		}
+
 		const destinationWeeks = weekMappings
 			.map( ( mapping ) => String( mapping.destinationWeek ) )
 			.sort( ( a, b ) => Number( a ) - Number( b ) );
+
 		return weekListLabel( destinationWeeks );
 	}, [ destLabel, destinationWeeksOccupied, mode, weekMappings ] );
 	const selectedSourceWeeksLabel =
@@ -158,12 +170,9 @@ export function useAdminCopyRoutineSheetState( {
 		!source?.hasRoutine ||
 		weekMappings.length === 0 ||
 		copyWeeks.isPending;
-	const primaryDisabled =
-		mode === "month" ? monthPrimaryDisabled : weeksPrimaryDisabled;
+	const primaryDisabled = mode === "month" ? monthPrimaryDisabled : weeksPrimaryDisabled;
 	const primaryLabel =
-		mode === "month"
-			? "Copiar rutina completa"
-			: "Copiar semanas seleccionadas";
+		mode === "month" ? "Copiar rutina completa" : "Copiar semanas seleccionadas";
 
 	function clearWeekSelection() {
 		setSelectedSourceWeeks( [] );
@@ -187,6 +196,7 @@ export function useAdminCopyRoutineSheetState( {
 				.filter( ( [ key ] ) => key !== originSlot )
 				.map( ( [ , value ] ) => value ),
 		);
+
 		return [ "1", "2", "3", "4" ].filter(
 			( week ) => !others.has( week ) || assignedDestByOrigin[ originSlot ] === week,
 		);
@@ -212,6 +222,7 @@ export function useAdminCopyRoutineSheetState( {
 					weekMappings,
 				} );
 			}
+
 			toast.success( "Rutina copiada", {
 				description: "La rutina destino se actualizo correctamente.",
 			} );

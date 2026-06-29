@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
+import { QUERY_DEFAULTS } from "@/constants/query";
 import { getTrainingRoutinesByStudentBase } from "@/features/trainingRoutine/services/training-routines-by-student";
 import { adminTrainingRoutinesQueryKey } from "@/features/trainingRoutine/services/training-routines.keys";
 
@@ -13,6 +14,7 @@ type UseTrainingRoutinesParams = {
 
 export function useTrainingRoutines( { month, studentId, year }: UseTrainingRoutinesParams ) {
 	return useQuery( {
+		...QUERY_DEFAULTS.admin,
 		enabled: Boolean( studentId ),
 		queryFn: () => getTrainingRoutinesByStudentBase( {
 			month,
@@ -20,7 +22,5 @@ export function useTrainingRoutines( { month, studentId, year }: UseTrainingRout
 			year,
 		} ),
 		queryKey: adminTrainingRoutinesQueryKey( studentId ?? "missing-student", month, year ),
-		refetchOnWindowFocus: true,
-		staleTime: 60_000,
 	} );
 }

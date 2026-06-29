@@ -6,11 +6,24 @@ import {
 	copyTrainingRoutineMonthAction,
 	copyTrainingRoutineWeeksAction,
 } from "@/features/trainingRoutine/actions/copy-training-routine";
+import { trainingRoutineCopySourceQueryKey } from "@/features/trainingRoutine/services/training-routine-copy";
 import { adminTrainingRoutinesQueryKey } from "@/features/trainingRoutine/services/training-routines.keys";
 import type {
 	CopyTrainingRoutineMonthInput,
 	CopyTrainingRoutineWeeksInput,
 } from "@/features/trainingRoutine/services/training-routine-copy";
+
+function invalidateTrainingRoutineCopyQueries(
+	queryClient: ReturnType<typeof useQueryClient>,
+	input: CopyTrainingRoutineMonthInput | CopyTrainingRoutineWeeksInput,
+) {
+	void queryClient.invalidateQueries( {
+		queryKey: adminTrainingRoutinesQueryKey( input.studentId, input.destinationMonth, input.destinationYear ),
+	} );
+	void queryClient.invalidateQueries( {
+		queryKey: trainingRoutineCopySourceQueryKey( input.studentId, input.sourceMonth, input.sourceYear ),
+	} );
+}
 
 export function useCopyTrainingRoutineMonth() {
 	const queryClient = useQueryClient();
@@ -18,9 +31,7 @@ export function useCopyTrainingRoutineMonth() {
 	return useMutation( {
 		mutationFn: copyTrainingRoutineMonthAction,
 		onSuccess: ( _, input: CopyTrainingRoutineMonthInput ) => {
-			void queryClient.invalidateQueries( {
-				queryKey: adminTrainingRoutinesQueryKey( input.studentId, input.destinationMonth, input.destinationYear ),
-			} );
+			invalidateTrainingRoutineCopyQueries( queryClient, input );
 		},
 	} );
 }
@@ -31,9 +42,7 @@ export function useCopyTrainingRoutineWeeks() {
 	return useMutation( {
 		mutationFn: copyTrainingRoutineWeeksAction,
 		onSuccess: ( _, input: CopyTrainingRoutineWeeksInput ) => {
-			void queryClient.invalidateQueries( {
-				queryKey: adminTrainingRoutinesQueryKey( input.studentId, input.destinationMonth, input.destinationYear ),
-			} );
+			invalidateTrainingRoutineCopyQueries( queryClient, input );
 		},
 	} );
 }

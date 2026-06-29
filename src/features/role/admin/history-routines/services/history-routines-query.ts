@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 
+import { QUERY_DEFAULTS } from "@/constants/query";
 import { getHistoryRoutinesByStudentAction } from "@/features/role/admin/history-routines/actions/get-history-routines-by-student";
 
 export const historyRoutinesQueryKey = ( studentId: string, month: number, year: number ) =>
@@ -12,8 +13,7 @@ export async function fetchHistoryRoutinesByStudent( studentId: string, month: n
 }
 
 export const historyRoutinesQueryOptions = ( studentId: string, month: number, year: number ) => queryOptions( {
+	...QUERY_DEFAULTS.admin,
 	queryFn: () => fetchHistoryRoutinesByStudent( studentId, month, year ),
 	queryKey: historyRoutinesQueryKey( studentId, month, year ),
-	refetchOnWindowFocus: true,
-	staleTime: 60_000,
 } );
