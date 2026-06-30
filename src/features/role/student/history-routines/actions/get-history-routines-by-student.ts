@@ -8,7 +8,7 @@ import {
 
 type GetHistoryRoutinesByStudentInput = {
 	month: number;
-	studentId: string;
+	studentId?: string | null;
 	year: number;
 };
 
@@ -20,23 +20,26 @@ export async function getHistoryRoutinesByStudentAction( {
 	const session = await getAuthenticatedSession();
 
 	if (!session) {
-		throw new Error( "Debes iniciar sesion para ver el historial de rutinas." );
+		throw new Error( "Debes iniciar sesion para ver tu historial de rutinas." );
 	}
 
-	if (session.role !== "COACH") {
-		throw new Error( "No tienes permisos para consultar historial de rutinas." );
+	if (session.role !== "STUDENT") {
+		throw new Error( "No tienes permisos para consultar este historial." );
+	}
+
+	const activeStudentId = studentId?.trim() || session.sub;
+
+	if (activeStudentId !== session.sub) {
+		throw new Error( "El historial solicitado no pertenece al estudiante autenticado." );
 	}
 
 	return getHistoryRoutinesByStudentBase( {
 		month,
-		studentId,
-		studentNotFoundMessage: "No se encontro un estudiante activo para consultar su historial.",
-		studentWhere: {
-			coachId: session.sub,
-		},
+		studentId: activeStudentId,
+		studentNotFoundMessage: "No se encontro un historial activo para el estudiante autenticado.",
 		year,
 	} );
 }
 
 export type HistoryRoutinesByStudent = HistoryRoutinesByStudentBase;
-export type AdminHistoryRoutine = HistoryRoutinesByStudent["historyRoutines"][number];
+export type StudentHistoryRoutine = HistoryRoutinesByStudent["historyRoutines"][number];

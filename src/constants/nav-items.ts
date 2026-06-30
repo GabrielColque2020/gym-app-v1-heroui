@@ -1,10 +1,6 @@
 import type { ComponentType } from "react";
 
-import {
-	ArrowRightFromSquare,
-	Gear,
-	House,
-} from "@gravity-ui/icons";
+import { ArrowRightFromSquare, Gear, House, } from "@gravity-ui/icons";
 
 import type { Role } from "@/generated/prisma/client";
 
@@ -20,7 +16,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
 	{ href: "/dashboard", icon: House, label: "Inicio" },
 	{ href: "/trainingRoutine", icon: Gear, label: "Rutina de Entrenamiento" },
 	{ href: "/mealPlans", icon: Gear, label: "Planes Alimenticios por Estudiantes" },
-	{ href: "/settings2", icon: Gear, label: "Historial de Ejercicios" },
+	{ href: "/historyRoutines", icon: Gear, label: "Historial de Rutina" },
 	{
 		children: [
 			{ href: "/admin/exercises", icon: Gear, label: "Ejercicios", roles: [ "COACH" ] },
