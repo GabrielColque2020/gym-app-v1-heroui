@@ -1,6 +1,8 @@
 export type HistoryRoutineSet = {
 	completed: boolean;
 	id: string;
+	planned: boolean;
+	plannedReps: string;
 	notes: string | null;
 	repsCompleted: number | null;
 	setNumber: number;
@@ -29,6 +31,8 @@ export type HistoryRoutineExercise = {
 	exerciseId: string;
 	id: string;
 	name: string;
+	plannedReps: string;
+	plannedSets: number;
 	repsCompleted: number;
 	sets: HistoryRoutineSet[];
 	setsCompleted: number;

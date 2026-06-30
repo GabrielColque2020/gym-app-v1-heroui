@@ -1,21 +1,22 @@
 "use client";
 
-import { Card, Chip, ScrollShadow, Typography } from "@heroui/react";
+import { Accordion, Chip, Typography } from "@heroui/react";
 
 import type { AdminHistoryRoutine } from "@/features/role/admin/history-routines/actions/get-history-routines-by-student";
 import { formatHistoryDate } from "@/features/role/admin/history-routines/services/history-routines-form";
-import { HistoryRoutineExerciseCard } from "@/features/role/admin/history-routines/components/desktop/HistoryRoutineExerciseCard";
+import { getHistoryRoutineDayStatus } from "@/features/role/admin/history-routines/services/history-routines-view";
+import { HistoryRoutineExerciseCarousel } from "@/features/role/admin/history-routines/components/shared/HistoryRoutineExerciseCarousel";
 
 type HistoryRoutineDaysAccordionProps = {
 	days: AdminHistoryRoutine[];
 };
 
-function getDaySubtitle( day: AdminHistoryRoutine ) {
-	const exerciseCount = day.exercises.length;
+function getDayExerciseCount( day: AdminHistoryRoutine ) {
+	return day.exercises.length;
+}
 
-	return exerciseCount === 0
-		? "Sin ejercicios cargados"
-		: `${ exerciseCount } ejercicio${ exerciseCount === 1 ? "" : "s" }`;
+function getDaySetCount( day: AdminHistoryRoutine ) {
+	return day.exercises.reduce( ( total, exercise ) => total + exercise.sets.length, 0 );
 }
 
 export function HistoryRoutineDaysAccordion( { days }: HistoryRoutineDaysAccordionProps ) {
@@ -28,36 +29,59 @@ export function HistoryRoutineDaysAccordion( { days }: HistoryRoutineDaysAccordi
 	}
 
 	return (
-		<div className={ "grid gap-3 md:grid-cols-2 xl:grid-cols-3" }>
+		<Accordion allowsMultipleExpanded hideSeparator className={ "w-full space-y-2" }>
 			{ days.map( ( day ) => (
-				<Card key={ day.id } className={ "overflow-hidden border border-default bg-surface shadow-sm" } variant={ "default" }>
-					<Card.Header className={ "border-b border-border px-3 py-2.5" }>
-						<div className={ "flex items-center justify-between gap-2" }>
-							<div className={ "flex min-w-0 items-center gap-2" }>
-								<div className={ "min-w-0 text-left" }>
-									<Typography className={ "truncate text-sm font-semibold" }>Dia { day.dayNumber }</Typography>
-									<Typography className={ "truncate text-xs text-muted" }>{ getDaySubtitle( day ) }</Typography>
-								</div>
+				<Accordion.Item key={ day.id }>
+					<div className={ "overflow-hidden rounded-xl border border-border bg-surface" }>
+						<Accordion.Trigger className={ "group flex w-full flex-col items-start gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between" }>
+							<div className={ "min-w-0 text-left" }>
+								<Typography className={ "text-sm font-semibold leading-5" }>
+									{ `Dia ${ day.dayNumber }` }
+								</Typography>
+								<Typography className={ "text-xs text-muted" }>
+									{ day.description }
+								</Typography>
 							</div>
-							<Chip color={ "accent" } size={ "sm" } variant={ "soft" }>
-								{ formatHistoryDate( day.date ) }
-							</Chip>
-						</div>
-					</Card.Header>
 
-					<Card.Content className={ "px-3 py-3" }>
-						<div className={ "grid gap-2" }>
-							<ScrollShadow className={ "max-h-88 pr-1" }>
-								<div className={ "grid gap-2" }>
-									{ day.exercises.map( ( exercise ) => (
-										<HistoryRoutineExerciseCard key={ exercise.id } exercise={ exercise }/>
-									) ) }
-								</div>
-							</ScrollShadow>
-						</div>
-					</Card.Content>
-				</Card>
+							<div className={ "flex w-full shrink-0 flex-wrap items-center justify-start gap-2 sm:w-auto sm:justify-end" }>
+								<Chip
+									color={
+										getHistoryRoutineDayStatus( day ) === "complete"
+											? "success"
+											: getHistoryRoutineDayStatus( day ) === "partial"
+												? "warning"
+												: "default"
+									}
+									size={ "sm" }
+									variant={ "soft" }
+								>
+									{ getHistoryRoutineDayStatus( day ) === "complete"
+										? "Completo"
+										: getHistoryRoutineDayStatus( day ) === "partial"
+											? "Parcial"
+											: "Vacio" }
+								</Chip>
+								<Chip color={ "accent" } size={ "sm" } variant={ "soft" }>
+									{ `${ getDayExerciseCount( day ) } ejercicios` }
+								</Chip>
+								<Chip size={ "sm" } variant={ "soft" }>
+									{ `${ getDaySetCount( day ) } series` }
+								</Chip>
+								<Chip color={ "success" } size={ "sm" } variant={ "soft" }>
+									{ formatHistoryDate( day.date ) }
+								</Chip>
+								<Accordion.Indicator className={ "ml-auto sm:ml-0" }/>
+							</div>
+						</Accordion.Trigger>
+
+						<Accordion.Panel>
+							<Accordion.Body className={ "px-4 pb-4 pt-0" }>
+								<HistoryRoutineExerciseCarousel exercises={ day.exercises }/>
+							</Accordion.Body>
+						</Accordion.Panel>
+					</div>
+				</Accordion.Item>
 			) ) }
-		</div>
+		</Accordion>
 	);
 }

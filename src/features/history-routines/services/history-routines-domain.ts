@@ -66,6 +66,8 @@ export function buildHistoryRoutineExercise(
 		exercise?: { id: string; name: string | null } | null;
 		exerciseId: string | null;
 		id: string;
+		reps: string;
+		sets: string;
 		variants: Array<{ variantExercise: { id: string; name: string | null } }>;
 	},
 	entries: HistoryProgressEntry[],
@@ -89,29 +91,61 @@ export function buildHistoryRoutineExercise(
 	const selectedVariant = selectedVariantId
 		? routine.variants.find( ( variant ) => variant.variantExercise.id === selectedVariantId )?.variantExercise ?? null
 		: null;
+	const plannedSets = Math.max( parseInteger( routine.sets ) ?? 0, exerciseEntries.length );
+	const plannedReps = routine.reps.trim() || "-";
+	const entriesBySet = new Map<number, HistoryProgressEntry>();
 
-	const sets: HistoryRoutineSet[] = exerciseEntries
-		.map( ( entry, index ) => {
-			const parsedNotes = parseProgressNotes( entry.notes );
-			const repsCompleted = parseInteger( entry.repsCompleted );
-			const weightUsed = parseDecimal( entry.weightUsed );
+	for (const entry of exerciseEntries) {
+		const setNumber = getProgressRepsNumber( entry ) ?? parseProgressNotes( entry.notes ).repsNumber;
 
+		if (setNumber === null) continue;
+
+		if (!entriesBySet.has( setNumber )) {
+			entriesBySet.set( setNumber, entry );
+		}
+	}
+
+	const totalSets = Math.max( plannedSets, entriesBySet.size );
+	const sets: HistoryRoutineSet[] = Array.from( { length: totalSets }, ( _, index ) => {
+		const setNumber = index + 1;
+		const entry = entriesBySet.get( setNumber ) ?? null;
+
+		if (!entry) {
 			return {
-				completed: entry.setsCompleted === "1" || repsCompleted !== null || weightUsed !== null,
-				id: entry.id,
-				notes: parsedNotes.notes,
-				repsCompleted,
-				setNumber: getProgressRepsNumber( entry ) ?? parsedNotes.repsNumber ?? index + 1,
-				weightUsed,
+				completed: false,
+				id: `${ baseExerciseId }:${ setNumber }`,
+				planned: setNumber <= plannedSets,
+				plannedReps,
+				notes: null,
+				repsCompleted: null,
+				setNumber,
+				weightUsed: null,
 			};
-		} )
-		.sort( ( left, right ) => left.setNumber - right.setNumber );
+		}
+
+		const parsedNotes = parseProgressNotes( entry.notes );
+		const repsCompleted = parseInteger( entry.repsCompleted );
+		const weightUsed = parseDecimal( entry.weightUsed );
+
+		return {
+			completed: entry.setsCompleted === "1" || repsCompleted !== null || weightUsed !== null,
+			id: entry.id,
+			planned: setNumber <= plannedSets,
+			plannedReps,
+			notes: parsedNotes.notes,
+			repsCompleted,
+			setNumber,
+			weightUsed,
+		};
+	} );
 
 	return {
 		baseName: routine.exercise?.name ?? "Ejercicio",
 		exerciseId: baseExerciseId,
 		id: baseExerciseId,
 		name: selectedVariant?.name ?? routine.exercise?.name ?? "Ejercicio",
+		plannedReps,
+		plannedSets,
 		repsCompleted: sets.reduce( ( total, set ) => total + ( set.repsCompleted ?? 0 ), 0 ),
 		sets,
 		setsCompleted: sets.filter( ( set ) => set.completed ).length,

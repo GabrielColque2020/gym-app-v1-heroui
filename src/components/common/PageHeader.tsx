@@ -10,7 +10,7 @@ interface PageHeaderProps {
 
 export const PageHeader: React.FC<PageHeaderProps> = ( { title, description, className = "", showSeparator = false } ) => {
 	return (
-		<div className={ `inline-flex w-fit max-w-full flex-col ${ className }` }>
+		<div className={ `w-full flex-col ${ className }` }>
 			<Typography
 				type={ "h3" }
 				className={ "font-black" }
@@ -23,7 +23,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ( { title, description, cla
 				</Typography>
 			) }
 
-			{ showSeparator && <Separator className={ "w-full mt-4" }/> }
+			{ showSeparator && <Separator className={ "w-full mt-4 mb-2" }/> }
 		</div>
 	);
 };

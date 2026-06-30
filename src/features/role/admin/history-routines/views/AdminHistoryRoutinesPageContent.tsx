@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Magnifier } from "@gravity-ui/icons";
-import { Alert, Button, Card, Chip, Spinner } from "@heroui/react";
+import { Alert, Card, Spinner } from "@heroui/react";
 
-import { FilterSelect, PageBreadcrumbs, PageHeader } from "@/components/common";
-import { HistoryRoutineWeeksAccordion } from "@/features/role/admin/history-routines/components/desktop/HistoryRoutineWeeksAccordion";
-import { HistoryRoutineWeeksSelector } from "@/features/role/admin/history-routines/components/desktop/HistoryRoutineWeeksSelector";
+import { PageBreadcrumbs } from "@/components/common";
+import { HistoryRoutineMonthFilters } from "@/features/role/admin/history-routines/components/shared/HistoryRoutineMonthFilters";
+import { AdminHistoryRoutinesDesktopContent } from "@/features/role/admin/history-routines/components/desktop/AdminHistoryRoutinesDesktopContent";
+import { AdminHistoryRoutinesMobileContent } from "@/features/role/admin/history-routines/components/mobile/AdminHistoryRoutinesMobileContent";
 import { useHistoryRoutines } from "@/features/role/admin/history-routines/hooks/useHistoryRoutines";
 import { buildYearOptions, getCurrentMonth, getCurrentYear, MONTH_OPTIONS, } from "@/features/role/admin/history-routines/services/history-routines-form";
-import { groupHistoryRoutinesByWeek } from "@/features/role/admin/history-routines/services/history-routines-view";
+import { buildHistoryRoutineMonthSummary, groupHistoryRoutinesByWeek, } from "@/features/role/admin/history-routines/services/history-routines-view";
 
 type AdminHistoryRoutinesPageContentProps = {
 	studentId: string | null;
@@ -37,6 +37,14 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 		() => weekGroups.filter( ( weekGroup ) => selectedWeeks.includes( weekGroup.week ) ),
 		[ selectedWeeks, weekGroups ],
 	);
+	const desktopSummary = useMemo(
+		() => buildHistoryRoutineMonthSummary( selectedWeekGroups.length > 0 ? selectedWeekGroups : weekGroups ),
+		[ selectedWeekGroups, weekGroups ],
+	);
+	const mobileSummary = useMemo(
+		() => buildHistoryRoutineMonthSummary( weekGroups ),
+		[ weekGroups ],
+	);
 	const didInitializeWeeks = useRef( false );
 
 	useEffect( () => {
@@ -50,6 +58,7 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 		if (!didInitializeWeeks.current) {
 			didInitializeWeeks.current = true;
 			setSelectedWeeks( [ weekGroups[ 0 ].week ] );
+
 			return;
 		}
 
@@ -88,6 +97,7 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 		{ href: "/admin/historyRoutinesStudents", label: "Historial de rutinas por estudiante" },
 		{ label: data?.student.name ?? "Historial de rutinas" },
 	];
+	const monthLabel = `${ String( activeMonth ).padStart( 2, "0" ) }/${ activeYear }`;
 
 	return (
 		<div className={ "mx-auto flex w-full max-w-350 flex-col gap-4" }>
@@ -97,50 +107,17 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 				crumbs={ breadcrumbs }
 			/>
 
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" }>
-					<PageHeader
-						description={ "Consulta el progreso mensual del estudiante seleccionado." }
-						title={ "Historial de rutinas" }
-					/>
-					{ data?.student.name ? (
-						<Chip color={ "accent" } variant={ "soft" }>
-							{ data.student.name }
-						</Chip>
-					) : null }
-				</Card.Header>
-
-				<Card.Content className={ "px-5 py-4 sm:px-6" }>
-					<div className={ "grid gap-3 rounded-xl border border-border bg-surface-secondary p-3 lg:grid-cols-[1fr_1fr_auto_auto] lg:items-end" }>
-						<FilterSelect
-							label={ "Mes" }
-							name={ "history-routines-month-filter" }
-							options={ MONTH_OPTIONS.map( ( option ) => ( { label: option.label, value: option.value } ) ) }
-							placeholder={ "Todos los meses" }
-							value={ selectedMonth }
-							onSelectionChange={ setSelectedMonth }
-						/>
-
-						<FilterSelect
-							label={ "Anio" }
-							name={ "history-routines-year-filter" }
-							options={ yearOptions }
-							placeholder={ "Todos los anios" }
-							value={ selectedYear }
-							onSelectionChange={ setSelectedYear }
-						/>
-
-						<Button className={ "shadow-sm" } onPress={ handleSearch }>
-							<Magnifier/>
-							Buscar
-						</Button>
-
-						<Button variant={ "secondary" } onPress={ handleClear }>
-							Limpiar
-						</Button>
-					</div>
-				</Card.Content>
-			</Card>
+			<HistoryRoutineMonthFilters
+				monthOptions={ MONTH_OPTIONS }
+				onClear={ handleClear }
+				onMonthChange={ setSelectedMonth }
+				onSearch={ handleSearch }
+				onYearChange={ setSelectedYear }
+				selectedMonth={ selectedMonth }
+				selectedYear={ selectedYear }
+				yearOptions={ yearOptions }
+				userName={ data?.student.name }
+			/>
 
 			{ isLoading ? (
 				<Card className={ "border border-border bg-surface" } variant={ "default" }>
@@ -169,24 +146,33 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 						<Card.Content className={ "py-10 text-center" }>
 							<p className={ "text-base font-semibold text-foreground" }>No hay historial de rutinas cargado</p>
 							<p className={ "mt-1 text-sm text-muted" }>
-								No encontramos registros para { String( activeMonth ).padStart( 2, "0" ) }/{ activeYear }.
+								No encontramos registros para { monthLabel }.
 							</p>
 						</Card.Content>
 					</Card>
 				) : (
-					<div className={ "flex flex-col gap-4" }>
-						<Card className={ "border border-border bg-surface" } variant={ "default" }>
-							<Card.Content className={ "p-3" }>
-								<HistoryRoutineWeeksSelector
-									weeks={ weekGroups }
-									selectedWeeks={ selectedWeeks }
-									onWeekToggle={ handleWeekToggle }
-								/>
-							</Card.Content>
-						</Card>
-
-						<HistoryRoutineWeeksAccordion weeks={ selectedWeekGroups }/>
-					</div>
+					<>
+						<div className={ "hidden md:block" }>
+							<AdminHistoryRoutinesDesktopContent
+								monthLabel={ monthLabel }
+								selectedWeekGroups={ selectedWeekGroups }
+								selectedWeeks={ selectedWeeks }
+								summary={ desktopSummary }
+								weekGroups={ weekGroups }
+								onWeekToggle={ handleWeekToggle }
+							/>
+						</div>
+						<div className={ "md:hidden" }>
+							<AdminHistoryRoutinesMobileContent
+								monthLabel={ monthLabel }
+								selectedWeekGroups={ selectedWeekGroups }
+								selectedWeeks={ selectedWeeks }
+								summary={ mobileSummary }
+								weekGroups={ weekGroups }
+								onWeekToggle={ handleWeekToggle }
+							/>
+						</div>
+					</>
 				)
 			) : null }
 		</div>
