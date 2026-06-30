@@ -3,8 +3,8 @@
 import type { AdminTrainingRoutineDay } from "@/features/role/admin/training-routine/actions/get-training-routines-by-student";
 
 import { Accordion, Button, Chip, Description, Dropdown, Header, Label, Typography } from "@heroui/react";
-import { CircleFill, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
-import { useRef, useState } from "react";
+import { CircleFill, EllipsisVertical, TrashBin } from "@gravity-ui/icons";
+import { useRef } from "react";
 
 import { useRouter } from "next/navigation";
 
@@ -46,7 +46,6 @@ type DayOptionsMenuProps = {
 function DayOptionsMenu( { month, routineDayId, studentId, year }: DayOptionsMenuProps ) {
 	const router = useRouter();
 	const menuRef = useRef<HTMLDivElement | null>( null );
-	const [ isOpen, setIsOpen ] = useState( false );
 
 	function handleEdit() {
 		const params = new URLSearchParams( {
@@ -57,7 +56,6 @@ function DayOptionsMenu( { month, routineDayId, studentId, year }: DayOptionsMen
 		} );
 
 		router.push( `/admin/routine?${ params.toString() }` );
-		setIsOpen( false );
 	}
 
 	return (
@@ -69,7 +67,7 @@ function DayOptionsMenu( { month, routineDayId, studentId, year }: DayOptionsMen
 				<Dropdown.Popover>
 					<Dropdown.Menu onAction={ ( key ) => {
 						if (key === "edit-day") {
-							setIsOpen( ( current ) => !current );
+							handleEdit();
 						}
 					} }>
 						<Dropdown.Section>
@@ -84,26 +82,6 @@ function DayOptionsMenu( { month, routineDayId, studentId, year }: DayOptionsMen
 					</Dropdown.Menu>
 				</Dropdown.Popover>
 			</Dropdown>
-
-			{ isOpen ? (
-				<div
-					className={
-						"absolute right-0 top-9 z-50 w-48 rounded-xl border border-border bg-surface p-1 shadow-lg"
-					}
-					role={ "menu" }
-				>
-					<button
-						className={
-							"flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-warning hover:bg-warning/10"
-						}
-						type={ "button" }
-						onClick={ handleEdit }
-					>
-						<Pencil className={ "size-4 shrink-0" }/>
-						<Label className={ "text-warning" }>Editar</Label>
-					</button>
-				</div>
-			) : null }
 		</div>
 	);
 }
