@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { AUTH_SESSION_COOKIE_NAME, AUTH_SESSION_TTL_SECONDS, loginUser } from "@/features/login/services/login-service";
+import type { LoginPrismaClient } from "@/features/login/services/login-service";
 import prisma from "@/lib/prisma";
 import type { LoginErrorResponse, LoginRequest, LoginResponse } from "@/types/auth";
 
@@ -46,7 +47,7 @@ export async function POST( request: NextRequest ) {
 			password: body.password,
 		}, {
 			ip: getClientIp( request ),
-			prismaClient: prisma,
+			prismaClient: prisma as unknown as LoginPrismaClient,
 			userAgent: request.headers.get( "user-agent" ),
 		} );
 

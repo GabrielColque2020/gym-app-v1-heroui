@@ -22,7 +22,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 	const [ activeYear, setActiveYear ] = useState( getCurrentYear() );
 	const [ selectedWeeks, setSelectedWeeks ] = useState<number[]>( [] );
 
-	const { data, error, isError, isLoading } = useHistoryRoutines( {
+	const { data, error, isError, isLoading, isFetching, refetch } = useHistoryRoutines( {
 		month: activeMonth,
 		studentId,
 		year: activeYear,
@@ -110,8 +110,12 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 				monthOptions={ MONTH_OPTIONS }
 				onClear={ handleClear }
 				onMonthChange={ setSelectedMonth }
+				onRefresh={ () => {
+					void refetch();
+				} }
 				onSearch={ handleSearch }
 				onYearChange={ setSelectedYear }
+				isRefreshing={ isFetching && !isLoading }
 				selectedMonth={ selectedMonth }
 				selectedYear={ selectedYear }
 				yearOptions={ yearOptions }
@@ -140,7 +144,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 
 			{ !isLoading && !isError && data ? (
 				data.historyRoutines.length === 0 ? (
-					<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
+					<Card className={ "border border-dashed border-border" } variant={ "default" }>
 						<Card.Content className={ "py-10 text-center" }>
 							<p className={ "text-base font-semibold text-foreground" }>No hay historial de rutinas cargado</p>
 							<p className={ "mt-1 text-sm text-muted" }>

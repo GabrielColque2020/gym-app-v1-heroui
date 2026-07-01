@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/common";
 import { FilterSelect } from "@/components/common/FilterSelect";
 import { MONTH_OPTIONS_PADDED } from "@/constants/months";
 import { Button, Card } from "@heroui/react";
+import { ArrowsRotateLeft } from "@gravity-ui/icons";
 import { useState } from "react";
 
 type TrainingRoutinesFilterProps = {
@@ -9,14 +10,18 @@ type TrainingRoutinesFilterProps = {
 	defaultYear: string;
 	onClear: () => void;
 	onSearch: ( value: { month: string; year: string } ) => void;
+	onRefresh: () => void;
+	isRefreshing?: boolean;
 };
 
 export default function TrainingRoutinesFilter( {
-	defaultMonth,
-	defaultYear,
-	onClear,
-	onSearch,
-}: TrainingRoutinesFilterProps ) {
+													defaultMonth,
+													defaultYear,
+													onClear,
+													onSearch,
+													onRefresh,
+													isRefreshing = false,
+												}: TrainingRoutinesFilterProps ) {
 	const currentYear = new Date().getFullYear();
 	const yearOptions = Array.from( { length: 8 }, ( _, i ) => ( {
 		label: String( currentYear - 3 + i ),
@@ -47,7 +52,7 @@ export default function TrainingRoutinesFilter( {
 				showSeparator
 				title={ "Plan de Entrenamiento Personal" }
 			/>
-			<div className={ "grid w-full grid-cols-1 gap-4 md:grid-cols-3" }>
+			<div className={ "grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.6fr)]" }>
 				<div className={ "form-control" }>
 					<FilterSelect
 						key={ `year-${ resetVersion }` }
@@ -70,13 +75,22 @@ export default function TrainingRoutinesFilter( {
 						onSelectionChange={ setSelectedMonth }
 					/>
 				</div>
-				<div className={ "form-control flex flex-row items-end gap-2" }>
-					<Button className={ "flex-1 shadow-sm" } onPress={ handleSearch }>
+				<div className={ "form-control flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end" }>
+					<Button className={ "w-full shadow-sm sm:w-auto sm:flex-1" } onPress={ handleSearch }>
 						Buscar
 					</Button>
 					<Button
-						className={ "shadow-sm bg-surface border border-accent/50 text-accent" }
-						variant={ "ghost" }
+						className={ "w-full shadow-sm sm:w-auto sm:flex-1" }
+						isDisabled={ isRefreshing }
+						onPress={ onRefresh }
+						variant={ "secondary" }
+					>
+						<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+						{ isRefreshing ? "Actualizando" : "Actualizar" }
+					</Button>
+					<Button
+						className={ "w-full shadow-sm sm:w-auto" }
+						variant={ "secondary" }
 						onPress={ handleClear }
 					>
 						Limpiar

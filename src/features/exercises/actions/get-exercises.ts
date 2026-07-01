@@ -1,10 +1,12 @@
 "use server";
 
+import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import prisma from "@/lib/prisma";
 
 export async function getExercisesAction() {
 	try {
 		return await prisma.exercise.findMany( {
+			cacheStrategy: QUERY_ACCELERATE_CACHE.catalog,
 			select: {
 				active: true,
 				bodyPart: true,

@@ -1,8 +1,8 @@
 ﻿"use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { FloppyDisk } from "@gravity-ui/icons";
-import { Alert, Button, Card, Spinner, toast } from "@heroui/react";
+import { ArrowsRotateLeft, FloppyDisk } from "@gravity-ui/icons";
+import { Alert, Button, Card, Modal, Spinner, toast } from "@heroui/react";
 import { PageBreadcrumbs } from "@/components/common";
 import DesktopRoutineView from "../components/desktop/DesktopRoutineView";
 import MobileRoutineView from "../components/mobile/MobileRoutineView";
@@ -78,29 +78,54 @@ function updateSessionSet(
 }
 
 export default function RoutinePageContent( {
-	routineDayId,
-	studentId,
-}: RoutinePageContentProps ) {
+												routineDayId,
+												studentId,
+
+											}: RoutinePageContentProps ) {
 	const [ isSaveSheetOpen, setIsSaveSheetOpen ] = useState( false );
-	const { data, error, isError, isLoading, refetch } = useStudentRoutineSession( {
+	const [ isRefreshConfirmOpen, setIsRefreshConfirmOpen ] = useState( false );
+	const { data, error, isError, isFetching, isLoading, refetch } = useStudentRoutineSession( {
 		routineDayId,
 		studentId,
 	} );
-	const { activeSession, validationError, replaceDraft } = useRoutineSession( {
+	const { activeSession, validationError, replaceDraft, isDirty } = useRoutineSession( {
 		routineDayId: routineDayId ?? "",
 		sourceDetail: data ?? null,
 	} );
 	const saveRoutineSession = useSaveStudentRoutineSession();
+	const isRefreshing = isFetching && !isLoading;
 	const exerciseCount = activeSession?.exercises.length ?? 0;
+	const hasExercises = exerciseCount > 0;
+	const canSaveProgress = hasExercises && !saveRoutineSession.isPending;
 	const completedExercises = activeSession?.exercises.filter( ( exercise ) =>
 		exercise.sets.length > 0
 		&& exercise.sets.every( ( set ) => set.completed && set.currentReps !== null && set.currentWeight !== null ),
 	).length ?? 0;
 	const latestProgressDate = data?.progressEntries[ 0 ]?.date ? new Date( data.progressEntries[ 0 ].date ) : null;
 	const routineStatusDescription = activeSession
-		? `${ completedExercises } de ${ exerciseCount } ejercicios completos`
+		? hasExercises
+			? `${ completedExercises } de ${ exerciseCount } ejercicios completos`
+			: "No hay ejercicios cargados para este dia"
 		: "Sin ejercicios cargados";
 	const saveSummary = useMemo( () => ( activeSession ? buildRoutineSaveSummary( activeSession ) : [] ), [ activeSession ] );
+
+	const handleRefresh = useCallback( () => {
+		if (isRefreshing && !isLoading) {
+			return;
+		}
+
+		if (isDirty) {
+			setIsRefreshConfirmOpen( true );
+			return;
+		}
+
+		void refetch();
+	}, [ isDirty, isLoading, isRefreshing, refetch ] );
+
+	const handleConfirmRefresh = useCallback( () => {
+		setIsRefreshConfirmOpen( false );
+		void refetch();
+	}, [ refetch ] );
 
 	const handleSetUpdate = useCallback( (
 		exerciseId: string,
@@ -132,8 +157,15 @@ export default function RoutinePageContent( {
 	}, [ activeSession, replaceDraft ] );
 
 	const handleOpenSaveSheet = useCallback( () => {
+		if (!canSaveProgress) {
+			toast.warning( "No hay ejercicios para guardar", {
+				description: "Primero debe haber ejercicios cargados para ese dia.",
+			} );
+			return;
+		}
+
 		setIsSaveSheetOpen( true );
-	}, [] );
+	}, [ canSaveProgress ] );
 
 	const handleConfirmSave = useCallback( async () => {
 		if (!activeSession || !routineDayId || !studentId) {
@@ -209,7 +241,10 @@ export default function RoutinePageContent( {
 					<RoutineHeader
 						title={ `Rutina - Dia ${ activeSession.dayNumber }` }
 						description={ `${ activeSession.title } - Sesion de entrenamiento` }
+						canSaveProgress={ canSaveProgress }
+						isRefreshing={ isFetching && !isLoading }
 						isPending={ saveRoutineSession.isPending }
+						onRefresh={ handleRefresh }
 						statusDescription={ routineStatusDescription }
 						onSave={ handleOpenSaveSheet }
 					/>
@@ -219,7 +254,15 @@ export default function RoutinePageContent( {
 						<h1 className={ "text-4xl font-black tracking-tight text-foreground" }>{ `Rutina - Dia ${ activeSession.dayNumber }` }</h1>
 						<p className={ "text-base font-semibold text-muted" }>{ `${ activeSession.title } · Sesion de entrenamiento` }</p>
 					</div>
-					<Button isPending={ saveRoutineSession.isPending } onPress={ handleOpenSaveSheet }>
+					<Button
+						isDisabled={ isFetching && !isLoading }
+						onPress={ handleRefresh }
+						variant={ "secondary" }
+					>
+						<ArrowsRotateLeft className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
+						{ isFetching && !isLoading ? "Actualizando..." : "Actualizar" }
+					</Button>
+					<Button isDisabled={ !canSaveProgress } isPending={ saveRoutineSession.isPending } onPress={ handleOpenSaveSheet }>
 						{ ( { isPending } ) => (
 							<>
 								{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <FloppyDisk/> }
@@ -231,6 +274,7 @@ export default function RoutinePageContent( {
 			</Card>
 			<MobileRoutineView
 				exercises={ activeSession.exercises }
+				canSaveProgress={ canSaveProgress }
 				isPending={ saveRoutineSession.isPending }
 				latestProgressDate={ latestProgressDate }
 				onSave={ handleOpenSaveSheet }
@@ -253,6 +297,45 @@ export default function RoutinePageContent( {
 				onConfirm={ handleConfirmSave }
 				onOpenChange={ setIsSaveSheetOpen }
 			/>
+			<Modal>
+				<Modal.Backdrop
+					isDismissable={ false }
+					isOpen={ isRefreshConfirmOpen }
+					onOpenChange={ setIsRefreshConfirmOpen }
+					variant={ "blur" }
+				>
+					<Modal.Container size={ "sm" }>
+						<Modal.Dialog className={ "sm:max-w-md" }>
+							{ ( { close } ) => (
+								<>
+									<Modal.Header>
+										<Modal.Heading>Actualizar rutina</Modal.Heading>
+									</Modal.Header>
+									<Modal.Body>
+										<p className={ "text-sm leading-6 text-muted" }>
+											Se volvera a consultar la version mas reciente del servidor. Los cambios compatibles
+											que ya hiciste se conservaran, y si una variante fue eliminada se volvera al ejercicio
+											original disponible.
+										</p>
+									</Modal.Body>
+									<Modal.Footer className={ "gap-2" }>
+										<Button variant={ "secondary" } onPress={ close }>
+											Cancelar
+										</Button>
+										<Button onPress={ () => {
+											close();
+											handleConfirmRefresh();
+										} }>
+											<ArrowsRotateLeft className={ "size-4" }/>
+											Actualizar
+										</Button>
+									</Modal.Footer>
+								</>
+							) }
+						</Modal.Dialog>
+					</Modal.Container>
+				</Modal.Backdrop>
+			</Modal>
 		</div>
 	);
 }

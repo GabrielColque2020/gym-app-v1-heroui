@@ -118,7 +118,7 @@ export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQ
 			where: {
 				routineId: normalizedRoutineId,
 			},
-		} );
+		} ) as unknown as ExerciseVariantListItem[];
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
 
@@ -204,7 +204,7 @@ export async function createExerciseVariantAction( input: ExerciseVariantCreateI
 					select: exerciseVariantSelect,
 				},
 			},
-		} );
+		} ) as unknown as ExerciseVariantListItem;
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al crear la variante.";
 
@@ -262,7 +262,7 @@ export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput
 			where: {
 				routineId,
 			},
-		} );
+		} ) as unknown as ExerciseVariantListItem[];
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al guardar las variantes.";
 

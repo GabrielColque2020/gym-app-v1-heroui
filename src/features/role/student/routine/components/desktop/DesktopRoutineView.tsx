@@ -189,71 +189,84 @@ export default function DesktopRoutineView( {
 
 	return (
 		<div className={ "hidden w-full flex-col gap-4 sm:flex" }>
-			<div className={ "grid gap-4 lg:grid-cols-[1.2fr_0.9fr_0.9fr]" }>
-				<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
-					<Card.Content className={ "flex h-full items-center justify-center p-1" }>
-						<div className={ "flex items-center gap-3" }>
-							<div className={ "flex size-10 items-center justify-center rounded-full bg-warning/10 text-warning" }>
-								<Bulb className={ "size-5" }/>
-							</div>
-							<div className={ "min-w-0" }>
-								<p className={ "text-sm font-semibold text-foreground" }>Consejo del entrenador</p>
-								<p className={ "text-sm leading-6 text-muted" }>{ exercises[ 0 ]?.notes ?? "Mantén una buena técnica durante todo el ejercicio. Controla el movimiento y respira correctamente." }</p>
-							</div>
+			{ exercises.length > 0 ? (
+				<>
+					<div className={ "grid gap-4 lg:grid-cols-[1.2fr_0.9fr_0.9fr]" }>
+						<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
+							<Card.Content className={ "flex h-full items-center justify-center p-1" }>
+								<div className={ "flex items-center gap-3" }>
+									<div className={ "flex size-10 items-center justify-center rounded-full bg-warning/10 text-warning" }>
+										<Bulb className={ "size-5" }/>
+									</div>
+									<div className={ "min-w-0" }>
+										<p className={ "text-sm font-semibold text-foreground" }>Consejo del entrenador</p>
+										<p className={ "text-sm leading-6 text-muted" }>{ exercises[ 0 ]?.notes ?? "Mantén una buena técnica durante todo el ejercicio. Controla el movimiento y respira correctamente." }</p>
+									</div>
+								</div>
+							</Card.Content>
+						</Card>
+						<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
+							<Card.Content className={ "flex h-full items-center justify-center p-1" }>
+								<div className={ "flex items-center gap-3" }>
+									<div className={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }>
+										<ChartLine className={ "size-5" }/>
+									</div>
+									<div className={ "min-w-0" }>
+										<p className={ "text-sm font-semibold text-foreground" }>Resumen de la sesion</p>
+										<p className={ "text-sm text-muted" }>{ routineStatusDescription }</p>
+									</div>
+								</div>
+							</Card.Content>
+						</Card>
+						<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
+							<Card.Content className={ "flex h-full items-center justify-center p-1" }>
+								<div className={ "flex items-center gap-3" }>
+									<div className={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }>
+										<Calendar className={ "size-5" }/>
+									</div>
+									<div className={ "min-w-0" }>
+										<p className={ "text-sm font-semibold text-foreground" }>Ultima sesion completa</p>
+										<p className={ "text-sm text-muted" }>{ formatDateLabel( latestProgressDate ) }</p>
+									</div>
+								</div>
+							</Card.Content>
+						</Card>
+					</div>
+					<div className={ "min-w-0" }>
+						<Carousel opts={ { loop: true } } setApi={ setApi }>
+							<Carousel.Content>
+								{ exercises.map( ( exercise ) => (
+									<Carousel.Item key={ exercise.id }>
+										<DesktopExerciseCard exercise={ exercise } onVariantChange={ onVariantChange }>
+											<DataGrid aria-label={ `${ exercise.name } sets` } columns={ columns } data={ exercise.sets } getRowId={ ( item ) => item.id }/>
+										</DesktopExerciseCard>
+									</Carousel.Item>
+								) ) }
+							</Carousel.Content>
+						</Carousel>
+						<div className={ "flex items-center justify-between gap-3 px-4 pt-3" }>
+							<Button className={ "bg-primary text-primary-foreground " } variant={ "secondary" } onPress={ () => api?.scrollPrev() }>
+								<ArrowLeft className={ "size-4" }/>
+								Anterior
+							</Button>
+							<p className={ "min-w-20 text-center text-sm" }>{ `${ activeExerciseIndex } / ${ exercises.length }` }</p>
+							<Button className={ "bg-primary text-primary-foreground" } variant={ "secondary" } onPress={ () => api?.scrollNext() }>
+								Siguiente
+								<ArrowRight className={ "size-4" }/>
+							</Button>
 						</div>
+					</div>
+				</>
+			) : (
+				<Card className={ "border border-dashed border-border" } variant={ "default" }>
+					<Card.Content className={ "py-10 text-center" }>
+						<p className={ "text-base font-semibold text-foreground" }>No hay ejercicios cargados para este dia</p>
+						<p className={ "mt-1 text-sm text-muted" }>
+							Cuando la rutina tenga ejercicios asignados vas a poder registrar reps, peso y notas desde aqui.
+						</p>
 					</Card.Content>
 				</Card>
-				<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
-					<Card.Content className={ "flex h-full items-center justify-center p-1" }>
-						<div className={ "flex items-center gap-3" }>
-							<div className={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }>
-								<ChartLine className={ "size-5" }/>
-							</div>
-							<div className={ "min-w-0" }>
-								<p className={ "text-sm font-semibold text-foreground" }>Resumen de la sesion</p>
-								<p className={ "text-sm text-muted" }>{ routineStatusDescription }</p>
-							</div>
-						</div>
-					</Card.Content>
-				</Card>
-				<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
-					<Card.Content className={ "flex h-full items-center justify-center p-1" }>
-						<div className={ "flex items-center gap-3" }>
-							<div className={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }>
-								<Calendar className={ "size-5" }/>
-							</div>
-							<div className={ "min-w-0" }>
-								<p className={ "text-sm font-semibold text-foreground" }>Ultima sesion completa</p>
-								<p className={ "text-sm text-muted" }>{ formatDateLabel( latestProgressDate ) }</p>
-							</div>
-						</div>
-					</Card.Content>
-				</Card>
-			</div>
-			<div className={ "min-w-0" }>
-				<Carousel opts={ { loop: true } } setApi={ setApi }>
-					<Carousel.Content>
-						{ exercises.map( ( exercise ) => (
-							<Carousel.Item key={ exercise.id }>
-								<DesktopExerciseCard exercise={ exercise } onVariantChange={ onVariantChange }>
-									<DataGrid aria-label={ `${ exercise.name } sets` } columns={ columns } data={ exercise.sets } getRowId={ ( item ) => item.id }/>
-								</DesktopExerciseCard>
-							</Carousel.Item>
-						) ) }
-					</Carousel.Content>
-				</Carousel>
-				<div className={ "flex items-center justify-between gap-3 px-4 pt-3" }>
-					<Button className={ "bg-primary text-primary-foreground" } onPress={ () => api?.scrollPrev() }>
-						<ArrowLeft className={ "size-4" }/>
-						Anterior
-					</Button>
-					<p className={ "min-w-20 text-center text-sm font-semibold text-muted" }>{ `${ activeExerciseIndex } / ${ exercises.length }` }</p>
-					<Button className={ "bg-primary text-primary-foreground" } onPress={ () => api?.scrollNext() }>
-						Siguiente
-						<ArrowRight className={ "size-4" }/>
-					</Button>
-				</div>
-			</div>
+			) }
 		</div>
 	);
 }

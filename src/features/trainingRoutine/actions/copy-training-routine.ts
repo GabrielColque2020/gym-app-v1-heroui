@@ -10,6 +10,7 @@ import {
 	validateCopySourceInput,
 	validateCopyWeeksInput,
 } from "@/features/trainingRoutine/services/training-routine-copy";
+import type { TrainingRoutine } from "@/features/trainingRoutine/services/training-routines-by-student";
 
 async function assertStudentExists( studentId: string, coachId: string ) {
 	const student = await prisma.user.findFirst( {
@@ -29,7 +30,7 @@ async function assertStudentExists( studentId: string, coachId: string ) {
 	}
 }
 
-async function getSourceRoutines( studentId: string, month: number, year: number, weeks?: number[] ) {
+async function getSourceRoutines( studentId: string, month: number, year: number, weeks?: number[] ): Promise<TrainingRoutine[]> {
 	return prisma.trainingRoutine.findMany( {
 		include: {
 			routineDays: {
@@ -54,7 +55,7 @@ async function getSourceRoutines( studentId: string, month: number, year: number
 			week: weeks ? { in: weeks } : undefined,
 			year,
 		},
-	} );
+	} ) as unknown as TrainingRoutine[];
 }
 
 export async function getTrainingRoutineCopySourceAction( input: TrainingRoutineCopySourceInput ) {

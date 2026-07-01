@@ -4,7 +4,7 @@ import type { PrismaClient, User } from "@/generated/prisma/client";
 import type { AuthenticatedUser, LoginRequest, LoginResponse } from "@/types/auth";
 import { createSessionToken as buildSessionToken, getSessionSecret } from "@/features/login/services/session-token";
 
-type LoginPrismaTx = {
+export type LoginPrismaTx = {
 	user: {
 		findFirst: PrismaClient["user"]["findFirst"];
 	};
@@ -15,7 +15,7 @@ type LoginPrismaTx = {
 	};
 };
 
-type LoginPrismaClient = LoginPrismaTx & {
+export type LoginPrismaClient = LoginPrismaTx & {
 	$transaction<T>( callback: ( tx: LoginPrismaTx ) => Promise<T> ): Promise<T>;
 };
 
@@ -63,7 +63,7 @@ export function toAuthenticatedUser( user: User ): AuthenticatedUser {
 
 async function getDefaultPrismaClient() {
 	if (!defaultPrismaClientPromise) {
-		defaultPrismaClientPromise = import( "@/lib/prisma" ).then( ( module ) => module.default as LoginPrismaClient );
+		defaultPrismaClientPromise = import( "@/lib/prisma" ).then( ( module ) => module.default as unknown as LoginPrismaClient );
 	}
 
 	return defaultPrismaClientPromise;

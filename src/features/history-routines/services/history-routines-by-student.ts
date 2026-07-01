@@ -1,5 +1,6 @@
 import type { Prisma } from "@/generated/prisma/client";
 
+import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import prisma from "@/lib/prisma";
 
 import {
@@ -21,6 +22,63 @@ type GetHistoryRoutinesByStudentBaseInput = {
 	studentNotFoundMessage: string;
 	year: number;
 };
+
+const historyRoutineStudentSelect = {
+	DescriptionStudent: {
+		select: {
+			objective: true,
+			observations: true,
+		},
+	},
+	dni: true,
+	email: true,
+	id: true,
+	name: true,
+} satisfies Prisma.UserSelect;
+
+const historyRoutineInclude = {
+	routineDays: {
+		include: {
+			routines: {
+				include: {
+					exercise: {
+						select: {
+							id: true,
+							name: true,
+						},
+					},
+					variants: {
+						include: {
+							variantExercise: {
+								select: {
+									id: true,
+									name: true,
+								},
+							},
+						},
+						orderBy: {
+							createdAt: "desc",
+						},
+					},
+				},
+				orderBy: {
+					order: "asc",
+				},
+			},
+		},
+		orderBy: {
+			dayNumber: "asc",
+		},
+	},
+} satisfies Prisma.TrainingRoutineInclude;
+
+type HistoryRoutineStudent = Prisma.UserGetPayload<{
+	select: typeof historyRoutineStudentSelect;
+}>;
+
+type HistoryRoutineTrainingRoutine = Prisma.TrainingRoutineGetPayload<{
+	include: typeof historyRoutineInclude;
+}>;
 
 function validateMonth( month: number ) {
 	if (!Number.isInteger( month ) || month < 1 || month > 12) {
@@ -49,66 +107,23 @@ export async function getHistoryRoutinesByStudentBase( {
 	}
 
 	const student = await prisma.user.findFirst( {
-		select: {
-			DescriptionStudent: {
-				select: {
-					objective: true,
-					observations: true,
-				},
-			},
-			dni: true,
-			email: true,
-			id: true,
-			name: true,
-		},
+		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
+		select: historyRoutineStudentSelect,
 		where: {
 			active: true,
 			id: studentId,
 			role: "STUDENT",
 			...studentWhere,
 		},
-	} );
+	} ) as HistoryRoutineStudent | null;
 
 	if (!student) {
 		throw new Error( studentNotFoundMessage );
 	}
 
 	const routines = await prisma.trainingRoutine.findMany( {
-		include: {
-			routineDays: {
-				include: {
-					routines: {
-						include: {
-							exercise: {
-								select: {
-									id: true,
-									name: true,
-								},
-							},
-							variants: {
-								include: {
-									variantExercise: {
-										select: {
-											id: true,
-											name: true,
-										},
-									},
-								},
-								orderBy: {
-									createdAt: "desc",
-								},
-							},
-						},
-						orderBy: {
-							order: "asc",
-						},
-					},
-				},
-				orderBy: {
-					dayNumber: "asc",
-				},
-			},
-		},
+		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
+		include: historyRoutineInclude,
 		orderBy: {
 			week: "asc",
 		},
@@ -117,9 +132,10 @@ export async function getHistoryRoutinesByStudentBase( {
 			studentId,
 			year,
 		},
-	} );
+	} ) as HistoryRoutineTrainingRoutine[];
 
 	const progressEntries = ( await prisma.exerciseProgress.findMany( {
+		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 		orderBy: [
 			{
 				week: "asc",

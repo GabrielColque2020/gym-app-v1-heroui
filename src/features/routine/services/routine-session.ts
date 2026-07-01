@@ -472,6 +472,78 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 	};
 }
 
+function mergeStudentRoutineSessionSets(
+	sourceSets: StudentRoutineSession["exercises"][ number ]["sets"],
+	draftSets: StudentRoutineSession["exercises"][ number ]["sets"],
+) {
+	const draftSetsByNumber = new Map( draftSets.map( ( set ) => [ set.setNumber, set ] ) );
+
+	return sourceSets.map( ( sourceSet ) => {
+		const draftSet = draftSetsByNumber.get( sourceSet.setNumber );
+
+		if (!draftSet) {
+			return sourceSet;
+		}
+
+		return {
+			...sourceSet,
+			completed: draftSet.completed,
+			currentReps: draftSet.currentReps,
+			currentWeight: draftSet.currentWeight,
+			notes: draftSet.notes,
+		};
+	} );
+}
+
+export function mergeStudentRoutineSessionDraft(
+	sourceSession: StudentRoutineSession,
+	draftSession: StudentRoutineSession | null,
+) {
+	if (!draftSession) {
+		return sourceSession;
+	}
+
+	const draftExercisesById = new Map( draftSession.exercises.map( ( exercise ) => [ exercise.id, exercise ] ) );
+
+	return {
+		...sourceSession,
+		exercises: sourceSession.exercises.map( ( sourceExercise ) => {
+			const draftExercise = draftExercisesById.get( sourceExercise.id );
+			const sourceVariantOptions = sourceExercise.variantOptions ?? [];
+			const sourceVariantIds = new Set( sourceVariantOptions.map( ( variant ) => variant.id ) );
+			const draftVariantId = draftExercise?.variantExerciseId ?? null;
+			const sourceVariantId = sourceExercise.variantExerciseId ?? null;
+			const resolvedVariantId = draftVariantId && sourceVariantIds.has( draftVariantId )
+				? draftVariantId
+				: sourceVariantId && sourceVariantIds.has( sourceVariantId )
+					? sourceVariantId
+					: null;
+			const resolvedVariant = resolvedVariantId
+				? sourceVariantOptions.find( ( variant ) => variant.id === resolvedVariantId ) ?? null
+				: null;
+
+			if (!draftExercise) {
+				return sourceExercise;
+			}
+
+			return {
+				...sourceExercise,
+				baseName: draftExercise.baseName ?? sourceExercise.baseName,
+				lastSession: sourceExercise.lastSession ?? draftExercise.lastSession ?? null,
+				name: resolvedVariant?.name ?? sourceExercise.name,
+				notes: draftExercise.notes ?? sourceExercise.notes,
+				restTime: draftExercise.restTime ?? sourceExercise.restTime,
+				sets: mergeStudentRoutineSessionSets( sourceExercise.sets, draftExercise.sets ),
+				variantExerciseId: resolvedVariantId,
+				variantSelectionExplicit: resolvedVariantId
+					? draftExercise.variantSelectionExplicit || sourceExercise.variantSelectionExplicit || false
+					: false,
+				variantOptions: sourceVariantOptions,
+			};
+		} ),
+	};
+}
+
 export function serializeStudentRoutineSession( session: StudentRoutineSession ) {
 	const serializeSessionHistory = ( history: StudentRoutineSessionHistory | null | undefined ) =>
 		history

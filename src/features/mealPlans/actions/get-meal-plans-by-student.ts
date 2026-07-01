@@ -1,11 +1,32 @@
 "use server";
 
+import type { Prisma } from "@/generated/prisma/client";
+import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import prisma from "@/lib/prisma";
 
 type GetMealPlansByStudentInput = {
 	studentId: string;
 };
+
+const mealPlanStudentSelect = {
+	DescriptionStudent: {
+		select: {
+			objective: true,
+			observations: true,
+		},
+	},
+	dni: true,
+	email: true,
+	id: true,
+	name: true,
+} satisfies Prisma.UserSelect;
+
+type MealPlanStudent = Prisma.UserGetPayload<{
+	select: typeof mealPlanStudentSelect;
+}>;
+
+type MealPlanItem = Prisma.MealPlanGetPayload<{}>;
 
 function assertStudentId( studentId: string ) {
 	const normalizedStudentId = studentId.trim();
@@ -19,18 +40,8 @@ function assertStudentId( studentId: string ) {
 
 async function assertStudentForSession( studentId: string, coachId: string, role: "COACH" | "STUDENT" ) {
 	const student = await prisma.user.findFirst( {
-		select: {
-			DescriptionStudent: {
-				select: {
-					objective: true,
-					observations: true,
-				},
-			},
-			dni: true,
-			email: true,
-			id: true,
-			name: true,
-		},
+		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
+		select: mealPlanStudentSelect,
 		where: role === "COACH"
 			? {
 				active: true,
@@ -57,10 +68,13 @@ async function assertStudentForSession( studentId: string, coachId: string, role
 		throw new Error( "No puedes consultar los planes alimenticios de otro estudiante." );
 	}
 
-	return student;
+	return student as unknown as MealPlanStudent;
 }
 
-export async function getMealPlansByStudentAction( { studentId }: GetMealPlansByStudentInput ) {
+export async function getMealPlansByStudentAction( { studentId }: GetMealPlansByStudentInput ): Promise<{
+	mealPlans: MealPlanItem[];
+	student: MealPlanStudent;
+}> {
 	try {
 		const session = await getAuthenticatedSession();
 
@@ -76,6 +90,7 @@ export async function getMealPlansByStudentAction( { studentId }: GetMealPlansBy
 		const student = await assertStudentForSession( normalizedStudentId, session.sub, session.role );
 
 		const mealPlans = await prisma.mealPlan.findMany( {
+			cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 			orderBy: [
 				{
 					order: "asc",
@@ -87,7 +102,7 @@ export async function getMealPlansByStudentAction( { studentId }: GetMealPlansBy
 			where: {
 				studentId: normalizedStudentId,
 			},
-		} );
+		} ) as unknown as MealPlanItem[];
 
 		return {
 			mealPlans,

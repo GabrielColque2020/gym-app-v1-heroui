@@ -91,7 +91,7 @@ export async function getRoutineDayDetailBase( {
 				},
 			},
 		},
-	} );
+	} ) as RoutineDayDetail | null;
 
 	if (!routineDay) {
 		throw new Error( "No se encontro el dia de rutina seleccionado." );

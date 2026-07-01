@@ -142,7 +142,7 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 
 			{ !isLoading && !isError && data ? (
 				data.historyRoutines.length === 0 ? (
-					<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
+					<Card className={ "border border-dashed border-border" } variant={ "default" }>
 						<Card.Content className={ "py-10 text-center" }>
 							<p className={ "text-base font-semibold text-foreground" }>No hay historial de rutinas cargado</p>
 							<p className={ "mt-1 text-sm text-muted" }>

@@ -9,7 +9,11 @@ import type {
 	ExerciseProgressRoutineOld,
 	RoutinePageStudent,
 } from "@/features/routine/types/routine.types";
-import { mapStudentRoutineSessionDetailToRoutinePages, type StudentRoutineSessionDetail } from "@/features/routine/services/routine-session";
+import {
+	mapStudentRoutineSessionDetailToRoutinePages,
+	mergeStudentRoutineSessionDraft,
+	type StudentRoutineSessionDetail,
+} from "@/features/routine/services/routine-session";
 
 type SetPatch = Partial<Pick<StudentRoutineSet, "currentReps" | "currentWeight" | "notes">>;
 
@@ -32,6 +36,7 @@ type RoutineSessionStoreState = {
 	getTrainingRoutineNameStore: ( routineDayId: string ) => string;
 	hydrateDraftFromSource: ( routineDayId: string, session: StudentRoutineSession ) => void;
 	hydrateRoutinePagesFromSource: ( routineDayId: string, detail: StudentRoutineSessionDetail ) => void;
+	syncDraftFromSource: ( routineDayId: string, detail: StudentRoutineSessionDetail, session: StudentRoutineSession ) => void;
 	setDraft: ( routineDayId: string, session: StudentRoutineSession ) => void;
 	setRoutinesByRoutineDayId: ( routineDayId: string, routines: RoutinePageStudent[] ) => void;
 	setTrainingRoutineNameStore: ( routineDayId: string, name: string ) => void;
@@ -256,6 +261,27 @@ export const useRoutineSessionStore = create<RoutineSessionStoreState>()(
 						[ routineDayId ]: detail.trainingRoutine.name || `Semana ${ detail.trainingRoutine.week }`,
 					},
 				} ) );
+			},
+			syncDraftFromSource: ( routineDayId, detail, session ) => {
+				set( ( state ) => {
+					const currentDraft = state.drafts[ routineDayId ] ?? null;
+					const nextDraft = mergeStudentRoutineSessionDraft( session, currentDraft );
+
+					return {
+						drafts: {
+							...state.drafts,
+							[ routineDayId ]: nextDraft,
+						},
+						routinePagesByRoutineDayId: {
+							...state.routinePagesByRoutineDayId,
+							[ routineDayId ]: mapStudentRoutineSessionDetailToRoutinePages( detail ),
+						},
+						trainingRoutineNameStore: {
+							...state.trainingRoutineNameStore,
+							[ routineDayId ]: session.title || `Semana ${ detail.trainingRoutine.week }`,
+						},
+					};
+				} );
 			},
 			setDraft: ( routineDayId, session ) => {
 				set( ( state ) => ( {

@@ -1,10 +1,13 @@
 ﻿"use client";
-import { Alert, Card, Spinner } from "@heroui/react";
-import { CircleFill } from "@gravity-ui/icons";
+import { Alert, Button, Card, Spinner } from "@heroui/react";
+import { ArrowsRotateLeft, CircleFill } from "@gravity-ui/icons";
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import type { StudentMealPlan } from "@/features/mealPlans/types/meal-plans.types";
 import { useMealPlans } from "@/features/role/student/meal-plans/hooks/useMealPlans";
-import { formatMealPlanDescriptionLines, formatMealTime, } from "@/features/mealPlans/services/meal-plan-formatters";
+import {
+	formatMealPlanDescriptionLines,
+	formatMealTime,
+} from "@/features/mealPlans/services/meal-plan-formatters";
 
 type StudentMealPlansPageContentProps = { studentId: string | null };
 
@@ -46,7 +49,7 @@ function MealPlanCard( { mealPlan }: { mealPlan: StudentMealPlan } ) {
 }
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
-	const { data, error, isError, isLoading } = useMealPlans( studentId );
+	const { data, error, isError, isFetching, isLoading, refetch } = useMealPlans( studentId );
 	const crumbs = [
 		{ href: "/dashboard", label: "Inicio" },
 		{ label: "Mis planes alimenticios" },
@@ -109,17 +112,21 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 				crumbs={ crumbs }
 			/>
 			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Header
-					className={
-						"flex flex-col gap-3 border-b border-border px-5 py-4 sm:px-6"
-					}
-				>
-					<PageHeader
-						description={
-							"Consulta los planes alimenticios asignados a tu cuenta."
-						}
-						title={ "Mis planes alimenticios" }
-					/>
+				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:px-6" }>
+					<div className={ "flex flex-col gap-3 md:flex-row md:items-end md:justify-between" }>
+						<PageHeader
+							description={ "Consulta los planes alimenticios asignados a tu cuenta." }
+							title={ "Mis planes alimenticios" }
+						/>
+						<Button
+							className={ "w-full shadow-sm md:w-auto" }
+							isDisabled={ isFetching && !isLoading }
+							onPress={ () => { void refetch(); } }
+						>
+							<ArrowsRotateLeft className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
+							{ isFetching && !isLoading ? "Actualizando" : "Actualizar" }
+						</Button>
+					</div>
 				</Card.Header>
 				<Card.Content className={ "px-5 py-4 sm:px-6" }>
 					{ data.mealPlans.length === 0 ? (
@@ -169,5 +176,4 @@ export default function StudentMealPlansPageContent( {
 	}
 	return <MealPlansPageContentLoaded studentId={ studentId }/>;
 }
-
 

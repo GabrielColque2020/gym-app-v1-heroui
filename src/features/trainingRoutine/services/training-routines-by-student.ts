@@ -1,3 +1,5 @@
+import { Prisma } from "@/generated/prisma/client";
+import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import prisma from "@/lib/prisma";
 
 type GetTrainingRoutinesByStudentBaseInput = {
@@ -6,6 +8,57 @@ type GetTrainingRoutinesByStudentBaseInput = {
 	studentId: string;
 	year: number;
 };
+
+const trainingRoutineStudentSelect = {
+	DescriptionStudent: {
+		select: {
+			objective: true,
+		},
+	},
+	dni: true,
+	email: true,
+	id: true,
+	name: true,
+} satisfies Prisma.UserSelect;
+
+const trainingRoutineInclude = {
+	routineDays: {
+		include: {
+			routines: {
+				include: {
+					exercise: {
+						select: {
+							active: true,
+							bodyPart: true,
+							id: true,
+							imageUrl: true,
+							name: true,
+							videoUrl: true,
+						},
+					},
+				},
+				orderBy: {
+					order: "asc",
+				},
+			},
+		},
+		orderBy: {
+			dayNumber: "asc",
+		},
+	},
+} satisfies Prisma.TrainingRoutineInclude;
+
+export type TrainingRoutineStudent = Prisma.UserGetPayload<{
+	select: typeof trainingRoutineStudentSelect;
+}>;
+
+export type TrainingRoutineDay = Prisma.TrainingRoutineGetPayload<{
+	include: typeof trainingRoutineInclude;
+}>["routineDays"][number];
+
+export type TrainingRoutine = Prisma.TrainingRoutineGetPayload<{
+	include: typeof trainingRoutineInclude;
+}>;
 
 function validateMonth( month: number ) {
 	if (!Number.isInteger( month ) || month < 1 || month > 12) {
@@ -29,56 +82,23 @@ export async function getTrainingRoutinesByStudentBase( {
 	validateYear( year );
 
 	const student = await prisma.user.findFirst( {
-		select: {
-			DescriptionStudent: {
-				select: {
-					objective: true,
-				},
-			},
-			dni: true,
-			email: true,
-			id: true,
-			name: true,
-		},
+		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
+		select: trainingRoutineStudentSelect,
 		where: {
 			active: true,
 			coachId: coachId ?? undefined,
 			id: studentId,
 			role: "STUDENT",
 		},
-	} );
+	} ) as TrainingRoutineStudent | null;
 
 	if (!student) {
 		throw new Error( "No se encontro un estudiante activo para consultar rutinas." );
 	}
 
 	const routines = await prisma.trainingRoutine.findMany( {
-		include: {
-			routineDays: {
-				include: {
-					routines: {
-						include: {
-							exercise: {
-								select: {
-									active: true,
-									bodyPart: true,
-									id: true,
-									imageUrl: true,
-									name: true,
-									videoUrl: true,
-								},
-							},
-						},
-						orderBy: {
-							order: "asc",
-						},
-					},
-				},
-				orderBy: {
-					dayNumber: "asc",
-				},
-			},
-		},
+		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
+		include: trainingRoutineInclude,
 		orderBy: {
 			week: "asc",
 		},
@@ -87,7 +107,7 @@ export async function getTrainingRoutinesByStudentBase( {
 			studentId,
 			year,
 		},
-	} );
+	} ) as TrainingRoutine[];
 
 	return {
 		month,
@@ -98,5 +118,3 @@ export async function getTrainingRoutinesByStudentBase( {
 }
 
 export type TrainingRoutinesByStudent = Awaited<ReturnType<typeof getTrainingRoutinesByStudentBase>>;
-export type TrainingRoutine = TrainingRoutinesByStudent[ "routines" ][ number ];
-export type TrainingRoutineDay = TrainingRoutine[ "routineDays" ][ number ];
