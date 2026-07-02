@@ -1,2 +1,2 @@
-export { default as DesktopExerciseCard } from "./DesktopExerciseCard";
-export { default as DesktopRoutineView } from "./DesktopRoutineView";
+export { default as DesktopExerciseCard } from "./desktop-exercise-card";
+export { default as DesktopRoutineView } from "./desktop-routine-view";

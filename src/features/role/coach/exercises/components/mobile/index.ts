@@ -1,1 +1,1 @@
-export { ExercisesContentMobile } from "./ExercisesContentMobile";
+export { ExercisesContentMobile } from "./exercises-content-mobile";

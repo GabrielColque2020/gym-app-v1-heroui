@@ -7,27 +7,27 @@ export function buildExercisesIndexHref() {
 }
 
 export function buildTrainingRoutinesStudentsHref() {
-	return "/coach/trainingRoutinesStudents";
+	return "/coach/training-routines-students";
 }
 
 export function buildMealPlansStudentsHref() {
-	return "/coach/mealPlansStudents";
+	return "/coach/meal-plans-students";
 }
 
 export function buildHistoryRoutinesStudentsHref() {
-	return "/coach/historyRoutinesStudents";
+	return "/coach/history-routines-students";
 }
 
 export function buildStudentTrainingRoutineHref( studentId: string ) {
-	return `/coach/trainingRoutine?studentId=${ studentId }`;
+	return `/coach/training-routine?studentId=${ studentId }`;
 }
 
 export function buildStudentMealPlanHref( studentId: string ) {
-	return `/coach/mealPlans?studentId=${ studentId }`;
+	return `/coach/meal-plans?studentId=${ studentId }`;
 }
 
 export function buildStudentHistoryHref( studentId: string ) {
-	return `/coach/historyRoutines?studentId=${ studentId }`;
+	return `/coach/history-routines?studentId=${ studentId }`;
 }
 
 export const COACH_DASHBOARD_QUICK_ACTIONS = [

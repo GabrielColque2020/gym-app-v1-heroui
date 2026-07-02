@@ -1,7 +1,7 @@
 ﻿"use server";
 
 import { getAuthenticatedSession } from "@/features/auth/session";
-import { getTrainingRoutinesByStudentBase } from "@/features/trainingRoutine/services/training-routines-by-student";
+import { getTrainingRoutinesByStudentBase } from "@/features/training-routine/services/training-routines-by-student";
 
 type GetTrainingRoutinesByStudentInput = {
 	month: number;

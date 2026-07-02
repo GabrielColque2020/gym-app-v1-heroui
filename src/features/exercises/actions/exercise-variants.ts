@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 import { normalizeSearchName } from "@/features/exercises/services/exercise-form";
-import type { ExerciseVariantListItem, ExerciseVariantSearchItem } from "@/features/exercises/types/exercise-variants.types";
+import type { ExerciseVariantListItem, ExerciseVariantSearchItem } from "@/features/exercises/types/exercise-variants-types";
 
 const exerciseVariantSelect = {
 	active: true,

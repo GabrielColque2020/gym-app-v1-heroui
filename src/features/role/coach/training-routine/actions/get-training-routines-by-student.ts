@@ -6,7 +6,7 @@ import {
 	getTrainingRoutinesByStudentBase,
 	type TrainingRoutine,
 	type TrainingRoutineDay,
-} from "@/features/trainingRoutine/services/training-routines-by-student";
+} from "@/features/training-routine/services/training-routines-by-student";
 
 type GetTrainingRoutinesByStudentInput = {
 	month: number;

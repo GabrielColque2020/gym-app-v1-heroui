@@ -1,3 +1,3 @@
-export { ExerciseFilters } from "./ExerciseFilters";
-export { ExerciseSheet } from "./ExerciseSheet";
-export { ExerciseVariantsSheet } from "./ExerciseVariantsSheet";
+export { ExerciseFilters } from "./exercise-filters";
+export { ExerciseSheet } from "./exercise-sheet";
+export { ExerciseVariantsSheet } from "./exercise-variants-sheet";

@@ -1,1 +1,1 @@
-export { ExercisesContentDesktop } from "./ExercisesContentDesktop";
+export { ExercisesContentDesktop } from "./exercises-content-desktop";

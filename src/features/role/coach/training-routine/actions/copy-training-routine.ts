@@ -2,4 +2,4 @@ export {
 	copyTrainingRoutineMonthAction,
 	copyTrainingRoutineWeeksAction,
 	getTrainingRoutineCopySourceAction,
-} from "@/features/trainingRoutine/actions/copy-training-routine";
+} from "@/features/training-routine/actions/copy-training-routine";

@@ -1,6 +1,6 @@
 "use server";
 
-import { getMealPlansByStudentAction as getMealPlansByStudentBase } from "@/features/mealPlans/actions/get-meal-plans-by-student";
+import { getMealPlansByStudentAction as getMealPlansByStudentBase } from "@/features/meal-plans/actions/get-meal-plans-by-student";
 
 type GetMealPlansByStudentInput = {
 	studentId: string;

@@ -1,2 +1,2 @@
-﻿export { default as MobileExerciseCard } from "./MobileExerciseCard";
-export { default as MobileRoutineView } from "./MobileRoutineView";
+﻿export { default as MobileExerciseCard } from "./mobile-exercise-card";
+export { default as MobileRoutineView } from "./mobile-routine-view";

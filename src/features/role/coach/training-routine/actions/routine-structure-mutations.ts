@@ -2,4 +2,4 @@ export {
 	createTrainingRoutineStructureAction,
 	deleteTrainingRoutineStructureAction,
 	updateTrainingRoutineStructureAction,
-} from "@/features/trainingRoutine/actions/routine-structure-mutations";
+} from "@/features/training-routine/actions/routine-structure-mutations";

@@ -9,7 +9,7 @@ import type {
 	ExerciseVariantOption,
 	RoutinePageStudent,
 	WorkoutSession,
-} from "@/features/routine/types/routine.types";
+} from "@/features/routine/types/routine-types";
 
 export type StudentRoutineProgressEntry = {
 	date: Date | string;

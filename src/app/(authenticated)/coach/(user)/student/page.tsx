@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import CoachStudentsPageContent from "@/features/role/coach/students/views/CoachStudentsPageContent";
+import CoachStudentsPageContent from "@/features/role/coach/students/views/coach-students-page-content";
 
 export const metadata: Metadata = {
 	title: "Lista de estudiantes",

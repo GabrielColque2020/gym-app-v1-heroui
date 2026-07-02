@@ -1,21 +1,21 @@
 export function buildStudentDashboardHref() {
-	return "/dashboard";
+	return "/student/dashboard";
 }
 
 export function buildTrainingRoutineHref() {
-	return "/trainingRoutine";
+	return "/student/training-routine";
 }
 
 export function buildMealPlansHref() {
-	return "/mealPlans";
+	return "/student/meal-plans";
 }
 
 export function buildHistoryRoutinesHref() {
-	return "/historyRoutines";
+	return "/student/history-routines";
 }
 
 export function buildRoutineDayHref( routineDayId: string ) {
-	return `/routine?routineDayId=${ routineDayId }`;
+	return `/student/routine?routineDayId=${ routineDayId }`;
 }
 
 export const STUDENT_DASHBOARD_QUICK_ACTIONS = [

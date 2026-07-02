@@ -1,1 +1,1 @@
-export { default as TrainingRoutinesFilter } from "./TrainingRoutinesFilter";
+export { default as TrainingRoutinesFilter } from "./training-routines-filter";

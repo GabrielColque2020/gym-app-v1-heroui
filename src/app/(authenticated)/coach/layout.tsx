@@ -7,7 +7,7 @@ export default async function CoachLayout( { children }: { children: ReactNode }
 	const session = await getAuthenticatedSession();
 
 	if (!session || session.role !== "COACH") {
-		redirect( "/dashboard" );
+		redirect( "/login" );
 	}
 
 	return children;

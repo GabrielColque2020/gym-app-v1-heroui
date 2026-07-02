@@ -1,4 +1,4 @@
-export { HistoryRoutineDaysAccordion } from "./HistoryRoutineDaysAccordion";
-export { HistoryRoutineExerciseCard } from "./HistoryRoutineExerciseCard";
-export { HistoryRoutineWeeksAccordion } from "./HistoryRoutineWeeksAccordion";
-export { HistoryRoutineWeeksSelector } from "./HistoryRoutineWeeksSelector";
+export { HistoryRoutineDaysAccordion } from "./history-routine-days-accordion";
+export { HistoryRoutineExerciseCard } from "./history-routine-exercise-card";
+export { HistoryRoutineWeeksAccordion } from "./history-routine-weeks-accordion";
+export { HistoryRoutineWeeksSelector } from "./history-routine-weeks-selector";

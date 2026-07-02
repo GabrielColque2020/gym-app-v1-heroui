@@ -14,35 +14,35 @@ export type NavItem = {
 
 export const NAV_ITEMS: readonly NavItem[] = [
 	{ href: "/coach/dashboard", icon: House, label: "Inicio", roles: [ "COACH" ] },
-	{ href: "/dashboard", icon: House, label: "Inicio", roles: [ "ADMIN", "STUDENT" ] },
-	{ href: "/trainingRoutine", icon: Gear, label: "Rutina de Entrenamiento" },
-	{ href: "/mealPlans", icon: Gear, label: "Planes Alimenticios por Estudiantes" },
-	{ href: "/historyRoutines", icon: Gear, label: "Historial de Rutina" },
+	{ href: "/student/dashboard", icon: House, label: "Inicio", roles: [ "STUDENT" ] },
+	{ href: "/student/training-routine", icon: Gear, label: "Rutina de Entrenamiento", roles: [ "STUDENT" ] },
+	{ href: "/student/meal-plans", icon: Gear, label: "Planes Alimenticios por Estudiantes", roles: [ "STUDENT" ] },
+	{ href: "/student/history-routines", icon: Gear, label: "Historial de Rutina", roles: [ "STUDENT" ] },
 	{
 		children: [
 			{ href: "/coach/exercises", icon: Gear, label: "Ejercicios", roles: [ "COACH" ] },
 			{ href: "/coach/student", icon: Gear, label: "Estudiantes", roles: [ "COACH" ] },
 			{
-				href: "/coach/trainingRoutinesStudents",
+				href: "/coach/training-routines-students",
 				icon: Gear,
 				label: "Rutinas por Estudiantes",
 				roles: [ "COACH" ],
 			},
 			{
-				href: "/coach/mealPlansStudents",
+				href: "/coach/meal-plans-students",
 				icon: Gear,
 				label: "Planes Alimenticios por Estudiantes",
 				roles: [ "COACH" ],
 			},
 			{
-				href: "/coach/historyRoutinesStudents",
+				href: "/coach/history-routines-students",
 				icon: Gear,
 				label: "Historial de Rutina por Estudiantes",
 				roles: [ "COACH" ],
 			},
 		],
 		icon: Gear,
-		label: "Coach",
+		label: "Administración",
 		roles: [ "COACH" ],
 	},
 ] as const;

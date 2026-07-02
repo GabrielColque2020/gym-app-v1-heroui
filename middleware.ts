@@ -16,10 +16,6 @@ function buildLoginUrl( request: NextRequest ) {
 	return loginUrl;
 }
 
-function buildDashboardUrl( request: NextRequest ) {
-	return new URL( "/dashboard", request.url );
-}
-
 export async function middleware( request: NextRequest ) {
 	const token = request.cookies.get( AUTH_SESSION_COOKIE_NAME )?.value;
 	const isLoginRoute = request.nextUrl.pathname === "/login";
@@ -32,7 +28,13 @@ export async function middleware( request: NextRequest ) {
 		const session = await verifySessionToken( token, getSessionSecret() );
 
 		if (session?.active) {
-			return NextResponse.redirect( buildDashboardUrl( request ) );
+			const dashboardPath = session.role === "STUDENT"
+				? "/student/dashboard"
+				: session.role === "COACH"
+					? "/coach/dashboard"
+					: "/student/dashboard";
+
+			return NextResponse.redirect( new URL( dashboardPath, request.url ) );
 		}
 
 		const response = NextResponse.next();

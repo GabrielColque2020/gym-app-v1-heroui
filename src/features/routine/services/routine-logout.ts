@@ -1,12 +1,11 @@
 "use client";
 
 import { clearPersistedQueryCache } from "@/constants/query";
-import { useRoutineDayDraftStore } from "@/features/routine/stores/useRoutineDayDraftStore";
-import { useRoutineSessionStore } from "@/features/routine/stores/useRoutineSessionStore";
+import { useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
+import { useRoutineSessionStore } from "@/features/routine/stores/use-routine-session-store";
 
 const ROUTINE_SESSION_STORAGE_KEY = "routineExerciseProgress-storage";
 const ROUTINE_DAY_DRAFT_STORAGE_KEYS = [
-	"admin-routine-day-drafts",
 	"coach-routine-day-drafts",
 ] as const;
 

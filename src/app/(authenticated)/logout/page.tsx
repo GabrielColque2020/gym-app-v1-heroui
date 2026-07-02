@@ -1,4 +1,4 @@
-import LogoutPageContent from "@/features/auth/view/LogoutPageContent";
+import LogoutPageContent from "@/features/auth/views/logout-page-content";
 
 export default function LogoutPage() {
 	return <LogoutPageContent/>;
