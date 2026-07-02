@@ -88,4 +88,4 @@ export function validateCopyWeeksInput( input: CopyTrainingRoutineWeeksInput ) {
 }
 
 export const trainingRoutineCopySourceQueryKey = ( studentId: string, month: number, year: number ) =>
-	[ "admin-training-routine-copy-source", studentId, month, year ] as const;
+	[ "coach-training-routine-copy-source", studentId, month, year ] as const;

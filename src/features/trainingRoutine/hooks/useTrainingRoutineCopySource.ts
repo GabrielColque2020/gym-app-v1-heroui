@@ -18,7 +18,7 @@ export function useTrainingRoutineCopySource( {
 	year,
 }: UseTrainingRoutineCopySourceParams ) {
 	return useQuery( {
-		...QUERY_DEFAULTS.admin,
+		...QUERY_DEFAULTS.coach,
 		enabled: Boolean( studentId && month && year ),
 		queryFn: () => getTrainingRoutineCopySourceAction( { month, studentId, year } ),
 		queryKey: trainingRoutineCopySourceQueryKey( studentId, month, year ),

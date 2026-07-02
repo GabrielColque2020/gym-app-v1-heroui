@@ -12,7 +12,7 @@ export async function fetchExercises(): Promise<Exercises> {
 }
 
 export const exercisesQueryOptions = () => queryOptions( {
-	...QUERY_DEFAULTS.admin,
+	...QUERY_DEFAULTS.coach,
 	queryKey: EXERCISES_QUERY_KEY,
 	queryFn: fetchExercises,
 } );

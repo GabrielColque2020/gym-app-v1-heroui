@@ -5,14 +5,14 @@ import { getExerciseVariantsAction, searchExerciseVariantCandidatesAction, } fro
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 
 export const exerciseVariantsQueryKey = ( routineId: string ) =>
-	[ "admin-exercise-variants", routineId, "list" ] as const;
+	[ "coach-exercise-variants", routineId, "list" ] as const;
 
 export const exerciseVariantCandidatesQueryKey = (
 	exerciseId: string,
 	query: string,
 	bodyPart: BodyPartFilter,
 ) =>
-	[ "admin-exercise-variants", exerciseId, "search", query, bodyPart ] as const;
+	[ "coach-exercise-variants", exerciseId, "search", query, bodyPart ] as const;
 
 export function exerciseVariantsQueryOptions( routineId: string, enabled = true ) {
 	return queryOptions( {

@@ -11,7 +11,7 @@ export const QUERY_PERSIST_STORAGE_KEY = "react-query-cache";
 export const QUERY_PERSIST_MAX_AGE_MS = 4 * 60 * 60 * 1000; // 4 horas
 export const QUERY_PERSIST_BUSTER = "v1";
 export const QUERY_NON_PERSISTED_KEY_PREFIXES = [
-	"admin-exercise-variants",
+	"coach-exercise-variants",
 ] as const;
 
 export const QUERY_VOLATILE_DEFAULTS = {
@@ -38,6 +38,18 @@ export const QUERY_ACCELERATE_CACHE = {
 } as const;
 
 export const QUERY_DEFAULTS = {
+	coach: {
+		gcTime: Infinity,
+		refetchIntervalInBackground: true,
+		refetchOnMount: false,
+		refetchOnReconnect: false,
+		refetchOnWindowFocus: false,
+		// 1 hora de datos estables en React Query.
+		staleTime: QUERY_TIME_BASE,
+		// 2 horas entre refetch automÃ¡ticos.
+		refetchInterval: 2 * 60 * 60 * 1000, // 2 hora
+		retry: 2,
+	},
 	admin: {
 		gcTime: Infinity,
 		refetchIntervalInBackground: true,

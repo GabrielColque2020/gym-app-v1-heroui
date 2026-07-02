@@ -5,7 +5,10 @@ import { useRoutineDayDraftStore } from "@/features/routine/stores/useRoutineDay
 import { useRoutineSessionStore } from "@/features/routine/stores/useRoutineSessionStore";
 
 const ROUTINE_SESSION_STORAGE_KEY = "routineExerciseProgress-storage";
-const ROUTINE_DAY_DRAFT_STORAGE_KEY = "admin-routine-day-drafts";
+const ROUTINE_DAY_DRAFT_STORAGE_KEYS = [
+	"admin-routine-day-drafts",
+	"coach-routine-day-drafts",
+] as const;
 
 export function clearRoutineStateOnLogout() {
 	useRoutineSessionStore.getState().clearAll();
@@ -13,5 +16,7 @@ export function clearRoutineStateOnLogout() {
 
 	clearPersistedQueryCache();
 	window.localStorage.removeItem( ROUTINE_SESSION_STORAGE_KEY );
-	window.localStorage.removeItem( ROUTINE_DAY_DRAFT_STORAGE_KEY );
+	for (const storageKey of ROUTINE_DAY_DRAFT_STORAGE_KEYS) {
+		window.localStorage.removeItem( storageKey );
+	}
 }

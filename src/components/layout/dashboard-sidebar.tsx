@@ -75,7 +75,7 @@ function SidebarContents( {
 					</Avatar>
 					<div className={ "flex min-w-0 flex-col" } data-sidebar={ "label" }>
 						<span className={ "text-foreground text-sm font-medium leading-tight" }>Kate Moore</span>
-						<span className={ "text-muted text-xs font-medium leading-tight" }>Admin</span>
+						<span className={ "text-muted text-xs font-medium leading-tight" }>Coach</span>
 					</div>
 				</div>
 			</Sidebar.Header>

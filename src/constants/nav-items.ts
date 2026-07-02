@@ -13,36 +13,36 @@ export type NavItem = {
 };
 
 export const NAV_ITEMS: readonly NavItem[] = [
-	{ href: "/admin/dashboard", icon: House, label: "Inicio", roles: [ "COACH" ] },
+	{ href: "/coach/dashboard", icon: House, label: "Inicio", roles: [ "COACH" ] },
 	{ href: "/dashboard", icon: House, label: "Inicio", roles: [ "ADMIN", "STUDENT" ] },
 	{ href: "/trainingRoutine", icon: Gear, label: "Rutina de Entrenamiento" },
 	{ href: "/mealPlans", icon: Gear, label: "Planes Alimenticios por Estudiantes" },
 	{ href: "/historyRoutines", icon: Gear, label: "Historial de Rutina" },
 	{
 		children: [
-			{ href: "/admin/exercises", icon: Gear, label: "Ejercicios", roles: [ "COACH" ] },
-			{ href: "/admin/student", icon: Gear, label: "Estudiantes", roles: [ "COACH" ] },
+			{ href: "/coach/exercises", icon: Gear, label: "Ejercicios", roles: [ "COACH" ] },
+			{ href: "/coach/student", icon: Gear, label: "Estudiantes", roles: [ "COACH" ] },
 			{
-				href: "/admin/trainingRoutinesStudents",
+				href: "/coach/trainingRoutinesStudents",
 				icon: Gear,
 				label: "Rutinas por Estudiantes",
 				roles: [ "COACH" ],
 			},
 			{
-				href: "/admin/mealPlansStudents",
+				href: "/coach/mealPlansStudents",
 				icon: Gear,
 				label: "Planes Alimenticios por Estudiantes",
 				roles: [ "COACH" ],
 			},
 			{
-				href: "/admin/historyRoutinesStudents",
+				href: "/coach/historyRoutinesStudents",
 				icon: Gear,
 				label: "Historial de Rutina por Estudiantes",
 				roles: [ "COACH" ],
 			},
 		],
 		icon: Gear,
-		label: "Administración",
+		label: "Coach",
 		roles: [ "COACH" ],
 	},
 ] as const;

@@ -181,7 +181,7 @@ export const useRoutineDayDraftStore = create<RoutineDayDraftStoreState>()(
 			};
 		},
 		{
-			name: "admin-routine-day-drafts",
+			name: "coach-routine-day-drafts",
 			partialize: ( state ) => ( {
 				drafts: state.drafts,
 			} ),

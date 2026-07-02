@@ -8,7 +8,7 @@ export default async function DashboardPage() {
 	const session = await getAuthenticatedSession();
 
 	if (session?.role === "COACH") {
-		redirect( "/admin/dashboard" );
+		redirect( "/coach/dashboard" );
 	}
 
 	if (session?.role === "STUDENT") {

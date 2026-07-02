@@ -127,7 +127,7 @@ export function StudentSheet( props: StudentFormSheetProps ) {
 	const title = isEditMode ? "Editar estudiante" : "Nuevo estudiante";
 	const description = isEditMode
 		? "Actualiza el perfil, estado y objetivos del estudiante."
-		: "Carga un estudiante disponible para seguimiento administrativo.";
+		: "Carga un estudiante disponible para seguimiento del coach.";
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear estudiante";
 	const showEditTriggerLabel = props.triggerVariant === "button";
 	const isOpen = props.isOpen ?? internalIsOpen;

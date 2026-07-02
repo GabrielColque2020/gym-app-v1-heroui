@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
-import type { AdminRoutineDayExercise } from "@/features/role/admin/routine/actions/get-routine-day";
+import type { CoachRoutineDayExercise } from "@/features/role/coach/routine/actions/get-routine-day";
 import { useRoutineDayDraftStore } from "@/features/routine/stores/useRoutineDayDraftStore";
 import {
 	mapRoutineExercisesToDraft,
@@ -15,7 +15,7 @@ import {
 
 type UseRoutineDayDraftOptions = {
 	routineDayId: string;
-	sourceRoutines: AdminRoutineDayExercise[];
+	sourceRoutines: CoachRoutineDayExercise[];
 };
 
 type DraftMutationResult =
@@ -123,7 +123,7 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 		return sortedDraftRoutines.reduce( ( highestOrder, routine ) => Math.max( highestOrder, routine.order ), 0 ) + 1;
 	}
 
-	function resetDraft( nextSourceRoutines: AdminRoutineDayExercise[] ) {
+	function resetDraft( nextSourceRoutines: CoachRoutineDayExercise[] ) {
 		const nextDraftRoutines = mapRoutineExercisesToDraft( nextSourceRoutines );
 
 		setDraft( routineDayId, nextDraftRoutines );

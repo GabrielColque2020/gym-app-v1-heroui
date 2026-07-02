@@ -12,7 +12,7 @@ export async function fetchStudents(): Promise<Students> {
 }
 
 export const studentsQueryOptions = () => queryOptions( {
-	...QUERY_DEFAULTS.admin,
+	...QUERY_DEFAULTS.coach,
 	queryFn: fetchStudents,
 	queryKey: STUDENTS_QUERY_KEY,
 } );

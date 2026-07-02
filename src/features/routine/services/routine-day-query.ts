@@ -8,7 +8,7 @@ export const routineDayQueryKey = ( routineDayId: string, studentId?: string | n
 
 export function routineDayQueryOptions( routineDayId: string, studentId?: string | null ) {
 	return queryOptions( {
-		...QUERY_DEFAULTS.admin,
+		...QUERY_DEFAULTS.coach,
 		enabled: Boolean( routineDayId ),
 		queryFn: () => getRoutineDayAction( { routineDayId, studentId } ),
 		queryKey: routineDayQueryKey( routineDayId, studentId ),

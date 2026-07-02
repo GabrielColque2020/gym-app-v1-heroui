@@ -9,7 +9,7 @@ export type MealPlansByStudent = Awaited<ReturnType<typeof getMealPlansByStudent
 
 export function mealPlansQueryOptions( studentId: string ) {
 	return queryOptions( {
-		...QUERY_DEFAULTS.admin,
+		...QUERY_DEFAULTS.coach,
 		queryFn: () => getMealPlansByStudentAction( { studentId } ),
 		queryKey: mealPlansQueryKey( studentId ),
 	} );

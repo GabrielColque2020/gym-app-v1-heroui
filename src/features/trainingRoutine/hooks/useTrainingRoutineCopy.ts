@@ -7,7 +7,7 @@ import {
 	copyTrainingRoutineWeeksAction,
 } from "@/features/trainingRoutine/actions/copy-training-routine";
 import { trainingRoutineCopySourceQueryKey } from "@/features/trainingRoutine/services/training-routine-copy";
-import { adminTrainingRoutinesQueryKey } from "@/features/trainingRoutine/services/training-routines.keys";
+import { coachTrainingRoutinesQueryKey } from "@/features/trainingRoutine/services/training-routines.keys";
 import type {
 	CopyTrainingRoutineMonthInput,
 	CopyTrainingRoutineWeeksInput,
@@ -18,7 +18,7 @@ function invalidateTrainingRoutineCopyQueries(
 	input: CopyTrainingRoutineMonthInput | CopyTrainingRoutineWeeksInput,
 ) {
 	void queryClient.invalidateQueries( {
-		queryKey: adminTrainingRoutinesQueryKey( input.studentId, input.destinationMonth, input.destinationYear ),
+		queryKey: coachTrainingRoutinesQueryKey( input.studentId, input.destinationMonth, input.destinationYear ),
 	} );
 	void queryClient.invalidateQueries( {
 		queryKey: trainingRoutineCopySourceQueryKey( input.studentId, input.sourceMonth, input.sourceYear ),

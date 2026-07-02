@@ -7,7 +7,7 @@ import {
 	deleteTrainingRoutineStructureAction,
 	updateTrainingRoutineStructureAction,
 } from "@/features/trainingRoutine/actions/routine-structure-mutations";
-import { adminTrainingRoutinesQueryKey } from "@/features/trainingRoutine/services/training-routines.keys";
+import { coachTrainingRoutinesQueryKey } from "@/features/trainingRoutine/services/training-routines.keys";
 import type {
 	RoutineStructureInput,
 	RoutineStructureScopeInput,
@@ -18,7 +18,7 @@ function invalidateTrainingRoutine(
 	input: RoutineStructureInput,
 ) {
 	void queryClient.invalidateQueries( {
-		queryKey: adminTrainingRoutinesQueryKey( input.studentId, input.month, input.year ),
+		queryKey: coachTrainingRoutinesQueryKey( input.studentId, input.month, input.year ),
 	} );
 }
 
@@ -29,7 +29,7 @@ export function useDeleteTrainingRoutineStructure() {
 		mutationFn: deleteTrainingRoutineStructureAction,
 		onSuccess: ( _, input: RoutineStructureScopeInput ) => {
 			void queryClient.invalidateQueries( {
-				queryKey: adminTrainingRoutinesQueryKey( input.studentId, input.month, input.year ),
+				queryKey: coachTrainingRoutinesQueryKey( input.studentId, input.month, input.year ),
 			} );
 		},
 	} );
