@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Alert, Card, Spinner } from "@heroui/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Alert, Button, Card, Spinner } from "@heroui/react";
+import { ArrowsRotateLeft } from "@gravity-ui/icons";
 
 import { PageBreadcrumbs } from "@/components/common";
 import { HistoryRoutineMonthFilters } from "@/features/role/admin/history-routines/components/shared/HistoryRoutineMonthFilters";
@@ -22,11 +23,12 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 	const [ activeYear, setActiveYear ] = useState( getCurrentYear() );
 	const [ selectedWeeks, setSelectedWeeks ] = useState<number[]>( [] );
 
-	const { data, error, isError, isLoading } = useHistoryRoutines( {
+	const { data, error, isError, isFetching, isLoading, refetch } = useHistoryRoutines( {
 		month: activeMonth,
 		studentId,
 		year: activeYear,
 	} );
+	const isRefreshing = isFetching && !isLoading;
 
 	const yearOptions = useMemo( () => buildYearOptions(), [] );
 	const weekGroups = useMemo(
@@ -92,6 +94,12 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 		) );
 	}
 
+	const handleRefresh = useCallback( () => {
+		if (isRefreshing) return;
+
+		void refetch();
+	}, [ isRefreshing, refetch ] );
+
 	const breadcrumbs = [
 		{ href: "/", label: "Inicio" },
 		{ href: "/admin/historyRoutinesStudents", label: "Historial de rutinas por estudiante" },
@@ -118,6 +126,17 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 				yearOptions={ yearOptions }
 				userName={ data?.student.name }
 			/>
+
+			<div className={ "flex justify-end" }>
+				<Button
+					isDisabled={ isRefreshing }
+					variant={ "secondary" }
+					onPress={ handleRefresh }
+				>
+					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+					{ isRefreshing ? "Actualizando..." : "Actualizar" }
+				</Button>
+			</div>
 
 			{ isLoading ? (
 				<Card className={ "border border-border bg-surface" } variant={ "default" }>

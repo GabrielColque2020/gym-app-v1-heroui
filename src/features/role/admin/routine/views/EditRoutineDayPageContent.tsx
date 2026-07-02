@@ -1,22 +1,17 @@
-﻿"use client";
+"use client";
+
+import { useCallback, useState } from "react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routine-day";
 
-import {
-	Alert,
-	Card,
-	Spinner,
-	toast,
-} from "@heroui/react";
+import { Alert, Button, Card, Modal, Spinner, toast } from "@heroui/react";
+import { ArrowsRotateLeft } from "@gravity-ui/icons";
 
 import { PageBreadcrumbs } from "@/components/common";
 import { AdminEditRoutineHeader } from "@/features/role/admin/routine/components/shared/AdminEditRoutineHeader";
 import { SearchAndCreateExerciseSheet } from "@/features/role/admin/routine/components/shared/SearchAndCreateExerciseSheet";
-import {
-	RoutineDayExercisesDesktop,
-	RoutineDayExercisesMobile,
-} from "@/features/role/admin/routine/components/shared/RoutineDayExerciseEditor";
+import { RoutineDayExercisesDesktop, RoutineDayExercisesMobile } from "@/features/role/admin/routine/components/shared/RoutineDayExerciseEditor";
 import { useRoutineDayDraft } from "@/features/routine/hooks/useRoutineDayDraft";
 import { useSaveRoutineDayExercises } from "@/features/routine/hooks/useRoutineDayMutations";
 import { useRoutineDay } from "@/features/routine/hooks/useRoutineDay";
@@ -53,19 +48,24 @@ function buildEditRoutineBreadcrumbs( studentId: string | null, month: number | 
 
 type EditRoutineDayLoadedProps = {
 	data: RoutineDayDetailBase;
+	description: string;
+	isRefreshing: boolean;
+	onRefreshRoutineDay: () => Promise<RoutineDayDetailBase | null>;
 	routineDayId: string;
 	studentId: string | null;
 	title: string;
-	description: string;
 };
 
 function EditRoutineDayLoaded( {
 	data,
+	description,
+	isRefreshing,
+	onRefreshRoutineDay,
 	routineDayId,
 	studentId,
 	title,
-	description,
 }: EditRoutineDayLoadedProps ) {
+	const [ isRefreshConfirmOpen, setIsRefreshConfirmOpen ] = useState( false );
 	const saveRoutineDay = useSaveRoutineDayExercises();
 	const routine = data.trainingRoutine;
 	const {
@@ -76,6 +76,7 @@ function EditRoutineDayLoaded( {
 		getSuggestedOrder,
 		hasHydrated,
 		isDirty,
+		resetDraft,
 		updateExerciseField,
 		validationError,
 	} = useRoutineDayDraft( {
@@ -112,6 +113,37 @@ function EditRoutineDayLoaded( {
 			description: `${ exercise.name } quedo pendiente hasta guardar cambios.`,
 		} );
 	}
+
+	const handleConfirmRefresh = useCallback( async () => {
+		setIsRefreshConfirmOpen( false );
+
+		try {
+			const refreshedData = await onRefreshRoutineDay();
+
+			if (refreshedData) {
+				resetDraft( refreshedData.routines );
+			}
+
+			toast.success( "Rutina actualizada", {
+				description: "Se recargaron los ejercicios del dia seleccionado.",
+			} );
+		} catch ( refreshError ) {
+			toast.danger( "Error al actualizar", {
+				description: refreshError instanceof Error ? refreshError.message : "No se pudo refrescar la rutina.",
+			} );
+		}
+	}, [ onRefreshRoutineDay, resetDraft ] );
+
+	const handleRefresh = useCallback( () => {
+		if (isRefreshing) return;
+
+		if (isDirty) {
+			setIsRefreshConfirmOpen( true );
+			return;
+		}
+
+		void handleConfirmRefresh();
+	}, [ handleConfirmRefresh, isDirty, isRefreshing ] );
 
 	async function handleSave() {
 		if (validationError) {
@@ -166,7 +198,7 @@ function EditRoutineDayLoaded( {
 			</Card>
 
 			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Header className={ "flex flex-row items-center justify-between gap-3" }>
+				<Card.Header className={ "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" }>
 					<div className={ "min-w-0 pl-2" }>
 						<p className={ "truncate text-lg font-semibold text-foreground" }>
 							{ routine.name || `Semana ${ routine.week }` }
@@ -175,11 +207,22 @@ function EditRoutineDayLoaded( {
 							{ draftRoutines.length } ejercicios en borrador
 						</p>
 					</div>
-					<SearchAndCreateExerciseSheet
-						addedExerciseIds={ addedExerciseIds }
-						onAddExercise={ handleAddExercise }
-						suggestedOrder={ getSuggestedOrder() }
-					/>
+					<div className={ "flex w-full flex-col gap-2 sm:w-auto sm:flex-row" }>
+						<Button
+							className={ "shadow-sm" }
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
+						<SearchAndCreateExerciseSheet
+							addedExerciseIds={ addedExerciseIds }
+							onAddExercise={ handleAddExercise }
+							suggestedOrder={ getSuggestedOrder() }
+						/>
+					</div>
 				</Card.Header>
 
 				<Card.Content className={ "space-y-4" }>
@@ -212,6 +255,45 @@ function EditRoutineDayLoaded( {
 					) }
 				</Card.Content>
 			</Card>
+
+			<Modal>
+				<Modal.Backdrop
+					isDismissable={ false }
+					isOpen={ isRefreshConfirmOpen }
+					onOpenChange={ setIsRefreshConfirmOpen }
+					variant={ "blur" }
+				>
+					<Modal.Container size={ "sm" }>
+						<Modal.Dialog className={ "sm:max-w-md" }>
+							{ ( { close } ) => (
+								<>
+									<Modal.Header>
+										<Modal.Heading>Actualizar rutina</Modal.Heading>
+									</Modal.Header>
+									<Modal.Body>
+										<p className={ "text-sm leading-6 text-muted" }>
+											Vas a volver a cargar la version mas reciente del dia. Si tenes cambios sin guardar,
+											se reemplazaran por lo que trae el servidor.
+										</p>
+									</Modal.Body>
+									<Modal.Footer className={ "gap-2" }>
+										<Button variant={ "secondary" } onPress={ close }>
+											Cancelar
+										</Button>
+										<Button onPress={ () => {
+											close();
+											void handleConfirmRefresh();
+										} }>
+											<ArrowsRotateLeft className={ "size-4" }/>
+											Actualizar
+										</Button>
+									</Modal.Footer>
+								</>
+							) }
+						</Modal.Dialog>
+					</Modal.Container>
+				</Modal.Backdrop>
+			</Modal>
 		</div>
 	);
 }
@@ -229,7 +311,13 @@ export default function EditRoutineDayPageContent( {
 		year,
 		"Editar Rutina",
 	);
-	const { data, error, isError, isLoading } = useRoutineDay( { routineDayId, studentId } );
+	const { data, error, isError, isFetching, isLoading, refetch } = useRoutineDay( { routineDayId, studentId } );
+	const isRefreshing = isFetching && !isLoading;
+	const handleRefreshRoutineDay = useCallback( async () => {
+		const refreshed = await refetch();
+
+		return refreshed.data ?? null;
+	}, [ refetch ] );
 
 	if (!routineDayId) {
 		return (
@@ -307,11 +395,11 @@ export default function EditRoutineDayPageContent( {
 		<EditRoutineDayLoaded
 			data={ data }
 			description={ description }
+			isRefreshing={ isRefreshing }
+			onRefreshRoutineDay={ handleRefreshRoutineDay }
 			routineDayId={ routineDayId }
 			studentId={ studentId }
 			title={ title }
 		/>
 	);
 }
-
-

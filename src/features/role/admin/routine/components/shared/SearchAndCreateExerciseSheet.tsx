@@ -10,12 +10,7 @@ import { Plus } from "@gravity-ui/icons";
 import { ListPagination } from "@/components/common";
 import { ExerciseSheet } from "@/features/role/admin/exercises/components/shared/ExerciseSheet";
 import { useRoutineDayExerciseCatalog } from "@/features/routine/hooks/useRoutineDayExerciseCatalog";
-import {
-	ALL_BODY_PARTS,
-	type BodyPartFilter,
-	BODY_PART_OPTIONS,
-	formatBodyPart,
-} from "@/features/exercises/services/exercise-form";
+import { ALL_BODY_PARTS, BODY_PART_OPTIONS, type BodyPartFilter, formatBodyPart, } from "@/features/exercises/services/exercise-form";
 import { FeatureSheetLayout } from "@/features/shared/components/FeatureSheetLayout";
 import { useResponsiveSheetPlacement } from "@/features/shared/hooks/useResponsiveSheetPlacement";
 
@@ -128,6 +123,7 @@ export function SearchAndCreateExerciseSheet( {
 				placement={ placement }
 				trigger={ <AddExercisePickerButton onPress={ () => setOrderValue( String( suggestedOrder ) ) }/> }
 				onOpenChange={ setIsPickerOpen }
+				rightContentClassName={ "w-[32rem]" }
 			>
 				<Sheet.Header className={ "border-default-100 relative border-b px-6 pb-5 pt-5" }>
 					<div className={ "flex min-w-0 items-start gap-3 pe-10" }>

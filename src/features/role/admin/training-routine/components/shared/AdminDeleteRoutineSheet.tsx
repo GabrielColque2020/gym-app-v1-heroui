@@ -4,9 +4,11 @@ import type { AdminTrainingRoutine } from "@/features/role/admin/training-routin
 
 import { Sheet } from "@heroui-pro/react";
 import { Alert, Button, Description, Spinner, Surface, Typography, toast, Dropdown, Header, Label } from "@heroui/react";
-import { EllipsisVertical, TrashBin } from "@gravity-ui/icons";
+import { Copy, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
 import { useMemo, useState } from "react";
 
+import { AdminCopyRoutineSheet } from "@/features/role/admin/training-routine/components/shared/AdminCopyRoutineSheet";
+import { AdminEditRoutineSheet } from "@/features/role/admin/training-routine/components/shared/AdminEditRoutineSheet";
 import { useDeleteTrainingRoutineStructure } from "@/features/role/admin/training-routine/hooks/useTrainingRoutineStructure";
 import { FeatureSheetLayout } from "@/features/shared/components/FeatureSheetLayout";
 
@@ -35,6 +37,8 @@ export function AdminDeleteRoutineSheet( {
 											 year,
 										 }: AdminDeleteRoutineActionProps ) {
 	const [ isConfirmOpen, setIsConfirmOpen ] = useState( false );
+	const [ isEditOpen, setIsEditOpen ] = useState( false );
+	const [ isCopyOpen, setIsCopyOpen ] = useState( false );
 	const deleteRoutine = useDeleteTrainingRoutineStructure();
 	const summary = useMemo(
 		() => {
@@ -80,6 +84,14 @@ export function AdminDeleteRoutineSheet( {
 		setIsConfirmOpen( true );
 	}
 
+	function handleOpenEdit() {
+		setIsEditOpen( true );
+	}
+
+	function handleOpenCopy() {
+		setIsCopyOpen( true );
+	}
+
 	return (
 		<>
 			<Dropdown>
@@ -88,12 +100,26 @@ export function AdminDeleteRoutineSheet( {
 				</Button>
 				<Dropdown.Popover>
 					<Dropdown.Menu onAction={ ( key ) => {
+						if (key === "edit-file") {
+							handleOpenEdit();
+						}
+						if (key === "copy-file") {
+							handleOpenCopy();
+						}
 						if (key === "delete-file") {
 							handleOpenDeleteConfirm();
 						}
 					} }>
 						<Dropdown.Section>
 							<Header>Opciones</Header>
+							<Dropdown.Item id={ "edit-file" } textValue={ "Editar rutina" }>
+								<Pencil className={ "size-4 shrink-0 text-warning" }/>
+								<Label className={ "text-warning" }>Editar</Label>
+							</Dropdown.Item>
+							<Dropdown.Item id={ "copy-file" } textValue={ "Copiar rutina" }>
+								<Copy className={ "size-4 shrink-0 text-accent" }/>
+								<Label className={ "text-accent" }>Copiar</Label>
+							</Dropdown.Item>
 							<Dropdown.Item id={ "delete-file" } textValue={ "Eliminar rutina" } variant={ "danger" }>
 								<TrashBin className={ "size-4 shrink-0 text-danger" }/>
 								<Label className={ "text-danger" }>Eliminar</Label>
@@ -102,6 +128,27 @@ export function AdminDeleteRoutineSheet( {
 					</Dropdown.Menu>
 				</Dropdown.Popover>
 			</Dropdown>
+
+			<AdminEditRoutineSheet
+				hideTrigger
+				isOpen={ isEditOpen }
+				month={ month }
+				routines={ routines }
+				studentId={ studentId }
+				year={ year }
+				onOpenChange={ setIsEditOpen }
+			/>
+
+			<AdminCopyRoutineSheet
+				destinationMonth={ String( month ) }
+				destinationWeeksOccupied={ routines.length }
+				destinationYear={ String( year ) }
+				hasActiveRoutine
+				hideTrigger
+				isOpen={ isCopyOpen }
+				studentId={ studentId }
+				onOpenChange={ setIsCopyOpen }
+			/>
 
 			<FeatureSheetLayout isOpen={ isConfirmOpen } placement={ "right" } onOpenChange={ setIsConfirmOpen }>
 				<Sheet.Header className={ "border-default-100 relative border-b px-6 pb-5 pt-5" }>

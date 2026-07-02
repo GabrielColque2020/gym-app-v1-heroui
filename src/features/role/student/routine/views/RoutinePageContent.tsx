@@ -313,9 +313,9 @@ export default function RoutinePageContent( {
 									</Modal.Header>
 									<Modal.Body>
 										<p className={ "text-sm leading-6 text-muted" }>
-											Se volvera a consultar la version mas reciente del servidor. Los cambios compatibles
-											que ya hiciste se conservaran, y si una variante fue eliminada se volvera al ejercicio
-											original disponible.
+											Vas a volver a cargar la rutina desde el servidor. Los cambios compatibles que ya
+											hiciste se conservaran, y si alguna variante ya no esta disponible, se mostrara el
+											ejercicio original.
 										</p>
 									</Modal.Body>
 									<Modal.Footer className={ "gap-2" }>

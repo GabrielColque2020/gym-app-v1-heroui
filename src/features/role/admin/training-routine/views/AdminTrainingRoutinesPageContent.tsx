@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { Alert, Card, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs } from "@/components/common";
@@ -19,7 +20,7 @@ export default function AdminTrainingRoutinesPageContent( {
 	studentId,
 	year,
 }: AdminTrainingRoutinesPageContentProps ) {
-	const { data, error, isError, isLoading } = useTrainingRoutines( { month, studentId, year } );
+	const { data, error, isError, isFetching, isLoading, refetch } = useTrainingRoutines( { month, studentId, year } );
 	const breadcrumbs = studentId ? [
 		{ href: "/", label: "Inicio" },
 		{ href: "/admin/trainingRoutinesStudents", label: "Rutinas por estudiante" },
@@ -28,6 +29,12 @@ export default function AdminTrainingRoutinesPageContent( {
 		{ href: "/", label: "Inicio" },
 		{ href: "/admin/trainingRoutinesStudents", label: "Rutinas por estudiante" },
 	];
+	const isRefreshing = isFetching && !isLoading;
+	const handleRefresh = useCallback( () => {
+		if (isRefreshing) return;
+
+		void refetch();
+	}, [ isRefreshing, refetch ] );
 
 	if (!studentId) {
 		return (
@@ -106,7 +113,9 @@ export default function AdminTrainingRoutinesPageContent( {
 
 			<AdminTrainingRoutineFilter
 				month={ month }
+				isRefreshing={ isRefreshing }
 				routineCount={ data.routines.length }
+				onRefresh={ handleRefresh }
 				routines={ data.routines }
 				studentId={ studentId }
 				studentName={ data.student.name }

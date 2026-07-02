@@ -4,28 +4,30 @@ import type { AdminTrainingRoutine } from "@/features/role/admin/training-routin
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Card } from "@heroui/react";
-import { Magnifier } from "@gravity-ui/icons";
+import { ArrowsRotateLeft, Magnifier } from "@gravity-ui/icons";
 import { FilterSelect, PageHeader } from "@/components/common";
 import { AdminDeleteRoutineSheet } from "@/features/role/admin/training-routine/components/shared/AdminDeleteRoutineSheet";
 import { AdminCreateRoutineSheet } from "@/features/role/admin/training-routine/components/shared/AdminCreateRoutineSheet";
-import { AdminCopyRoutineSheet } from "@/features/role/admin/training-routine/components/shared/AdminCopyRoutineSheet";
-import { AdminEditRoutineSheet } from "@/features/role/admin/training-routine/components/shared/AdminEditRoutineSheet";
 
 type AdminTrainingRoutineFilterProps = {
 	month: number;
+	isRefreshing: boolean;
 	routineCount: number;
 	routines: AdminTrainingRoutine[];
 	studentId: string;
 	studentName: string;
+	onRefresh: () => void;
 	year: number;
 };
 
 export function AdminTrainingRoutineFilter( {
 												month,
+												isRefreshing,
 												routineCount,
 												routines,
 												studentId,
 												studentName,
+												onRefresh,
 												year,
 											}: AdminTrainingRoutineFilterProps ) {
 	const router = useRouter();
@@ -49,13 +51,13 @@ export function AdminTrainingRoutineFilter( {
 	}
 
 	return (
-		<Card>
+		<Card className={ "p-6" }>
 			<PageHeader
-				description={ `Organiza las rutinas semanales y los dias de entrenamiento de ${ studentName }.` }
 				title={ "Rutina de Entrenamiento" }
+				description={ `Organiza las rutinas semanales y los días de entrenamiento de ${ studentName } creando, editando y copiando rutinas fácilmente.` }
 				showSeparator
 			/>
-			<div className={ "mt-2 flex flex-col items-end gap-4 md:flex-row" }>
+			<div className={ " flex flex-col items-end gap-4 md:flex-row" }>
 				<div className={ "form-control w-full" }>
 					<FilterSelect
 						defaultValue={ selectedYear }
@@ -80,6 +82,15 @@ export function AdminTrainingRoutineFilter( {
 					<Button className={ "shadow-sm" } onPress={ handleSearch }>
 						<Magnifier/> Buscar
 					</Button>
+					<Button
+						className={ "shadow-sm" }
+						isDisabled={ isRefreshing }
+						variant={ "secondary" }
+						onPress={ onRefresh }
+					>
+						<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+						{ isRefreshing ? "Actualizando..." : "Actualizar" }
+					</Button>
 					{ routineCount === 0 ? (
 						<AdminCreateRoutineSheet
 							month={ Number( selectedMonth ) }
@@ -87,28 +98,13 @@ export function AdminTrainingRoutineFilter( {
 							year={ Number( selectedYear ) }
 						/>
 					) : (
-						<>
-							<AdminEditRoutineSheet
-								month={ Number( selectedMonth ) }
-								routines={ routines }
-								studentId={ studentId }
-								year={ Number( selectedYear ) }
-							/>
-							<AdminCopyRoutineSheet
-								destinationMonth={ selectedMonth }
-								destinationWeeksOccupied={ routineCount }
-								destinationYear={ selectedYear }
-								hasActiveRoutine
-								studentId={ studentId }
-							/>
-							<AdminDeleteRoutineSheet
-								month={ Number( selectedMonth ) }
-								routines={ routines }
-								studentId={ studentId }
-								studentName={ studentName }
-								year={ Number( selectedYear ) }
-							/>
-						</>
+						<AdminDeleteRoutineSheet
+							month={ Number( selectedMonth ) }
+							routines={ routines }
+							studentId={ studentId }
+							studentName={ studentName }
+							year={ Number( selectedYear ) }
+						/>
 					) }
 				</div>
 			</div>

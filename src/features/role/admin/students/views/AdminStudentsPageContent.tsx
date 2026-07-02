@@ -1,6 +1,8 @@
 "use client";
 
-import { Alert, Card, Spinner } from "@heroui/react";
+import { useCallback } from "react";
+import { ArrowsRotateLeft } from "@gravity-ui/icons";
+import { Alert, Button, Card, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { StudentsContentDesktop } from "@/features/students/components/desktop/StudentsContentDesktop";
@@ -10,11 +12,17 @@ import { useStudents } from "@/features/students/hooks/useStudents";
 
 // Renderiza el listado administrativo de estudiantes y sus estados de carga.
 export default function AdminStudentsPageContent() {
-	const { data: students = [], error, isError, isLoading } = useStudents();
+	const { data: students = [], error, isError, isFetching, isLoading, refetch } = useStudents();
 	const breadcrumbs = [
 		{ href: "/", label: "Inicio" },
 		{ label: "Estudiantes" },
 	];
+	const isRefreshing = isFetching && !isLoading;
+	const handleRefresh = useCallback( () => {
+		if (isRefreshing) return;
+
+		void refetch();
+	}, [ isRefreshing, refetch ] );
 
 	if (isLoading) {
 		return (
@@ -68,14 +76,31 @@ export default function AdminStudentsPageContent() {
 						description={ "Listado administrativo con DNI, contacto, estado y datos de seguimiento." }
 						title={ "Estudiantes" }
 					/>
-					<div className={ "w-full md:hidden" }>
+					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
+						<Button
+							className={ "w-full" }
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
 						<StudentSheet
 							mode={ "create" }
 							placement={ "bottom" }
 							triggerClassName={ "w-full bg-accent text-accent-foreground" }
 						/>
 					</div>
-					<div className={ "hidden md:block" }>
+					<div className={ "hidden items-center gap-2 md:flex" }>
+						<Button
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
 						<StudentSheet
 							mode={ "create" }
 							placement={ "right" }

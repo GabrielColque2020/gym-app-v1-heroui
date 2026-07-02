@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { Key } from "@heroui/react";
 import { Alert, Button, Card, Dropdown, Header, Label, Spinner } from "@heroui/react";
-import { CircleFill, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
+import { ArrowsRotateLeft, CircleFill, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import type { AdminMealPlan } from "@/features/mealPlans/types/meal-plans.types";
@@ -17,9 +17,9 @@ type AdminMealPlansPageContentProps = {
 };
 
 function MealPlanCard( {
-						   mealPlan,
-						   studentId,
-					   }: {
+	mealPlan,
+	studentId,
+}: {
 	mealPlan: AdminMealPlan;
 	studentId: string;
 } ) {
@@ -106,12 +106,18 @@ function MealPlanCard( {
 }
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
-	const { data, error, isError, isLoading } = useMealPlans( studentId );
+	const { data, error, isError, isFetching, isLoading, refetch } = useMealPlans( studentId );
 	const breadcrumbs = [
 		{ href: "/", label: "Inicio" },
 		{ href: "/admin/mealPlansStudents", label: "Planes alimenticios por estudiante" },
 		{ label: data?.student.name ?? "Planes alimenticios" },
 	];
+	const isRefreshing = isFetching && !isLoading;
+	const handleRefresh = useCallback( () => {
+		if (isRefreshing) return;
+
+		void refetch();
+	}, [ isRefreshing, refetch ] );
 
 	if (isLoading) {
 		return (
@@ -172,7 +178,29 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 						description={ `${ data.student.name }` }
 						title={ "Planes alimenticios del estudiante" }
 					/>
-					<MealPlanSheet mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
+					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
+						<Button
+							className={ "w-full" }
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
+						<MealPlanSheet mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
+					</div>
+					<div className={ "hidden items-center gap-2 md:flex" }>
+						<Button
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
+						<MealPlanSheet mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
+					</div>
 				</Card.Header>
 				<Card.Content className={ "px-5 py-4 sm:px-6" }>
 					{ data.mealPlans.length === 0 ? (
@@ -227,5 +255,3 @@ export default function AdminMealPlansPageContent( { studentId }: AdminMealPlans
 
 	return <MealPlansPageContentLoaded studentId={ studentId }/>;
 }
-
-

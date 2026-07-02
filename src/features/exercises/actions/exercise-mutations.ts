@@ -1,5 +1,6 @@
 "use server";
 
+import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
 import {
 	emptyToNull,
@@ -31,8 +32,13 @@ function validateExerciseInput( input: CreateExerciseInput ) {
 
 export async function createExerciseAction( input: CreateExerciseInput ) {
 	try {
+		const session = await requireCoachSession( "crear ejercicios" );
+
 		return await prisma.exercise.create( {
-			data: validateExerciseInput( input ),
+			data: {
+				...validateExerciseInput( input ),
+				coachId: session.sub,
+			},
 		} );
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al crear el ejercicio.";
@@ -43,10 +49,25 @@ export async function createExerciseAction( input: CreateExerciseInput ) {
 
 export async function updateExerciseAction( input: UpdateExerciseInput ) {
 	try {
+		const session = await requireCoachSession( "actualizar ejercicios" );
+		const exercise = await prisma.exercise.findFirst( {
+			select: {
+				id: true,
+			},
+			where: {
+				coachId: session.sub,
+				id: input.id,
+			},
+		} );
+
+		if (!exercise) {
+			throw new Error( "No se encontro el ejercicio solicitado." );
+		}
+
 		return await prisma.exercise.update( {
 			data: validateExerciseInput( input ),
 			where: {
-				id: input.id,
+				id: exercise.id,
 			},
 		} );
 	} catch (error) {
@@ -58,12 +79,27 @@ export async function updateExerciseAction( input: UpdateExerciseInput ) {
 
 export async function deactivateExerciseAction( id: string ) {
 	try {
+		const session = await requireCoachSession( "desactivar ejercicios" );
+		const exercise = await prisma.exercise.findFirst( {
+			select: {
+				id: true,
+			},
+			where: {
+				coachId: session.sub,
+				id,
+			},
+		} );
+
+		if (!exercise) {
+			throw new Error( "No se encontro el ejercicio solicitado." );
+		}
+
 		return await prisma.exercise.update( {
 			data: {
 				active: false,
 			},
 			where: {
-				id,
+				id: exercise.id,
 			},
 		} );
 	} catch (error) {
@@ -75,12 +111,27 @@ export async function deactivateExerciseAction( id: string ) {
 
 export async function restoreExerciseAction( id: string ) {
 	try {
+		const session = await requireCoachSession( "restaurar ejercicios" );
+		const exercise = await prisma.exercise.findFirst( {
+			select: {
+				id: true,
+			},
+			where: {
+				coachId: session.sub,
+				id,
+			},
+		} );
+
+		if (!exercise) {
+			throw new Error( "No se encontro el ejercicio solicitado." );
+		}
+
 		return await prisma.exercise.update( {
 			data: {
 				active: true,
 			},
 			where: {
-				id,
+				id: exercise.id,
 			},
 		} );
 	} catch (error) {

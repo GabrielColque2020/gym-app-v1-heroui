@@ -1,6 +1,8 @@
 "use client";
 
-import { Alert, Card, Spinner } from "@heroui/react";
+import { useCallback } from "react";
+import { ArrowsRotateLeft } from "@gravity-ui/icons";
+import { Alert, Button, Card, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { ExerciseSheet } from "@/features/role/admin/exercises/components/shared/ExerciseSheet";
@@ -9,11 +11,17 @@ import { useExercises } from "@/features/exercises/hooks/useExercises";
 import { ExercisesContentMobile } from "@/features/role/admin/exercises/components/mobile/ExercisesContentMobile";
 
 export default function AdminExercisesPageContent() {
-	const { data: exercises = [], error, isError, isLoading } = useExercises();
+	const { data: exercises = [], error, isError, isFetching, isLoading, refetch } = useExercises();
 	const breadcrumbs = [
 		{ href: "/", label: "Inicio" },
 		{ label: "Ejercicios" },
 	];
+	const isRefreshing = isFetching && !isLoading;
+	const handleRefresh = useCallback( () => {
+		if (isRefreshing) return;
+
+		void refetch();
+	}, [ isRefreshing, refetch ] );
 
 	if (isLoading) {
 		return (
@@ -67,14 +75,31 @@ export default function AdminExercisesPageContent() {
 						title={ "Ejercicios" }
 						description={ "Listado administrativo con estado, grupo muscular y fecha de alta." }
 					/>
-					<div className={ "w-full md:hidden" }>
+					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
+						<Button
+							className={ "w-full" }
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
 						<ExerciseSheet
 							mode={ "create" }
 							placement={ "bottom" }
 							triggerClassName={ "w-full bg-accent text-accent-foreground" }
 						/>
 					</div>
-					<div className={ "hidden md:block" }>
+					<div className={ "hidden items-center gap-2 md:flex" }>
+						<Button
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
 						<ExerciseSheet
 							mode={ "create" }
 							placement={ "right" }

@@ -28,7 +28,7 @@ export function FeatureSheetLayout( {
 		<Sheet isDetached={ placement === "right" } isOpen={ isOpen } placement={ placement } onOpenChange={ onOpenChange }>
 			{ trigger ? <Sheet.Trigger>{ trigger }</Sheet.Trigger> : null }
 			<Sheet.Backdrop variant={ "opaque" }>
-				<Sheet.Content className={ placement === "right" ? rightContentClassName ?? "w-105" : "mx-auto max-w-105" }>
+				<Sheet.Content className={ placement === "right" ? rightContentClassName ?? "w-115" : "mx-auto max-w-105" }>
 					<Sheet.Dialog className={ placement === "right" ? "h-full" : undefined }>
 						{ placement === "bottom" ? <Sheet.Handle/> : null }
 						<Sheet.CloseTrigger className={ "absolute inset-e-4 top-4 z-10" }/>

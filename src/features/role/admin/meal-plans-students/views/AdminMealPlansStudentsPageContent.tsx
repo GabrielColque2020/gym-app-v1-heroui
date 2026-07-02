@@ -1,6 +1,8 @@
 "use client";
 
-import { Alert, Card, Spinner } from "@heroui/react";
+import { useCallback } from "react";
+import { ArrowsRotateLeft } from "@gravity-ui/icons";
+import { Alert, Button, Card, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { MealPlansStudentsContentDesktop } from "@/features/role/admin/meal-plans-students/components/desktop/MealPlansStudentsContentDesktop";
@@ -8,11 +10,17 @@ import { MealPlansStudentsContentMobile } from "@/features/role/admin/meal-plans
 import { useMealPlansStudents } from "@/features/role/admin/meal-plans-students/hooks/useMealPlansStudents";
 
 export default function AdminMealPlansStudentsPageContent() {
-	const { data: students = [], error, isError, isLoading } = useMealPlansStudents();
+	const { data: students = [], error, isError, isFetching, isLoading, refetch } = useMealPlansStudents();
 	const breadcrumbs = [
 		{ href: "/", label: "Inicio" },
 		{ label: "Planes alimenticios por estudiante" },
 	];
+	const isRefreshing = isFetching && !isLoading;
+	const handleRefresh = useCallback( () => {
+		if (isRefreshing) return;
+
+		void refetch();
+	}, [ isRefreshing, refetch ] );
 
 	if (isLoading) {
 		return (
@@ -72,6 +80,27 @@ export default function AdminMealPlansStudentsPageContent() {
 						description={ "Selecciona un estudiante activo para consultar sus planes alimenticios." }
 						title={ "Planes alimenticios por estudiante" }
 					/>
+					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
+						<Button
+							className={ "w-full" }
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
+					</div>
+					<div className={ "hidden md:flex" }>
+						<Button
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
+					</div>
 				</Card.Header>
 				<Card.Content className={ "px-5 py-4 sm:px-6" }>
 					<div className={ "hidden w-full md:flex" }>

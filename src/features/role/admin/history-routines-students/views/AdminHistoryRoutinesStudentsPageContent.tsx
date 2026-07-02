@@ -1,6 +1,8 @@
-﻿"use client";
+"use client";
 
-import { Alert, Card, Spinner } from "@heroui/react";
+import { useCallback } from "react";
+import { ArrowsRotateLeft } from "@gravity-ui/icons";
+import { Alert, Button, Card, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { HistoryRoutinesStudentsContentDesktop } from "@/features/role/admin/history-routines-students/components/desktop/HistoryRoutinesStudentsContentDesktop";
@@ -8,11 +10,17 @@ import { HistoryRoutinesStudentsContentMobile } from "@/features/role/admin/hist
 import { useHistoryRoutinesStudents } from "@/features/role/admin/history-routines-students/hooks/useHistoryRoutinesStudents";
 
 export default function AdminHistoryRoutinesStudentsPageContent() {
-	const { data: students = [], error, isError, isLoading } = useHistoryRoutinesStudents();
+	const { data: students = [], error, isError, isFetching, isLoading, refetch } = useHistoryRoutinesStudents();
 	const breadcrumbs = [
 		{ href: "/", label: "Inicio" },
 		{ label: "Historial de rutinas por estudiante" },
 	];
+	const isRefreshing = isFetching && !isLoading;
+	const handleRefresh = useCallback( () => {
+		if (isRefreshing) return;
+
+		void refetch();
+	}, [ isRefreshing, refetch ] );
 
 	if (isLoading) {
 		return (
@@ -72,6 +80,27 @@ export default function AdminHistoryRoutinesStudentsPageContent() {
 						description={ "Selecciona un estudiante activo para consultar su historial de rutinas mensual." }
 						title={ "Historial de rutinas por estudiante" }
 					/>
+					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
+						<Button
+							className={ "w-full" }
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
+					</div>
+					<div className={ "hidden md:flex" }>
+						<Button
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ handleRefresh }
+						>
+							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
+					</div>
 				</Card.Header>
 				<Card.Content className={ "px-5 py-4 sm:px-6" }>
 					<div className={ "hidden w-full md:flex" }>
