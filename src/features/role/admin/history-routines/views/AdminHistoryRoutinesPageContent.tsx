@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Alert, Button, Card, Spinner } from "@heroui/react";
-import { ArrowsRotateLeft } from "@gravity-ui/icons";
+import { Alert, Card, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs } from "@/components/common";
 import { HistoryRoutineMonthFilters } from "@/features/role/admin/history-routines/components/shared/HistoryRoutineMonthFilters";
@@ -116,9 +115,11 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 			/>
 
 			<HistoryRoutineMonthFilters
+				isRefreshing={ isRefreshing }
 				monthOptions={ MONTH_OPTIONS }
 				onClear={ handleClear }
 				onMonthChange={ setSelectedMonth }
+				onRefresh={ handleRefresh }
 				onSearch={ handleSearch }
 				onYearChange={ setSelectedYear }
 				selectedMonth={ selectedMonth }
@@ -126,17 +127,6 @@ function AdminHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 				yearOptions={ yearOptions }
 				userName={ data?.student.name }
 			/>
-
-			<div className={ "flex justify-end" }>
-				<Button
-					isDisabled={ isRefreshing }
-					variant={ "secondary" }
-					onPress={ handleRefresh }
-				>
-					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-					{ isRefreshing ? "Actualizando..." : "Actualizar" }
-				</Button>
-			</div>
 
 			{ isLoading ? (
 				<Card className={ "border border-border bg-surface" } variant={ "default" }>

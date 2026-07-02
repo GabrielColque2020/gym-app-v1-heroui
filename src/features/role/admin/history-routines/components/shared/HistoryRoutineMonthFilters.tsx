@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Card } from "@heroui/react";
-import { Magnifier } from "@gravity-ui/icons";
+import { ArrowsRotateLeft, Magnifier } from "@gravity-ui/icons";
 
 import { FilterSelect, PageHeader } from "@/components/common";
 
@@ -19,8 +19,10 @@ type HistoryRoutineMonthFiltersProps = {
 	onSearch: () => void;
 	onClear: () => void;
 	onMonthChange: ( month: string ) => void;
+	onRefresh: () => void;
 	onYearChange: ( year: string ) => void;
 	userName?: string;
+	isRefreshing?: boolean;
 };
 
 export function HistoryRoutineMonthFilters( {
@@ -31,8 +33,10 @@ export function HistoryRoutineMonthFilters( {
 												onSearch,
 												onClear,
 												onMonthChange,
+												onRefresh,
 												onYearChange,
-												userName
+												userName,
+												isRefreshing = false,
 											}: HistoryRoutineMonthFiltersProps ) {
 	return (
 		<Card className={ "border border-border bg-surface" } variant={ "default" }>
@@ -44,7 +48,7 @@ export function HistoryRoutineMonthFilters( {
 						showSeparator
 					/>
 				</div>
-				<div className={ "grid gap-3 lg:grid-cols-[1fr_1fr_auto_auto] lg:items-end" }>
+				<div className={ "grid gap-3 lg:grid-cols-[1fr_1fr_auto_auto_auto] lg:items-end" }>
 					<FilterSelect
 						label={ "Mes" }
 						name={ "history-routines-month-filter" }
@@ -64,6 +68,15 @@ export function HistoryRoutineMonthFilters( {
 					<Button className={ "w-full shadow-sm lg:w-auto" } onPress={ onSearch }>
 						<Magnifier/>
 						Buscar
+					</Button>
+					<Button
+						className={ "w-full lg:w-auto" }
+						isDisabled={ isRefreshing }
+						variant={ "secondary" }
+						onPress={ onRefresh }
+					>
+						<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+						{ isRefreshing ? "Actualizando..." : "Actualizar" }
 					</Button>
 					<Button className={ "w-full lg:w-auto" } variant={ "secondary" } onPress={ onClear }>
 						Limpiar
