@@ -1,9 +1,8 @@
 "use client";
 
-import { Button, Card } from "@heroui/react";
-import { ArrowsRotateLeft, Magnifier } from "@gravity-ui/icons";
-
-import { FilterSelect, PageHeader } from "@/components/common";
+import { Card } from "@heroui/react";
+import { HistoryRoutineMonthFiltersActions } from "@/features/role/coach/history-routines/components/shared/history-routine-month-filters-actions";
+import { HistoryRoutineMonthFiltersHeader } from "@/features/role/coach/history-routines/components/shared/history-routine-month-filters-header";
 
 type HistoryRoutineMonthFiltersProps = {
 	monthOptions: Array<{
@@ -37,51 +36,23 @@ export function HistoryRoutineMonthFilters( {
 												onYearChange,
 												userName,
 												isRefreshing = false,
-											}: HistoryRoutineMonthFiltersProps ) {
+}: HistoryRoutineMonthFiltersProps ) {
 	return (
 		<Card className={ "border border-border bg-surface" } variant={ "default" }>
 			<Card.Content className={ "p-3" }>
-				<div className={ "flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between" }>
-					<PageHeader
-						description={ `Consulta el progreso mensual del estudiante seleccionado: ${ userName ?? "Sin estudiante seleccionado" }` }
-						title={ "Historial de rutinas" }
-						showSeparator
-					/>
-				</div>
-				<div className={ "grid gap-3 lg:grid-cols-[1fr_1fr_auto_auto_auto] lg:items-end" }>
-					<FilterSelect
-						label={ "Mes" }
-						name={ "history-routines-month-filter" }
-						options={ monthOptions }
-						placeholder={ "Selecciona un mes" }
-						value={ selectedMonth }
-						onSelectionChange={ onMonthChange }
-					/>
-					<FilterSelect
-						label={ "Anio" }
-						name={ "history-routines-year-filter" }
-						options={ yearOptions }
-						placeholder={ "Selecciona un anio" }
-						value={ selectedYear }
-						onSelectionChange={ onYearChange }
-					/>
-					<Button className={ "w-full shadow-sm lg:w-auto" } onPress={ onSearch }>
-						<Magnifier/>
-						Buscar
-					</Button>
-					<Button
-						className={ "w-full lg:w-auto" }
-						isDisabled={ isRefreshing }
-						variant={ "secondary" }
-						onPress={ onRefresh }
-					>
-						<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-						{ isRefreshing ? "Actualizando..." : "Actualizar" }
-					</Button>
-					<Button className={ "w-full lg:w-auto" } variant={ "secondary" } onPress={ onClear }>
-						Limpiar
-					</Button>
-				</div>
+				<HistoryRoutineMonthFiltersHeader userName={ userName }/>
+				<HistoryRoutineMonthFiltersActions
+					isRefreshing={ isRefreshing }
+					monthOptions={ monthOptions }
+					onClear={ onClear }
+					onMonthChange={ onMonthChange }
+					onRefresh={ onRefresh }
+					onSearch={ onSearch }
+					onYearChange={ onYearChange }
+					selectedMonth={ selectedMonth }
+					selectedYear={ selectedYear }
+					yearOptions={ yearOptions }
+				/>
 			</Card.Content>
 		</Card>
 	);

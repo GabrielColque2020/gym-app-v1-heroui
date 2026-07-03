@@ -1,18 +1,16 @@
-﻿"use client";
+"use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { Card, Chip } from "@heroui/react";
-import type { Exercise, ExerciseSessionHistory, ExerciseVariantOption } from "@/features/routine/types/routine-types";
+
 import ExerciseChangeSheet from "@/features/role/student/routine/components/shared/exercise-change-sheet";
+import { useExerciseCardState } from "@/features/role/student/routine/components/shared/use-exercise-card-state";
+import type { Exercise } from "@/features/routine/types/routine-types";
 
 interface ExerciseCardProps {
 	exercise: Exercise;
 	children: React.ReactNode;
 	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
-}
-
-function getSelectedVariant( variantOptions: ExerciseVariantOption[], selectedVariantId: string | null ) {
-	return variantOptions.find( ( variant ) => variant.id === selectedVariantId ) ?? null;
 }
 
 function formatSessionDateLabel( date: Date ) {
@@ -23,37 +21,17 @@ function formatSessionDateLabel( date: Date ) {
 	} ).format( date );
 }
 
-function getDisplayedSessionHistory(
-	exercise: Exercise,
-	selectedVariant: ExerciseVariantOption | null,
-): ExerciseSessionHistory | null {
-	return selectedVariant?.lastSession ?? exercise.lastSession;
-}
-
-function getCompletedSetsSummary( exercise: Exercise ) {
-	const completedSets = exercise.sets.filter( ( set ) => set.completed ).length;
-
-	return {
-		completedSets,
-		totalSets: exercise.sets.length,
-	};
-}
-
 export default function DesktopExerciseCard( { exercise, children, onVariantChange }: ExerciseCardProps ) {
-	const variantOptions = useMemo( () => exercise.variantOptions ?? [], [ exercise.variantOptions ] );
-	const selectedVariant = useMemo(
-		() => getSelectedVariant( variantOptions, exercise.variantExerciseId ),
-		[ exercise.variantExerciseId, variantOptions ],
-	);
-	const displayedSessionHistory = useMemo(
-		() => getDisplayedSessionHistory( exercise, selectedVariant ),
-		[ exercise, selectedVariant ],
-	);
-	const completedSetsSummary = useMemo( () => getCompletedSetsSummary( exercise ), [ exercise ] );
-	const displayedExerciseName = selectedVariant?.name ?? exercise.name;
-	const hasVariants = variantOptions.length > 0;
-	const hasSessionHistory = Boolean( displayedSessionHistory?.sets.length );
-	const hasCompletedSets = completedSetsSummary.completedSets > 0;
+	const {
+		completedSetsSummary,
+		displayedExerciseName,
+		displayedSessionHistory,
+		hasCompletedSets,
+		hasSessionHistory,
+		hasVariants,
+		selectedVariant,
+		variantOptions,
+	} = useExerciseCardState( exercise );
 
 	return (
 		<Card className={ "border border-border bg-surface shadow-sm" }>
@@ -63,9 +41,7 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 						<div className={ "flex flex-col gap-2" }>
 							<div className={ "flex min-w-0 items-start justify-between gap-3" }>
 								<div className={ "min-w-0 space-y-1" }>
-									<h2 className={ "min-w-0 text-3xl font-black tracking-tight text-foreground" }>
-										{ displayedExerciseName }
-									</h2>
+									<h2 className={ "min-w-0 text-3xl font-black tracking-tight text-foreground" }>{ displayedExerciseName }</h2>
 									{ selectedVariant ? (
 										<Chip color={ "warning" } size={ "sm" } variant={ "soft" }>
 											<Chip.Label>{ `Original: ${ exercise.baseName }` }</Chip.Label>

@@ -1,6 +1,7 @@
-import type { MealPlansByStudent as CoachMealPlansByStudent } from "@/features/meal-plans/services/meal-plans-query";
-import type { StudentMealPlansByStudent } from "@/features/role/student/meal-plans/services/meal-plans-query";
+import type { getMealPlansByStudentAction } from "@/features/meal-plans/actions/get-meal-plans-by-student";
 
-export type MealPlansByStudent = CoachMealPlansByStudent;
-export type CoachMealPlan = MealPlansByStudent["mealPlans"][number];
-export type StudentMealPlan = StudentMealPlansByStudent["mealPlans"][number];
+export type MealPlansByStudent = Awaited<ReturnType<typeof getMealPlansByStudentAction>>;
+export type MealPlan = MealPlansByStudent["mealPlans"][number];
+
+export type CoachMealPlan = MealPlan;
+export type StudentMealPlan = MealPlan;

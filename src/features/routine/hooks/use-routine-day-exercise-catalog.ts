@@ -2,7 +2,7 @@
 
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { usePagination } from "@/components/common";
 import { useExercises } from "@/features/exercises/hooks/use-exercises";
@@ -10,24 +10,11 @@ import {
 	ALL_BODY_PARTS,
 	normalizeSearchName,
 } from "@/features/exercises/services/exercise-form";
+import { useDebouncedValue } from "@/features/shared/hooks/use-debounced-value";
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 
 const ITEMS_PER_PAGE = 5;
 const SEARCH_DEBOUNCE_MS = 400;
-
-function useDebouncedValue<TValue>( value: TValue, delayMs: number ) {
-	const [ debouncedValue, setDebouncedValue ] = useState( value );
-
-	useEffect( () => {
-		const timeoutId = window.setTimeout( () => {
-			setDebouncedValue( value );
-		}, delayMs );
-
-		return () => window.clearTimeout( timeoutId );
-	}, [ delayMs, value ] );
-
-	return debouncedValue;
-}
 
 type UseRoutineDayExerciseCatalogOptions = {
 	initialSelectedExerciseId?: string | null;

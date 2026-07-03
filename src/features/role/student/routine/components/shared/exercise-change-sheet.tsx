@@ -1,11 +1,10 @@
 "use client";
 
-import { ArrowRightArrowLeft } from "@gravity-ui/icons";
-import { Button } from "@heroui/react";
-import { useState } from "react";
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";
-import { useResponsiveSheetPlacement } from "@/features/role/student/routine/components/shared/use-responsive-sheet-placement";
+import { useResponsiveSheetPlacement } from "@/features/shared/hooks/use-responsive-sheet-placement";
 import ExerciseChangeSheetContent from "@/features/role/student/routine/components/shared/exercise-change-sheet-content";
+import { ExerciseChangeSheetTrigger } from "@/features/role/student/routine/components/shared/exercise-change-sheet-trigger";
+import { useExerciseChangeSheetState } from "@/features/role/student/routine/components/shared/use-exercise-change-sheet-state";
 import type { Exercise, ExerciseVariantOption } from "@/features/routine/types/routine-types";
 
 type ExerciseChangeSheetProps = {
@@ -16,7 +15,6 @@ type ExerciseChangeSheetProps = {
 	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
 };
 
-// Renderiza el disparador y el sheet compartido para cambiar o restablecer un ejercicio.
 export default function ExerciseChangeSheet( {
 	exercise,
 	hasVariants,
@@ -24,35 +22,24 @@ export default function ExerciseChangeSheet( {
 	variantOptions,
 	onVariantChange,
 }: ExerciseChangeSheetProps ) {
-	const [ isOpen, setIsOpen ] = useState( false );
+	const {
+		handleOpenVariantSheet,
+		handleResetVariant,
+		handleSelectVariant,
+		isOpen,
+		setIsOpen,
+	} = useExerciseChangeSheetState( {
+		exerciseId: exercise.id,
+		hasVariants,
+		onVariantChange,
+	} );
 	const placement = useResponsiveSheetPlacement();
-
-	// Abre el sheet para revisar las variantes disponibles del ejercicio actual.
-	function handleOpenVariantSheet() {
-		if (!hasVariants) return;
-		setIsOpen( true );
-	}
-
-	// Aplica la variante seleccionada al draft activo y cierra el sheet.
-	function handleSelectVariant( variant: ExerciseVariantOption ) {
-		onVariantChange( exercise.id, variant.id );
-		setIsOpen( false );
-	}
-
-	// Restablece la card al ejercicio original y cierra el sheet.
-	function handleResetVariant() {
-		onVariantChange( exercise.id, null );
-		setIsOpen( false );
-	}
 
 	if (!hasVariants) return null;
 
 	return (
 		<>
-			<Button size={ "sm" } variant={ "secondary" } onPress={ handleOpenVariantSheet }>
-				<ArrowRightArrowLeft className={ "size-4" }/>
-				Cambiar ejercicio
-			</Button>
+			<ExerciseChangeSheetTrigger hasVariants={ hasVariants } onOpen={ handleOpenVariantSheet }/>
 			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ setIsOpen }>
 				<ExerciseChangeSheetContent
 					exercise={ exercise }

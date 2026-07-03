@@ -1,12 +1,15 @@
 "use client";
 
 import { useCallback } from "react";
-import { Alert, Card, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs } from "@/components/common";
 import { CoachTrainingRoutineFilter } from "@/features/role/coach/training-routine/components/shared";
 import { CoachTrainingRoutineCardDesktop } from "@/features/role/coach/training-routine/components/desktop";
 import { CoachTrainingRoutineCardMobile } from "@/features/role/coach/training-routine/components/mobile";
+import { CoachTrainingRoutinesEmptyState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-empty-state";
+import { CoachTrainingRoutinesErrorState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-error-state";
+import { CoachTrainingRoutinesLoadingState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-loading-state";
+import { CoachTrainingRoutinesMissingStudentState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-missing-student-state";
 import { useTrainingRoutines } from "@/features/role/coach/training-routine/hooks/use-training-routines";
 
 type CoachTrainingRoutinesPageContentProps = {
@@ -46,14 +49,7 @@ export default function CoachTrainingRoutinesPageContent( {
 						crumbs={ breadcrumbs }
 					/>
 				</div>
-				<Alert className={ "border border-warning/20" } status={ "warning" }>
-					<Alert.Content>
-						<Alert.Title>Selecciona un estudiante</Alert.Title>
-						<Alert.Description>
-							Para consultar rutinas primero tenes que elegir un estudiante activo.
-						</Alert.Description>
-					</Alert.Content>
-				</Alert>
+				<CoachTrainingRoutinesMissingStudentState/>
 			</>
 		);
 	}
@@ -68,15 +64,7 @@ export default function CoachTrainingRoutinesPageContent( {
 						crumbs={ breadcrumbs }
 					/>
 				</div>
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
-						<Spinner size={ "lg" }/>
-						<div className={ "space-y-1" }>
-							<p className={ "text-base font-semibold text-foreground" }>Cargando rutina</p>
-							<p className={ "text-sm text-muted" }>Consultando semanas, dias y ejercicios del estudiante.</p>
-						</div>
-					</Card.Content>
-				</Card>
+				<CoachTrainingRoutinesLoadingState/>
 			</>
 		);
 	}
@@ -91,12 +79,7 @@ export default function CoachTrainingRoutinesPageContent( {
 						crumbs={ breadcrumbs }
 					/>
 				</div>
-				<Alert className={ "border border-danger/20" } status={ "danger" }>
-					<Alert.Content>
-						<Alert.Title>Error al cargar rutina</Alert.Title>
-						<Alert.Description>{ error.message }</Alert.Description>
-					</Alert.Content>
-				</Alert>
+				<CoachTrainingRoutinesErrorState message={ error.message }/>
 			</>
 		);
 	}
@@ -123,14 +106,7 @@ export default function CoachTrainingRoutinesPageContent( {
 			/>
 
 			{ data.routines.length === 0 ? (
-				<Card className={ "border border-dashed border-border" } variant={ "default" }>
-					<Card.Content className={ "py-10 text-center" }>
-						<p className={ "text-base font-semibold text-foreground" }>No hay rutinas cargadas</p>
-						<p className={ "mt-1 text-sm text-muted" }>
-							{ data.student.name } no tiene rutinas para { month }/{ year }.
-						</p>
-					</Card.Content>
-				</Card>
+				<CoachTrainingRoutinesEmptyState month={ month } studentName={ data.student.name } year={ year }/>
 			) : (
 				<>
 					<div className={ "hidden md:flex" }>

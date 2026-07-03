@@ -4,16 +4,13 @@ import { Chip, Typography } from "@heroui/react";
 import { CircleCheck } from "@gravity-ui/icons";
 
 import type { HistoryRoutineWeekGroup } from "@/features/history-routines/services/history-routines-view";
+import { getWeekExerciseCount } from "@/features/role/coach/history-routines/components/shared/history-routine-week-metrics";
 
 type HistoryRoutineWeeksSelectorProps = {
 	weeks: HistoryRoutineWeekGroup[];
 	selectedWeeks: number[];
 	onWeekToggle: ( week: number ) => void;
 };
-
-function getWeekExerciseCount( weekGroup: HistoryRoutineWeekGroup ) {
-	return weekGroup.days.reduce( ( total, day ) => total + day.exercises.length, 0 );
-}
 
 export function HistoryRoutineWeeksSelector( {
 	weeks,

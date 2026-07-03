@@ -1,6 +1,5 @@
 "use client";
 
-import { monthYearLabel, padMonth } from "@/constants/months";
 import { toast } from "@heroui/react";
 import { useMemo, useState } from "react";
 
@@ -9,6 +8,7 @@ import {
 	useCopyTrainingRoutineWeeks,
 } from "@/features/training-routine/hooks/use-training-routine-copy";
 import { useTrainingRoutineCopySource } from "@/features/training-routine/hooks/use-training-routine-copy-source";
+import { buildYearOptions, monthYearLabel, padMonth, weekListLabel } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-sheet-utils";
 
 export type CoachCopyRoutineSheetProps = {
 	destinationMonth: string;
@@ -19,21 +19,6 @@ export type CoachCopyRoutineSheetProps = {
 };
 
 type CopyRoutineMode = "month" | "weeks";
-
-function buildYearOptions() {
-	const currentYear = new Date().getFullYear();
-
-	return Array.from( { length: 8 }, ( _, i ) => ( {
-		label: ( currentYear - 3 + i ).toString(),
-		value: ( currentYear - 3 + i ).toString(),
-	} ) );
-}
-
-function weekListLabel( weeks: string[] ) {
-	if (weeks.length === 0) return "-";
-
-	return weeks.map( ( week ) => `Semana ${ week }` ).join( ", " );
-}
 
 export function useCoachCopyRoutineSheetState( {
 	destinationMonth,

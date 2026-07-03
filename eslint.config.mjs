@@ -2,6 +2,13 @@ import tseslint from "typescript-eslint";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactPlugin from "eslint-plugin-react";
 
+// Deshabilitada
+// "off"
+// Habilitada como advertencia (no falla el comando)
+// "warn"
+// Habilitada como error (hace fallar eslint)
+// "error"
+
 export default [
     {
         ignores: [
@@ -20,7 +27,7 @@ export default [
         },
         rules: {
             ...reactHooks.configs.recommended.rules,
-            "@typescript-eslint/no-unused-vars": "on",
+            "@typescript-eslint/no-unused-vars": "warn",
             "@typescript-eslint/no-explicit-any": "off",
             "react/jsx-curly-brace-presence": [
                 "error",

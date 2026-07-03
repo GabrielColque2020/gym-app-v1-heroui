@@ -1,11 +1,13 @@
-﻿"use client";
+"use client";
 
-import { useEffect, useState } from "react";
-import type { EmblaCarouselType } from "embla-carousel";
-import { ArrowLeft, ArrowRight, Bulb, Calendar, ChartLine } from "@gravity-ui/icons";
-import { Button, Card, Checkbox, Chip, Input, Label } from "@heroui/react";
+import { ArrowLeft, ArrowRight } from "@gravity-ui/icons";
+import { Button, Checkbox, Chip, Input, Label } from "@heroui/react";
 import { Carousel, DataGrid, type DataGridColumn } from "@heroui-pro/react";
+
 import DesktopExerciseCard from "@/features/role/student/routine/components/desktop/desktop-exercise-card";
+import { RoutineExerciseEmptyState } from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
+import { RoutineSessionOverviewCards } from "@/features/role/student/routine/components/shared/routine-session-overview-cards";
+import { useExerciseCarouselState } from "@/features/role/student/routine/components/shared/use-exercise-carousel-state";
 import type { Exercise, ExerciseSet } from "@/features/routine/types/routine-types";
 
 type DesktopRoutineViewProps = {
@@ -20,42 +22,14 @@ type DesktopRoutineViewProps = {
 	routineStatusDescription: string;
 };
 
-function formatDateLabel( date: Date | null ) {
-	if (!date) return "Sin sesion registrada";
-
-	return new Intl.DateTimeFormat( "es-AR", {
-		day: "numeric",
-		month: "long",
-		year: "numeric",
-	} ).format( date );
-}
-
 export default function DesktopRoutineView( {
-												exercises,
-												latestProgressDate,
-												onVariantChange,
-												onSetUpdate,
-												routineStatusDescription,
-											}: DesktopRoutineViewProps ) {
-	const [ api, setApi ] = useState<EmblaCarouselType>();
-	const [ activeExerciseIndex, setActiveExerciseIndex ] = useState( 1 );
-
-	useEffect( () => {
-		if (!api) return;
-
-		const syncActiveIndex = () => {
-			setActiveExerciseIndex( api.selectedScrollSnap() + 1 );
-		};
-
-		syncActiveIndex();
-		api.on( "select", syncActiveIndex );
-		api.on( "reInit", syncActiveIndex );
-
-		return () => {
-			api.off( "select", syncActiveIndex );
-			api.off( "reInit", syncActiveIndex );
-		};
-	}, [ api ] );
+	exercises,
+	latestProgressDate,
+	onVariantChange,
+	onSetUpdate,
+	routineStatusDescription,
+}: DesktopRoutineViewProps ) {
+	const { activeExerciseIndex, api, setApi } = useExerciseCarouselState();
 
 	function renderPreviousRecord( previousReps: number | null ) {
 		if (previousReps === null) {
@@ -165,7 +139,7 @@ export default function DesktopRoutineView( {
 			id: "notas",
 			header: "NOTAS",
 			cell: ( item ) => (
-				<div className={ "flex items-start justify-center mb-5.5" }>
+				<div className={ "mb-5.5 flex items-start justify-center" }>
 					<div className={ "flex w-60 flex-col items-start gap-2" }>
 						<Label className={ "text-xs font-medium text-muted" }>Notas</Label>
 						<Input
@@ -192,45 +166,11 @@ export default function DesktopRoutineView( {
 			{ exercises.length > 0 ? (
 				<>
 					<div className={ "grid gap-4 lg:grid-cols-[1.2fr_0.9fr_0.9fr]" }>
-						<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
-							<Card.Content className={ "flex h-full items-center justify-center p-1" }>
-								<div className={ "flex items-center gap-3" }>
-									<div className={ "flex size-10 items-center justify-center rounded-full bg-warning/10 text-warning" }>
-										<Bulb className={ "size-5" }/>
-									</div>
-									<div className={ "min-w-0" }>
-										<p className={ "text-sm font-semibold text-foreground" }>Consejo del entrenador</p>
-										<p className={ "text-sm leading-6 text-muted" }>{ exercises[ 0 ]?.notes ?? "Mantén una buena técnica durante todo el ejercicio. Controla el movimiento y respira correctamente." }</p>
-									</div>
-								</div>
-							</Card.Content>
-						</Card>
-						<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
-							<Card.Content className={ "flex h-full items-center justify-center p-1" }>
-								<div className={ "flex items-center gap-3" }>
-									<div className={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }>
-										<ChartLine className={ "size-5" }/>
-									</div>
-									<div className={ "min-w-0" }>
-										<p className={ "text-sm font-semibold text-foreground" }>Resumen de la sesion</p>
-										<p className={ "text-sm text-muted" }>{ routineStatusDescription }</p>
-									</div>
-								</div>
-							</Card.Content>
-						</Card>
-						<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
-							<Card.Content className={ "flex h-full items-center justify-center p-1" }>
-								<div className={ "flex items-center gap-3" }>
-									<div className={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }>
-										<Calendar className={ "size-5" }/>
-									</div>
-									<div className={ "min-w-0" }>
-										<p className={ "text-sm font-semibold text-foreground" }>Ultima sesion completa</p>
-										<p className={ "text-sm text-muted" }>{ formatDateLabel( latestProgressDate ) }</p>
-									</div>
-								</div>
-							</Card.Content>
-						</Card>
+						<RoutineSessionOverviewCards
+							exercises={ exercises }
+							latestProgressDate={ latestProgressDate }
+							routineStatusDescription={ routineStatusDescription }
+						/>
 					</div>
 					<div className={ "min-w-0" }>
 						<Carousel opts={ { loop: true } } setApi={ setApi }>
@@ -258,14 +198,7 @@ export default function DesktopRoutineView( {
 					</div>
 				</>
 			) : (
-				<Card className={ "border border-dashed border-border" } variant={ "default" }>
-					<Card.Content className={ "py-10 text-center" }>
-						<p className={ "text-base font-semibold text-foreground" }>No hay ejercicios cargados para este dia</p>
-						<p className={ "mt-1 text-sm text-muted" }>
-							Cuando la rutina tenga ejercicios asignados vas a poder registrar reps, peso y notas desde aqui.
-						</p>
-					</Card.Content>
-				</Card>
+				<RoutineExerciseEmptyState/>
 			) }
 		</div>
 	);

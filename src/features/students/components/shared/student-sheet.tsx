@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import type { StudentListItem } from "@/features/students/actions/get-students";
-import type { GenderFormValue, StudentFormValues } from "@/features/students/services/student-form";
+import type { GenderFormValue } from "@/features/students/services/student-form";
 
 import { Sheet } from "@heroui-pro/react";
 import {
@@ -18,230 +17,63 @@ import {
 	Spinner,
 	TextArea,
 	TextField,
-	toast,
 } from "@heroui/react";
-import { CircleCheck, Pencil, Plus } from "@gravity-ui/icons";
-import { useCallback, useEffect, useRef, useState } from "react";
-
-import {
-	useCreateStudent,
-	useUpdateStudent,
-} from "@/features/students/hooks/use-students";
+import { CircleCheck } from "@gravity-ui/icons";
 import {
 	GENDER_OPTIONS,
 	NO_GENDER,
-	formatDateInputValue,
-	isValidEmail,
 } from "@/features/students/services/student-form";
+import { StudentSheetHeader } from "@/features/students/components/shared/student-sheet-header";
+import { StudentSheetTrigger } from "@/features/students/components/shared/student-sheet-trigger";
+import type { StudentFormSheetProps } from "@/features/students/components/shared/student-sheet.types";
+import { useStudentSheetState } from "@/features/students/components/shared/use-student-sheet-state";
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";
 
-type StudentFormSheetProps =
-	| {
-		hideTrigger?: boolean;
-		isOpen?: boolean;
-		mode: "create";
-		onOpenChange?: ( isOpen: boolean ) => void;
-		placement?: "bottom" | "right";
-		student?: never;
-		triggerClassName?: string;
-		triggerVariant?: "button" | "icon";
-	}
-	| {
-		hideTrigger?: boolean;
-		isOpen?: boolean;
-		mode: "edit";
-		onOpenChange?: ( isOpen: boolean ) => void;
-		placement?: "bottom" | "right";
-		student: StudentListItem;
-		triggerClassName?: string;
-		triggerVariant?: "button" | "icon";
-	};
-
-const DEFAULT_VALUES: StudentFormValues = {
-	active: true,
-	birthDate: "",
-	dni: "",
-	email: "",
-	gender: NO_GENDER,
-	height: "0",
-	name: "",
-	objective: "",
-	observations: "",
-	password: "",
-	weight: "0",
-};
-
-function getDefaultValues(): StudentFormValues {
-	return { ...DEFAULT_VALUES };
-}
-
-function getInitialValues( student?: StudentListItem ): StudentFormValues {
-	if (!student) return getDefaultValues();
-
-	return {
-		active: student.active,
-		birthDate: formatDateInputValue( student.DescriptionStudent?.birthDate ),
-		dni: String( student.dni ),
-		email: student.email,
-		gender: student.gender ?? NO_GENDER,
-		height: String( student.DescriptionStudent?.height ?? 0 ),
-		name: student.name,
-		objective: student.DescriptionStudent?.objective ?? "",
-		observations: student.DescriptionStudent?.observations ?? "",
-		password: "",
-		weight: String( student.DescriptionStudent?.weight ?? 0 ),
-	};
-}
-
-function isNonNegativeNumberInput( value: string ) {
-	if (value.trim().length === 0) return true;
-
-	const normalizedValue = value.trim().replace( ",", "." );
-
-	return Number.isFinite( Number( normalizedValue ) ) && Number( normalizedValue ) >= 0;
-}
-
 export function StudentSheet( props: StudentFormSheetProps ) {
-	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
-	const [ values, setValues ] = useState<StudentFormValues>( () => getInitialValues( props.student ) );
-	const createStudent = useCreateStudent();
-	const updateStudent = useUpdateStudent();
-	const wasOpenRef = useRef( false );
+	const {
+		activeMutation,
+		description,
+		handleOpenChange,
+		handleSubmit,
+		isDniInvalid,
+		isEditMode,
+		isEmailInvalid,
+		isHeightInvalid,
+		isNameInvalid,
+		isOpen,
+		isPasswordInvalid,
+		isSubmitDisabled,
+		isWeightInvalid,
+		openSheet,
+		placement,
+		showEditTriggerLabel,
+		submitLabel,
+		title,
+		updateValue,
+		values,
+	} = useStudentSheetState( props );
 
-	const isEditMode = props.mode === "edit";
-	const activeMutation = isEditMode ? updateStudent : createStudent;
-	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
-	const isEmailInvalid = values.email.trim().length > 0 && !isValidEmail( values.email );
-	const isDniInvalid = values.dni.trim().length > 0 && !/^\d+$/.test( values.dni.trim() );
-	const isPasswordInvalid = !isEditMode && values.password.trim().length === 0;
-	const isHeightInvalid = !isNonNegativeNumberInput( values.height );
-	const isWeightInvalid = !isNonNegativeNumberInput( values.weight );
-	const isSubmitDisabled = values.name.trim().length < 2
-		|| !isValidEmail( values.email )
-		|| !/^\d+$/.test( values.dni.trim() )
-		|| Number( values.dni ) <= 0
-		|| isPasswordInvalid
-		|| isHeightInvalid
-		|| isWeightInvalid
-		|| activeMutation.isPending;
-	const title = isEditMode ? "Editar estudiante" : "Nuevo estudiante";
-	const description = isEditMode
-		? "Actualiza el perfil, estado y objetivos del estudiante."
-		: "Carga un estudiante disponible para seguimiento del coach.";
-	const submitLabel = isEditMode ? "Guardar cambios" : "Crear estudiante";
-	const showEditTriggerLabel = props.triggerVariant === "button";
-	const isOpen = props.isOpen ?? internalIsOpen;
-	const setIsOpen = props.onOpenChange ?? setInternalIsOpen;
-	const placement = props.placement ?? "right";
-
-	const resetFormState = useCallback( () => {
-		setValues( getInitialValues( props.student ) );
-		createStudent.reset();
-		updateStudent.reset();
-	}, [ createStudent, props.student, updateStudent ] );
-
-	useEffect( () => {
-		if (!isOpen) {
-			wasOpenRef.current = false;
-
-			return;
-		}
-
-		if (wasOpenRef.current) return;
-
-		resetFormState();
-		wasOpenRef.current = true;
-	}, [ isOpen, resetFormState ] );
-
-	function openSheet() {
-		resetFormState();
-		setIsOpen( true );
-	}
-
-	function handleOpenChange( nextIsOpen: boolean ) {
-		if (!nextIsOpen) {
-			resetFormState();
-			wasOpenRef.current = false;
-		}
-
-		setIsOpen( nextIsOpen );
-	}
-
-	function updateValue<Key extends keyof StudentFormValues>( key: Key, value: StudentFormValues[ Key ] ) {
-		setValues( ( currentValues ) => ( {
-			...currentValues,
-			[ key ]: value,
-		} ) );
-	}
-
-	async function handleSubmit( event: React.SubmitEvent<HTMLFormElement> ) {
+	async function handleFormSubmit( event: React.SubmitEvent<HTMLFormElement> ) {
 		event.preventDefault();
-
-		if (isSubmitDisabled) return;
-
-		try {
-			if (isEditMode) {
-				await updateStudent.mutateAsync( {
-					...values,
-					id: props.student.id,
-				} );
-				toast.success( "Estudiante actualizado", {
-					description: "Los cambios se guardaron correctamente.",
-				} );
-			} else {
-				await createStudent.mutateAsync( values );
-				setValues( getDefaultValues() );
-				toast.success( "Estudiante creado", {
-					description: "Se agrego al listado.",
-				} );
-			}
-
-			setIsOpen( false );
-		} catch {
-			toast.danger( isEditMode ? "Error al actualizar" : "Error al crear", {
-				description: isEditMode
-					? "No se pudieron guardar los cambios."
-					: "No se pudo crear el estudiante.",
-			} );
-		}
+		await handleSubmit();
 	}
 
 	return (
 		<>
-			{ props.hideTrigger ? null : (
-				isEditMode ? (
-					<Button
-						isIconOnly={ !showEditTriggerLabel }
-						aria-label={ `Editar ${ props.student.name }` }
-						className={ props.triggerClassName }
-						size={ "sm" }
-						variant={ "ghost" }
-						onPress={ openSheet }
-					>
-						<Pencil className={ "size-4 text-warning" }/>
-						{ showEditTriggerLabel ? "Editar" : null }
-					</Button>
-				) : (
-					<Button className={ props.triggerClassName } onPress={ openSheet }>
-						<Plus className={ "size-4" }/>
-						Nuevo estudiante
-					</Button>
-				)
-			) }
+			<StudentSheetTrigger
+				isEditMode={ isEditMode }
+				props={ props }
+				showEditTriggerLabel={ showEditTriggerLabel }
+				onPress={ openSheet }
+			/>
 			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ handleOpenChange }>
-				<Sheet.Header className={ "border-default-100 relative border-b pb-4" }>
-					<div className={ "flex gap-3 " }>
-						<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
-							{ isEditMode ? <Pencil className={ "size-5" }/> : <Plus className={ "size-5" }/> }
-						</div>
-						<div>
-							<Sheet.Heading>{ title }</Sheet.Heading>
-							<Description className={ "mt-1 text-sm" }>{ description }</Description>
-						</div>
-					</div>
-				</Sheet.Header>
+				<StudentSheetHeader
+					description={ description }
+					isEditMode={ isEditMode }
+					title={ title }
+				/>
 
-				<form className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleSubmit }>
+				<form className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleFormSubmit }>
 					<Sheet.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto px-6 py-5" }>
 						{ activeMutation.isError && (
 							<Alert className={ "border border-danger/20" } status={ "danger" }>

@@ -4,15 +4,12 @@ import { Accordion, Chip, Typography } from "@heroui/react";
 
 import type { HistoryRoutineWeekGroup } from "@/features/history-routines/services/history-routines-view";
 import { HistoryRoutineDaysAccordion } from "@/features/role/coach/history-routines/components/desktop/history-routine-days-accordion";
+import { getWeekExerciseCount } from "@/features/role/coach/history-routines/components/shared/history-routine-week-metrics";
 import { getHistoryRoutineWeekStatus } from "@/features/role/coach/history-routines/services/history-routines-view";
 
 type HistoryRoutineWeeksAccordionProps = {
 	weeks: HistoryRoutineWeekGroup[];
 };
-
-function getWeekExerciseCount( weekGroup: HistoryRoutineWeekGroup ) {
-	return weekGroup.days.reduce( ( total, day ) => total + day.exercises.length, 0 );
-}
 
 function getWeekSetCount( weekGroup: HistoryRoutineWeekGroup ) {
 	return weekGroup.days.reduce(

@@ -1,10 +1,13 @@
-﻿"use client";
+"use client";
 
 import { CircleInfo, FloppyDisk } from "@gravity-ui/icons";
-import { Alert, Button, Card, Chip, Description, Spinner } from "@heroui/react";
+import { Button, Card, Description, Spinner } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
+
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";
-import { useResponsiveSheetPlacement } from "@/features/role/student/routine/components/shared/use-responsive-sheet-placement";
+import { useResponsiveSheetPlacement } from "@/features/shared/hooks/use-responsive-sheet-placement";
+import { RoutineSaveSheetAlerts } from "@/features/role/student/routine/components/shared/routine-save-sheet-alerts";
+import { RoutineSaveSheetSummaryItem } from "@/features/role/student/routine/components/shared/routine-save-sheet-summary-item";
 
 export type RoutineSaveSummaryItem = {
 	completedSets: number;
@@ -22,18 +25,14 @@ type RoutineSaveSheetProps = {
 	onOpenChange: ( isOpen: boolean ) => void;
 };
 
-function formatCompletionLabel( completedSets: number, totalSets: number ) {
-	return `${ completedSets }/${ totalSets } series completadas`;
-}
-
 export default function RoutineSaveSheet( {
-											  isOpen,
-											  isPending,
-											  validationError,
-											  summaryItems,
-											  onConfirm,
-											  onOpenChange,
-										  }: RoutineSaveSheetProps ) {
+	isOpen,
+	isPending,
+	validationError,
+	summaryItems,
+	onConfirm,
+	onOpenChange,
+}: RoutineSaveSheetProps ) {
 	const placement = useResponsiveSheetPlacement();
 	const hasCompletedSets = summaryItems.some( ( item ) => item.completedSets > 0 );
 	const canConfirmSave = hasCompletedSets && !validationError && !isPending;
@@ -54,24 +53,7 @@ export default function RoutineSaveSheet( {
 				</div>
 			</Sheet.Header>
 			<Sheet.Body className={ "min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-5" }>
-				{ validationError ? (
-					<Alert className={ "border border-warning/20" } status={ "warning" }>
-						<Alert.Content>
-							<Alert.Title>No se puede guardar todavia</Alert.Title>
-							<Alert.Description>{ validationError }</Alert.Description>
-						</Alert.Content>
-					</Alert>
-				) : null }
-				{ !hasCompletedSets ? (
-					<Alert className={ "border border-warning/20" } status={ "warning" }>
-						<Alert.Content>
-							<Alert.Title>Debes completar al menos una serie</Alert.Title>
-							<Alert.Description>
-								El guardado solo se habilita cuando existe por lo menos una serie marcada como completada.
-							</Alert.Description>
-						</Alert.Content>
-					</Alert>
-				) : null }
+				<RoutineSaveSheetAlerts validationError={ validationError } hasCompletedSets={ hasCompletedSets }/>
 				<Card className={ "border border-border bg-surface/60" }>
 					<Card.Content className={ "space-y-3 p-4" }>
 						<div className={ "flex items-center gap-2 text-sm font-semibold text-foreground" }>
@@ -81,28 +63,14 @@ export default function RoutineSaveSheet( {
 						{ summaryItems.length > 0 ? (
 							<div className={ "space-y-3" }>
 								{ summaryItems.map( ( item ) => (
-									<div key={ item.id } className={ "flex items-center justify-between gap-4 rounded-xl border border-border/60 bg-background px-4 py-3" }>
-										<div className={ "min-w-0" }>
-											<p className={ "truncate text-sm font-semibold text-foreground" }>{ item.name }</p>
-											<p className={ "text-xs text-muted" }>Se guardaran solo las series completadas</p>
-										</div>
-										<Chip
-											color={ item.completedSets === item.totalSets && item.totalSets > 0 ? "success" : "warning" }
-											size={ "sm" }
-											variant={ "soft" }
-										>
-											<Chip.Label>{ formatCompletionLabel( item.completedSets, item.totalSets ) }</Chip.Label>
-										</Chip>
-									</div>
+									<RoutineSaveSheetSummaryItem key={ item.id } item={ item }/>
 								) ) }
 							</div>
 						) : (
-							<Alert className={ "border border-warning/20" } status={ "warning" }>
-								<Alert.Content>
-									<Alert.Title>No hay ejercicios para guardar</Alert.Title>
-									<Alert.Description>La rutina no tiene series completadas para persistir.</Alert.Description>
-								</Alert.Content>
-							</Alert>
+							<div className={ "rounded-xl border border-warning/20 bg-warning/5 p-4" }>
+								<p className={ "text-sm font-semibold text-foreground" }>No hay ejercicios para guardar</p>
+								<p className={ "mt-1 text-sm text-muted" }>La rutina no tiene series completadas para persistir.</p>
+							</div>
 						) }
 					</Card.Content>
 				</Card>

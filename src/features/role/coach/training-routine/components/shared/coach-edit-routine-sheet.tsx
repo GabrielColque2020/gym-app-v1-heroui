@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Pencil } from "@gravity-ui/icons";
-import { Button } from "@heroui/react";
 
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 import CoachRoutineStructure from "@/features/role/coach/training-routine/components/shared/coach-routine-structure";
+import { CoachEditRoutineSheetTrigger } from "@/features/role/coach/training-routine/components/shared/coach-edit-routine-sheet-trigger";
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";
 import { useResponsiveSheetPlacement } from "@/features/shared/hooks/use-responsive-sheet-placement";
 
@@ -37,17 +36,10 @@ export function CoachEditRoutineSheet( {
 	return (
 		<>
 			{ hideTrigger ? null : (
-				<Button
-					variant={ "outline" }
-					className={ isMobile
-						? "bg-accent-foreground border border-accent/50 text-accent shadow-sm"
-						: "bg-surface border border-accent/50 text-accent shadow-sm"
-					}
+				<CoachEditRoutineSheetTrigger
+					isMobile={ isMobile }
 					onPress={ () => setOpen( true ) }
-				>
-					<Pencil className={ "size-4" }/>
-					{ !isMobile && "Editar rutina" }
-				</Button>
+				/>
 			) }
 			<FeatureSheetLayout
 				isOpen={ open }

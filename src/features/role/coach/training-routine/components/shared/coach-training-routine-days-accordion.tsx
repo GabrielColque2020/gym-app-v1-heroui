@@ -2,11 +2,8 @@
 
 import type { CoachTrainingRoutineDay } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 
-import { Accordion, Button, Chip, Description, Dropdown, Header, Label, Typography } from "@heroui/react";
-import { CircleFill, EllipsisVertical, TrashBin } from "@gravity-ui/icons";
-import { useRef } from "react";
-
-import { useRouter } from "next/navigation";
+import { Accordion, Chip, Description, Typography } from "@heroui/react";
+import { CircleFill } from "@gravity-ui/icons";
 
 type CoachTrainingRoutineDaysAccordionProps = {
 	days: CoachTrainingRoutineDay[];
@@ -16,75 +13,8 @@ type CoachTrainingRoutineDaysAccordionProps = {
 	year: number;
 };
 
-function formatExerciseMeta( sets: string, reps: string ) {
-	if (sets.trim().length === 0) return reps;
-	if (reps.trim().length === 0) return sets;
-	return `${ sets } x ${ reps }`;
-}
-
-function getDayTitle( day: CoachTrainingRoutineDay ) {
-	const bodyParts = Array.from(
-		new Set(
-			day.routines
-				.map( ( routine ) => routine.exercise?.bodyPart )
-				.filter( Boolean ),
-		),
-	);
-
-	if (bodyParts.length === 0) return "Sin ejercicios cargados";
-
-	return bodyParts.join( " + " );
-}
-
-type DayOptionsMenuProps = {
-	month: number;
-	routineDayId: string;
-	studentId: string;
-	year: number;
-};
-
-function DayOptionsMenu( { month, routineDayId, studentId, year }: DayOptionsMenuProps ) {
-	const router = useRouter();
-	const menuRef = useRef<HTMLDivElement | null>( null );
-
-	function handleEdit() {
-		const params = new URLSearchParams( {
-			month: String( month ),
-			routineDayId,
-			studentId,
-			year: String( year ),
-		} );
-
-		router.push( `/coach/routine?${ params.toString() }` );
-	}
-
-	return (
-		<div ref={ menuRef } className={ "relative" }>
-			<Dropdown>
-				<Button isIconOnly aria-label={ "Menu" } variant={ "outline" } className={ "border border-accent/50 text-accent shadow-s" }>
-					<EllipsisVertical/>
-				</Button>
-				<Dropdown.Popover>
-					<Dropdown.Menu onAction={ ( key ) => {
-						if (key === "edit-day") {
-							handleEdit();
-						}
-					} }>
-						<Dropdown.Section>
-							<Header>Opciones</Header>
-							<Dropdown.Item id={ "edit-day" } textValue={ "Editar Dia" } variant={ "default" }>
-								<TrashBin className={ "size-4 shrink-0 text-warning" }/>
-
-								<Label className={ "text-warning" }>Editar</Label>
-
-							</Dropdown.Item>
-						</Dropdown.Section>
-					</Dropdown.Menu>
-				</Dropdown.Popover>
-			</Dropdown>
-		</div>
-	);
-}
+import { CoachTrainingRoutineDayOptionsMenu } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-day-options-menu";
+import { formatExerciseMeta, getDayTitle } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-days-accordion.utils";
 
 export function CoachTrainingRoutineDaysAccordion( {
 													   days,
@@ -151,7 +81,7 @@ export function CoachTrainingRoutineDaysAccordion( {
 										</div>
 									) }
 									<div className={ "flex justify-end" }>
-										<DayOptionsMenu
+										<CoachTrainingRoutineDayOptionsMenu
 											month={ month }
 											routineDayId={ day.id }
 											studentId={ studentId }

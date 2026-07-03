@@ -1,65 +1,20 @@
 "use client";
 
-import type React from "react";
-
 import { MONTH_OPTIONS_PADDED as MONTH_OPTIONS } from "@/constants/months";
-import { CheckboxButtonGroup, Segment, Sheet } from "@heroui-pro/react";
-import {
-	Alert,
-	Button,
-	Chip,
-	Description,
-	EmptyState,
-	Label,
-	ListBox,
-	Select,
-	Separator,
-	Spinner,
-	ScrollShadow,
-	Surface,
-	Typography,
-} from "@heroui/react";
-import { Calendar, Copy, Layers } from "@gravity-ui/icons";
+import { CheckboxButtonGroup, Sheet } from "@heroui-pro/react";
+import { Alert, Button, Chip, Description, EmptyState, Label, ListBox, ScrollShadow, Select, Separator, Spinner, Surface, Typography } from "@heroui/react";
+import { Copy } from "@gravity-ui/icons";
 
 import {
 	type CoachCopyRoutineSheetProps,
 	useCoachCopyRoutineSheetState,
 } from "@/features/role/coach/training-routine/components/shared/use-coach-copy-routine-sheet-state";
+import { CoachCopyRoutineNotice, CoachCopyRoutineWeekPill } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-sheet-elements";
+import { CoachCopyRoutineSheetHeader } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-sheet-header";
+import { CoachCopyRoutineSheetSourceControls } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-sheet-source-controls";
+import { CoachCopyRoutineSheetSummaryPanel } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-sheet-summary-panel";
 
 export type CoachCopyRoutineSheetInnerProps = CoachCopyRoutineSheetProps;
-
-function Notice( { children, tone }: { children: React.ReactNode; tone?: "success" | "warning" } ) {
-	const toneClass = tone === "success"
-		? "border-success-soft bg-success-soft/50"
-		: "border-warning-soft bg-warning-soft/60";
-
-	return (
-		<Surface className={ `${ toneClass } rounded-xl border px-3 py-2 sm:py-2.5` }>
-			<Typography className={ "text-sm leading-5" }>{ children }</Typography>
-		</Surface>
-	);
-}
-
-function WeekPill( { children }: { children: React.ReactNode } ) {
-	return (
-		<span className={ "rounded-lg bg-default px-2.5 py-1 text-center text-xs font-semibold" }>
-			{ children }
-		</span>
-	);
-}
-
-function SummaryRow( { label, value }: { label: string; value: React.ReactNode } ) {
-	return (
-		<div className={ "flex min-w-0 items-start justify-between gap-3" }>
-			<Typography className={ "min-w-0 whitespace-normal break-words text-xs text-muted sm:text-sm" }>
-				{ label }
-			</Typography>
-			<Typography className={ "min-w-0 whitespace-normal break-words text-right text-xs font-medium sm:text-sm" }>
-				{ value }
-			</Typography>
-		</div>
-	);
-}
 
 export function CoachCopyRoutineSheetInnerDesktop( {
 	hasActiveRoutine = true,
@@ -105,103 +60,29 @@ export function CoachCopyRoutineSheetInnerDesktop( {
 
 	return (
 		<>
-			<Sheet.Header className={ "border-default-100 relative border-b px-4 pb-3 pt-3 sm:px-6 sm:pb-5 sm:pt-5" }>
-				<div className={ "flex min-w-0 items-start gap-3 pe-10" }>
-					<div className={ "flex size-9 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent sm:size-10" }>
-						<Copy className={ "size-4 sm:size-5" }/>
-					</div>
-					<div className={ "min-w-0 flex-1" }>
-						<Sheet.Heading>Copiar rutina</Sheet.Heading>
-						<div className={ "mt-1 flex min-w-0 flex-wrap items-center gap-2" }>
-							<Typography className={ "text-sm text-muted" }>Destino</Typography>
-							<Typography className={ "text-sm font-semibold" }>{ destLabel }</Typography>
-							{ hasActiveRoutine ? (
-								<Chip color={ "accent" } size={ "sm" } variant={ "soft" }>
-									Rutina activa
-								</Chip>
-							) : null }
-						</div>
-					</div>
-				</div>
-			</Sheet.Header>
+			<CoachCopyRoutineSheetHeader destLabel={ destLabel } hasActiveRoutine={ hasActiveRoutine }/>
 
 			<Sheet.Body className={ "flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 pb-24 pt-3 sm:gap-4 sm:px-6 sm:py-5 md:overflow-hidden" }>
-				<div className={ "grid gap-3 md:grid-cols-[240px_1fr] md:gap-4" }>
-					<div className={ "grid w-full gap-1.5 sm:max-w-80" }>
-						<Label className={ "text-xs font-semibold uppercase text-muted" }>Modo de copia</Label>
-						<Segment
-							aria-label={ "Modo de copia" }
-							className={ "w-full" }
-							selectedKey={ mode }
-							size={ "sm" }
-							onSelectionChange={ ( key ) => setMode( String( key ) === "weeks" ? "weeks" : "month" ) }
-						>
-							<Segment.Item className={ "flex-1" } id={ "month" }>
-								{ ( { isSelected } ) => (
-									<span className={ `flex items-center justify-center gap-1.5 ${ isSelected ? "font-semibold text-accent" : "text-muted" }` }>
-										<Calendar className={ "size-3.5" }/>
-										Mes
-									</span>
-								) }
-							</Segment.Item>
-							<Segment.Item className={ "flex-1" } id={ "weeks" }>
-								{ ( { isSelected } ) => (
-									<span className={ `flex items-center justify-center gap-1.5 ${ isSelected ? "font-semibold text-accent" : "text-muted" }` }>
-										<Layers className={ "size-3.5" }/>
-										Semanas
-									</span>
-								) }
-							</Segment.Item>
-						</Segment>
-					</div>
-
-					<div className={ "grid grid-cols-2 gap-3" }>
-						<Select value={ sourceYear } variant={ "secondary" } onChange={ ( key ) => handleSourceYearChange( key as string ) }>
-							<Label>Anio origen</Label>
-							<Select.Trigger className={ "h-10 rounded-xl shadow-sm" }>
-								<Select.Value/>
-								<Select.Indicator/>
-							</Select.Trigger>
-							<Select.Popover>
-								<ListBox>
-									{ yearOptions.map( ( year ) => (
-										<ListBox.Item key={ year.value } id={ year.value } textValue={ year.label }>
-											{ year.label }
-											<ListBox.ItemIndicator/>
-										</ListBox.Item>
-									) ) }
-								</ListBox>
-							</Select.Popover>
-						</Select>
-
-						<Select value={ padMonth( sourceMonth ) } variant={ "secondary" } onChange={ ( key ) => handleSourceMonthChange( key as string ) }>
-							<Label>Mes origen</Label>
-							<Select.Trigger className={ "h-10 rounded-xl shadow-sm" }>
-								<Select.Value/>
-								<Select.Indicator/>
-							</Select.Trigger>
-							<Select.Popover>
-								<ListBox>
-									{ MONTH_OPTIONS.map( ( month ) => (
-										<ListBox.Item key={ month.value } id={ month.value } textValue={ month.label }>
-											{ month.label }
-											<ListBox.ItemIndicator/>
-										</ListBox.Item>
-									) ) }
-								</ListBox>
-							</Select.Popover>
-						</Select>
-					</div>
-				</div>
+				<CoachCopyRoutineSheetSourceControls
+					handleSourceMonthChange={ handleSourceMonthChange }
+					handleSourceYearChange={ handleSourceYearChange }
+					mode={ mode }
+					onModeChange={ setMode }
+					padMonth={ padMonth }
+					sourceMonth={ sourceMonth }
+					sourceYear={ sourceYear }
+					yearOptions={ yearOptions }
+					monthOptions={ MONTH_OPTIONS }
+				/>
 
 				{ mode === "month" && sameMonth ? (
-					<Notice tone={ "warning" }>No podes copiar desde el mismo mes destino.</Notice>
+					<CoachCopyRoutineNotice tone={ "warning" }>No podes copiar desde el mismo mes destino.</CoachCopyRoutineNotice>
 				) : null }
 
 				{ hasActiveRoutine ? (
-					<Notice tone={ "warning" }>
+					<CoachCopyRoutineNotice tone={ "warning" }>
 						{ destLabel } ya tiene una rutina configurada. La copia puede reemplazar contenido existente.
-					</Notice>
+					</CoachCopyRoutineNotice>
 				) : null }
 
 				{ sourceQuery.isError ? (
@@ -244,7 +125,9 @@ export function CoachCopyRoutineSheetInnerDesktop( {
 										</div>
 										<div className={ "mt-3 flex flex-wrap gap-1.5 sm:grid sm:grid-cols-4 sm:gap-2" }>
 											{ source.routines.map( ( routine ) => (
-												<WeekPill key={ routine.id }>S{ routine.week }</WeekPill>
+												<CoachCopyRoutineWeekPill key={ routine.id }>
+													S{ routine.week }
+												</CoachCopyRoutineWeekPill>
 											) ) }
 										</div>
 									</Surface>
@@ -311,7 +194,7 @@ export function CoachCopyRoutineSheetInnerDesktop( {
 														</CheckboxButtonGroup.Item>
 													) ) }
 												</CheckboxButtonGroup>
-												<Notice tone={ "success" }>{ singleWeekPreview }</Notice>
+												<CoachCopyRoutineNotice tone={ "success" }>{ singleWeekPreview }</CoachCopyRoutineNotice>
 											</div>
 										) : (
 											<div className={ "grid gap-3" }>
@@ -349,7 +232,9 @@ export function CoachCopyRoutineSheetInnerDesktop( {
 														</Surface>
 													) ) }
 												</div>
-												<Notice tone={ "warning" }>Las semanas destino seran reemplazadas con el contenido seleccionado.</Notice>
+												<CoachCopyRoutineNotice tone={ "warning" }>
+													Las semanas destino seran reemplazadas con el contenido seleccionado.
+												</CoachCopyRoutineNotice>
 											</div>
 										) }
 									</>
@@ -357,21 +242,14 @@ export function CoachCopyRoutineSheetInnerDesktop( {
 							</div>
 						</ScrollShadow>
 
-						<Surface className={ "flex min-h-0 flex-col gap-2 rounded-xl border border-default-hover bg-surface p-3 sm:gap-3 sm:p-4" }>
-							<div className={ "flex min-w-0 items-center justify-between gap-3 sm:block" }>
-								<Typography className={ "text-sm font-semibold" }>Resumen</Typography>
-								<Description className={ "min-w-0 truncate text-xs sm:mt-1" }>{ sourceLabel } a { destLabel }</Description>
-							</div>
-							<Separator className={ "my-0" }/>
-							<div className={ "grid gap-1.5 sm:gap-2" }>
-								<SummaryRow label={ "Modo" } value={ mode === "month" ? "Mes completo" : "Semanas" }/>
-								<SummaryRow label={ "Mes origen" } value={ sourceLabel }/>
-								<SummaryRow label={ "Semanas origen" } value={ selectedSourceWeeksLabel }/>
-								<SummaryRow label={ "Dias origen" } value={ selectedSourceRoutineStats.dayCount || "-" }/>
-								<SummaryRow label={ "Ejercicios" } value={ selectedSourceRoutineStats.exerciseCount || "-" }/>
-								<SummaryRow label={ "Destinos afectados" } value={ destinationAffectedLabel }/>
-							</div>
-						</Surface>
+						<CoachCopyRoutineSheetSummaryPanel
+							destLabel={ destLabel }
+							destinationAffectedLabel={ destinationAffectedLabel }
+							mode={ mode }
+							selectedSourceRoutineStats={ selectedSourceRoutineStats }
+							selectedSourceWeeksLabel={ selectedSourceWeeksLabel }
+							sourceLabel={ sourceLabel }
+						/>
 					</div>
 				) : null }
 			</Sheet.Body>
