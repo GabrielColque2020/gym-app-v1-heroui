@@ -1,10 +1,14 @@
 "use server";
 
-import prisma from "@/lib/prisma";
-import { emptyToNull } from "@/features/exercises/services/exercise-form";
 import { getRoutineDayAction } from "@/features/routine/actions/get-routine-day";
+import {
+	assertRoutineCatalogExercisesAvailable,
+	normalizeRoutineDayMutationInput,
+	persistRoutineDayExercises,
+	validateNormalizedRoutineDayExercises,
+} from "@/features/routine/actions/routine-day-mutations.utils";
 import { getRoutineDayDetailBase } from "@/features/routine/services/routine-day-detail";
-import { validateRoutineDayDraft, type SaveRoutineDayExerciseInput } from "@/features/routine/services/routine-day-editor";
+import type { SaveRoutineDayExerciseInput } from "@/features/routine/services/routine-day-editor";
 
 export type SaveRoutineDayExercisesActionInput = {
 	exercises: SaveRoutineDayExerciseInput[];
@@ -13,88 +17,32 @@ export type SaveRoutineDayExercisesActionInput = {
 	coachId?: string | null;
 };
 
-function normalizeExercises( exercises: SaveRoutineDayExerciseInput[] ) {
-	return exercises.map( ( exercise ) => ( {
-		exerciseId: exercise.exerciseId.trim(),
-		observation: exercise.observation,
-		order: exercise.order,
-		reps: exercise.reps,
-		sets: exercise.sets,
-	} ) );
-}
-
 export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExercisesActionInput ) {
 	try {
-		const routineDayId = input.routineDayId.trim();
-		const studentId = input.studentId?.trim();
-		const exercises = normalizeExercises( input.exercises );
+		const {
+			coachId,
+			exercises,
+			routineDayId,
+			studentId,
+		} = normalizeRoutineDayMutationInput( input );
 
 		if (!routineDayId) {
 			throw new Error( "Selecciona un dia valido antes de guardar cambios." );
 		}
 
-		const validationError = validateRoutineDayDraft( exercises.map( ( exercise ) => ( {
-			clientId: exercise.exerciseId,
-			exercise: null,
-			exerciseId: exercise.exerciseId,
-			id: null,
-			observation: exercise.observation,
-			order: exercise.order,
-			reps: exercise.reps,
-			sets: exercise.sets,
-		} ) ) );
-
-		if (validationError) {
-			throw new Error( validationError );
-		}
+		validateNormalizedRoutineDayExercises( exercises );
 
 		const routineDay = await getRoutineDayDetailBase( {
-			coachId: input.coachId,
+			coachId,
 			routineDayId,
 			studentId,
 		} );
 
-		if (exercises.length > 0) {
-			const existingExercises = await prisma.exercise.findMany( {
-				select: {
-					id: true,
-				},
-				where: {
-					active: true,
-					id: {
-						in: exercises.map( ( exercise ) => exercise.exerciseId ),
-					},
-				},
-			} );
-
-			if (existingExercises.length !== exercises.length) {
-				throw new Error( "Uno o mas ejercicios ya no estan disponibles en el catalogo activo." );
-			}
-		}
-
-		await prisma.$transaction( async ( transaction ) => {
-			await transaction.routine.deleteMany( {
-				where: {
-					routineDayId: routineDay.id,
-				},
-			} );
-
-			if (exercises.length === 0) return;
-
-			await transaction.routine.createMany( {
-				data: exercises.map( ( exercise ) => ( {
-					exerciseId: exercise.exerciseId,
-					observation: emptyToNull( exercise.observation ),
-					order: exercise.order,
-					reps: exercise.reps.trim(),
-					routineDayId: routineDay.id,
-					sets: exercise.sets.trim(),
-				} ) ),
-			} );
-		} );
+		await assertRoutineCatalogExercisesAvailable( exercises );
+		await persistRoutineDayExercises( routineDay, exercises );
 
 		return await getRoutineDayAction( {
-			coachId: input.coachId,
+			coachId,
 			routineDayId: routineDay.id,
 			studentId,
 		} );

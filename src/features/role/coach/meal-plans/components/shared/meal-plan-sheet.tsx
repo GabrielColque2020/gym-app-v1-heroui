@@ -1,157 +1,32 @@
 "use client";
 
-import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-
 import { Sheet } from "@heroui-pro/react";
-import { Alert, Button, Description, FieldError, Label, ListBox, Select, Spinner, TextArea, TextField, toast, } from "@heroui/react";
+import { Alert, Button, Description, FieldError, Label, ListBox, Select, Spinner, TextArea, TextField } from "@heroui/react";
 import { CircleCheck, Pencil, Plus } from "@gravity-ui/icons";
 
-import type { CoachMealPlan } from "@/features/meal-plans/types/meal-plans-types";
-import { useCreateMealPlan, useUpdateMealPlan } from "@/features/meal-plans/hooks/use-meal-plan-mutations";
-import { MEAL_TIME_OPTIONS, type MealPlanFormValues, type MealTimeValue, } from "@/features/meal-plans/services/meal-plans-form";
+import { MEAL_TIME_OPTIONS, type MealTimeValue } from "@/features/meal-plans/services/meal-plans-form";
+import type { MealPlanSheetProps } from "@/features/role/coach/meal-plans/components/shared/meal-plan-sheet.types";
+import { useMealPlanSheetState } from "@/features/role/coach/meal-plans/components/shared/use-meal-plan-sheet-state";
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";
-import { useResponsiveSheetPlacement } from "@/features/shared/hooks/use-responsive-sheet-placement";
-
-type MealPlanSheetProps =
-	| {
-	hideTrigger?: boolean;
-	isOpen?: boolean;
-	mealPlan?: never;
-	mode: "create";
-	onOpenChange?: ( isOpen: boolean ) => void;
-	placement?: "bottom" | "right";
-	studentId: string;
-	triggerClassName?: string;
-	triggerVariant?: "button" | "icon";
-}
-	| {
-	hideTrigger?: boolean;
-	isOpen?: boolean;
-	mealPlan: CoachMealPlan;
-	mode: "edit";
-	onOpenChange?: ( isOpen: boolean ) => void;
-	placement?: "bottom" | "right";
-	studentId: string;
-	triggerClassName?: string;
-	triggerVariant?: "button" | "icon";
-};
-
-const DEFAULT_VALUES: MealPlanFormValues = {
-	description: "",
-	title: "BREAKFAST",
-};
-
-function getDefaultValues(): MealPlanFormValues {
-	return { ...DEFAULT_VALUES };
-}
-
-function getInitialValues( mealPlan?: CoachMealPlan ): MealPlanFormValues {
-	if (!mealPlan) return getDefaultValues();
-
-	return {
-		description: mealPlan.description,
-		title: mealPlan.title as MealTimeValue,
-	};
-}
 
 export function MealPlanSheet( props: MealPlanSheetProps ) {
-	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
-	const [ values, setValues ] = useState<MealPlanFormValues>( () => getInitialValues( props.mealPlan ) );
-	const createMealPlan = useCreateMealPlan();
-	const updateMealPlan = useUpdateMealPlan();
-	const wasOpenRef = useRef( false );
-
-	const isEditMode = props.mode === "edit";
-	const activeMutation = isEditMode ? updateMealPlan : createMealPlan;
-	const isDescriptionInvalid = values.description.trim().length > 0 && values.description.trim().length < 2;
-	const isSubmitDisabled = values.description.trim().length < 2 || activeMutation.isPending;
-	const title = isEditMode ? "Editar plan alimenticio" : "Nuevo plan alimenticio";
-	const description = isEditMode
-		? "Actualiza el tipo de comida y la descripcion del plan."
-		: "Carga un nuevo plan alimenticio para el estudiante.";
-	const submitLabel = isEditMode ? "Guardar cambios" : "Crear plan";
-	const showEditTriggerLabel = props.triggerVariant === "button";
-	const isOpen = props.isOpen ?? internalIsOpen;
-	const setIsOpen = props.onOpenChange ?? setInternalIsOpen;
-	const responsivePlacement = useResponsiveSheetPlacement();
-	const placement = props.placement ?? responsivePlacement;
-
-	const resetFormState = useCallback( () => {
-		setValues( getInitialValues( props.mealPlan ) );
-		createMealPlan.reset();
-		updateMealPlan.reset();
-	}, [ createMealPlan, props.mealPlan, updateMealPlan ] );
-
-	useEffect( () => {
-		if (!isOpen) {
-			wasOpenRef.current = false;
-
-			return;
-		}
-
-		if (wasOpenRef.current) return;
-
-		resetFormState();
-		wasOpenRef.current = true;
-	}, [ isOpen, resetFormState ] );
-
-	function openSheet() {
-		resetFormState();
-		setIsOpen( true );
-	}
-
-	function handleOpenChange( nextIsOpen: boolean ) {
-		if (!nextIsOpen) {
-			resetFormState();
-			wasOpenRef.current = false;
-		}
-
-		setIsOpen( nextIsOpen );
-	}
-
-	function updateValue<Key extends keyof MealPlanFormValues>( key: Key, value: MealPlanFormValues[ Key ] ) {
-		setValues( ( currentValues ) => ( {
-			...currentValues,
-			[ key ]: value,
-		} ) );
-	}
-
-	async function handleSubmit( event: React.SubmitEvent<HTMLFormElement> ) {
-		event.preventDefault();
-
-		if (isSubmitDisabled) return;
-
-		try {
-			if (isEditMode) {
-				await updateMealPlan.mutateAsync( {
-					...values,
-					id: props.mealPlan.id,
-					studentId: props.studentId,
-				} );
-				toast.success( "Plan alimenticio actualizado", {
-					description: "Los cambios se guardaron correctamente.",
-				} );
-			} else {
-				await createMealPlan.mutateAsync( {
-					...values,
-					studentId: props.studentId,
-				} );
-				setValues( getDefaultValues() );
-				toast.success( "Plan alimenticio creado", {
-					description: "Se agrego al listado del estudiante.",
-				} );
-			}
-
-			setIsOpen( false );
-		} catch {
-			toast.danger( isEditMode ? "Error al actualizar" : "Error al crear", {
-				description: isEditMode
-					? "No se pudieron guardar los cambios."
-					: "No se pudo crear el plan alimenticio.",
-			} );
-		}
-	}
+	const {
+		activeMutation,
+		description,
+		handleOpenChange,
+		handleSubmit,
+		isDescriptionInvalid,
+		isEditMode,
+		isOpen,
+		isSubmitDisabled,
+		openSheet,
+		placement,
+		showEditTriggerLabel,
+		submitLabel,
+		title,
+		updateValue,
+		values,
+	} = useMealPlanSheetState( props );
 
 	return (
 		<>
@@ -159,7 +34,7 @@ export function MealPlanSheet( props: MealPlanSheetProps ) {
 				isEditMode ? (
 					<Button
 						isIconOnly={ !showEditTriggerLabel }
-						aria-label={ `Editar plan ${ props.mealPlan.description }` }
+						aria-label={ `Editar plan ${ props.mode === "edit" ? props.mealPlan.description : "alimenticio" }` }
 						className={ props.triggerClassName }
 						size={ "sm" }
 						variant={ "ghost" }
@@ -265,5 +140,3 @@ export function MealPlanSheet( props: MealPlanSheetProps ) {
 		</>
 	);
 }
-
-

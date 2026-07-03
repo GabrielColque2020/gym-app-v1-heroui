@@ -13,6 +13,7 @@ import {
 	mergeStudentRoutineSessionDraft,
 	type StudentRoutineSessionDetail,
 } from "@/features/routine/services/routine-session";
+import { ROUTINE_SESSION_STORAGE_KEY } from "@/features/routine/services/routine-storage";
 import {
 	hydrateRoutinePages,
 	hydrateSession,
@@ -217,7 +218,7 @@ export const useRoutineSessionStore = create<RoutineSessionStoreState>()(
 			},
 		} ),
 		{
-			name: "routineExerciseProgress-storage",
+			name: ROUTINE_SESSION_STORAGE_KEY,
 			storage: createJSONStorage( () => localStorage ),
 			partialize: ( state ): PersistedRoutineSessionStore => ( {
 				drafts: Object.fromEntries(

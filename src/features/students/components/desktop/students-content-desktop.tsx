@@ -4,46 +4,18 @@ import type { DataGridColumn } from "@heroui-pro/react";
 import type { StudentListItem } from "@/features/students/actions/get-students";
 
 import { DataGrid } from "@heroui-pro/react";
-import { Button, Card, Chip, Spinner } from "@heroui/react";
-import { CircleCheck, TrashBin } from "@gravity-ui/icons";
+import { Chip } from "@heroui/react";
 import { useMemo } from "react";
 
 import { ListPagination } from "@/components/common";
 import { StudentFilters } from "@/features/students/components/shared/student-filters";
-import { StudentSheet } from "@/features/students/components/shared/student-sheet";
+import { StudentRowActions } from "@/features/students/components/shared/student-row-actions";
+import { StudentsEmptyState } from "@/features/students/components/shared/students-empty-state";
 import { useStudentList } from "@/features/students/hooks/use-student-list";
-import { useStudentStatusAction } from "@/features/students/hooks/use-student-status-action";
 
 type StudentsContentDesktopProps = {
 	students: StudentListItem[];
 };
-
-function StudentRowActions( { student }: { student: StudentListItem } ) {
-	const { changeStatus, isPending, statusClassName, statusLabel } = useStudentStatusAction( { student } );
-
-	return (
-		<div className={ "flex items-center justify-start gap-2" }>
-			<StudentSheet mode={ "edit" } student={ student }/>
-			<Button
-				isIconOnly
-				aria-label={ `${ statusLabel } ${ student.name }` }
-				className={ statusClassName }
-				isDisabled={ isPending }
-				size={ "sm" }
-				variant={ "ghost" }
-				onPress={ changeStatus }
-			>
-				{ isPending ? (
-					<Spinner color={ "current" } size={ "sm" }/>
-				) : student.active ? (
-					<TrashBin className={ "size-4" }/>
-				) : (
-					<CircleCheck className={ "size-4" }/>
-				) }
-			</Button>
-		</div>
-	);
-}
 
 export function StudentsContentDesktop( { students }: StudentsContentDesktopProps ) {
 	const columns = useMemo<DataGridColumn<StudentListItem>[]>( () => [
@@ -119,13 +91,7 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 	} = pagination;
 
 	if (students.length === 0) {
-		return (
-			<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
-				<Card.Content className={ "py-10 text-center text-sm text-muted" }>
-					No hay estudiantes cargados
-				</Card.Content>
-			</Card>
-		);
+		return <StudentsEmptyState message={ "No hay estudiantes cargados" }/>;
 	}
 
 	return (
@@ -141,11 +107,7 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 			/>
 
 			{ filteredStudents.length === 0 ? (
-				<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
-					<Card.Content className={ "py-10 text-center text-sm text-muted" }>
-						No hay estudiantes que coincidan con los filtros
-					</Card.Content>
-				</Card>
+				<StudentsEmptyState message={ "No hay estudiantes que coincidan con los filtros" }/>
 			) : (
 				<>
 					<DataGrid

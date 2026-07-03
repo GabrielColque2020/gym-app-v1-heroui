@@ -3,8 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { saveRoutineDayExercisesAction } from "@/features/routine/actions/routine-day-mutations";
-import { routineDayQueryKey } from "@/features/routine/services/routine-day-query";
-import { useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
+import { syncRoutineDayAfterSave } from "@/features/routine/hooks/use-routine-day-mutations.utils";
 
 export function useSaveRoutineDayExercises() {
 	const queryClient = useQueryClient();
@@ -12,18 +11,7 @@ export function useSaveRoutineDayExercises() {
 	return useMutation( {
 		mutationFn: saveRoutineDayExercisesAction,
 		onSuccess: async ( savedRoutineDay, input ) => {
-			queryClient.setQueryData(
-				routineDayQueryKey( input.routineDayId, input.studentId ),
-				savedRoutineDay,
-			);
-
-			try {
-				await queryClient.invalidateQueries( {
-					queryKey: routineDayQueryKey( input.routineDayId, input.studentId ),
-				} );
-			} finally {
-				useRoutineDayDraftStore.getState().clearDraft( input.routineDayId );
-			}
+			await syncRoutineDayAfterSave( queryClient, savedRoutineDay, input );
 		},
 	} );
 }

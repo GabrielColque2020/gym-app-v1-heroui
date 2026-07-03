@@ -1,15 +1,10 @@
 "use server";
 
 import type { RoutineDayDetail, RoutineDayExercise } from "@/features/routine/services/routine-day-detail";
+import type { GetRoutineDayDetailInput } from "@/features/routine/services/routine-day-detail.query";
 import { getRoutineDayDetailBase } from "@/features/routine/services/routine-day-detail";
 
-type GetRoutineDayInput = {
-	coachId?: string | null;
-	routineDayId: string;
-	studentId?: string | null;
-};
-
-export async function getRoutineDayAction( { coachId, routineDayId, studentId }: GetRoutineDayInput ) {
+export async function getRoutineDayAction( { coachId, routineDayId, studentId }: GetRoutineDayDetailInput ) {
 	try {
 		return await getRoutineDayDetailBase( {
 			coachId,

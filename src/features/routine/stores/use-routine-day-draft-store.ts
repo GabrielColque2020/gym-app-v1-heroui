@@ -11,6 +11,7 @@ import {
 	mapRoutineExercisesToDraft,
 	sortDraftRoutineExercises,
 } from "@/features/routine/services/routine-day-editor";
+import { ROUTINE_DAY_DRAFT_STORAGE_KEY } from "@/features/routine/services/routine-storage";
 import {
 	appendDraftExercise,
 	patchDraftExercise,
@@ -149,7 +150,7 @@ export const useRoutineDayDraftStore = create<RoutineDayDraftStoreState>()(
 			};
 		},
 		{
-			name: "coach-routine-day-drafts",
+			name: ROUTINE_DAY_DRAFT_STORAGE_KEY,
 			partialize: ( state ) => ( {
 				drafts: state.drafts,
 			} ),

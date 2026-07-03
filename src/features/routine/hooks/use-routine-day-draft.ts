@@ -5,13 +5,14 @@ import { useEffect, useMemo, useRef } from "react";
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 import type { CoachRoutineDayExercise } from "@/features/role/coach/routine/actions/get-routine-day";
-import { useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
 import {
-	mapRoutineExercisesToDraft,
-	serializeRoutineDayDraft,
-	sortDraftRoutineExercises,
-	validateRoutineDayDraft,
-} from "@/features/routine/services/routine-day-editor";
+	buildActiveDraftState,
+	buildSourceDraftState,
+	getRoutineExerciseFieldPatch,
+	getSuggestedRoutineExerciseOrder,
+} from "@/features/routine/hooks/use-routine-day-draft.utils";
+import { useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
+import { serializeRoutineDayDraft } from "@/features/routine/services/routine-day-editor";
 
 type UseRoutineDayDraftOptions = {
 	routineDayId: string;
@@ -31,16 +32,10 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 	const updateExercise = useRoutineDayDraftStore( ( state ) => state.updateExercise );
 	const addExerciseToStore = useRoutineDayDraftStore( ( state ) => state.addExercise );
 	const lastSeededSignatureRef = useRef<string | null>( null );
-
-	const sourceDraftRoutines = useMemo(
-		() => mapRoutineExercisesToDraft( sourceRoutines ),
+	const { sourceDraftRoutines, sourceSignature } = useMemo(
+		() => buildSourceDraftState( sourceRoutines ),
 		[sourceRoutines],
 	);
-	const sourceSignature = useMemo(
-		() => serializeRoutineDayDraft( sourceDraftRoutines ),
-		[sourceDraftRoutines],
-	);
-	const activeDraftRoutines = draftRoutines ?? sourceDraftRoutines;
 
 	useEffect( () => {
 		if (!hasHydrated) return;
@@ -58,23 +53,16 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 		sourceSignature,
 	] );
 
-	const sortedDraftRoutines = useMemo(
-		() => sortDraftRoutineExercises( activeDraftRoutines ),
-		[ activeDraftRoutines ],
-	);
-	const draftSignature = useMemo(
-		() => serializeRoutineDayDraft( sortedDraftRoutines ),
-		[ sortedDraftRoutines ],
-	);
-	const validationError = useMemo(
-		() => validateRoutineDayDraft( sortedDraftRoutines ),
-		[ sortedDraftRoutines ],
+	const {
+		addedExerciseIds,
+		draftSignature,
+		sortedDraftRoutines,
+		validationError,
+	} = useMemo(
+		() => buildActiveDraftState( sourceDraftRoutines, draftRoutines ),
+		[draftRoutines, sourceDraftRoutines],
 	);
 	const isDirty = draftSignature !== sourceSignature;
-	const addedExerciseIds = useMemo(
-		() => new Set( sortedDraftRoutines.map( ( routine ) => routine.exerciseId ) ),
-		[ sortedDraftRoutines ],
-	);
 
 	function hydrateDraftIfNeeded() {
 		if (draftRoutines) return;
@@ -112,19 +100,17 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 		hydrateDraftIfNeeded();
 		updateExercise( {
 			clientId,
-			patch: {
-				[ field ]: field === "order" ? Number( value ) || 0 : String( value ),
-			},
+			patch: getRoutineExerciseFieldPatch( field, value ),
 			routineDayId,
 		} );
 	}
 
 	function getSuggestedOrder() {
-		return sortedDraftRoutines.reduce( ( highestOrder, routine ) => Math.max( highestOrder, routine.order ), 0 ) + 1;
+		return getSuggestedRoutineExerciseOrder( sortedDraftRoutines );
 	}
 
 	function resetDraft( nextSourceRoutines: CoachRoutineDayExercise[] ) {
-		const nextDraftRoutines = mapRoutineExercisesToDraft( nextSourceRoutines );
+		const nextDraftRoutines = buildSourceDraftState( nextSourceRoutines ).sourceDraftRoutines;
 
 		setDraft( routineDayId, nextDraftRoutines );
 		lastSeededSignatureRef.current = serializeRoutineDayDraft( nextDraftRoutines );
