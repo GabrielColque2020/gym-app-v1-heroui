@@ -1,5 +1,3 @@
-"use client";
-
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 
 import { Alert, Spinner } from "@heroui/react";
@@ -15,7 +13,7 @@ type SearchAndCreateExerciseSheetResultsProps = {
 		isLoading: boolean;
 	};
 	isSearching: boolean;
-	onAddExercise: ( exercise: ExerciseListItem ) => void;
+	onAddExerciseAction: ( exercise: ExerciseListItem ) => void;
 	onRegisterAddButtonRef: ( exerciseId: string, element: HTMLButtonElement | null ) => void;
 	selectedExerciseId: string | null;
 };
@@ -25,7 +23,7 @@ export function SearchAndCreateExerciseSheetResults( {
 	exercises,
 	exercisesQuery,
 	isSearching,
-	onAddExercise,
+	onAddExerciseAction,
 	onRegisterAddButtonRef,
 	selectedExerciseId,
 }: SearchAndCreateExerciseSheetResultsProps ) {
@@ -77,7 +75,7 @@ export function SearchAndCreateExerciseSheetResults( {
 							alreadyAdded={ addedExerciseIds.has( exercise.id ) }
 							exercise={ exercise }
 							isSelected={ selectedExerciseId === exercise.id }
-							onAddExercise={ onAddExercise }
+								onAddExerciseAction={ onAddExerciseAction }
 							onRegisterAddButtonRef={ onRegisterAddButtonRef }
 						/>
 					) ) }

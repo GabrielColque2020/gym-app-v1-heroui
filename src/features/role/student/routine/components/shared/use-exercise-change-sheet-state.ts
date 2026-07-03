@@ -7,13 +7,13 @@ import type { ExerciseVariantOption } from "@/features/routine/types/routine-exe
 type UseExerciseChangeSheetStateOptions = {
 	exerciseId: string;
 	hasVariants: boolean;
-	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
+	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 };
 
 export function useExerciseChangeSheetState( {
 	exerciseId,
 	hasVariants,
-	onVariantChange,
+	onVariantChangeAction,
 }: UseExerciseChangeSheetStateOptions ) {
 	const [ isOpen, setIsOpen ] = useState( false );
 
@@ -23,14 +23,14 @@ export function useExerciseChangeSheetState( {
 	}, [ hasVariants ] );
 
 	const handleSelectVariant = useCallback( ( variant: ExerciseVariantOption ) => {
-		onVariantChange( exerciseId, variant.id );
+		onVariantChangeAction( exerciseId, variant.id );
 		setIsOpen( false );
-	}, [ exerciseId, onVariantChange ] );
+	}, [ exerciseId, onVariantChangeAction ] );
 
 	const handleResetVariant = useCallback( () => {
-		onVariantChange( exerciseId, null );
+		onVariantChangeAction( exerciseId, null );
 		setIsOpen( false );
-	}, [ exerciseId, onVariantChange ] );
+	}, [ exerciseId, onVariantChangeAction ] );
 
 	return {
 		handleOpenVariantSheet,

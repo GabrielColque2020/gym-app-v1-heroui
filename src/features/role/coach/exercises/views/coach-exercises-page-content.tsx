@@ -58,7 +58,7 @@ export default function CoachExercisesPageContent() {
 				crumbs={ breadcrumbs }
 			/>
 			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<CoachExercisesPageHeader isRefreshing={ isRefreshing } onRefresh={ handleRefresh }/>
+				<CoachExercisesPageHeader isRefreshing={ isRefreshing } onRefreshAction={ handleRefresh }/>
 				<Card.Content className={ "px-5 py-4 sm:px-6" }>
 					<div className={ "hidden w-full md:flex" }>
 						<ExercisesContentDesktop exercises={ exercises }/>

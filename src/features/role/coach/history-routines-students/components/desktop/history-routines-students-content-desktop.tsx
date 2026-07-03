@@ -159,7 +159,7 @@ export function HistoryRoutinesStudentsContentDesktop( { students }: HistoryRout
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

@@ -1,5 +1,3 @@
-"use client";
-
 import { Input, TextField } from "@heroui/react";
 
 import { getExerciseName } from "@/features/role/coach/routine/components/shared/routine-day-exercise-editor.utils";

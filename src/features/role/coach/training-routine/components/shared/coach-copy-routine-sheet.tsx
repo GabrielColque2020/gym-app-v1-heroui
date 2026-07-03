@@ -4,9 +4,7 @@ import { useState } from "react";
 import { Copy } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
 
-import {
-	CoachCopyRoutineSheetInnerDesktop,
-} from "@/features/role/coach/training-routine/components/desktop/coach-copy-routine-sheet-inner-desktop";
+import { CoachCopyRoutineSheetInnerDesktop, } from "@/features/role/coach/training-routine/components/desktop/coach-copy-routine-sheet-inner-desktop";
 import {
 	CoachCopyRoutineSheetInnerMobile,
 	type CoachCopyRoutineSheetInnerProps,
@@ -17,20 +15,20 @@ import { useResponsiveSheetPlacement } from "@/features/shared/hooks/use-respons
 export type CoachCopyRoutineSheetContentProps = CoachCopyRoutineSheetInnerProps & {
 	hideTrigger?: boolean;
 	isOpen?: boolean;
-	onOpenChange?: ( isOpen: boolean ) => void;
+	onOpenChangeAction?: ( isOpen: boolean ) => void;
 };
 
 export function CoachCopyRoutineSheet( {
-	hideTrigger = false,
-	isOpen,
-	onOpenChange,
-	...props
-}: CoachCopyRoutineSheetContentProps ) {
+										   hideTrigger = false,
+										   isOpen,
+										   onOpenChangeAction,
+										   ...props
+									   }: CoachCopyRoutineSheetContentProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const placement = useResponsiveSheetPlacement();
 	const isMobile = placement === "bottom";
 	const open = isOpen ?? internalIsOpen;
-	const setOpen = onOpenChange ?? setInternalIsOpen;
+	const setOpen = onOpenChangeAction ?? setInternalIsOpen;
 
 	return (
 		<>
@@ -51,7 +49,7 @@ export function CoachCopyRoutineSheet( {
 				isOpen={ open }
 				placement={ placement }
 				rightContentClassName={ "w-[42rem]" }
-				onOpenChange={ setOpen }
+				onOpenChangeAction={ setOpen }
 			>
 				{ isMobile ? (
 					<CoachCopyRoutineSheetInnerMobile { ...props } />

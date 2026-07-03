@@ -54,7 +54,7 @@ export function MealPlanSheet( props: MealPlanSheetProps ) {
 				isOpen={ isOpen }
 				placement={ placement }
 				rightContentClassName={ "w-[34rem]" }
-				onOpenChange={ handleOpenChange }
+				onOpenChangeAction={ handleOpenChange }
 			>
 				<Sheet.Header className={ "border-default-100 relative border-b pb-4" }>
 					<div className={ "flex gap-3" }>

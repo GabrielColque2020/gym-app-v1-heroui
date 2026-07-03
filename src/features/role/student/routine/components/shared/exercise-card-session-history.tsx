@@ -1,5 +1,3 @@
-"use client";
-
 import { Chip } from "@heroui/react";
 
 import type { ExerciseSessionHistory } from "@/features/routine/types/routine-exercise.types";

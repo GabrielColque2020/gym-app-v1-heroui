@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, Checkbox, Input, Label } from "@heroui/react";
 
 import type { ExerciseSet } from "@/features/routine/types/routine-exercise.types";

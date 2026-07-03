@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Card } from "@heroui/react";
 
@@ -12,10 +10,10 @@ import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 interface ExerciseCardProps {
 	exercise: Exercise;
 	children: React.ReactNode;
-	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
+	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 }
 
-export default function DesktopExerciseCard( { exercise, children, onVariantChange }: ExerciseCardProps ) {
+export default function DesktopExerciseCard( { exercise, children, onVariantChangeAction }: ExerciseCardProps ) {
 	const {
 		completedSetsSummary,
 		displayedExerciseName,
@@ -42,7 +40,7 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 									hasVariants={ hasVariants }
 									selectedVariant={ selectedVariant }
 									variantOptions={ variantOptions }
-									onVariantChange={ onVariantChange }
+									onVariantChangeAction={ onVariantChangeAction }
 								/>
 							</div>
 							<div className={ "flex flex-nowrap items-center gap-2 overflow-x-auto pb-1" }>

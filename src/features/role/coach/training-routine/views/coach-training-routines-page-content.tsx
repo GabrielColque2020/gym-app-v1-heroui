@@ -98,7 +98,7 @@ export default function CoachTrainingRoutinesPageContent( {
 				month={ month }
 				isRefreshing={ isRefreshing }
 				routineCount={ data.routines.length }
-				onRefresh={ handleRefresh }
+				onRefreshAction={ handleRefresh }
 				routines={ data.routines }
 				studentId={ studentId }
 				studentName={ data.student.name }

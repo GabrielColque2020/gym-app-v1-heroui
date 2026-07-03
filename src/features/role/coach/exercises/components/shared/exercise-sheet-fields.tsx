@@ -1,5 +1,3 @@
-"use client";
-
 import type { BodyPartValue, ExerciseFormValues } from "@/features/exercises/services/exercise-form";
 
 import {

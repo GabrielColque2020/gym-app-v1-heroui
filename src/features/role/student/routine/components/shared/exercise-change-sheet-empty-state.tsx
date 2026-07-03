@@ -1,5 +1,3 @@
-"use client";
-
 import { Alert } from "@heroui/react";
 
 export function ExerciseChangeSheetEmptyState() {

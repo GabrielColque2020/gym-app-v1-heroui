@@ -1,5 +1,3 @@
-"use client";
-
 import { Plus } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
 

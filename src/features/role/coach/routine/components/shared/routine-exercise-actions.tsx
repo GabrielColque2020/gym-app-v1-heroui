@@ -11,14 +11,14 @@ type RoutineExerciseActionsProps = {
 	exercise: DraftRoutineDayExercise[ "exercise" ];
 	exerciseName: string;
 	routineId: string | null;
-	onDelete: () => void;
+	onDeleteAction: () => void;
 };
 
 export function RoutineExerciseActions( {
 	exercise,
 	exerciseName,
 	routineId,
-	onDelete,
+	onDeleteAction,
 }: RoutineExerciseActionsProps ) {
 	const [ isVariantsOpen, setIsVariantsOpen ] = useState( false );
 
@@ -37,7 +37,7 @@ export function RoutineExerciseActions( {
 					<Dropdown.Menu
 						onAction={ ( key ) => {
 							if (key === "variants" && exercise && routineId) setIsVariantsOpen( true );
-							if (key === "delete") onDelete();
+							if (key === "delete") onDeleteAction();
 						} }
 					>
 						<Header>Opciones</Header>
@@ -59,7 +59,7 @@ export function RoutineExerciseActions( {
 					exercise={ exercise }
 					routineId={ routineId }
 					isOpen={ isVariantsOpen }
-					onOpenChange={ setIsVariantsOpen }
+					onOpenChangeAction={ setIsVariantsOpen }
 				/>
 			) : null }
 		</>

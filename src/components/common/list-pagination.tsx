@@ -17,7 +17,7 @@ type ListPaginationProps = {
 	currentPage: number;
 	itemLabel?: string;
 	mode?: "full" | "compact";
-	onPageChange: ( page: number ) => void;
+	onPageChangeAction: ( page: number ) => void;
 	showingFrom: number;
 	showingTo: number;
 	size?: "sm" | "md" | "lg";
@@ -80,7 +80,7 @@ export function ListPagination( {
 	currentPage,
 	itemLabel,
 	mode = "full",
-	onPageChange,
+	onPageChangeAction,
 	showingFrom,
 	showingTo,
 	size = "sm",
@@ -107,7 +107,7 @@ export function ListPagination( {
 						isDisabled={ currentPage === 1 }
 						size={ size }
 						variant={ "ghost" }
-						onPress={ () => onPageChange( Math.max( 1, currentPage - 1 ) ) }
+						onPress={ () => onPageChangeAction( Math.max( 1, currentPage - 1 ) ) }
 					>
 						<Pagination.PreviousIcon/>
 					</Button>
@@ -117,7 +117,7 @@ export function ListPagination( {
 						isDisabled={ currentPage === totalPages }
 						size={ size }
 						variant={ "ghost" }
-						onPress={ () => onPageChange( Math.min( totalPages, currentPage + 1 ) ) }
+						onPress={ () => onPageChangeAction( Math.min( totalPages, currentPage + 1 ) ) }
 					>
 						<Pagination.NextIcon/>
 					</Button>
@@ -133,7 +133,7 @@ export function ListPagination( {
 				<Pagination.Item>
 					<Pagination.Previous
 						isDisabled={ currentPage === 1 }
-						onPress={ () => onPageChange( Math.max( 1, currentPage - 1 ) ) }
+						onPress={ () => onPageChangeAction( Math.max( 1, currentPage - 1 ) ) }
 					>
 						<Pagination.PreviousIcon/>
 						<span>Anterior</span>
@@ -148,7 +148,7 @@ export function ListPagination( {
 						<Pagination.Item key={ pageItem }>
 							<Pagination.Link
 								isActive={ pageItem === currentPage }
-								onPress={ () => onPageChange( pageItem ) }
+								onPress={ () => onPageChangeAction( pageItem ) }
 							>
 								{ pageItem }
 							</Pagination.Link>
@@ -158,7 +158,7 @@ export function ListPagination( {
 				<Pagination.Item>
 					<Pagination.Next
 						isDisabled={ currentPage === totalPages }
-						onPress={ () => onPageChange( Math.min( totalPages, currentPage + 1 ) ) }
+						onPress={ () => onPageChangeAction( Math.min( totalPages, currentPage + 1 ) ) }
 					>
 						<span>Siguiente</span>
 						<Pagination.NextIcon/>

@@ -1,5 +1,3 @@
-"use client";
-
 import { BODY_PART_OPTIONS } from "@/features/exercises/services/exercise-form";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 

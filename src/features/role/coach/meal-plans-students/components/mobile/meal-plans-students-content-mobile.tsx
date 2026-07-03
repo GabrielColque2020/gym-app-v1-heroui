@@ -122,7 +122,7 @@ export function MealPlansStudentsContentMobile( { students }: MealPlansStudentsC
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowLeft, ArrowRight, FloppyDisk } from "@gravity-ui/icons";
 import { Button, ScrollShadow } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react";
@@ -19,7 +17,7 @@ interface MobileRoutineViewProps {
 	routineStatusDescription: string;
 	onSave: () => void;
 	onSetUpdate: ( exerciseId: string, setId: string, updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }> ) => void;
-	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
+	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 }
 
 export default function MobileRoutineView( {
@@ -30,7 +28,7 @@ export default function MobileRoutineView( {
 	routineStatusDescription,
 	onSave,
 	onSetUpdate,
-	onVariantChange,
+	onVariantChangeAction,
 }: MobileRoutineViewProps ) {
 	const { activeExerciseIndex, api, setApi } = useExerciseCarouselState();
 
@@ -50,7 +48,7 @@ export default function MobileRoutineView( {
 						<Carousel.Content>
 							{ exercises.map( ( exercise ) => (
 								<Carousel.Item key={ exercise.id } className={ "px-2" }>
-									<MobileExerciseCard exercise={ exercise } onVariantChange={ onVariantChange }>
+									<MobileExerciseCard exercise={ exercise } onVariantChangeAction={ onVariantChangeAction }>
 										<ScrollShadow className={ "h-75 pr-4" } size={ 80 } visibility={ "none" }>
 											<div className={ "space-y-4" }>
 												{ exercise.sets.map( ( set ) => (

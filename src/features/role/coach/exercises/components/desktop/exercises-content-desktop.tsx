@@ -1,9 +1,8 @@
 "use client";
 
 import type { DataGridColumn } from "@heroui-pro/react";
-import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
-
 import { DataGrid } from "@heroui-pro/react";
+import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import { Chip } from "@heroui/react";
 import { useMemo } from "react";
 
@@ -97,9 +96,9 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 				hasFilters={ hasFilters }
 				layout={ "desktop" }
 				nameFilter={ nameFilter }
-				onBodyPartFilterChange={ updateBodyPartFilter }
-				onClearFilters={ clearFilters }
-				onNameFilterChange={ updateNameFilter }
+				onBodyPartFilterChangeAction={ updateBodyPartFilter }
+				onClearFiltersAction={ clearFilters }
+				onNameFilterChangeAction={ updateNameFilter }
 			/>
 
 			{ filteredExercises.length === 0 ? (
@@ -122,7 +121,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

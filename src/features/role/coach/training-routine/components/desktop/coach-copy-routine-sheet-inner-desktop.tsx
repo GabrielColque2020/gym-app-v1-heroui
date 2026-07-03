@@ -64,11 +64,11 @@ export function CoachCopyRoutineSheetInnerDesktop( {
 
 			<Sheet.Body className={ "flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 pb-24 pt-3 sm:gap-4 sm:px-6 sm:py-5 md:overflow-hidden" }>
 				<CoachCopyRoutineSheetSourceControls
-					handleSourceMonthChange={ handleSourceMonthChange }
-					handleSourceYearChange={ handleSourceYearChange }
+					handleSourceMonthChangeAction={ handleSourceMonthChange }
+					handleSourceYearChangeAction={ handleSourceYearChange }
 					mode={ mode }
-					onModeChange={ setMode }
-					padMonth={ padMonth }
+					onModeChangeAction={ setMode }
+					padMonthAction={ padMonth }
 					sourceMonth={ sourceMonth }
 					sourceYear={ sourceYear }
 					yearOptions={ yearOptions }

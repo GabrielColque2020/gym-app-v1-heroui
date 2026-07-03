@@ -15,10 +15,10 @@ type CoachCreateRoutineSheetContentProps = {
 };
 
 export function CoachCreateRoutineSheet( {
-	month,
-	studentId,
-	year,
-}: CoachCreateRoutineSheetContentProps ) {
+											 month,
+											 studentId,
+											 year,
+										 }: CoachCreateRoutineSheetContentProps ) {
 	const [ isOpen, setIsOpen ] = useState( false );
 	const placement = useResponsiveSheetPlacement();
 	const isMobile = placement === "bottom";
@@ -41,14 +41,14 @@ export function CoachCreateRoutineSheet( {
 				isOpen={ isOpen }
 				placement={ placement }
 				rightContentClassName={ "w-[42rem]" }
-				onOpenChange={ setIsOpen }
+				onOpenChangeAction={ setIsOpen }
 			>
 				<CoachRoutineStructure
 					mode={ "create" }
 					month={ month }
 					studentId={ studentId }
 					year={ year }
-					onSaved={ () => setIsOpen( false ) }
+					onSavedAction={ () => setIsOpen( false ) }
 				/>
 			</FeatureSheetLayout>
 		</>

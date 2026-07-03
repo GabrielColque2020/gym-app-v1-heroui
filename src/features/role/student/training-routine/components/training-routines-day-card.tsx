@@ -1,5 +1,3 @@
-"use client";
-
 import type { StudentTrainingRoutineDay } from "@/features/role/student/training-routine/actions/get-training-routines-by-student";
 
 import Link from "next/link";

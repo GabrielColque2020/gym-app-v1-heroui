@@ -9,19 +9,19 @@ import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-
 type UseSearchAndCreateExerciseSheetStateParams = {
 	addedExerciseIds: Set<string>;
 	suggestedOrder: number;
-	onAddExercise: ( exercise: ExerciseListItem, order: number ) => void;
+	onAddExerciseAction: ( exercise: ExerciseListItem, order: number ) => void;
 	selectedExerciseId: string | null;
 	currentPage: number;
-	syncCreatedExercise: ( exercise: ExerciseListItem ) => void;
+	syncCreatedExerciseAction: ( exercise: ExerciseListItem ) => void;
 };
 
 export function useSearchAndCreateExerciseSheetState( {
 	addedExerciseIds,
 	suggestedOrder,
-	onAddExercise,
+	onAddExerciseAction,
 	selectedExerciseId,
 	currentPage,
-	syncCreatedExercise,
+	syncCreatedExerciseAction,
 }: UseSearchAndCreateExerciseSheetStateParams ) {
 	const [ isPickerOpen, setIsPickerOpen ] = useState( false );
 	const [ isCreateSheetOpen, setIsCreateSheetOpen ] = useState( false );
@@ -49,11 +49,11 @@ export function useSearchAndCreateExerciseSheetState( {
 	}, [] );
 
 	const handleCreatedExercise = useCallback( ( exercise: ExerciseListItem ) => {
-		syncCreatedExercise( exercise );
+		syncCreatedExerciseAction( exercise );
 		setOrderValue( String( suggestedOrder ) );
 		setIsCreateSheetOpen( false );
 		setIsPickerOpen( true );
-	}, [ suggestedOrder, syncCreatedExercise ] );
+	}, [ suggestedOrder, syncCreatedExerciseAction ] );
 
 	const handleOpenCreateSheet = useCallback( () => {
 		setIsPickerOpen( false );
@@ -77,9 +77,9 @@ export function useSearchAndCreateExerciseSheetState( {
 			return;
 		}
 
-		onAddExercise( exercise, parsedOrder );
+		onAddExerciseAction( exercise, parsedOrder );
 		setIsPickerOpen( false );
-	}, [ addedExerciseIds, orderValue, onAddExercise ] );
+	}, [ addedExerciseIds, orderValue, onAddExerciseAction ] );
 
 	return {
 		handleAddClick,

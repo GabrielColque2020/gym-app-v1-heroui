@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowsRotateLeft, FloppyDisk } from "@gravity-ui/icons";
 import { Button, Card, Spinner } from "@heroui/react";
 
@@ -35,7 +33,7 @@ export function RoutinePageLoadedHeader( {
 					canSaveProgress={ canSaveProgress }
 					isRefreshing={ state.isRefreshing }
 					isPending={ saveRoutineSession.isPending }
-					onRefresh={ handleRefresh }
+					onRefreshAction={ handleRefresh }
 					statusDescription={ routineStatusDescription }
 					onSave={ handleOpenSaveSheet }
 				/>

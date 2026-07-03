@@ -1,5 +1,3 @@
-"use client";
-
 import { Checkbox, Chip, Input, Label } from "@heroui/react";
 import { DataGrid, type DataGridColumn } from "@heroui-pro/react";
 

@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@heroui/react";
 
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
@@ -9,7 +7,7 @@ type SearchAndCreateExerciseSheetItemProps = {
 	exercise: ExerciseListItem;
 	alreadyAdded: boolean;
 	isSelected: boolean;
-	onAddExercise: ( exercise: ExerciseListItem ) => void;
+	onAddExerciseAction: ( exercise: ExerciseListItem ) => void;
 	onRegisterAddButtonRef: ( exerciseId: string, element: HTMLButtonElement | null ) => void;
 };
 
@@ -17,7 +15,7 @@ export function SearchAndCreateExerciseSheetItem( {
 	exercise,
 	alreadyAdded,
 	isSelected,
-	onAddExercise,
+	onAddExerciseAction,
 	onRegisterAddButtonRef,
 }: SearchAndCreateExerciseSheetItemProps ) {
 	return (
@@ -42,7 +40,7 @@ export function SearchAndCreateExerciseSheetItem( {
 				className={ "shrink-0 bg-accent text-accent-foreground" }
 				isDisabled={ alreadyAdded }
 				size={ "sm" }
-				onPress={ () => onAddExercise( exercise ) }
+				onPress={ () => onAddExerciseAction( exercise ) }
 			>
 				{ alreadyAdded ? "Agregado" : "Agregar" }
 			</Button>

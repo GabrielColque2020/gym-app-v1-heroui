@@ -14,7 +14,7 @@ import { mapDraftToSaveInput } from "@/features/routine/services/routine-day-edi
 type UseEditRoutineDayLoadedStateParams = {
 	data: RoutineDayDetailBase;
 	isRefreshing: boolean;
-	onRefreshRoutineDay: () => Promise<RoutineDayDetailBase | null>;
+	onRefreshRoutineDayAction: () => Promise<RoutineDayDetailBase | null>;
 	routineDayId: string;
 	studentId: string | null;
 };
@@ -22,7 +22,7 @@ type UseEditRoutineDayLoadedStateParams = {
 export function useEditRoutineDayLoadedState( {
 	data,
 	isRefreshing,
-	onRefreshRoutineDay,
+	onRefreshRoutineDayAction,
 	routineDayId,
 	studentId,
 }: UseEditRoutineDayLoadedStateParams ) {
@@ -65,7 +65,7 @@ export function useEditRoutineDayLoadedState( {
 		setIsRefreshConfirmOpen( false );
 
 		try {
-			const refreshedData = await onRefreshRoutineDay();
+			const refreshedData = await onRefreshRoutineDayAction();
 
 			if (refreshedData) {
 				resetDraft( refreshedData.routines );
@@ -79,7 +79,7 @@ export function useEditRoutineDayLoadedState( {
 				description: refreshError instanceof Error ? refreshError.message : "No se pudo refrescar la rutina.",
 			} );
 		}
-	}, [ onRefreshRoutineDay, resetDraft ] );
+	}, [ onRefreshRoutineDayAction, resetDraft ] );
 
 	const handleRefresh = useCallback( () => {
 		if (isRefreshing) return;

@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowsRotateLeft, FloppyDisk } from "@gravity-ui/icons";
 import { Button, Spinner } from "@heroui/react";
 

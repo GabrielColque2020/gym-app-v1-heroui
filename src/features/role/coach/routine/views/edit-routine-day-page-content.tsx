@@ -68,7 +68,7 @@ export default function EditRoutineDayPageContent( {
 			breadcrumbs={ breadcrumbs }
 			description={ description }
 			isRefreshing={ isRefreshing }
-			onRefreshRoutineDay={ handleRefreshRoutineDay }
+			onRefreshRoutineDayAction={ handleRefreshRoutineDay }
 			routineDayId={ routineDayId }
 			studentId={ studentId }
 			title={ title }

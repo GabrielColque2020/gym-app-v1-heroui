@@ -1,5 +1,3 @@
-"use client";
-
 import { RoutineHeaderActions } from "@/features/role/student/routine/components/shared/routine-header-actions";
 
 interface RoutineHeaderProps {
@@ -8,7 +6,7 @@ interface RoutineHeaderProps {
 	isPending: boolean;
 	isRefreshing: boolean;
 	canSaveProgress?: boolean;
-	onRefresh: () => void;
+	onRefreshAction: () => void;
 	onSave: () => void;
 	statusDescription?: string;
 	statusLabel?: string;
@@ -21,7 +19,7 @@ export default function RoutineHeader( {
 	isPending,
 	isRefreshing,
 	canSaveProgress = true,
-	onRefresh,
+	onRefreshAction,
 	onSave,
 	statusDescription,
 	statusLabel = "Ejercicios cargados",
@@ -37,7 +35,7 @@ export default function RoutineHeader( {
 				canSaveProgress={ canSaveProgress }
 				isPending={ isPending }
 				isRefreshing={ isRefreshing }
-				onRefresh={ onRefresh }
+				onRefresh={ onRefreshAction }
 				onSave={ onSave }
 				showButton={ showButton }
 				statusDescription={ statusDescription }

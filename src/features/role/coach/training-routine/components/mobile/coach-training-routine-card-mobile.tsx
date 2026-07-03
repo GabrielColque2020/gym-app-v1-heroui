@@ -28,7 +28,7 @@ export function CoachTrainingRoutineCardMobile( {
 			<CoachTrainingRoutineCardMobileHeader routineCount={ routines.length }/>
 			<Card.Content className={ "flex flex-col gap-4 pb-4" }>
 				<CoachTrainingRoutineWeekSelectorMobile
-					onSelectedRoutineIdChange={ setSelectedRoutineId }
+					onSelectedRoutineIdChangeAction={ setSelectedRoutineId }
 					routines={ routines }
 					selectedRoutineId={ selectedRoutineId }
 				/>

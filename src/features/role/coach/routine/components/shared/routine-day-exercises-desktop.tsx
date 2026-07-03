@@ -1,8 +1,5 @@
-"use client";
-
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 import type { DataGridColumn } from "@heroui-pro/react";
-
 import { DataGrid } from "@heroui-pro/react";
 
 import { RoutineDayExerciseField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-field";
@@ -11,16 +8,16 @@ import { RoutineExerciseActions } from "@/features/role/coach/routine/components
 import { formatBodyPartValue, getExerciseName } from "@/features/role/coach/routine/components/shared/routine-day-exercise-editor.utils";
 
 type RoutineDayExercisesDesktopProps = {
-	onDelete: ( clientId: string ) => void;
+	onDeleteAction: ( clientId: string ) => void;
 	onUpdateField: ( clientId: string, field: "observation" | "order" | "reps" | "sets", value: number | string ) => void;
 	routines: DraftRoutineDayExercise[];
 };
 
 export function RoutineDayExercisesDesktop( {
-	onDelete,
-	onUpdateField,
-	routines,
-}: RoutineDayExercisesDesktopProps ) {
+												onDeleteAction,
+												onUpdateField,
+												routines,
+											}: RoutineDayExercisesDesktopProps ) {
 	const columns = [
 		{
 			accessorKey: "order",
@@ -96,7 +93,7 @@ export function RoutineDayExercisesDesktop( {
 					exercise={ routine.exercise }
 					exerciseName={ getExerciseName( routine ) }
 					routineId={ routine.id }
-					onDelete={ () => onDelete( routine.clientId ) }
+					onDeleteAction={ () => onDeleteAction( routine.clientId ) }
 				/>
 			),
 			header: "Acciones",

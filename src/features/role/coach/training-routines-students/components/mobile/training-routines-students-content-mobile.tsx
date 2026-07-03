@@ -122,7 +122,7 @@ export function TrainingRoutinesStudentsContentMobile( { students }: TrainingRou
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

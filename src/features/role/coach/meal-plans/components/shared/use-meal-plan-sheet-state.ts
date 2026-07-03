@@ -47,7 +47,7 @@ export function useMealPlanSheetState( props: MealPlanSheetProps ) {
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear plan";
 	const showEditTriggerLabel = props.triggerVariant === "button";
 	const isOpen = props.isOpen ?? internalIsOpen;
-	const setIsOpen = props.onOpenChange ?? setInternalIsOpen;
+	const setIsOpen = props.onOpenChangeAction ?? setInternalIsOpen;
 	const placement = props.placement ?? responsivePlacement;
 
 	const resetFormState = useCallback( () => {

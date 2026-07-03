@@ -1,5 +1,3 @@
-"use client";
-
 import { Card } from "@heroui/react";
 
 import { RoutineDayExerciseField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-field";
@@ -8,16 +6,16 @@ import { formatBodyPartValue, getExerciseName } from "@/features/role/coach/rout
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
 type RoutineDayExerciseMobileCardProps = {
-	onDelete: ( clientId: string ) => void;
+	onDeleteAction: ( clientId: string ) => void;
 	onUpdateField: ( clientId: string, field: "observation" | "order" | "reps" | "sets", value: number | string ) => void;
 	routine: DraftRoutineDayExercise;
 };
 
 export function RoutineDayExerciseMobileCard( {
-	onDelete,
-	onUpdateField,
-	routine,
-}: RoutineDayExerciseMobileCardProps ) {
+												  onDeleteAction,
+												  onUpdateField,
+												  routine,
+											  }: RoutineDayExerciseMobileCardProps ) {
 	const exerciseName = getExerciseName( routine );
 
 	return (
@@ -32,7 +30,7 @@ export function RoutineDayExerciseMobileCard( {
 						exercise={ routine.exercise }
 						exerciseName={ exerciseName }
 						routineId={ routine.id }
-						onDelete={ () => onDelete( routine.clientId ) }
+						onDeleteAction={ () => onDeleteAction( routine.clientId ) }
 					/>
 				</div>
 

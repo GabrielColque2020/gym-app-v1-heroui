@@ -1,5 +1,3 @@
-"use client";
-
 import { Input, Label, TextArea, TextField } from "@heroui/react";
 
 type EditableExerciseFieldProps = {

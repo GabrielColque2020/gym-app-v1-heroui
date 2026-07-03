@@ -1,5 +1,3 @@
-"use client";
-
 import {
 	Input,
 	Label,
@@ -25,9 +23,9 @@ type ExerciseVariantsSheetSearchProps = {
 	isLoading: boolean;
 	isPending: boolean;
 	isSearching: boolean;
-	onAddVariant: ( candidate: ExerciseVariantsTarget ) => void;
-	onBodyPartFilterChange: ( value: BodyPartFilter ) => void;
-	onSearchValueChange: ( value: string ) => void;
+	onAddVariantAction: ( candidate: ExerciseVariantsTarget ) => void;
+	onBodyPartFilterChangeAction: ( value: BodyPartFilter ) => void;
+	onSearchValueChangeAction: ( value: string ) => void;
 	searchValue: string;
 };
 
@@ -38,9 +36,9 @@ export function ExerciseVariantsSheetSearch( {
 	isLoading,
 	isPending,
 	isSearching,
-	onAddVariant,
-	onBodyPartFilterChange,
-	onSearchValueChange,
+	onAddVariantAction,
+	onBodyPartFilterChangeAction,
+	onSearchValueChangeAction,
 	searchValue,
 }: ExerciseVariantsSheetSearchProps ) {
 	return (
@@ -57,7 +55,7 @@ export function ExerciseVariantsSheetSearch( {
 					autoComplete={ "off" }
 					placeholder={ "Ej: press inclinado" }
 					value={ searchValue }
-					onChange={ ( event ) => onSearchValueChange( event.target.value ) }
+					onChange={ ( event ) => onSearchValueChangeAction( event.target.value ) }
 				/>
 			</TextField>
 
@@ -67,7 +65,7 @@ export function ExerciseVariantsSheetSearch( {
 				value={ bodyPartFilter }
 				onChange={ ( value ) => {
 					if (value) {
-						onBodyPartFilterChange( value as BodyPartFilter );
+						onBodyPartFilterChangeAction( value as BodyPartFilter );
 					}
 				} }
 			>
@@ -123,7 +121,7 @@ export function ExerciseVariantsSheetSearch( {
 								key={ candidate.id }
 								candidate={ candidate }
 								isDisabled={ isPending }
-								onAdd={ onAddVariant }
+								onAdd={ onAddVariantAction }
 							/>
 						) ) }
 					</div>

@@ -27,14 +27,14 @@ type ExerciseVariantsSheetContentProps = {
 	exercise: ExerciseVariantsTarget;
 	initialVariants: DraftVariantItem[];
 	routineId: string;
-	onClose: () => void;
+	onCloseAction: () => void;
 };
 
 export function ExerciseVariantsSheetContent( {
 	exercise,
 	initialVariants,
 	routineId,
-	onClose,
+	onCloseAction,
 }: ExerciseVariantsSheetContentProps ) {
 	const [ searchValue, setSearchValue ] = useState( "" );
 	const [ bodyPartFilter, setBodyPartFilter ] = useState<BodyPartFilter>( ALL_BODY_PARTS );
@@ -95,7 +95,7 @@ export function ExerciseVariantsSheetContent( {
 			toast.success( "Variantes guardadas", {
 				description: "La lista quedó actualizada sin recargar la página.",
 			} );
-			onClose();
+			onCloseAction();
 		} catch {
 			toast.danger( "Error al guardar variantes", {
 				description: saveVariants.error?.message ?? "No se pudieron guardar los cambios.",
@@ -166,9 +166,9 @@ export function ExerciseVariantsSheetContent( {
 					isPending={ saveVariants.isPending }
 					isSearching={ isSearching }
 					searchValue={ searchValue }
-					onAddVariant={ handleAddVariant }
-					onBodyPartFilterChange={ setBodyPartFilter }
-					onSearchValueChange={ setSearchValue }
+					onAddVariantAction={ handleAddVariant }
+					onBodyPartFilterChangeAction={ setBodyPartFilter }
+					onSearchValueChangeAction={ setSearchValue }
 				/>
 			</Sheet.Body>
 

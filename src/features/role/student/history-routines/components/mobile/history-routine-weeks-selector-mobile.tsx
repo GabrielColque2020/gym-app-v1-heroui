@@ -9,7 +9,7 @@ import { getHistoryRoutineWeekStatus } from "@/features/history-routines/service
 type HistoryRoutineWeeksSelectorMobileProps = {
 	weeks: HistoryRoutineWeekGroup[];
 	selectedWeeks: number[];
-	onWeekToggle: ( week: number ) => void;
+	onWeekToggleAction: ( week: number ) => void;
 };
 
 function getStatusLabel( status: ReturnType<typeof getHistoryRoutineWeekStatus> ) {
@@ -26,7 +26,7 @@ function getStatusLabel( status: ReturnType<typeof getHistoryRoutineWeekStatus> 
 export function HistoryRoutineWeeksSelectorMobile( {
 	weeks,
 	selectedWeeks,
-	onWeekToggle,
+	onWeekToggleAction,
 }: HistoryRoutineWeeksSelectorMobileProps ) {
 	if (weeks.length === 0) return null;
 
@@ -55,7 +55,7 @@ export function HistoryRoutineWeeksSelectorMobile( {
 								}`
 							}
 							type={ "button" }
-							onClick={ () => onWeekToggle( weekGroup.week ) }
+							onClick={ () => onWeekToggleAction( weekGroup.week ) }
 						>
 							<div className={ "flex items-start justify-between gap-2" }>
 								<div className={ "min-w-0" }>

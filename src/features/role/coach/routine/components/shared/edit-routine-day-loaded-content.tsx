@@ -13,23 +13,23 @@ type EditRoutineDayLoadedContentProps = {
 	backHref: string;
 	breadcrumbs: Array<{ label: string; href?: string }>;
 	isRefreshing: boolean;
-	onRefreshRoutineDay: () => Promise<RoutineDayDetailBase | null>;
+	onRefreshRoutineDayAction: () => Promise<RoutineDayDetailBase | null>;
 	routineDayId: string;
 	studentId: string | null;
 	title: string;
 };
 
 export function EditRoutineDayLoadedContent( {
-	data,
-	backHref,
-	breadcrumbs,
-	description,
-	isRefreshing,
-	onRefreshRoutineDay,
-	routineDayId,
-	studentId,
-	title,
-}: EditRoutineDayLoadedContentProps ) {
+												 data,
+												 backHref,
+												 breadcrumbs,
+												 description,
+												 isRefreshing,
+												 onRefreshRoutineDayAction,
+												 routineDayId,
+												 studentId,
+												 title,
+											 }: EditRoutineDayLoadedContentProps ) {
 	const {
 		addedExerciseIds,
 		draftRoutines,
@@ -49,7 +49,7 @@ export function EditRoutineDayLoadedContent( {
 	} = useEditRoutineDayLoadedState( {
 		data,
 		isRefreshing,
-		onRefreshRoutineDay,
+		onRefreshRoutineDayAction,
 		routineDayId,
 		studentId,
 	} );
@@ -78,16 +78,16 @@ export function EditRoutineDayLoadedContent( {
 				routineSubtitle={ description }
 				routineTitle={ routineName }
 				validationError={ validationError }
-				onAddExercise={ handleAddExercise }
-				onDeleteExercise={ deleteExercise }
-				onRefresh={ handleRefresh }
+				onAddExerciseAction={ handleAddExercise }
+				onDeleteExerciseAction={ deleteExercise }
+				onRefreshAction={ handleRefresh }
 				onUpdateExerciseField={ updateExerciseField }
 			/>
 
 			<EditRoutineDayRefreshModal
 				isOpen={ isRefreshConfirmOpen }
-				onClose={ resetRefreshConfirmOpen }
-				onConfirm={ handleConfirmRefresh }
+				onCloseAction={ resetRefreshConfirmOpen }
+				onConfirmAction={ handleConfirmRefresh }
 			/>
 		</div>
 	);

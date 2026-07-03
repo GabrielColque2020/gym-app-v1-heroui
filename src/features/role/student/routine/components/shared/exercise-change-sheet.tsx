@@ -12,16 +12,16 @@ type ExerciseChangeSheetProps = {
 	hasVariants: boolean;
 	selectedVariant: ExerciseVariantOption | null;
 	variantOptions: ExerciseVariantOption[];
-	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
+	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 };
 
 export default function ExerciseChangeSheet( {
-	exercise,
-	hasVariants,
-	selectedVariant,
-	variantOptions,
-	onVariantChange,
-}: ExerciseChangeSheetProps ) {
+												 exercise,
+												 hasVariants,
+												 selectedVariant,
+												 variantOptions,
+												 onVariantChangeAction,
+											 }: ExerciseChangeSheetProps ) {
 	const {
 		handleOpenVariantSheet,
 		handleResetVariant,
@@ -31,7 +31,7 @@ export default function ExerciseChangeSheet( {
 	} = useExerciseChangeSheetState( {
 		exerciseId: exercise.id,
 		hasVariants,
-		onVariantChange,
+		onVariantChangeAction,
 	} );
 	const placement = useResponsiveSheetPlacement();
 
@@ -40,7 +40,7 @@ export default function ExerciseChangeSheet( {
 	return (
 		<>
 			<ExerciseChangeSheetTrigger hasVariants={ hasVariants } onOpen={ handleOpenVariantSheet }/>
-			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ setIsOpen }>
+			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ setIsOpen }>
 				<ExerciseChangeSheetContent
 					exercise={ exercise }
 					hasVariants={ hasVariants }

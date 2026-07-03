@@ -5,12 +5,12 @@ import { Button } from "@heroui/react";
 
 type CoachEditRoutineSheetTriggerProps = {
 	isMobile: boolean;
-	onPress: () => void;
+	onPressAction: () => void;
 };
 
 export function CoachEditRoutineSheetTrigger( {
 	isMobile,
-	onPress,
+	onPressAction,
 }: CoachEditRoutineSheetTriggerProps ) {
 	return (
 		<Button
@@ -19,7 +19,7 @@ export function CoachEditRoutineSheetTrigger( {
 				? "bg-accent-foreground border border-accent/50 text-accent shadow-sm"
 				: "bg-surface border border-accent/50 text-accent shadow-sm"
 			}
-			onPress={ onPress }
+			onPress={ onPressAction }
 		>
 			<Pencil className={ "size-4" }/>
 			{ !isMobile && "Editar rutina" }

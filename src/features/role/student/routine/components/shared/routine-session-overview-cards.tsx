@@ -1,5 +1,3 @@
-"use client";
-
 import { Bulb, Calendar, ChartLine } from "@gravity-ui/icons";
 
 import { formatDateLabel } from "@/features/role/student/routine/views/routine-page-content.utils";

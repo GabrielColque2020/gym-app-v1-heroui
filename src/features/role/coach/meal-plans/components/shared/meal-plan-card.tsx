@@ -1,9 +1,9 @@
 "use client";
 
 import type { Key } from "@heroui/react";
+import { Button, Card, Dropdown, Header, Label } from "@heroui/react";
 
 import { CircleFill, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
-import { Button, Card, Dropdown, Header, Label } from "@heroui/react";
 import { useState } from "react";
 
 import type { CoachMealPlan } from "@/features/meal-plans/types/meal-plans-types";
@@ -17,9 +17,9 @@ type MealPlanCardProps = {
 };
 
 export function MealPlanCard( {
-	mealPlan,
-	studentId,
-}: MealPlanCardProps ) {
+								  mealPlan,
+								  studentId,
+							  }: MealPlanCardProps ) {
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
 
@@ -89,14 +89,14 @@ export function MealPlanCard( {
 				mealPlan={ mealPlan }
 				mode={ "edit" }
 				studentId={ studentId }
-				onOpenChange={ setIsEditOpen }
+				onOpenChangeAction={ setIsEditOpen }
 			/>
 			<MealPlanDeleteSheet
 				hideTrigger
 				isOpen={ isDeleteOpen }
 				mealPlan={ mealPlan }
 				studentId={ studentId }
-				onOpenChange={ setIsDeleteOpen }
+				onOpenChangeAction={ setIsDeleteOpen }
 			/>
 		</Card>
 	);

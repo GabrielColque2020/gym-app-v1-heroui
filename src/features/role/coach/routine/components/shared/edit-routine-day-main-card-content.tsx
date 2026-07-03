@@ -1,5 +1,3 @@
-"use client";
-
 import { Alert, Card } from "@heroui/react";
 
 import { EditRoutineDayMainCardEmptyState } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card-empty-state";
@@ -15,11 +13,11 @@ type EditRoutineDayMainCardContentProps = {
 };
 
 export function EditRoutineDayMainCardContent( {
-	draftRoutines,
-	validationError,
-	onDeleteExercise,
-	onUpdateExerciseField,
-}: EditRoutineDayMainCardContentProps ) {
+												   draftRoutines,
+												   validationError,
+												   onDeleteExercise,
+												   onUpdateExerciseField,
+											   }: EditRoutineDayMainCardContentProps ) {
 	return (
 		<Card.Content className={ "space-y-4" }>
 			{ validationError ? (
@@ -36,12 +34,12 @@ export function EditRoutineDayMainCardContent( {
 			) : (
 				<>
 					<RoutineDayExercisesDesktop
-						onDelete={ onDeleteExercise }
+						onDeleteAction={ onDeleteExercise }
 						onUpdateField={ onUpdateExerciseField }
 						routines={ draftRoutines }
 					/>
 					<RoutineDayExercisesMobile
-						onDelete={ onDeleteExercise }
+						onDeleteAction={ onDeleteExercise }
 						onUpdateField={ onUpdateExerciseField }
 						routines={ draftRoutines }
 					/>

@@ -66,7 +66,7 @@ export function StudentsContentMobile( { students }: StudentsContentMobileProps 
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

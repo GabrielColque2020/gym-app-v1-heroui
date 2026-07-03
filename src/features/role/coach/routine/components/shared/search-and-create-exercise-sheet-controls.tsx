@@ -1,23 +1,21 @@
-"use client";
-
 import { Input, Label, ListBox, Select, TextField } from "@heroui/react";
 
 import { ALL_BODY_PARTS, BODY_PART_OPTIONS, type BodyPartFilter } from "@/features/exercises/services/exercise-form";
 
 type SearchAndCreateExerciseSheetControlsProps = {
 	bodyPartFilter: BodyPartFilter;
-	onBodyPartFilterChange: ( value: BodyPartFilter ) => void;
+	onBodyPartFilterChangeAction: ( value: BodyPartFilter ) => void;
 	onOrderChange: ( value: string ) => void;
-	onSearchValueChange: ( value: string ) => void;
+	onSearchValueChangeAction: ( value: string ) => void;
 	orderValue: string;
 	searchValue: string;
 };
 
 export function SearchAndCreateExerciseSheetControls( {
 	bodyPartFilter,
-	onBodyPartFilterChange,
+	onBodyPartFilterChangeAction,
 	onOrderChange,
-	onSearchValueChange,
+	onSearchValueChangeAction,
 	orderValue,
 	searchValue,
 }: SearchAndCreateExerciseSheetControlsProps ) {
@@ -30,7 +28,7 @@ export function SearchAndCreateExerciseSheetControls( {
 					autoComplete={ "off" }
 					placeholder={ "Buscar ejercicio..." }
 					value={ searchValue }
-					onChange={ ( event ) => onSearchValueChange( event.target.value ) }
+				onChange={ ( event ) => onSearchValueChangeAction( event.target.value ) }
 				/>
 			</TextField>
 
@@ -38,7 +36,7 @@ export function SearchAndCreateExerciseSheetControls( {
 				name={ "body-part-filter" }
 				placeholder={ "Todos los grupos musculares" }
 				value={ bodyPartFilter }
-				onChange={ ( value ) => onBodyPartFilterChange( String( value ?? ALL_BODY_PARTS ) as BodyPartFilter ) }
+				onChange={ ( value ) => onBodyPartFilterChangeAction( String( value ?? ALL_BODY_PARTS ) as BodyPartFilter ) }
 			>
 				<Label>Grupo muscular</Label>
 				<Select.Trigger aria-label={ "Filtrar por grupo muscular" }>

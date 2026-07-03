@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, Spinner } from "@heroui/react";
 
 export function CoachDashboardLoadingState() {

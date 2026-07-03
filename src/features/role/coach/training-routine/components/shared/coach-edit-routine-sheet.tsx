@@ -15,36 +15,36 @@ type CoachEditRoutineSheetContentProps = {
 	year: number;
 	hideTrigger?: boolean;
 	isOpen?: boolean;
-	onOpenChange?: ( isOpen: boolean ) => void;
+	onOpenChangeAction?: ( isOpen: boolean ) => void;
 };
 
 export function CoachEditRoutineSheet( {
-	month,
-	routines,
-	studentId,
-	year,
-	hideTrigger = false,
-	isOpen,
-	onOpenChange,
-}: CoachEditRoutineSheetContentProps ) {
+										   month,
+										   routines,
+										   studentId,
+										   year,
+										   hideTrigger = false,
+										   isOpen,
+										   onOpenChangeAction,
+									   }: CoachEditRoutineSheetContentProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const placement = useResponsiveSheetPlacement();
 	const isMobile = placement === "bottom";
 	const open = isOpen ?? internalIsOpen;
-	const setOpen = onOpenChange ?? setInternalIsOpen;
+	const setOpen = onOpenChangeAction ?? setInternalIsOpen;
 
 	return (
 		<>
 			{ hideTrigger ? null : (
 				<CoachEditRoutineSheetTrigger
 					isMobile={ isMobile }
-					onPress={ () => setOpen( true ) }
+					onPressAction={ () => setOpen( true ) }
 				/>
 			) }
 			<FeatureSheetLayout
 				isOpen={ open }
 				placement={ placement }
-				onOpenChange={ setOpen }
+				onOpenChangeAction={ setOpen }
 				rightContentClassName={ "w-[42rem]" }
 			>
 				<CoachRoutineStructure
@@ -53,7 +53,7 @@ export function CoachEditRoutineSheet( {
 					routines={ routines }
 					studentId={ studentId }
 					year={ year }
-					onSaved={ () => setOpen( false ) }
+					onSavedAction={ () => setOpen( false ) }
 				/>
 			</FeatureSheetLayout>
 		</>

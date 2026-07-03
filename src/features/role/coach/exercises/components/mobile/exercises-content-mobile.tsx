@@ -44,9 +44,9 @@ export function ExercisesContentMobile( { exercises }: ExercisesTableMobileProps
 				hasFilters={ hasFilters }
 				layout={ "mobile" }
 				nameFilter={ nameFilter }
-				onBodyPartFilterChange={ updateBodyPartFilter }
-				onClearFilters={ clearFilters }
-				onNameFilterChange={ updateNameFilter }
+				onBodyPartFilterChangeAction={ updateBodyPartFilter }
+				onClearFiltersAction={ clearFilters }
+				onNameFilterChangeAction={ updateNameFilter }
 			/>
 
 			{ filteredExercises.length === 0 ? (
@@ -66,7 +66,7 @@ export function ExercisesContentMobile( { exercises }: ExercisesTableMobileProps
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

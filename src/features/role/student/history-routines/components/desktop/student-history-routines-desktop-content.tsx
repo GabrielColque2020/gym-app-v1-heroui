@@ -12,7 +12,7 @@ type StudentHistoryRoutinesDesktopContentProps = {
 	selectedWeekGroups: HistoryRoutineWeekGroup[];
 	selectedWeeks: number[];
 	weekGroups: HistoryRoutineWeekGroup[];
-	onWeekToggle: ( week: number ) => void;
+	onWeekToggleAction: ( week: number ) => void;
 };
 
 export function StudentHistoryRoutinesDesktopContent( {
@@ -21,7 +21,7 @@ export function StudentHistoryRoutinesDesktopContent( {
 	selectedWeekGroups,
 	selectedWeeks,
 	weekGroups,
-	onWeekToggle,
+	onWeekToggleAction,
 }: StudentHistoryRoutinesDesktopContentProps ) {
 	return (
 		<div className={ "flex flex-col gap-4" }>
@@ -76,7 +76,7 @@ export function StudentHistoryRoutinesDesktopContent( {
 					<HistoryRoutineWeeksSelector
 						weeks={ weekGroups }
 						selectedWeeks={ selectedWeeks }
-						onWeekToggle={ onWeekToggle }
+						onWeekToggleAction={ onWeekToggleAction }
 					/>
 				</Card.Content>
 			</Card>

@@ -18,13 +18,13 @@ import { useSearchAndCreateExerciseSheetState } from "@/features/role/coach/rout
 
 type AddExercisePickerSheetContentProps = {
 	addedExerciseIds: Set<string>;
-	onAddExercise: ( exercise: ExerciseListItem, order: number ) => void;
+	onAddExerciseAction: ( exercise: ExerciseListItem, order: number ) => void;
 	suggestedOrder: number;
 };
 
 export function SearchAndCreateExerciseSheet( {
 	addedExerciseIds,
-	onAddExercise,
+	onAddExerciseAction,
 	suggestedOrder,
 }: AddExercisePickerSheetContentProps ) {
 	const placement = useResponsiveSheetPlacement();
@@ -55,10 +55,10 @@ export function SearchAndCreateExerciseSheet( {
 	} = useSearchAndCreateExerciseSheetState( {
 		addedExerciseIds,
 		currentPage: pagination.currentPage,
-		onAddExercise,
+		onAddExerciseAction,
 		selectedExerciseId,
 		suggestedOrder,
-		syncCreatedExercise,
+		syncCreatedExerciseAction: syncCreatedExercise,
 	} );
 	const isSearching = searchValue !== debouncedSearchValue;
 
@@ -68,7 +68,7 @@ export function SearchAndCreateExerciseSheet( {
 				isOpen={ isPickerOpen }
 				placement={ placement }
 				trigger={ <AddExercisePickerButton onPress={ () => setOrderValue( String( suggestedOrder ) ) }/> }
-				onOpenChange={ setIsPickerOpen }
+				onOpenChangeAction={ setIsPickerOpen }
 				rightContentClassName={ "w-[32rem]" }
 			>
 				<SearchAndCreateExerciseSheetHeader/>
@@ -84,11 +84,11 @@ export function SearchAndCreateExerciseSheet( {
 							isLoading: exercisesQuery.isLoading,
 						} }
 						isSearching={ isSearching }
-						onAddExercise={ handleAddClick }
-						onBodyPartFilterChange={ updateBodyPartFilter }
+						onAddExerciseAction={ handleAddClick }
+						onBodyPartFilterChangeAction={ updateBodyPartFilter }
 						onOrderChange={ setOrderValue }
 						onRegisterAddButtonRef={ registerAddButtonRef }
-						onSearchValueChange={ updateSearchValue }
+						onSearchValueChangeAction={ updateSearchValue }
 						orderValue={ orderValue }
 						searchValue={ searchValue }
 						selectedExerciseId={ selectedExerciseId }
@@ -100,7 +100,7 @@ export function SearchAndCreateExerciseSheet( {
 								currentPage={ pagination.currentPage }
 								itemLabel={ "ejercicios" }
 								mode={ "compact" }
-								onPageChange={ changePage }
+								onPageChangeAction={ changePage }
 								showingFrom={ pagination.showingFrom }
 								showingTo={ pagination.showingTo }
 								totalItems={ pagination.totalItems }
@@ -119,7 +119,7 @@ export function SearchAndCreateExerciseSheet( {
 				hideTrigger
 				isOpen={ isCreateSheetOpen }
 				mode={ "create" }
-				onOpenChange={ setIsCreateSheetOpen }
+				onOpenChangeAction={ setIsCreateSheetOpen }
 				onSuccess={ handleCreatedExercise }
 				placement={ placement }
 			/>

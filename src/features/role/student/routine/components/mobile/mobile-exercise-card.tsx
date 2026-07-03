@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Card } from "@heroui/react";
 
@@ -12,10 +10,10 @@ import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 interface ExerciseCardProps {
 	exercise: Exercise;
 	children: React.ReactNode;
-	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
+	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 }
 
-export default function MobileExerciseCard( { exercise, children, onVariantChange }: ExerciseCardProps ) {
+export default function MobileExerciseCard( { exercise, children, onVariantChangeAction }: ExerciseCardProps ) {
 	const {
 		completedSetsSummary,
 		displayedExerciseName,
@@ -41,7 +39,7 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 								hasVariants={ hasVariants }
 								selectedVariant={ selectedVariant }
 								variantOptions={ variantOptions }
-								onVariantChange={ onVariantChange }
+								onVariantChangeAction={ onVariantChangeAction }
 							/>
 						</div>
 						<div className={ "flex flex-wrap items-center gap-2" }>

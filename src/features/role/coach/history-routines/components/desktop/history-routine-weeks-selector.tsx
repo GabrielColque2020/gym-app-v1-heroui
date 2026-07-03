@@ -9,13 +9,13 @@ import { getWeekExerciseCount } from "@/features/role/coach/history-routines/com
 type HistoryRoutineWeeksSelectorProps = {
 	weeks: HistoryRoutineWeekGroup[];
 	selectedWeeks: number[];
-	onWeekToggle: ( week: number ) => void;
+	onWeekToggleAction: ( week: number ) => void;
 };
 
 export function HistoryRoutineWeeksSelector( {
 	weeks,
 	selectedWeeks,
-	onWeekToggle,
+	onWeekToggleAction,
 }: HistoryRoutineWeeksSelectorProps ) {
 	if (weeks.length === 0) return null;
 
@@ -45,7 +45,7 @@ export function HistoryRoutineWeeksSelector( {
 								}`
 							}
 							type={ "button" }
-							onClick={ () => onWeekToggle( weekGroup.week ) }
+							onClick={ () => onWeekToggleAction( weekGroup.week ) }
 						>
 							<span
 								className={

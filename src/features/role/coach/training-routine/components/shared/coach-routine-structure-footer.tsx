@@ -7,23 +7,23 @@ type CoachRoutineStructureFooterProps = {
 	disabled: boolean;
 	isPending: boolean;
 	mode: "create" | "edit";
-	onCancel: () => void;
-	onSave: () => void;
+	onCancelAction: () => void;
+	onSaveAction: () => void;
 };
 
 export function CoachRoutineStructureFooter( {
 	disabled,
 	isPending,
 	mode,
-	onCancel,
-	onSave,
+	onCancelAction,
+	onSaveAction,
 }: CoachRoutineStructureFooterProps ) {
 	return (
 		<div className={ "border-default-100 bg-background flex shrink-0 justify-end gap-2 border-t px-6 py-4" }>
-			<Button isDisabled={ isPending } variant={ "secondary" } onPress={ onCancel }>
+			<Button isDisabled={ isPending } variant={ "secondary" } onPress={ onCancelAction }>
 				Cancelar
 			</Button>
-			<Button isDisabled={ disabled } isPending={ isPending } onPress={ onSave }>
+			<Button isDisabled={ disabled } isPending={ isPending } onPress={ onSaveAction }>
 				{ ( { isPending: buttonPending } ) => (
 					<>
 						{ buttonPending ? <Spinner color={ "current" } size={ "sm" }/> : <CircleCheck className={ "size-4" }/> }

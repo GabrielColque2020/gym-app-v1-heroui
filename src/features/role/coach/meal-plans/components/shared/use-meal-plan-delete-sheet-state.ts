@@ -9,16 +9,16 @@ import type { MealPlanDeleteSheetProps } from "@/features/role/coach/meal-plans/
 export function useMealPlanDeleteSheetState( {
 	isOpen: externalIsOpen,
 	mealPlan,
-	onOpenChange,
+	onOpenChangeAction,
 	triggerVariant,
 	studentId,
-}: Pick<MealPlanDeleteSheetProps, "isOpen" | "mealPlan" | "onOpenChange" | "studentId" | "triggerVariant"> ) {
+}: Pick<MealPlanDeleteSheetProps, "isOpen" | "mealPlan" | "onOpenChangeAction" | "studentId" | "triggerVariant"> ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const deleteMealPlan = useDeleteMealPlan();
 	const wasOpenRef = useRef( false );
 
 	const isOpen = externalIsOpen ?? internalIsOpen;
-	const setIsOpen = onOpenChange ?? setInternalIsOpen;
+	const setIsOpen = onOpenChangeAction ?? setInternalIsOpen;
 	const showTriggerLabel = triggerVariant === "button";
 
 	const resetState = useCallback( () => {

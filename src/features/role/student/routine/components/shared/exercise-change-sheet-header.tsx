@@ -1,5 +1,3 @@
-"use client";
-
 import { CircleLink } from "@gravity-ui/icons";
 import { Description } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";

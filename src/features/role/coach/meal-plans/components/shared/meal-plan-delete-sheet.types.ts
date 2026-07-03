@@ -4,7 +4,7 @@ export type MealPlanDeleteSheetProps = {
 	hideTrigger?: boolean;
 	isOpen?: boolean;
 	mealPlan: CoachMealPlan;
-	onOpenChange?: ( isOpen: boolean ) => void;
+	onOpenChangeAction?: ( isOpen: boolean ) => void;
 	studentId: string;
 	triggerClassName?: string;
 	triggerVariant?: "button" | "icon";

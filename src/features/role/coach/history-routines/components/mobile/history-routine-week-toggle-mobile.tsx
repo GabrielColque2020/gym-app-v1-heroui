@@ -10,7 +10,7 @@ import { getHistoryRoutineWeekStatus } from "@/features/role/coach/history-routi
 type HistoryRoutineWeekToggleMobileProps = {
 	isSelected: boolean;
 	weekGroup: HistoryRoutineWeekGroup;
-	onToggle: ( week: number ) => void;
+	onToggleAction: ( week: number ) => void;
 };
 
 function getStatusLabel( status: ReturnType<typeof getHistoryRoutineWeekStatus> ) {
@@ -27,7 +27,7 @@ function getStatusLabel( status: ReturnType<typeof getHistoryRoutineWeekStatus> 
 export function HistoryRoutineWeekToggleMobile( {
 													isSelected,
 													weekGroup,
-													onToggle,
+	onToggleAction,
 												}: HistoryRoutineWeekToggleMobileProps ) {
 	const status = getHistoryRoutineWeekStatus( weekGroup );
 
@@ -41,7 +41,7 @@ export function HistoryRoutineWeekToggleMobile( {
 				}`
 			}
 			type={ "button" }
-			onClick={ () => onToggle( weekGroup.week ) }
+			onClick={ () => onToggleAction( weekGroup.week ) }
 		>
 			<div className={ "flex items-start justify-between gap-2" }>
 				<div className={ "min-w-0" }>

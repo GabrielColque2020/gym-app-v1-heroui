@@ -17,8 +17,8 @@ type UseRoutinePageActionsOptions = {
 	isDirty: boolean;
 	isLoading: boolean;
 	isRefreshing: boolean;
-	refetch: () => Promise<unknown>;
-	replaceDraft: ( nextSession: StudentRoutineSession ) => void;
+	refetchAction: () => Promise<unknown>;
+	replaceDraftAction: ( nextSession: StudentRoutineSession ) => void;
 	routineDayId: string | null;
 	saveRoutineSession: ReturnType<typeof useSaveStudentRoutineSession>;
 	studentId: string | null;
@@ -31,8 +31,8 @@ export function useRoutinePageActions( {
 	isDirty,
 	isLoading,
 	isRefreshing,
-	refetch,
-	replaceDraft,
+	refetchAction,
+	replaceDraftAction,
 	routineDayId,
 	saveRoutineSession,
 	studentId,
@@ -51,13 +51,13 @@ export function useRoutinePageActions( {
 			return;
 		}
 
-		void refetch();
-	}, [ isDirty, isLoading, isRefreshing, refetch ] );
+		void refetchAction();
+	}, [ isDirty, isLoading, isRefreshing, refetchAction ] );
 
 	const handleConfirmRefresh = useCallback( () => {
 		setIsRefreshConfirmOpen( false );
-		void refetch();
-	}, [ refetch ] );
+		void refetchAction();
+	}, [ refetchAction ] );
 
 	const handleSetUpdate = useCallback( (
 		exerciseId: string,
@@ -66,8 +66,8 @@ export function useRoutinePageActions( {
 	) => {
 		if (!routineDayId || !activeSession) return;
 
-		replaceDraft( updateSessionSet( activeSession, exerciseId, setId, updates ) );
-	}, [ activeSession, replaceDraft, routineDayId ] );
+		replaceDraftAction( updateSessionSet( activeSession, exerciseId, setId, updates ) );
+	}, [ activeSession, replaceDraftAction, routineDayId ] );
 
 	const handleVariantChange = useCallback( (
 		exerciseId: string,
@@ -75,7 +75,7 @@ export function useRoutinePageActions( {
 	) => {
 		if (!activeSession) return;
 
-		replaceDraft( {
+		replaceDraftAction( {
 			...activeSession,
 			exercises: activeSession.exercises.map( ( exercise ) => (
 				exercise.id === exerciseId
@@ -87,7 +87,7 @@ export function useRoutinePageActions( {
 					: exercise
 			) ),
 		} );
-	}, [ activeSession, replaceDraft ] );
+	}, [ activeSession, replaceDraftAction ] );
 
 	const handleOpenSaveSheet = useCallback( () => {
 		if (!canSaveProgress) {

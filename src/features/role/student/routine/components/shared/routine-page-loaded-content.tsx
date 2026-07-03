@@ -1,5 +1,3 @@
-"use client";
-
 import { PageBreadcrumbs } from "@/components/common";
 import DesktopRoutineView from "@/features/role/student/routine/components/desktop/desktop-routine-view";
 import MobileRoutineView from "@/features/role/student/routine/components/mobile/mobile-routine-view";
@@ -57,13 +55,13 @@ export function RoutinePageLoadedContent( {
 				latestProgressDate={ latestProgressDate }
 				onSave={ handleOpenSaveSheet }
 				onSetUpdate={ handleSetUpdate }
-				onVariantChange={ handleVariantChange }
+				onVariantChangeAction={ handleVariantChange }
 				routineStatusDescription={ state.routineStatusDescription }
 			/>
 			<DesktopRoutineView
 				exercises={ activeSession.exercises }
 				latestProgressDate={ latestProgressDate }
-				onVariantChange={ handleVariantChange }
+				onVariantChangeAction={ handleVariantChange }
 				onSetUpdate={ handleSetUpdate }
 				routineStatusDescription={ state.routineStatusDescription }
 			/>
@@ -72,13 +70,13 @@ export function RoutinePageLoadedContent( {
 				isPending={ saveRoutineSession.isPending }
 				validationError={ validationError }
 				summaryItems={ saveSummary }
-				onConfirm={ handleConfirmSave }
-				onOpenChange={ setIsSaveSheetOpen }
+				onConfirmAction={ handleConfirmSave }
+				onOpenChangeAction={ setIsSaveSheetOpen }
 			/>
 			<RoutineRefreshConfirmModal
 				isOpen={ isRefreshConfirmOpen }
-				onClose={ () => setIsRefreshConfirmOpen( false ) }
-				onConfirm={ handleConfirmRefresh }
+				onCloseAction={ () => setIsRefreshConfirmOpen( false ) }
+				onConfirmAction={ handleConfirmRefresh }
 			/>
 		</div>
 	);

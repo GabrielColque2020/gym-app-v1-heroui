@@ -1,5 +1,3 @@
-"use client";
-
 import type { DataGridColumn } from "@heroui-pro/react";
 import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary";
 

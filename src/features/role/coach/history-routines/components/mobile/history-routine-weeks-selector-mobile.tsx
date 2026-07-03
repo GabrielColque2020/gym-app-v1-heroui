@@ -8,13 +8,13 @@ import { HistoryRoutineWeekToggleMobile } from "@/features/role/coach/history-ro
 type HistoryRoutineWeeksSelectorMobileProps = {
 	weeks: HistoryRoutineWeekGroup[];
 	selectedWeeks: number[];
-	onWeekToggle: ( week: number ) => void;
+	onWeekToggleAction: ( week: number ) => void;
 };
 
 export function HistoryRoutineWeeksSelectorMobile( {
 	weeks,
 	selectedWeeks,
-	onWeekToggle,
+	onWeekToggleAction,
 }: HistoryRoutineWeeksSelectorMobileProps ) {
 	if (weeks.length === 0) return null;
 
@@ -36,7 +36,7 @@ export function HistoryRoutineWeeksSelectorMobile( {
 							key={ weekGroup.week }
 							isSelected={ isSelected }
 							weekGroup={ weekGroup }
-							onToggle={ onWeekToggle }
+							onToggleAction={ onWeekToggleAction }
 						/>
 					);
 				} ) }

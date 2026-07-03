@@ -13,7 +13,7 @@ type CoachHistoryRoutinesMobileContentProps = {
 	selectedWeekGroups: HistoryRoutineWeekGroup[];
 	selectedWeeks: number[];
 	weekGroups: HistoryRoutineWeekGroup[];
-	onWeekToggle: ( week: number ) => void;
+	onWeekToggleAction: ( week: number ) => void;
 };
 
 export function CoachHistoryRoutinesMobileContent( {
@@ -22,7 +22,7 @@ export function CoachHistoryRoutinesMobileContent( {
 	selectedWeekGroups,
 	selectedWeeks,
 	weekGroups,
-	onWeekToggle,
+	onWeekToggleAction,
 }: CoachHistoryRoutinesMobileContentProps ) {
 	return (
 		<div className={ "flex flex-col gap-4" }>
@@ -46,7 +46,7 @@ export function CoachHistoryRoutinesMobileContent( {
 					<HistoryRoutineWeeksSelectorMobile
 						weeks={ weekGroups }
 						selectedWeeks={ selectedWeeks }
-						onWeekToggle={ onWeekToggle }
+						onWeekToggleAction={ onWeekToggleAction }
 					/>
 				</Card.Content>
 			</Card>

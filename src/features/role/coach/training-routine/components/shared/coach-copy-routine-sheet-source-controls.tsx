@@ -10,11 +10,11 @@ type Option = {
 };
 
 type CoachCopyRoutineSheetSourceControlsProps = {
-	handleSourceMonthChange: ( value: string ) => void;
-	handleSourceYearChange: ( value: string ) => void;
+	handleSourceMonthChangeAction: ( value: string ) => void;
+	handleSourceYearChangeAction: ( value: string ) => void;
 	mode: "month" | "weeks";
-	onModeChange: ( mode: "month" | "weeks" ) => void;
-	padMonth: ( month: string ) => string;
+	onModeChangeAction: ( mode: "month" | "weeks" ) => void;
+	padMonthAction: ( month: string ) => string;
 	sourceMonth: string;
 	sourceYear: string;
 	yearOptions: Option[];
@@ -22,11 +22,11 @@ type CoachCopyRoutineSheetSourceControlsProps = {
 };
 
 export function CoachCopyRoutineSheetSourceControls( {
-	handleSourceMonthChange,
-	handleSourceYearChange,
+	handleSourceMonthChangeAction,
+	handleSourceYearChangeAction,
 	mode,
-	onModeChange,
-	padMonth,
+	onModeChangeAction,
+	padMonthAction,
 	sourceMonth,
 	sourceYear,
 	yearOptions,
@@ -41,7 +41,7 @@ export function CoachCopyRoutineSheetSourceControls( {
 					className={ "w-full" }
 					selectedKey={ mode }
 					size={ "sm" }
-					onSelectionChange={ ( key ) => onModeChange( String( key ) === "weeks" ? "weeks" : "month" ) }
+					onSelectionChange={ ( key ) => onModeChangeAction( String( key ) === "weeks" ? "weeks" : "month" ) }
 				>
 					<Segment.Item className={ "flex-1" } id={ "month" }>
 						{ ( { isSelected } ) => (
@@ -63,7 +63,7 @@ export function CoachCopyRoutineSheetSourceControls( {
 			</div>
 
 			<div className={ "grid grid-cols-2 gap-3" }>
-				<Select value={ sourceYear } variant={ "secondary" } onChange={ ( key ) => handleSourceYearChange( key as string ) }>
+				<Select value={ sourceYear } variant={ "secondary" } onChange={ ( key ) => handleSourceYearChangeAction( key as string ) }>
 					<Label>Anio origen</Label>
 					<Select.Trigger className={ "h-10 rounded-xl shadow-sm" }>
 						<Select.Value/>
@@ -81,7 +81,7 @@ export function CoachCopyRoutineSheetSourceControls( {
 					</Select.Popover>
 				</Select>
 
-				<Select value={ padMonth( sourceMonth ) } variant={ "secondary" } onChange={ ( key ) => handleSourceMonthChange( key as string ) }>
+				<Select value={ padMonthAction( sourceMonth ) } variant={ "secondary" } onChange={ ( key ) => handleSourceMonthChangeAction( key as string ) }>
 					<Label>Mes origen</Label>
 					<Select.Trigger className={ "h-10 rounded-xl shadow-sm" }>
 						<Select.Value/>

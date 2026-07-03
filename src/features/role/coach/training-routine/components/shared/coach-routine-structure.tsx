@@ -27,7 +27,7 @@ import { CoachRoutineStructureWeekSelector } from "@/features/role/coach/trainin
 type CoachRoutineStructureProps = {
 	mode: "create" | "edit";
 	month: number;
-	onSaved: () => void;
+	onSavedAction: () => void;
 	routines?: CoachTrainingRoutine[];
 	studentId: string;
 	year: number;
@@ -36,7 +36,7 @@ type CoachRoutineStructureProps = {
 export default function CoachRoutineStructure( {
 	mode,
 	month,
-	onSaved,
+	onSavedAction,
 	routines = [],
 	studentId,
 	year,
@@ -98,7 +98,7 @@ export default function CoachRoutineStructure( {
 				} );
 			}
 
-			onSaved();
+			onSavedAction();
 		} catch {
 			toast.danger( mode === "create" ? "Error al crear rutina" : "Error al editar rutina", {
 				description: mode === "create"
@@ -121,7 +121,7 @@ export default function CoachRoutineStructure( {
 				<ScrollShadow className={ "min-h-0 flex-1" }>
 					<div className={ "grid gap-5 pb-2" }>
 						<CoachRoutineStructureWeekSelector
-							onChange={ handleWeeksChange }
+							onChangeAction={ handleWeeksChange }
 							selectedWeeks={ sortedSelectedWeeks }
 							weekOptions={ WEEK_OPTIONS }
 						/>
@@ -130,7 +130,7 @@ export default function CoachRoutineStructure( {
 
 						<CoachRoutineStructureDaySelector
 							dayOptions={ DAY_OPTIONS }
-							onChange={ handleDaysChange }
+							onChangeAction={ handleDaysChange }
 							selectedDays={ sortedSelectedDays }
 						/>
 
@@ -142,13 +142,13 @@ export default function CoachRoutineStructure( {
 				</ScrollShadow>
 			</div>
 
-			<CoachRoutineStructureFooter
-				disabled={ isSubmitDisabled }
-				isPending={ activeMutation.isPending }
-				mode={ mode }
-				onCancel={ onSaved }
-				onSave={ handleSave }
-			/>
+				<CoachRoutineStructureFooter
+					disabled={ isSubmitDisabled }
+					isPending={ activeMutation.isPending }
+					mode={ mode }
+					onCancelAction={ onSavedAction }
+					onSaveAction={ handleSave }
+				/>
 		</>
 	);
 }

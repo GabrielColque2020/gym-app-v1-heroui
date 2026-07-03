@@ -1,5 +1,3 @@
-"use client";
-
 import type { Key } from "react-aria-components/Breadcrumbs";
 import type { StudentTrainingRoutine } from "@/features/role/student/training-routine/actions/get-training-routines-by-student";
 

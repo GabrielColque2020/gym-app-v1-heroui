@@ -13,9 +13,9 @@ type ExerciseFiltersProps = {
 	hasFilters: boolean;
 	layout: "desktop" | "mobile";
 	nameFilter: string;
-	onBodyPartFilterChange: ( value: BodyPartFilter ) => void;
-	onClearFilters: () => void;
-	onNameFilterChange: ( value: string ) => void;
+	onBodyPartFilterChangeAction: ( value: BodyPartFilter ) => void;
+	onClearFiltersAction: () => void;
+	onNameFilterChangeAction: ( value: string ) => void;
 };
 
 export function ExerciseFilters( {
@@ -23,9 +23,9 @@ export function ExerciseFilters( {
 									 hasFilters,
 									 layout,
 									 nameFilter,
-									 onBodyPartFilterChange,
-									 onClearFilters,
-									 onNameFilterChange,
+	onBodyPartFilterChangeAction,
+	onClearFiltersAction,
+	onNameFilterChangeAction,
 								 }: ExerciseFiltersProps ) {
 	const isMobile = layout === "mobile";
 	const fieldNamePrefix = isMobile ? "mobile-" : "";
@@ -42,7 +42,7 @@ export function ExerciseFilters( {
 				className={ isMobile ? "min-w-0 gap-2" : undefined }
 				name={ `${ fieldNamePrefix }exercise-name-filter` }
 				value={ nameFilter }
-				onChange={ onNameFilterChange }
+				onChange={ onNameFilterChangeAction }
 			>
 				<Label>Nombre</Label>
 				<SearchField.Group className={ isMobile ? "w-full min-w-0" : undefined }>
@@ -59,7 +59,7 @@ export function ExerciseFilters( {
 				className={ isMobile ? "min-w-0 gap-2" : undefined }
 				name={ `${ fieldNamePrefix }exercise-body-part-filter` }
 				value={ bodyPartFilter }
-				onChange={ ( key ) => onBodyPartFilterChange( ( key ?? ALL_BODY_PARTS ) as BodyPartFilter ) }
+				onChange={ ( key ) => onBodyPartFilterChangeAction( ( key ?? ALL_BODY_PARTS ) as BodyPartFilter ) }
 			>
 				<Label>Tipo de ejercicio</Label>
 				<Select.Trigger className={ isMobile ? "w-full min-w-0" : undefined }>
@@ -84,12 +84,12 @@ export function ExerciseFilters( {
 
 			{ isMobile ? (
 				<div className={ "grid gap-2" }>
-					<Button isDisabled={ !hasFilters } size={ "sm" } variant={ "secondary" } onPress={ onClearFilters }>
+					<Button isDisabled={ !hasFilters } size={ "sm" } variant={ "secondary" } onPress={ onClearFiltersAction }>
 						Limpiar
 					</Button>
 				</div>
 			) : (
-				<Button isDisabled={ !hasFilters } size={ "sm" } variant={ "secondary" } onPress={ onClearFilters }>
+				<Button isDisabled={ !hasFilters } size={ "sm" } variant={ "secondary" } onPress={ onClearFiltersAction }>
 					Limpiar
 				</Button>
 			) }

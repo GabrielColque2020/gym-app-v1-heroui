@@ -9,7 +9,7 @@ type FeatureSheetPlacement = "bottom" | "right";
 type FeatureSheetLayoutProps = {
 	children: ReactNode;
 	isOpen?: boolean;
-	onOpenChange?: ( isOpen: boolean ) => void;
+	onOpenChangeAction?: ( isOpen: boolean ) => void;
 	placement: FeatureSheetPlacement;
 	rightContentClassName?: string;
 	trigger?: ReactElement<{ onPress?: () => void }>;
@@ -17,15 +17,15 @@ type FeatureSheetLayoutProps = {
 
 // Normaliza la estructura externa de los sheets usados dentro de features.
 export function FeatureSheetLayout( {
-										children,
-										isOpen,
-										onOpenChange,
+	children,
+	isOpen,
+	onOpenChangeAction,
 										placement,
 										rightContentClassName,
 										trigger,
 									}: FeatureSheetLayoutProps ) {
 	return (
-		<Sheet isDetached={ placement === "right" } isOpen={ isOpen } placement={ placement } onOpenChange={ onOpenChange }>
+		<Sheet isDetached={ placement === "right" } isOpen={ isOpen } placement={ placement } onOpenChange={ onOpenChangeAction }>
 			{ trigger ? <Sheet.Trigger>{ trigger }</Sheet.Trigger> : null }
 			<Sheet.Backdrop variant={ "opaque" }>
 				<Sheet.Content className={ placement === "right" ? rightContentClassName ?? "w-115" : "mx-auto max-w-105" }>

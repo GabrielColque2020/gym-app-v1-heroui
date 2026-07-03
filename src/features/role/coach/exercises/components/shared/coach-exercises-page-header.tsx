@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowsRotateLeft } from "@gravity-ui/icons";
 import { Button, Card } from "@heroui/react";
 
@@ -8,12 +6,12 @@ import { ExerciseSheet } from "@/features/role/coach/exercises/components/shared
 
 type CoachExercisesPageHeaderProps = {
 	isRefreshing: boolean;
-	onRefresh: () => void;
+	onRefreshAction: () => void;
 };
 
 export function CoachExercisesPageHeader( {
 	isRefreshing,
-	onRefresh,
+	onRefreshAction,
 }: CoachExercisesPageHeaderProps ) {
 	return (
 		<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" }>
@@ -26,7 +24,7 @@ export function CoachExercisesPageHeader( {
 					className={ "w-full" }
 					isDisabled={ isRefreshing }
 					variant={ "secondary" }
-					onPress={ onRefresh }
+					onPress={ onRefreshAction }
 				>
 					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
@@ -41,7 +39,7 @@ export function CoachExercisesPageHeader( {
 				<Button
 					isDisabled={ isRefreshing }
 					variant={ "secondary" }
-					onPress={ onRefresh }
+					onPress={ onRefreshAction }
 				>
 					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }

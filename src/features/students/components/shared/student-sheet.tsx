@@ -3,11 +3,7 @@
 import React from "react";
 
 import { Sheet } from "@heroui-pro/react";
-import {
-	Alert,
-	Button,
-	Spinner,
-} from "@heroui/react";
+import { Alert, Button, Spinner, } from "@heroui/react";
 import { CircleCheck } from "@gravity-ui/icons";
 import { StudentSheetDetailsSection } from "@/features/students/components/shared/student-sheet-details-section";
 import { StudentSheetHeader } from "@/features/students/components/shared/student-sheet-header";
@@ -54,7 +50,7 @@ export function StudentSheet( props: StudentFormSheetProps ) {
 				showEditTriggerLabel={ showEditTriggerLabel }
 				onPress={ openSheet }
 			/>
-			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ handleOpenChange }>
+			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange }>
 				<StudentSheetHeader
 					description={ description }
 					isEditMode={ isEditMode }

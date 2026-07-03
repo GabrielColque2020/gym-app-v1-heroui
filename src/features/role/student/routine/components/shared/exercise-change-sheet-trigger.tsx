@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowRightArrowLeft } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
 

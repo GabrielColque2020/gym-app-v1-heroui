@@ -76,9 +76,9 @@ export function CoachDeleteRoutineSheet( {
 	return (
 		<>
 			<CoachDeleteRoutineActionMenu
-				onCopy={ () => setIsCopyOpen( true ) }
-				onDelete={ handleOpenDeleteConfirm }
-				onEdit={ () => setIsEditOpen( true ) }
+				onCopyAction={ () => setIsCopyOpen( true ) }
+				onDeleteAction={ handleOpenDeleteConfirm }
+				onEditAction={ () => setIsEditOpen( true ) }
 			/>
 
 			<CoachEditRoutineSheet
@@ -88,7 +88,7 @@ export function CoachDeleteRoutineSheet( {
 				routines={ routines }
 				studentId={ studentId }
 				year={ year }
-				onOpenChange={ setIsEditOpen }
+				onOpenChangeAction={ setIsEditOpen }
 			/>
 
 			<CoachCopyRoutineSheet
@@ -99,7 +99,7 @@ export function CoachDeleteRoutineSheet( {
 				hideTrigger
 				isOpen={ isCopyOpen }
 				studentId={ studentId }
-				onOpenChange={ setIsCopyOpen }
+				onOpenChangeAction={ setIsCopyOpen }
 			/>
 
 			<CoachDeleteRoutineConfirmSheet
@@ -107,8 +107,8 @@ export function CoachDeleteRoutineSheet( {
 				isConfirmOpen={ isConfirmOpen }
 				isDeleting={ deleteRoutine.isPending }
 				month={ month }
-				onClose={ () => setIsConfirmOpen( false ) }
-				onConfirm={ handleDelete }
+				onCloseAction={ () => setIsConfirmOpen( false ) }
+				onConfirmAction={ handleDelete }
 				studentName={ studentName }
 				summary={ summary }
 				year={ year }

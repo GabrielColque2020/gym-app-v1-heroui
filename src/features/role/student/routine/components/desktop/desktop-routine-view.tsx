@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowLeft, ArrowRight } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react";
@@ -14,7 +12,7 @@ import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 type DesktopRoutineViewProps = {
 	exercises: Exercise[];
 	latestProgressDate: Date | null;
-	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
+	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 	onSetUpdate: (
 		exerciseId: string,
 		setId: string,
@@ -26,7 +24,7 @@ type DesktopRoutineViewProps = {
 export default function DesktopRoutineView( {
 	exercises,
 	latestProgressDate,
-	onVariantChange,
+	onVariantChangeAction,
 	onSetUpdate,
 	routineStatusDescription,
 }: DesktopRoutineViewProps ) {
@@ -48,7 +46,7 @@ export default function DesktopRoutineView( {
 							<Carousel.Content>
 							{ exercises.map( ( exercise ) => (
 								<Carousel.Item key={ exercise.id }>
-									<DesktopExerciseCard exercise={ exercise } onVariantChange={ onVariantChange }>
+									<DesktopExerciseCard exercise={ exercise } onVariantChangeAction={ onVariantChangeAction }>
 										<DesktopExerciseSetsGrid exercise={ exercise } onSetUpdate={ onSetUpdate }/>
 									</DesktopExerciseCard>
 								</Carousel.Item>

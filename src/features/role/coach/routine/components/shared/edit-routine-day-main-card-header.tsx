@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowsRotateLeft } from "@gravity-ui/icons";
 import { Button, Card } from "@heroui/react";
 
@@ -12,8 +10,8 @@ type EditRoutineDayMainCardHeaderProps = {
 	routineSubtitle: string;
 	routineTitle: string;
 	draftCount: number;
-	onAddExercise: ( exercise: import("@/features/exercises/types/exercise-list-item").ExerciseListItem, order: number ) => void;
-	onRefresh: () => void;
+	onAddExerciseAction: ( exercise: import("@/features/exercises/types/exercise-list-item").ExerciseListItem, order: number ) => void;
+	onRefreshAction: () => void;
 };
 
 export function EditRoutineDayMainCardHeader( {
@@ -23,8 +21,8 @@ export function EditRoutineDayMainCardHeader( {
 	routineSubtitle,
 	routineTitle,
 	draftCount,
-	onAddExercise,
-	onRefresh,
+	onAddExerciseAction,
+	onRefreshAction,
 }: EditRoutineDayMainCardHeaderProps ) {
 	return (
 		<Card.Header className={ "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" }>
@@ -38,14 +36,14 @@ export function EditRoutineDayMainCardHeader( {
 					className={ "shadow-sm" }
 					isDisabled={ isRefreshing }
 					variant={ "secondary" }
-					onPress={ onRefresh }
+					onPress={ onRefreshAction }
 				>
 					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
 				<SearchAndCreateExerciseSheet
 					addedExerciseIds={ addedExerciseIds }
-					onAddExercise={ onAddExercise }
+					onAddExerciseAction={ onAddExerciseAction }
 					suggestedOrder={ getSuggestedOrder() }
 				/>
 			</div>

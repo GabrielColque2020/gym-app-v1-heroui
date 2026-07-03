@@ -1,5 +1,3 @@
-"use client";
-
 import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary";
 
 import { Card, Chip } from "@heroui/react";

@@ -17,8 +17,8 @@ type CoachDeleteRoutineConfirmSheetProps = {
 	isConfirmOpen: boolean;
 	isDeleting: boolean;
 	month: number;
-	onClose: () => void;
-	onConfirm: () => void;
+	onCloseAction: () => void;
+	onConfirmAction: () => void;
 	studentName: string;
 	summary: Summary;
 	year: number;
@@ -29,14 +29,14 @@ export function CoachDeleteRoutineConfirmSheet( {
 	isConfirmOpen,
 	isDeleting,
 	month,
-	onClose,
-	onConfirm,
+	onCloseAction,
+	onConfirmAction,
 	studentName,
 	summary,
 	year,
 }: CoachDeleteRoutineConfirmSheetProps ) {
 	return (
-		<Sheet isOpen={ isConfirmOpen } placement={ "right" } onOpenChange={ onClose }>
+		<Sheet isOpen={ isConfirmOpen } placement={ "right" } onOpenChange={ onCloseAction }>
 			<Sheet.Header className={ "border-default-100 relative border-b px-6 pb-5 pt-5" }>
 				<div className={ "flex min-w-0 items-start gap-3 pe-10" }>
 					<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-danger/20 bg-danger/10 text-danger" }>
@@ -84,14 +84,14 @@ export function CoachDeleteRoutineConfirmSheet( {
 			</Sheet.Body>
 
 			<Sheet.Footer className={ "border-default-100 bg-background flex shrink-0 justify-end gap-2 border-t px-6 py-4" }>
-				<Button isDisabled={ isDeleting } variant={ "secondary" } onPress={ onClose }>
+				<Button isDisabled={ isDeleting } variant={ "secondary" } onPress={ onCloseAction }>
 					Cancelar
 				</Button>
 				<Button
 					className={ "bg-danger text-danger-foreground" }
 					isDisabled={ isDeleting }
 					isPending={ isDeleting }
-					onPress={ onConfirm }
+					onPress={ onConfirmAction }
 				>
 					{ ( { isPending } ) => (
 						<>

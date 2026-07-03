@@ -1,5 +1,3 @@
-"use client";
-
 import { Button, Label, ListBox, SearchField, Select } from "@heroui/react";
 
 import {

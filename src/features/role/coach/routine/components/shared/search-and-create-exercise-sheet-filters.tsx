@@ -1,5 +1,3 @@
-"use client";
-
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 
@@ -16,13 +14,13 @@ type SearchAndCreateExerciseSheetFiltersProps = {
 	};
 	isSearching: boolean;
 	onRegisterAddButtonRef: ( exerciseId: string, element: HTMLButtonElement | null ) => void;
-	onBodyPartFilterChange: ( value: BodyPartFilter ) => void;
+	onBodyPartFilterChangeAction: ( value: BodyPartFilter ) => void;
 	onOrderChange: ( value: string ) => void;
-	onSearchValueChange: ( value: string ) => void;
+	onSearchValueChangeAction: ( value: string ) => void;
 	orderValue: string;
 	searchValue: string;
 	selectedExerciseId: string | null;
-	onAddExercise: ( exercise: ExerciseListItem ) => void;
+	onAddExerciseAction: ( exercise: ExerciseListItem ) => void;
 	exercises: ExerciseListItem[];
 };
 
@@ -32,13 +30,13 @@ export function SearchAndCreateExerciseSheetFilters( {
 	exercisesQuery,
 	isSearching,
 	onRegisterAddButtonRef,
-	onBodyPartFilterChange,
+	onBodyPartFilterChangeAction,
 	onOrderChange,
-	onSearchValueChange,
+	onSearchValueChangeAction,
 	orderValue,
 	searchValue,
 	selectedExerciseId,
-	onAddExercise,
+	onAddExerciseAction,
 	exercises,
 }: SearchAndCreateExerciseSheetFiltersProps ) {
 	return (
@@ -47,9 +45,9 @@ export function SearchAndCreateExerciseSheetFilters( {
 				bodyPartFilter={ bodyPartFilter }
 				orderValue={ orderValue }
 				searchValue={ searchValue }
-				onBodyPartFilterChange={ onBodyPartFilterChange }
+				onBodyPartFilterChangeAction={ onBodyPartFilterChangeAction }
 				onOrderChange={ onOrderChange }
-				onSearchValueChange={ onSearchValueChange }
+				onSearchValueChangeAction={ onSearchValueChangeAction }
 			/>
 
 			<SearchAndCreateExerciseSheetResults
@@ -58,7 +56,7 @@ export function SearchAndCreateExerciseSheetFilters( {
 				exercisesQuery={ exercisesQuery }
 				isSearching={ isSearching }
 				selectedExerciseId={ selectedExerciseId }
-				onAddExercise={ onAddExercise }
+				onAddExerciseAction={ onAddExerciseAction }
 				onRegisterAddButtonRef={ onRegisterAddButtonRef }
 			/>
 		</>

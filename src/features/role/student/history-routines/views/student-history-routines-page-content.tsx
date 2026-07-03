@@ -108,13 +108,13 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 
 			<HistoryRoutineMonthFilters
 				monthOptions={ MONTH_OPTIONS }
-				onClear={ handleClear }
-				onMonthChange={ setSelectedMonth }
-				onRefresh={ () => {
+				onClearAction={ handleClear }
+				onMonthChangeAction={ setSelectedMonth }
+				onRefreshAction={ () => {
 					void refetch();
 				} }
-				onSearch={ handleSearch }
-				onYearChange={ setSelectedYear }
+				onSearchAction={ handleSearch }
+				onYearChangeAction={ setSelectedYear }
 				isRefreshing={ isFetching && !isLoading }
 				selectedMonth={ selectedMonth }
 				selectedYear={ selectedYear }
@@ -161,7 +161,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 								selectedWeeks={ selectedWeeks }
 								summary={ desktopSummary }
 								weekGroups={ weekGroups }
-								onWeekToggle={ handleWeekToggle }
+								onWeekToggleAction={ handleWeekToggle }
 							/>
 						</div>
 						<div className={ "md:hidden" }>
@@ -171,7 +171,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 								selectedWeeks={ selectedWeeks }
 								summary={ mobileSummary }
 								weekGroups={ weekGroups }
-								onWeekToggle={ handleWeekToggle }
+								onWeekToggleAction={ handleWeekToggle }
 							/>
 						</div>
 					</>

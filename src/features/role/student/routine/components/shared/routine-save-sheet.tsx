@@ -21,24 +21,24 @@ type RoutineSaveSheetProps = {
 	isPending: boolean;
 	validationError: string | null;
 	summaryItems: RoutineSaveSummaryItem[];
-	onConfirm: () => void;
-	onOpenChange: ( isOpen: boolean ) => void;
+	onConfirmAction: () => void;
+	onOpenChangeAction: ( isOpen: boolean ) => void;
 };
 
 export default function RoutineSaveSheet( {
-	isOpen,
-	isPending,
-	validationError,
-	summaryItems,
-	onConfirm,
-	onOpenChange,
-}: RoutineSaveSheetProps ) {
+											  isOpen,
+											  isPending,
+											  validationError,
+											  summaryItems,
+											  onConfirmAction,
+											  onOpenChangeAction,
+										  }: RoutineSaveSheetProps ) {
 	const placement = useResponsiveSheetPlacement();
 	const hasCompletedSets = summaryItems.some( ( item ) => item.completedSets > 0 );
 	const canConfirmSave = hasCompletedSets && !validationError && !isPending;
 
 	return (
-		<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ onOpenChange }>
+		<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ onOpenChangeAction }>
 			<Sheet.Header className={ "border-default-100 border-b px-6 pb-4 pt-5" }>
 				<div className={ "flex items-start gap-3" }>
 					<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
@@ -79,7 +79,7 @@ export default function RoutineSaveSheet( {
 				<Sheet.Close>
 					<Button variant={ "secondary" }>Cancelar</Button>
 				</Sheet.Close>
-				<Button isDisabled={ !canConfirmSave } isPending={ isPending } onPress={ onConfirm }>
+				<Button isDisabled={ !canConfirmSave } isPending={ isPending } onPress={ onConfirmAction }>
 					{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <FloppyDisk className={ "size-4" }/> }
 					{ isPending ? "Guardando..." : "Guardar progreso" }
 				</Button>

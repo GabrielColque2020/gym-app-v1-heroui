@@ -12,7 +12,7 @@ export type ExerciseVariantsSheetProps = {
 	routineId: string | null;
 	hideTrigger?: boolean;
 	isOpen?: boolean;
-	onOpenChange?: ( isOpen: boolean ) => void;
+	onOpenChangeAction?: ( isOpen: boolean ) => void;
 	placement?: "bottom" | "right";
 	triggerClassName?: string;
 	triggerVariant?: "button" | "icon";

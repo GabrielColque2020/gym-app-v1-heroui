@@ -16,7 +16,7 @@ type CoachTrainingRoutineFilterProps = {
 	routines: CoachTrainingRoutine[];
 	studentId: string;
 	studentName: string;
-	onRefresh: () => void;
+	onRefreshAction: () => void;
 	year: number;
 };
 
@@ -24,12 +24,12 @@ export function CoachTrainingRoutineFilter( {
 												month,
 												isRefreshing,
 												routineCount,
-												routines,
-												studentId,
-												studentName,
-												onRefresh,
-												year,
-											}: CoachTrainingRoutineFilterProps ) {
+	routines,
+	studentId,
+	studentName,
+	onRefreshAction,
+	year,
+}: CoachTrainingRoutineFilterProps ) {
 	const router = useRouter();
 	const [ selectedYear, setSelectedYear ] = useState( String( year ) );
 	const [ selectedMonth, setSelectedMonth ] = useState( String( month ) );
@@ -86,7 +86,7 @@ export function CoachTrainingRoutineFilter( {
 						className={ "shadow-sm" }
 						isDisabled={ isRefreshing }
 						variant={ "secondary" }
-						onPress={ onRefresh }
+						onPress={ onRefreshAction }
 					>
 						<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 						{ isRefreshing ? "Actualizando..." : "Actualizar" }

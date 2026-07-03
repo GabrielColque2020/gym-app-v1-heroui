@@ -1,5 +1,3 @@
-"use client";
-
 import type { StudentListItem } from "@/features/students/actions/get-students";
 import type { StudentFormValues } from "@/features/students/services/student-form";
 

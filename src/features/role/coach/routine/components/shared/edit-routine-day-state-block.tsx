@@ -1,5 +1,3 @@
-"use client";
-
 import { PageBreadcrumbs } from "@/components/common";
 
 type EditRoutineDayStateBlockProps = {

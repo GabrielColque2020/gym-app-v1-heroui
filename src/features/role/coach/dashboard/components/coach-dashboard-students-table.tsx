@@ -1,19 +1,15 @@
 "use client";
 
 import type { DataGridColumn } from "@heroui-pro/react";
-import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary";
-
 import { DataGrid } from "@heroui-pro/react";
+import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary";
 import { Card, Label, SearchField } from "@heroui/react";
 import { useMemo, useState } from "react";
 
 import { ListPagination, usePagination } from "@/components/common";
 import { CoachDashboardEmptyState } from "@/features/role/coach/dashboard/components/coach-dashboard-empty-state";
 import { CoachDashboardStudentMobileCard } from "@/features/role/coach/dashboard/components/coach-dashboard-student-mobile-card";
-import {
-	buildCoachDashboardStudentsColumns,
-	filterCoachDashboardStudents,
-} from "@/features/role/coach/dashboard/components/coach-dashboard-students-table.utils";
+import { buildCoachDashboardStudentsColumns, filterCoachDashboardStudents, } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table.utils";
 
 type CoachDashboardStudentsTableProps = {
 	currentPeriodLabel: string;
@@ -21,9 +17,9 @@ type CoachDashboardStudentsTableProps = {
 };
 
 export function CoachDashboardStudentsTable( {
-	currentPeriodLabel,
-	students,
-}: CoachDashboardStudentsTableProps ) {
+												 currentPeriodLabel,
+												 students,
+											 }: CoachDashboardStudentsTableProps ) {
 	const [ searchFilter, setSearchFilter ] = useState( "" );
 	const [ page, setPage ] = useState( 1 );
 	const filteredStudents = useMemo(
@@ -108,7 +104,7 @@ export function CoachDashboardStudentsTable( {
 							showingTo={ pagination.showingTo }
 							totalItems={ pagination.totalItems }
 							totalPages={ pagination.totalPages }
-							onPageChange={ setPage }
+							onPageChangeAction={ setPage }
 						/>
 					</>
 				) }

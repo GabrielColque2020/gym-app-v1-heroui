@@ -5,13 +5,13 @@ import { Description, Label, ScrollShadow } from "@heroui/react";
 import { RadioButtonGroup } from "@heroui-pro/react";
 
 type CoachTrainingRoutineWeekSelectorMobileProps = {
-	onSelectedRoutineIdChange: ( routineId: string ) => void;
+	onSelectedRoutineIdChangeAction: ( routineId: string ) => void;
 	routines: CoachTrainingRoutine[];
 	selectedRoutineId: string;
 };
 
 export function CoachTrainingRoutineWeekSelectorMobile( {
-	onSelectedRoutineIdChange,
+	onSelectedRoutineIdChangeAction,
 	routines,
 	selectedRoutineId,
 }: CoachTrainingRoutineWeekSelectorMobileProps ) {
@@ -28,7 +28,7 @@ export function CoachTrainingRoutineWeekSelectorMobile( {
 					name={ "routine-week-mobile" }
 					value={ selectedRoutineId }
 					variant={ "secondary" }
-					onChange={ ( value ) => onSelectedRoutineIdChange( value as string ) }
+					onChange={ ( value ) => onSelectedRoutineIdChangeAction( value as string ) }
 				>
 					<div className={ "grid grid-cols-2 gap-2" }>
 						{ routines.map( ( routine ) => (

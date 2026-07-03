@@ -4,15 +4,15 @@ import { Copy, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
 import { Button, Dropdown, Header, Label } from "@heroui/react";
 
 type CoachDeleteRoutineActionMenuProps = {
-	onDelete: () => void;
-	onCopy: () => void;
-	onEdit: () => void;
+	onDeleteAction: () => void;
+	onCopyAction: () => void;
+	onEditAction: () => void;
 };
 
 export function CoachDeleteRoutineActionMenu( {
-	onDelete,
-	onCopy,
-	onEdit,
+	onDeleteAction,
+	onCopyAction,
+	onEditAction,
 }: CoachDeleteRoutineActionMenuProps ) {
 	return (
 		<Dropdown>
@@ -22,9 +22,9 @@ export function CoachDeleteRoutineActionMenu( {
 			<Dropdown.Popover>
 				<Dropdown.Menu
 					onAction={ ( key ) => {
-						if (key === "edit-file") onEdit();
-						if (key === "copy-file") onCopy();
-						if (key === "delete-file") onDelete();
+						if (key === "edit-file") onEditAction();
+						if (key === "copy-file") onCopyAction();
+						if (key === "delete-file") onDeleteAction();
 					} }
 				>
 					<Dropdown.Section>

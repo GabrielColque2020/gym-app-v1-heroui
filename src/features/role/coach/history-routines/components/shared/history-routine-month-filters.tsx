@@ -15,11 +15,11 @@ type HistoryRoutineMonthFiltersProps = {
 	}>;
 	selectedMonth: string;
 	selectedYear: string;
-	onSearch: () => void;
-	onClear: () => void;
-	onMonthChange: ( month: string ) => void;
-	onRefresh: () => void;
-	onYearChange: ( year: string ) => void;
+	onSearchAction: () => void;
+	onClearAction: () => void;
+	onMonthChangeAction: ( month: string ) => void;
+	onRefreshAction: () => void;
+	onYearChangeAction: ( year: string ) => void;
 	userName?: string;
 	isRefreshing?: boolean;
 };
@@ -29,11 +29,11 @@ export function HistoryRoutineMonthFilters( {
 												yearOptions,
 												selectedMonth,
 												selectedYear,
-												onSearch,
-												onClear,
-												onMonthChange,
-												onRefresh,
-												onYearChange,
+	onSearchAction,
+	onClearAction,
+	onMonthChangeAction,
+	onRefreshAction,
+	onYearChangeAction,
 												userName,
 												isRefreshing = false,
 }: HistoryRoutineMonthFiltersProps ) {
@@ -44,11 +44,11 @@ export function HistoryRoutineMonthFilters( {
 				<HistoryRoutineMonthFiltersActions
 					isRefreshing={ isRefreshing }
 					monthOptions={ monthOptions }
-					onClear={ onClear }
-					onMonthChange={ onMonthChange }
-					onRefresh={ onRefresh }
-					onSearch={ onSearch }
-					onYearChange={ onYearChange }
+					onClearAction={ onClearAction }
+					onMonthChangeAction={ onMonthChangeAction }
+					onRefreshAction={ onRefreshAction }
+					onSearchAction={ onSearchAction }
+					onYearChangeAction={ onYearChangeAction }
 					selectedMonth={ selectedMonth }
 					selectedYear={ selectedYear }
 					yearOptions={ yearOptions }

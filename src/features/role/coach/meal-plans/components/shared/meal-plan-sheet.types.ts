@@ -6,7 +6,7 @@ export type MealPlanSheetProps =
 		isOpen?: boolean;
 		mealPlan?: never;
 		mode: "create";
-		onOpenChange?: ( isOpen: boolean ) => void;
+		onOpenChangeAction?: ( isOpen: boolean ) => void;
 		placement?: "bottom" | "right";
 		studentId: string;
 		triggerClassName?: string;
@@ -17,7 +17,7 @@ export type MealPlanSheetProps =
 		isOpen?: boolean;
 		mealPlan: CoachMealPlan;
 		mode: "edit";
-		onOpenChange?: ( isOpen: boolean ) => void;
+		onOpenChangeAction?: ( isOpen: boolean ) => void;
 		placement?: "bottom" | "right";
 		studentId: string;
 		triggerClassName?: string;

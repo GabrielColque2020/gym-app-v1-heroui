@@ -1,5 +1,3 @@
-"use client";
-
 import { Chip } from "@heroui/react";
 
 import type { RoutineSaveSummaryItem } from "@/features/role/student/routine/components/shared/routine-save-sheet";

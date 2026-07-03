@@ -1,25 +1,23 @@
-"use client";
-
 import { ArrowsRotateLeft } from "@gravity-ui/icons";
 import { Button, Modal } from "@heroui/react";
 
 type EditRoutineDayRefreshModalProps = {
 	isOpen: boolean;
-	onClose: () => void;
-	onConfirm: () => void;
+	onCloseAction: () => void;
+	onConfirmAction: () => void;
 };
 
 export function EditRoutineDayRefreshModal( {
 	isOpen,
-	onClose,
-	onConfirm,
+	onCloseAction,
+	onConfirmAction,
 }: EditRoutineDayRefreshModalProps ) {
 	return (
 		<Modal>
 			<Modal.Backdrop
 				isDismissable={ false }
 				isOpen={ isOpen }
-				onOpenChange={ onClose }
+				onOpenChange={ onCloseAction }
 				variant={ "blur" }
 			>
 				<Modal.Container size={ "sm" }>
@@ -41,7 +39,7 @@ export function EditRoutineDayRefreshModal( {
 									</Button>
 									<Button onPress={ () => {
 										close();
-										onConfirm();
+										onConfirmAction();
 									} }>
 										<ArrowsRotateLeft className={ "size-4" }/>
 										Actualizar

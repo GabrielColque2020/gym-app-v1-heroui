@@ -1,9 +1,8 @@
 "use client";
 
 import type { DataGridColumn } from "@heroui-pro/react";
-import type { TrainingRoutinesStudentListItem } from "@/features/role/coach/training-routines-students/actions/get-training-routines-students";
-
 import { DataGrid } from "@heroui-pro/react";
+import type { TrainingRoutinesStudentListItem } from "@/features/role/coach/training-routines-students/actions/get-training-routines-students";
 import { Button, Card, Chip, Label, SearchField } from "@heroui/react";
 import { ArrowRight } from "@gravity-ui/icons";
 import { useRouter } from "next/navigation";
@@ -162,7 +161,7 @@ export function TrainingRoutinesStudentsContentDesktop( { students }: TrainingRo
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

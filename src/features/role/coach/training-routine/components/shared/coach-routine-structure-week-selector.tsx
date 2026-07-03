@@ -9,13 +9,13 @@ type Option = {
 };
 
 type CoachRoutineStructureWeekSelectorProps = {
-	onChange: ( value: string[] ) => void;
+	onChangeAction: ( value: string[] ) => void;
 	selectedWeeks: string[];
 	weekOptions: Option[];
 };
 
 export function CoachRoutineStructureWeekSelector( {
-	onChange,
+	onChangeAction,
 	selectedWeeks,
 	weekOptions,
 }: CoachRoutineStructureWeekSelectorProps ) {
@@ -30,7 +30,7 @@ export function CoachRoutineStructureWeekSelector( {
 				layout={ "grid" }
 				value={ selectedWeeks }
 				variant={ "secondary" }
-				onChange={ ( value ) => onChange( value as string[] ) }
+				onChange={ ( value ) => onChangeAction( value as string[] ) }
 			>
 				{ weekOptions.map( ( week ) => (
 					<CheckboxButtonGroup.Item key={ week.value } className={ "gap-2 px-4 py-3" } value={ week.value }>

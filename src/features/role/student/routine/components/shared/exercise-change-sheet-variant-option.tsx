@@ -1,5 +1,3 @@
-"use client";
-
 import { Chip, Button } from "@heroui/react";
 
 import { formatBodyPart } from "@/features/exercises/services/exercise-formatters";

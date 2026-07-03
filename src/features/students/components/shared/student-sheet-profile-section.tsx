@@ -1,5 +1,3 @@
-"use client";
-
 import type { GenderFormValue, StudentFormValues } from "@/features/students/services/student-form";
 
 import {

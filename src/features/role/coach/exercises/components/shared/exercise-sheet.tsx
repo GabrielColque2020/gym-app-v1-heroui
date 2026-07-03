@@ -18,27 +18,27 @@ import { ExerciseSheetTrigger } from "./exercise-sheet-trigger";
 
 type ExerciseFormSheetProps =
 	| {
-		exercise?: never;
-		hideTrigger?: boolean;
-		isOpen?: boolean;
-		mode: "create";
-		onSuccess?: ( exercise: Exercises[ number ] ) => void;
-		onOpenChange?: ( isOpen: boolean ) => void;
-		placement?: "bottom" | "right";
-		triggerClassName?: string;
-		triggerVariant?: "button" | "icon";
-	}
+	exercise?: never;
+	hideTrigger?: boolean;
+	isOpen?: boolean;
+	mode: "create";
+	onSuccess?: ( exercise: Exercises[ number ] ) => void;
+	onOpenChangeAction?: ( isOpen: boolean ) => void;
+	placement?: "bottom" | "right";
+	triggerClassName?: string;
+	triggerVariant?: "button" | "icon";
+}
 	| {
-		exercise: ExerciseListItem;
-		hideTrigger?: boolean;
-		isOpen?: boolean;
-		mode: "edit";
-		onSuccess?: ( exercise: Exercises[ number ] ) => void;
-		onOpenChange?: ( isOpen: boolean ) => void;
-		placement?: "bottom" | "right";
-		triggerClassName?: string;
-		triggerVariant?: "button" | "icon";
-	};
+	exercise: ExerciseListItem;
+	hideTrigger?: boolean;
+	isOpen?: boolean;
+	mode: "edit";
+	onSuccess?: ( exercise: Exercises[ number ] ) => void;
+	onOpenChangeAction?: ( isOpen: boolean ) => void;
+	placement?: "bottom" | "right";
+	triggerClassName?: string;
+	triggerVariant?: "button" | "icon";
+};
 
 const DEFAULT_VALUES: ExerciseFormValues = {
 	active: true,
@@ -76,7 +76,7 @@ export function ExerciseSheet( props: ExerciseFormSheetProps ) {
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear ejercicio";
 	const showEditTriggerLabel = props.triggerVariant === "button";
 	const isOpen = props.isOpen ?? internalIsOpen;
-	const setIsOpen = props.onOpenChange ?? setInternalIsOpen;
+	const setIsOpen = props.onOpenChangeAction ?? setInternalIsOpen;
 	const placement = props.placement ?? "right";
 
 	const resetFormState = useCallback( () => {
@@ -162,7 +162,7 @@ export function ExerciseSheet( props: ExerciseFormSheetProps ) {
 					onPress={ openSheet }
 				/>
 			) }
-			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ handleOpenChange }>
+			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange }>
 				<ExerciseSheetHeader isEditMode={ isEditMode }/>
 
 				<form className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleSubmit }>

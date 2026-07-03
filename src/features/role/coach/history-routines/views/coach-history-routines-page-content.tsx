@@ -51,11 +51,11 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 			<HistoryRoutineMonthFilters
 				isRefreshing={ isRefreshing }
 				monthOptions={ monthOptions }
-				onClear={ handleClear }
-				onMonthChange={ onMonthChange }
-				onRefresh={ handleRefresh }
-				onSearch={ handleSearch }
-				onYearChange={ onYearChange }
+				onClearAction={ handleClear }
+				onMonthChangeAction={ onMonthChange }
+				onRefreshAction={ handleRefresh }
+				onSearchAction={ handleSearch }
+				onYearChangeAction={ onYearChange }
 				selectedMonth={ selectedMonth }
 				selectedYear={ selectedYear }
 				yearOptions={ yearOptions }
@@ -82,7 +82,7 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 								selectedWeeks={ selectedWeeks }
 								summary={ desktopSummary }
 								weekGroups={ weekGroups }
-								onWeekToggle={ handleWeekToggle }
+								onWeekToggleAction={ handleWeekToggle }
 							/>
 						</div>
 						<div className={ "md:hidden" }>
@@ -92,7 +92,7 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 								selectedWeeks={ selectedWeeks }
 								summary={ mobileSummary }
 								weekGroups={ weekGroups }
-								onWeekToggle={ handleWeekToggle }
+								onWeekToggleAction={ handleWeekToggle }
 							/>
 						</div>
 					</>

@@ -1,5 +1,3 @@
-"use client";
-
 import { Card } from "@heroui/react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
@@ -15,25 +13,25 @@ type EditRoutineDayMainCardProps = {
 	routineSubtitle: string;
 	routineTitle: string;
 	validationError: string | null;
-	onAddExercise: ( exercise: ExerciseListItem, order: number ) => void;
-	onDeleteExercise: ( clientId: string ) => void;
-	onRefresh: () => void;
+	onAddExerciseAction: ( exercise: ExerciseListItem, order: number ) => void;
+	onDeleteExerciseAction: ( clientId: string ) => void;
+	onRefreshAction: () => void;
 	onUpdateExerciseField: ( clientId: string, field: "observation" | "order" | "reps" | "sets", value: number | string ) => void;
 };
 
 export function EditRoutineDayMainCard( {
-	addedExerciseIds,
-	draftRoutines,
-	getSuggestedOrder,
-	isRefreshing,
-	routineSubtitle,
-	routineTitle,
-	validationError,
-	onAddExercise,
-	onDeleteExercise,
-	onRefresh,
-	onUpdateExerciseField,
-}: EditRoutineDayMainCardProps ) {
+											addedExerciseIds,
+											draftRoutines,
+											getSuggestedOrder,
+											isRefreshing,
+											routineSubtitle,
+											routineTitle,
+											validationError,
+											onAddExerciseAction,
+											onDeleteExerciseAction,
+											onRefreshAction,
+											onUpdateExerciseField,
+										}: EditRoutineDayMainCardProps ) {
 	return (
 		<Card className={ "border border-border bg-surface" } variant={ "default" }>
 			<EditRoutineDayMainCardHeader
@@ -43,13 +41,13 @@ export function EditRoutineDayMainCard( {
 				isRefreshing={ isRefreshing }
 				routineSubtitle={ routineSubtitle }
 				routineTitle={ routineTitle }
-				onAddExercise={ onAddExercise }
-				onRefresh={ onRefresh }
+				onAddExerciseAction={ onAddExerciseAction }
+				onRefreshAction={ onRefreshAction }
 			/>
 
 			<EditRoutineDayMainCardContent
 				draftRoutines={ draftRoutines }
-				onDeleteExercise={ onDeleteExercise }
+				onDeleteExercise={ onDeleteExerciseAction }
 				onUpdateExerciseField={ onUpdateExerciseField }
 				validationError={ validationError }
 			/>

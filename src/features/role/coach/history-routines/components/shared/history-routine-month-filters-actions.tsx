@@ -13,11 +13,11 @@ type Option = {
 type HistoryRoutineMonthFiltersActionsProps = {
 	isRefreshing?: boolean;
 	monthOptions: Option[];
-	onClear: () => void;
-	onMonthChange: ( month: string ) => void;
-	onRefresh: () => void;
-	onSearch: () => void;
-	onYearChange: ( year: string ) => void;
+	onClearAction: () => void;
+	onMonthChangeAction: ( month: string ) => void;
+	onRefreshAction: () => void;
+	onSearchAction: () => void;
+	onYearChangeAction: ( year: string ) => void;
 	selectedMonth: string;
 	selectedYear: string;
 	yearOptions: Option[];
@@ -26,11 +26,11 @@ type HistoryRoutineMonthFiltersActionsProps = {
 export function HistoryRoutineMonthFiltersActions( {
 	isRefreshing = false,
 	monthOptions,
-	onClear,
-	onMonthChange,
-	onRefresh,
-	onSearch,
-	onYearChange,
+	onClearAction,
+	onMonthChangeAction,
+	onRefreshAction,
+	onSearchAction,
+	onYearChangeAction,
 	selectedMonth,
 	selectedYear,
 	yearOptions,
@@ -43,7 +43,7 @@ export function HistoryRoutineMonthFiltersActions( {
 				options={ monthOptions }
 				placeholder={ "Selecciona un mes" }
 				value={ selectedMonth }
-				onSelectionChange={ onMonthChange }
+				onSelectionChange={ onMonthChangeAction }
 			/>
 			<FilterSelect
 				label={ "Anio" }
@@ -51,9 +51,9 @@ export function HistoryRoutineMonthFiltersActions( {
 				options={ yearOptions }
 				placeholder={ "Selecciona un anio" }
 				value={ selectedYear }
-				onSelectionChange={ onYearChange }
+				onSelectionChange={ onYearChangeAction }
 			/>
-			<Button className={ "w-full shadow-sm lg:w-auto" } onPress={ onSearch }>
+			<Button className={ "w-full shadow-sm lg:w-auto" } onPress={ onSearchAction }>
 				<Magnifier/>
 				Buscar
 			</Button>
@@ -61,12 +61,12 @@ export function HistoryRoutineMonthFiltersActions( {
 				className={ "w-full lg:w-auto" }
 				isDisabled={ isRefreshing }
 				variant={ "secondary" }
-				onPress={ onRefresh }
+				onPress={ onRefreshAction }
 			>
 				<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 				{ isRefreshing ? "Actualizando..." : "Actualizar" }
 			</Button>
-			<Button className={ "w-full lg:w-auto" } variant={ "secondary" } onPress={ onClear }>
+			<Button className={ "w-full lg:w-auto" } variant={ "secondary" } onPress={ onClearAction }>
 				Limpiar
 			</Button>
 		</div>

@@ -1,5 +1,3 @@
-"use client";
-
 import { TrashBin } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
 

@@ -58,7 +58,7 @@ export function ExerciseVariantsSheet( props: ExerciseVariantsSheetProps ) {
 	const responsivePlacement = useResponsiveSheetPlacement();
 	const placement = props.placement ?? responsivePlacement;
 	const isOpen = props.isOpen ?? internalIsOpen;
-	const setIsOpen = props.onOpenChange ?? setInternalIsOpen;
+	const setIsOpen = props.onOpenChangeAction ?? setInternalIsOpen;
 	const showTriggerLabel = props.triggerVariant === "button";
 	const variantsQuery = useExerciseVariants( props.routineId ?? "", isOpen && Boolean( props.routineId ) );
 
@@ -84,7 +84,7 @@ export function ExerciseVariantsSheet( props: ExerciseVariantsSheetProps ) {
 				/>
 			) }
 
-			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ handleOpenChange }>
+		<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange }>
 				<ExerciseVariantsSheetHeader exercise={ props.exercise }/>
 
 				{ variantsQuery.isError ? (
@@ -122,7 +122,7 @@ export function ExerciseVariantsSheet( props: ExerciseVariantsSheetProps ) {
 						exercise={ props.exercise }
 						routineId={ props.routineId }
 						initialVariants={ buildInitialVariants( variantsQuery.data ) }
-						onClose={ () => setIsOpen( false ) }
+						onCloseAction={ () => setIsOpen( false ) }
 					/>
 				) }
 			</FeatureSheetLayout>

@@ -1,9 +1,8 @@
 "use client";
 
 import type { DataGridColumn } from "@heroui-pro/react";
-import type { StudentListItem } from "@/features/students/actions/get-students";
-
 import { DataGrid } from "@heroui-pro/react";
+import type { StudentListItem } from "@/features/students/actions/get-students";
 import { Chip } from "@heroui/react";
 import { useMemo } from "react";
 
@@ -126,7 +125,7 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

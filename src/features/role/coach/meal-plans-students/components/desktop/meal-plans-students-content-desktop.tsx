@@ -1,7 +1,6 @@
 "use client";
 
 import type { DataGridColumn } from "@heroui-pro/react";
-
 import { DataGrid } from "@heroui-pro/react";
 import { Button, Card, Chip, Label, SearchField } from "@heroui/react";
 import { ArrowRight } from "@gravity-ui/icons";
@@ -159,7 +158,7 @@ export function MealPlansStudentsContentDesktop( { students }: MealPlansStudents
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

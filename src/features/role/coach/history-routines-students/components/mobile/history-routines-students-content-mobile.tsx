@@ -122,7 +122,7 @@ export function HistoryRoutinesStudentsContentMobile( { students }: HistoryRouti
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChange={ changePage }
+						onPageChangeAction={ changePage }
 					/>
 				</>
 			) }

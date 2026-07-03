@@ -1,13 +1,7 @@
 "use client";
 
 import { Sheet } from "@heroui-pro/react";
-import {
-	Alert,
-	Button,
-	Spinner,
-	Surface,
-	Typography,
-} from "@heroui/react";
+import { Alert, Button, Spinner, Surface, Typography, } from "@heroui/react";
 import { CircleFill, TrashBin } from "@gravity-ui/icons";
 
 import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
@@ -18,14 +12,14 @@ import { useMealPlanDeleteSheetState } from "@/features/role/coach/meal-plans/co
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";
 
 export function MealPlanDeleteSheet( {
-	hideTrigger,
-	isOpen,
-	mealPlan,
-	onOpenChange,
-	studentId,
-	triggerClassName,
-	triggerVariant,
-}: MealPlanDeleteSheetProps ) {
+										 hideTrigger,
+										 isOpen,
+										 mealPlan,
+										 onOpenChangeAction,
+										 studentId,
+										 triggerClassName,
+										 triggerVariant,
+									 }: MealPlanDeleteSheetProps ) {
 	const {
 		deleteMealPlan,
 		handleDelete,
@@ -37,7 +31,7 @@ export function MealPlanDeleteSheet( {
 	} = useMealPlanDeleteSheetState( {
 		isOpen,
 		mealPlan,
-		onOpenChange,
+		onOpenChangeAction,
 		studentId,
 		triggerVariant,
 	} );
@@ -62,7 +56,7 @@ export function MealPlanDeleteSheet( {
 				isOpen={ isDeleteOpen }
 				placement={ "right" }
 				rightContentClassName={ "w-[32rem]" }
-				onOpenChange={ handleOpenChange }
+				onOpenChangeAction={ handleOpenChange }
 			>
 				<MealPlanDeleteSheetHeader/>
 
@@ -127,4 +121,3 @@ export function MealPlanDeleteSheet( {
 		</>
 	);
 }
-

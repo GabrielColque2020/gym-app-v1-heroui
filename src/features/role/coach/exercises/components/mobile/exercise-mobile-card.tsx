@@ -2,16 +2,7 @@
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { Key } from "@heroui/react";
-
-import {
-	Button,
-	Card,
-	Chip,
-	Dropdown,
-	Header,
-	Label,
-	Spinner,
-} from "@heroui/react";
+import { Button, Card, Chip, Dropdown, Header, Label, Spinner, } from "@heroui/react";
 import { CircleCheck, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
 import { useState } from "react";
 
@@ -47,8 +38,8 @@ type ExerciseMobileCardProps = {
 };
 
 export function ExerciseMobileCard( {
-	exercise,
-}: ExerciseMobileCardProps ) {
+										exercise,
+									}: ExerciseMobileCardProps ) {
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const { changeStatus, isPending, statusLabel } = useExerciseStatusAction( { exercise } );
 
@@ -131,7 +122,7 @@ export function ExerciseMobileCard( {
 				isOpen={ isEditOpen }
 				mode={ "edit" }
 				placement={ "bottom" }
-				onOpenChange={ setIsEditOpen }
+				onOpenChangeAction={ setIsEditOpen }
 			/>
 		</Card>
 	);
