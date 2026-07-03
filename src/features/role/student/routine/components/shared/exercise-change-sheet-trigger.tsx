@@ -1,5 +1,5 @@
-import { ArrowRightArrowLeft } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
+import { ArrowLeftRight } from "lucide-react";
 
 type ExerciseChangeSheetTriggerProps = {
 	hasVariants: boolean;
@@ -14,7 +14,7 @@ export function ExerciseChangeSheetTrigger( {
 
 	return (
 		<Button size={ "sm" } variant={ "secondary" } onPress={ onOpen }>
-			<ArrowRightArrowLeft className={ "size-4" }/>
+			<ArrowLeftRight className={ "size-4" }/>
 			Cambiar ejercicio
 		</Button>
 	);

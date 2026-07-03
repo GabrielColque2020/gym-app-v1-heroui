@@ -3,7 +3,6 @@
 import type { StudentListItem } from "@/features/students/actions/get-students";
 import type { Key } from "@heroui/react";
 
-import { CircleCheck, EllipsisVertical, Pencil, Person, TrashBin } from "@gravity-ui/icons";
 import {
 	Button,
 	Card,
@@ -14,6 +13,7 @@ import {
 	Spinner,
 } from "@heroui/react";
 import { useState } from "react";
+import { CheckCircle2, EllipsisVertical, PencilLine, UserRound, Trash2 } from "lucide-react";
 
 import { StudentSheet } from "@/features/students/components/shared/student-sheet";
 import { useStudentStatusAction } from "@/features/students/hooks/use-student-status-action";
@@ -42,7 +42,7 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 			<Card.Content className={ "py-1" }>
 				<div className={ "grid grid-cols-[4rem_1fr_auto] items-start gap-3" }>
 					<div className={ "flex size-16 items-center justify-center rounded-full bg-accent-soft text-accent" }>
-						<Person className={ "size-8" }/>
+						<UserRound className={ "size-8" }/>
 					</div>
 
 					<div className={ "min-w-0" }>
@@ -77,7 +77,7 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 							<Dropdown.Menu onAction={ handleAction }>
 								<Header>Opciones</Header>
 								<Dropdown.Item id={ "edit" } textValue={ "Editar" }>
-									<Pencil className={ "size-4 shrink-0 text-warning" }/>
+									<PencilLine className={ "size-4 shrink-0 text-warning" }/>
 									<Label className={ "text-warning" }>Editar</Label>
 								</Dropdown.Item>
 								<Dropdown.Item
@@ -86,9 +86,9 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 									variant={ student.active ? "danger" : "default" }
 								>
 									{ student.active ? (
-										<TrashBin className={ "size-4 shrink-0 text-danger" }/>
+										<Trash2 className={ "size-4 shrink-0 text-danger" }/>
 									) : (
-										<CircleCheck className={ "size-4 shrink-0 text-success" }/>
+										<CheckCircle2 className={ "size-4 shrink-0 text-success" }/>
 									) }
 									<Label>{ statusLabel }</Label>
 								</Dropdown.Item>
@@ -104,7 +104,7 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 				mode={ "edit" }
 				placement={ "bottom" }
 				student={ student }
-				onOpenChange={ setIsEditOpen }
+				onOpenChangeAction={ setIsEditOpen }
 			/>
 		</Card>
 	);

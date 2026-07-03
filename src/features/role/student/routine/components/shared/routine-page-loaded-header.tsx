@@ -1,5 +1,5 @@
-import { ArrowsRotateLeft, FloppyDisk } from "@gravity-ui/icons";
 import { Button, Card, Spinner } from "@heroui/react";
+import { RotateCcw, Save } from "lucide-react";
 
 import RoutineHeader from "@/features/role/student/routine/components/shared/routine-header";
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
@@ -48,13 +48,13 @@ export function RoutinePageLoadedHeader( {
 					onPress={ handleRefresh }
 					variant={ "secondary" }
 				>
-					<ArrowsRotateLeft className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
+					<RotateCcw className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
 					{ isFetching && !isLoading ? "Actualizando..." : "Actualizar" }
 				</Button>
 				<Button isDisabled={ !canSaveProgress } isPending={ saveRoutineSession.isPending } onPress={ handleOpenSaveSheet }>
 					{ ( { isPending } ) => (
 						<>
-							{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <FloppyDisk/> }
+							{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Save/> }
 							Guardar progreso
 						</>
 					) }

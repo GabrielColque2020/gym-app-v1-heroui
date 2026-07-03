@@ -1,4 +1,4 @@
-import { Bulb, Calendar, ChartLine } from "@gravity-ui/icons";
+import { Calendar, ChartLine, Lightbulb } from "lucide-react";
 
 import { formatDateLabel } from "@/features/role/student/routine/views/routine-page-content.utils";
 import type { Exercise } from "@/features/routine/types/routine-exercise.types";
@@ -18,7 +18,7 @@ export function RoutineSessionOverviewCards( {
 	return (
 		<>
 			<RoutineSessionOverviewCard
-				icon={ <Bulb className={ "size-5" }/> }
+				icon={ <Lightbulb className={ "size-5" }/> }
 				iconClassName={ "flex size-10 items-center justify-center rounded-full bg-warning/10 text-warning" }
 				title={ "Consejo del entrenador" }
 				description={ exercises[ 0 ]?.notes ?? "Manten una buena tecnica durante todo el ejercicio. Controla el movimiento y respira correctamente." }

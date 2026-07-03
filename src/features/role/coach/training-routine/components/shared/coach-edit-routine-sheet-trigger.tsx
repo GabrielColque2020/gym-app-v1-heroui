@@ -1,7 +1,7 @@
 "use client";
 
-import { Pencil } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
+import { PencilLine } from "lucide-react";
 
 type CoachEditRoutineSheetTriggerProps = {
 	isMobile: boolean;
@@ -21,7 +21,7 @@ export function CoachEditRoutineSheetTrigger( {
 			}
 			onPress={ onPressAction }
 		>
-			<Pencil className={ "size-4" }/>
+			<PencilLine className={ "size-4" }/>
 			{ !isMobile && "Editar rutina" }
 		</Button>
 	);

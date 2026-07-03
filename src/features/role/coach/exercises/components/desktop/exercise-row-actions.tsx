@@ -1,7 +1,7 @@
 "use client";
 
-import { CircleCheck, TrashBin } from "@gravity-ui/icons";
 import { Button, Spinner } from "@heroui/react";
+import { CheckCircle2, Trash2 } from "lucide-react";
 
 import { ExerciseSheet } from "@/features/role/coach/exercises/components/shared/exercise-sheet";
 import { useExerciseStatusAction } from "@/features/exercises/hooks/use-exercise-status-action";
@@ -31,9 +31,9 @@ export function ExerciseRowActions( {
 				{ isPending ? (
 					<Spinner color={ "current" } size={ "sm" }/>
 				) : exercise.active ? (
-					<TrashBin className={ "size-4" }/>
+					<Trash2 className={ "size-4" }/>
 				) : (
-					<CircleCheck className={ "size-4" }/>
+					<CheckCircle2 className={ "size-4" }/>
 				) }
 			</Button>
 		</div>

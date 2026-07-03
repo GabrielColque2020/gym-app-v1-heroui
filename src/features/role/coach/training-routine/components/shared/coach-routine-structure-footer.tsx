@@ -1,7 +1,7 @@
 "use client";
 
-import { CircleCheck } from "@gravity-ui/icons";
 import { Button, Spinner } from "@heroui/react";
+import { CheckCircle2 } from "lucide-react";
 
 type CoachRoutineStructureFooterProps = {
 	disabled: boolean;
@@ -26,7 +26,7 @@ export function CoachRoutineStructureFooter( {
 			<Button isDisabled={ disabled } isPending={ isPending } onPress={ onSaveAction }>
 				{ ( { isPending: buttonPending } ) => (
 					<>
-						{ buttonPending ? <Spinner color={ "current" } size={ "sm" }/> : <CircleCheck className={ "size-4" }/> }
+						{ buttonPending ? <Spinner color={ "current" } size={ "sm" }/> : <CheckCircle2 className={ "size-4" }/> }
 						{ buttonPending ? "Guardando..." : mode === "create" ? "Crear rutina" : "Guardar estructura" }
 					</>
 				) }

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import type { EmblaCarouselType } from "embla-carousel";
-import { ArrowLeft, ArrowRight } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import type { CoachHistoryRoutine } from "@/features/role/coach/history-routines/actions/get-history-routines-by-student";
 import { HistoryRoutineExerciseCard } from "@/features/role/coach/history-routines/components/desktop/history-routine-exercise-card";

@@ -1,8 +1,8 @@
 "use client";
 
-import { ArrowRight } from "@gravity-ui/icons";
 import { Button, Card, Chip } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 
 import { StudentDashboardEmptyState } from "@/features/role/student/dashboard/components/student-dashboard-empty-state";
 import {

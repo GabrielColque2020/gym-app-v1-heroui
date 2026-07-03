@@ -1,7 +1,7 @@
 "use client";
 
 import { Chip, Typography } from "@heroui/react";
-import { CircleCheck } from "@gravity-ui/icons";
+import { CheckCircle2 } from "lucide-react";
 
 import type { HistoryRoutineWeekGroup } from "@/features/history-routines/services/history-routines-view";
 import { getHistoryRoutineWeekStatus } from "@/features/history-routines/services/history-routines-view";
@@ -71,7 +71,7 @@ export function HistoryRoutineWeeksSelectorMobile( {
 										}`
 									}
 								>
-									<CircleCheck className={ "size-3" }/>
+									<CheckCircle2 className={ "size-3" }/>
 								</span>
 							</div>
 

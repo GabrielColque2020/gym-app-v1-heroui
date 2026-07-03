@@ -11,7 +11,7 @@ export default async function AppGroupLayout( { children }: { children: ReactNod
 		redirect( "/login" );
 	}
 
-	return <AppShell userRole={ session.role }>
+	return <AppShell userName={ session.name } userRole={ session.role }>
 		<div className={ "flex max-w-550 flex-col gap-4 px-5 pb-10 pt-4" }>
 			{ children }
 		</div>

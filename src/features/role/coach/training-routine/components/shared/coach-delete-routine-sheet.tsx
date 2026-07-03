@@ -19,12 +19,12 @@ type CoachDeleteRoutineActionProps = {
 };
 
 export function CoachDeleteRoutineSheet( {
-	month,
-	routines,
-	studentId,
-	studentName,
-	year,
-}: CoachDeleteRoutineActionProps ) {
+											 month,
+											 routines,
+											 studentId,
+											 studentName,
+											 year,
+										 }: CoachDeleteRoutineActionProps ) {
 	const [ isConfirmOpen, setIsConfirmOpen ] = useState( false );
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const [ isCopyOpen, setIsCopyOpen ] = useState( false );

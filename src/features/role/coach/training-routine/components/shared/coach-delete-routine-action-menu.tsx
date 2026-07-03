@@ -1,7 +1,7 @@
 "use client";
 
-import { Copy, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
 import { Button, Dropdown, Header, Label } from "@heroui/react";
+import { Copy, MoreVertical, PencilLine, Trash2 } from "lucide-react";
 
 type CoachDeleteRoutineActionMenuProps = {
 	onDeleteAction: () => void;
@@ -17,7 +17,7 @@ export function CoachDeleteRoutineActionMenu( {
 	return (
 		<Dropdown>
 			<Button isIconOnly aria-label={ "Menu" } variant={ "outline" } className={ "border border-accent/50 text-accent shadow-s" }>
-				<EllipsisVertical/>
+				<MoreVertical/>
 			</Button>
 			<Dropdown.Popover>
 				<Dropdown.Menu
@@ -30,7 +30,7 @@ export function CoachDeleteRoutineActionMenu( {
 					<Dropdown.Section>
 						<Header>Opciones</Header>
 						<Dropdown.Item id={ "edit-file" } textValue={ "Editar rutina" }>
-							<Pencil className={ "size-4 shrink-0 text-warning" }/>
+							<PencilLine className={ "size-4 shrink-0 text-warning" }/>
 							<Label className={ "text-warning" }>Editar</Label>
 						</Dropdown.Item>
 						<Dropdown.Item id={ "copy-file" } textValue={ "Copiar rutina" }>
@@ -38,7 +38,7 @@ export function CoachDeleteRoutineActionMenu( {
 							<Label className={ "text-accent" }>Copiar</Label>
 						</Dropdown.Item>
 						<Dropdown.Item id={ "delete-file" } textValue={ "Eliminar rutina" } variant={ "danger" }>
-							<TrashBin className={ "size-4 shrink-0 text-danger" }/>
+							<Trash2 className={ "size-4 shrink-0 text-danger" }/>
 							<Label className={ "text-danger" }>Eliminar</Label>
 						</Dropdown.Item>
 					</Dropdown.Section>

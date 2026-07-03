@@ -1,8 +1,7 @@
 "use client";
 
-import { Eye, Pencil, TrashBin } from "@gravity-ui/icons";
-
 import { IconButton } from "../../../components/ui/icon-button";
+import { Eye, PencilLine, Trash2 } from "lucide-react";
 
 export interface OrdersRowActionsProps {
 	orderId: string;
@@ -15,10 +14,10 @@ export function OrdersRowActions( { orderId }: OrdersRowActionsProps ) {
 				<Eye className={ "size-4" }/>
 			</IconButton>
 			<IconButton label={ "Edit order" } size={ "sm" } variant={ "tertiary" }>
-				<Pencil className={ "size-4" }/>
+				<PencilLine className={ "size-4" }/>
 			</IconButton>
 			<IconButton label={ "Delete order" } size={ "sm" } variant={ "danger-soft" }>
-				<TrashBin className={ "size-4" }/>
+				<Trash2 className={ "size-4" }/>
 			</IconButton>
 		</div>
 	);

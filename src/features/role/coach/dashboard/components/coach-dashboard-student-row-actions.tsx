@@ -1,8 +1,8 @@
 "use client";
 
-import { Calendar, CircleFill, EllipsisVertical, Gear } from "@gravity-ui/icons";
 import { Button, Dropdown, Header, Label } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { CalendarClock, Dumbbell, MoreVertical, UtensilsCrossed } from "lucide-react";
 
 import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary";
 import {
@@ -27,7 +27,7 @@ export function CoachDashboardStudentRowActions( { student }: CoachDashboardStud
 				size={ "sm" }
 				variant={ "ghost" }
 			>
-				<EllipsisVertical className={ "size-4" }/>
+				<MoreVertical className={ "size-4" }/>
 			</Button>
 			<Dropdown.Popover placement={ "bottom end" }>
 				<Dropdown.Menu onAction={ ( key ) => {
@@ -45,15 +45,15 @@ export function CoachDashboardStudentRowActions( { student }: CoachDashboardStud
 				} }>
 					<Header>Opciones</Header>
 					<Dropdown.Item id={ "routine" } textValue={ "Rutina" }>
-						<Gear className={ "size-4 shrink-0 text-accent" }/>
+						<Dumbbell className={ "size-4 shrink-0 text-accent" }/>
 						<Label className={ "text-accent" }>Rutina</Label>
 					</Dropdown.Item>
 					<Dropdown.Item id={ "meal-plan" } textValue={ "Plan alimenticio" }>
-						<CircleFill className={ "size-4 shrink-0 text-success" }/>
+						<UtensilsCrossed className={ "size-4 shrink-0 text-success" }/>
 						<Label className={ "text-success" }>Plan</Label>
 					</Dropdown.Item>
 					<Dropdown.Item id={ "history" } textValue={ "Historial" }>
-						<Calendar className={ "size-4 shrink-0 text-warning" }/>
+						<CalendarClock className={ "size-4 shrink-0 text-warning" }/>
 						<Label className={ "text-warning" }>Historial</Label>
 					</Dropdown.Item>
 				</Dropdown.Menu>

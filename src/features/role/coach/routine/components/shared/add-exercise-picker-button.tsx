@@ -1,5 +1,5 @@
-import { Plus } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
+import { Plus } from "lucide-react";
 
 type AddExercisePickerButtonProps = {
 	onPress: () => void;

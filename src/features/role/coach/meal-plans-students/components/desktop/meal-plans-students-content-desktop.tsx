@@ -3,9 +3,9 @@
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
 import { Button, Card, Chip, Label, SearchField } from "@heroui/react";
-import { ArrowRight } from "@gravity-ui/icons";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { ArrowRight } from "lucide-react";
 
 import { ListPagination } from "@/components/common";
 import type { MealPlansStudentListItem } from "@/features/role/coach/meal-plans-students/actions/get-meal-plans-students";

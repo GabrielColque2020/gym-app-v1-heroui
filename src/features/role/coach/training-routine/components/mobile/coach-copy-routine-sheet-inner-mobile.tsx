@@ -3,7 +3,7 @@
 import { MONTH_OPTIONS_PADDED as MONTH_OPTIONS } from "@/constants/months";
 import { CheckboxButtonGroup, Sheet } from "@heroui-pro/react";
 import { Alert, Button, Chip, Description, EmptyState, Label, ListBox, Select, Separator, Spinner, Surface, Typography } from "@heroui/react";
-import { Copy } from "@gravity-ui/icons";
+import { Copy } from "lucide-react";
 
 import {
 	type CoachCopyRoutineSheetProps,

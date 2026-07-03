@@ -3,8 +3,8 @@
 import type { MealPlansStudentListItem } from "@/features/role/coach/meal-plans-students/actions/get-meal-plans-students";
 
 import { Button, Card, Chip, Label, SearchField } from "@heroui/react";
-import { ArrowRight, Person } from "@gravity-ui/icons";
 import { useRouter } from "next/navigation";
+import { ArrowRight, UserRound } from "lucide-react";
 
 import { ListPagination } from "@/components/common";
 import { useMealPlansStudentsList } from "@/features/role/coach/meal-plans-students/hooks/use-meal-plans-students-list";
@@ -21,7 +21,7 @@ function MealPlansStudentMobileCard( { student }: { student: MealPlansStudentLis
 			<Card.Content className={ "py-1" }>
 				<div className={ "grid grid-cols-[4rem_1fr_auto] items-start gap-3" }>
 					<div className={ "flex size-16 items-center justify-center rounded-full bg-accent-soft text-accent" }>
-						<Person className={ "size-8" }/>
+						<UserRound className={ "size-8" }/>
 					</div>
 
 					<div className={ "min-w-0" }>

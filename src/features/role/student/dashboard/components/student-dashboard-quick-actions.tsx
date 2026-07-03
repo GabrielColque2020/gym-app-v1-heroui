@@ -1,17 +1,17 @@
 "use client";
 
-import { Calendar, CircleFill, Gear } from "@gravity-ui/icons";
 import { Button, Card } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { CalendarClock, Dumbbell, UtensilsCrossed } from "lucide-react";
 
 import { STUDENT_DASHBOARD_QUICK_ACTIONS } from "@/features/role/student/dashboard/services/student-dashboard-links";
 
 export function StudentDashboardQuickActions() {
 	const router = useRouter();
 	const actionIcons = {
-		"history-routines": Calendar,
-		"meal-plans": CircleFill,
-		"training-routine": Gear,
+		"history-routines": CalendarClock,
+		"meal-plans": UtensilsCrossed,
+		"training-routine": Dumbbell,
 	} as const;
 
 	return (

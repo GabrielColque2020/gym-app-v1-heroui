@@ -12,6 +12,7 @@ import { DashboardSidebar } from "./dashboard-sidebar";
 
 export interface AppShellProps {
 	children: ReactNode;
+	userName: string;
 	userRole: Role;
 	/**
 	 * Prefix used for navigation and active-state matching.
@@ -20,7 +21,7 @@ export interface AppShellProps {
 	basePath?: string;
 }
 
-export function AppShell( { basePath = "", children, userRole }: AppShellProps ) {
+export function AppShell( { basePath = "", children, userName, userRole }: AppShellProps ) {
 	const router = useRouter();
 	const pathname = usePathname();
 
@@ -33,7 +34,7 @@ export function AppShell( { basePath = "", children, userRole }: AppShellProps )
 			collapsible={ "icon" }
 			navigate={ navigate }
 		>
-			<DashboardSidebar pathname={ pathname } basePath={ basePath } userRole={ userRole }/>
+			<DashboardSidebar pathname={ pathname } basePath={ basePath } userName={ userName } userRole={ userRole }/>
 			<Sidebar.Main>
 				<DashboardNavbar/>
 				{ children }

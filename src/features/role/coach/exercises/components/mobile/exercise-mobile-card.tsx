@@ -3,8 +3,8 @@
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { Key } from "@heroui/react";
 import { Button, Card, Chip, Dropdown, Header, Label, Spinner, } from "@heroui/react";
-import { CircleCheck, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
 import { useState } from "react";
+import { CheckCircle2, EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
 
 import { ExerciseSheet } from "@/features/role/coach/exercises/components/shared/exercise-sheet";
 import { useExerciseStatusAction } from "@/features/exercises/hooks/use-exercise-status-action";
@@ -95,7 +95,7 @@ export function ExerciseMobileCard( {
 							<Dropdown.Menu onAction={ handleAction }>
 								<Header>Opciones</Header>
 								<Dropdown.Item id={ "edit" } textValue={ "Editar" }>
-									<Pencil className={ "size-4 shrink-0 text-warning" }/>
+									<PencilLine className={ "size-4 shrink-0 text-warning" }/>
 									<Label className={ "text-warning" }>Editar</Label>
 								</Dropdown.Item>
 								<Dropdown.Item
@@ -104,9 +104,9 @@ export function ExerciseMobileCard( {
 									variant={ exercise.active ? "danger" : "default" }
 								>
 									{ exercise.active ? (
-										<TrashBin className={ "size-4 shrink-0 text-danger" }/>
+										<Trash2 className={ "size-4 shrink-0 text-danger" }/>
 									) : (
-										<CircleCheck className={ "size-4 shrink-0 text-success" }/>
+										<CheckCircle2 className={ "size-4 shrink-0 text-success" }/>
 									) }
 									<Label>{ statusLabel }</Label>
 								</Dropdown.Item>

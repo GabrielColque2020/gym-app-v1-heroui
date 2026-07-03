@@ -2,9 +2,8 @@
 
 import type { Key } from "@heroui/react";
 import { Button, Card, Dropdown, Header, Label } from "@heroui/react";
-
-import { CircleFill, EllipsisVertical, Pencil, TrashBin } from "@gravity-ui/icons";
 import { useState } from "react";
+import { CircleDot, MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 import type { CoachMealPlan } from "@/features/meal-plans/types/meal-plans-types";
 import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
@@ -50,7 +49,7 @@ export function MealPlanCard( {
 								className={ "shrink-0 text-foreground" }
 								variant={ "ghost" }
 							>
-								<EllipsisVertical className={ "size-4" }/>
+								<MoreVertical className={ "size-4" }/>
 							</Button>
 							<Dropdown.Popover placement={ "bottom end" }>
 								<Dropdown.Menu onAction={ handleAction }>
@@ -60,7 +59,7 @@ export function MealPlanCard( {
 										<Label className={ "text-warning" }>Editar plan</Label>
 									</Dropdown.Item>
 									<Dropdown.Item id={ "delete" } textValue={ "Eliminar plan" } variant={ "danger" }>
-										<TrashBin className={ "size-4 shrink-0 text-danger" }/>
+								<Trash2 className={ "size-4 shrink-0 text-danger" }/>
 										<Label>Eliminar plan</Label>
 									</Dropdown.Item>
 								</Dropdown.Menu>
@@ -75,7 +74,7 @@ export function MealPlanCard( {
 					{ formatMealPlanDescriptionLines( mealPlan.description ).map( ( line, index ) => (
 						<div key={ `${ mealPlan.id }-${ index }` } className={ "flex gap-2" }>
 							<span className={ "mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground" }>
-								<CircleFill className={ "size-2 text-accent" }/>
+								<CircleDot className={ "size-2 text-accent" }/>
 							</span>
 							<p className={ "min-w-0 flex-1 whitespace-pre-wrap" }>{ line }</p>
 						</div>

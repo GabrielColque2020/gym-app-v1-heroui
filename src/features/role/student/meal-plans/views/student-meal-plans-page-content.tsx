@@ -1,6 +1,8 @@
-﻿"use client";
+"use client";
+
 import { Alert, Button, Card, Spinner } from "@heroui/react";
-import { ArrowsRotateLeft, CircleFill } from "@gravity-ui/icons";
+import { CircleDot, RotateCcw } from "lucide-react";
+
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import type { StudentMealPlan } from "@/features/meal-plans/types/meal-plans-types";
 import { useMealPlans } from "@/features/role/student/meal-plans/hooks/use-meal-plans";
@@ -13,10 +15,7 @@ type StudentMealPlansPageContentProps = { studentId: string | null };
 
 function MealPlanCard( { mealPlan }: { mealPlan: StudentMealPlan } ) {
 	return (
-		<Card
-			className={ "overflow-hidden border border-border/70 shadow-sm" }
-			variant={ "default" }
-		>
+		<Card className={ "overflow-hidden border border-border/70 shadow-sm" } variant={ "default" }>
 			<Card.Header className={ "border-b border-border px-4 py-4" }>
 				<div className={ "min-w-0" }>
 					<p className={ "truncate text-base font-semibold text-foreground" }>
@@ -26,22 +25,14 @@ function MealPlanCard( { mealPlan }: { mealPlan: StudentMealPlan } ) {
 			</Card.Header>
 			<Card.Content className={ "px-4 py-4" }>
 				<div className={ "space-y-2 text-sm leading-6 text-muted" }>
-					{ formatMealPlanDescriptionLines( mealPlan.description ).map(
-						( line, index ) => (
-							<div key={ `${ mealPlan.id }-${ index }` } className={ "flex gap-2" }>
-								<span
-									className={
-										"mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"
-									}
-								>
-									<CircleFill className={ "size-2 text-accent" }/>
-               					 </span>
-								<p className={ "min-w-0 flex-1 whitespace-pre-wrap" }>
-									{ line }
-								</p>
-							</div>
-						),
-					) }
+					{ formatMealPlanDescriptionLines( mealPlan.description ).map( ( line, index ) => (
+						<div key={ `${ mealPlan.id }-${ index }` } className={ "flex gap-2" }>
+							<span className={ "mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground" }>
+								<CircleDot className={ "size-2 text-accent" }/>
+							</span>
+							<p className={ "min-w-0 flex-1 whitespace-pre-wrap" }>{ line }</p>
+						</div>
+					) ) }
 				</div>
 			</Card.Content>
 		</Card>
@@ -54,45 +45,31 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 		{ href: "/student/dashboard", label: "Inicio" },
 		{ label: "Mis planes alimenticios" },
 	];
+
 	if (isLoading) {
 		return (
 			<>
 				<div className={ "mb-0" }>
-					<PageBreadcrumbs
-						backHref={ "/student/dashboard" }
-						backLabel={ "Volver al inicio" }
-						crumbs={ crumbs }
-					/>
+					<PageBreadcrumbs backHref={ "/student/dashboard" } backLabel={ "Volver al inicio" } crumbs={ crumbs }/>
 				</div>
 				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content
-						className={
-							"flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center"
-						}
-					>
+					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
 						<Spinner size={ "lg" }/>
 						<div className={ "space-y-1" }>
-							<p className={ "text-base font-semibold text-foreground" }>
-								Cargando planes alimenticios
-							</p>
-							<p className={ "text-sm text-muted" }>
-								Consultando tus planes alimenticios.
-							</p>
+							<p className={ "text-base font-semibold text-foreground" }>Cargando planes alimenticios</p>
+							<p className={ "text-sm text-muted" }>Consultando tus planes alimenticios.</p>
 						</div>
 					</Card.Content>
 				</Card>
 			</>
 		);
 	}
+
 	if (isError) {
 		return (
 			<>
 				<div className={ "mb-0" }>
-					<PageBreadcrumbs
-						backHref={ "/student/dashboard" }
-						backLabel={ "Volver al inicio" }
-						crumbs={ crumbs }
-					/>
+					<PageBreadcrumbs backHref={ "/student/dashboard" } backLabel={ "Volver al inicio" } crumbs={ crumbs }/>
 				</div>
 				<Alert className={ "border border-danger/20" } status={ "danger" }>
 					<Alert.Content>
@@ -103,53 +80,37 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 			</>
 		);
 	}
+
 	if (!data) return null;
+
 	return (
 		<div className={ "flex flex-col gap-4" }>
-			<PageBreadcrumbs
-				backHref={ "/student/dashboard" }
-				backLabel={ "Volver al inicio" }
-				crumbs={ crumbs }
-			/>
+			<PageBreadcrumbs backHref={ "/student/dashboard" } backLabel={ "Volver al inicio" } crumbs={ crumbs }/>
 			<Card className={ "border border-border bg-surface" } variant={ "default" }>
 				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:px-6" }>
 					<div className={ "flex flex-col gap-3 md:flex-row md:items-end md:justify-between" }>
-						<PageHeader
-							description={ "Consulta los planes alimenticios asignados a tu cuenta." }
-							title={ "Mis planes alimenticios" }
-						/>
+						<PageHeader description={ "Consulta los planes alimenticios asignados a tu cuenta." } title={ "Mis planes alimenticios" }/>
 						<Button
 							className={ "w-full shadow-sm md:w-auto" }
 							isDisabled={ isFetching && !isLoading }
 							onPress={ () => { void refetch(); } }
 						>
-							<ArrowsRotateLeft className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCcw className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
 							{ isFetching && !isLoading ? "Actualizando" : "Actualizar" }
 						</Button>
 					</div>
 				</Card.Header>
 				<Card.Content className={ "px-5 py-4 sm:px-6" }>
 					{ data.mealPlans.length === 0 ? (
-						<Card
-							className={
-								"border border-dashed border-border bg-surface-secondary"
-							}
-							variant={ "default" }
-						>
+						<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
 							<Card.Content className={ "py-10 text-center" }>
-								<p className={ "text-base font-semibold text-foreground" }>
-									No hay planes alimenticios cargados
-								</p>
-								<p className={ "mt-1 text-sm text-muted" }>
-									No tienes planes alimenticios asignados en este momento.
-								</p>
+								<p className={ "text-base font-semibold text-foreground" }>No hay planes alimenticios cargados</p>
+								<p className={ "mt-1 text-sm text-muted" }>No tienes planes alimenticios asignados en este momento.</p>
 							</Card.Content>
 						</Card>
 					) : (
 						<div className={ "grid gap-3 md:grid-cols-2 xl:grid-cols-3" }>
-							{ data.mealPlans.map( ( mealPlan ) => (
-								<MealPlanCard key={ mealPlan.id } mealPlan={ mealPlan }/>
-							) ) }
+							{ data.mealPlans.map( ( mealPlan ) => <MealPlanCard key={ mealPlan.id } mealPlan={ mealPlan }/> ) }
 						</div>
 					) }
 				</Card.Content>
@@ -158,22 +119,17 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	);
 }
 
-export default function StudentMealPlansPageContent( {
-														 studentId,
-													 }: StudentMealPlansPageContentProps ) {
+export default function StudentMealPlansPageContent( { studentId }: StudentMealPlansPageContentProps ) {
 	if (!studentId) {
 		return (
 			<Alert className={ "border border-warning/20" } status={ "warning" }>
 				<Alert.Content>
 					<Alert.Title>Debes iniciar sesion</Alert.Title>
-					<Alert.Description>
-						No se pudo identificar tu cuenta para mostrar tus planes
-						alimenticios.
-					</Alert.Description>
+					<Alert.Description>No se pudo identificar tu cuenta para mostrar tus planes alimenticios.</Alert.Description>
 				</Alert.Content>
 			</Alert>
 		);
 	}
+
 	return <MealPlansPageContentLoaded studentId={ studentId }/>;
 }
-

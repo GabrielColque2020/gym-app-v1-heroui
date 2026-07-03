@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-import { ArrowRightFromSquare, Gear, House, } from "@gravity-ui/icons";
+import { CalendarClock, Dumbbell, House, LogOut, Settings2, UtensilsCrossed, Users } from "lucide-react";
 
 import type { Role } from "@/generated/prisma/client";
 
@@ -15,38 +15,38 @@ export type NavItem = {
 export const NAV_ITEMS: readonly NavItem[] = [
 	{ href: "/coach/dashboard", icon: House, label: "Inicio", roles: [ "COACH" ] },
 	{ href: "/student/dashboard", icon: House, label: "Inicio", roles: [ "STUDENT" ] },
-	{ href: "/student/training-routine", icon: Gear, label: "Rutina de Entrenamiento", roles: [ "STUDENT" ] },
-	{ href: "/student/meal-plans", icon: Gear, label: "Planes Alimenticios por Estudiantes", roles: [ "STUDENT" ] },
-	{ href: "/student/history-routines", icon: Gear, label: "Historial de Rutina", roles: [ "STUDENT" ] },
+	{ href: "/student/training-routine", icon: Dumbbell, label: "Rutina de Entrenamiento", roles: [ "STUDENT" ] },
+	{ href: "/student/meal-plans", icon: UtensilsCrossed, label: "Planes Alimenticios por Estudiantes", roles: [ "STUDENT" ] },
+	{ href: "/student/history-routines", icon: CalendarClock, label: "Historial de Rutina", roles: [ "STUDENT" ] },
 	{
 		children: [
-			{ href: "/coach/exercises", icon: Gear, label: "Ejercicios", roles: [ "COACH" ] },
-			{ href: "/coach/student", icon: Gear, label: "Estudiantes", roles: [ "COACH" ] },
+			{ href: "/coach/exercises", icon: Dumbbell, label: "Ejercicios", roles: [ "COACH" ] },
+			{ href: "/coach/student", icon: Users, label: "Estudiantes", roles: [ "COACH" ] },
 			{
 				href: "/coach/training-routines-students",
-				icon: Gear,
+				icon: CalendarClock,
 				label: "Rutinas por Estudiantes",
 				roles: [ "COACH" ],
 			},
 			{
 				href: "/coach/meal-plans-students",
-				icon: Gear,
+				icon: UtensilsCrossed,
 				label: "Planes Alimenticios por Estudiantes",
 				roles: [ "COACH" ],
 			},
 			{
 				href: "/coach/history-routines-students",
-				icon: Gear,
+				icon: CalendarClock,
 				label: "Historial de Rutina por Estudiantes",
 				roles: [ "COACH" ],
 			},
 		],
-		icon: Gear,
+		icon: Settings2,
 		label: "Administración",
 		roles: [ "COACH" ],
 	},
 ] as const;
 
 export const FOOTER_ITEMS: readonly NavItem[] = [
-	{ href: "/logout", icon: ArrowRightFromSquare, label: "Cerrar Sesión" },
+	{ href: "/logout", icon: LogOut, label: "Cerrar Sesión" },
 ] as const;

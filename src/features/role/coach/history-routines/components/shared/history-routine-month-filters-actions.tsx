@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@heroui/react";
-import { ArrowsRotateLeft, Magnifier } from "@gravity-ui/icons";
+import { RotateCcw, Search } from "lucide-react";
 
 import { FilterSelect } from "@/components/common";
 
@@ -54,7 +54,7 @@ export function HistoryRoutineMonthFiltersActions( {
 				onSelectionChange={ onYearChangeAction }
 			/>
 			<Button className={ "w-full shadow-sm lg:w-auto" } onPress={ onSearchAction }>
-				<Magnifier/>
+				<Search/>
 				Buscar
 			</Button>
 			<Button
@@ -63,7 +63,7 @@ export function HistoryRoutineMonthFiltersActions( {
 				variant={ "secondary" }
 				onPress={ onRefreshAction }
 			>
-				<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+				<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 				{ isRefreshing ? "Actualizando..." : "Actualizar" }
 			</Button>
 			<Button className={ "w-full lg:w-auto" } variant={ "secondary" } onPress={ onClearAction }>

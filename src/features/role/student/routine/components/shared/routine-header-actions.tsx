@@ -1,5 +1,5 @@
-import { ArrowsRotateLeft, FloppyDisk } from "@gravity-ui/icons";
 import { Button, Spinner } from "@heroui/react";
+import { RotateCcw, Save } from "lucide-react";
 
 type RoutineHeaderActionsProps = {
 	canSaveProgress: boolean;
@@ -33,11 +33,11 @@ export function RoutineHeaderActions( {
 					onPress={ onRefresh }
 					variant={ "secondary" }
 				>
-					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+					<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando" : "Actualizar" }
 				</Button>
 				<Button className={ "flex-1 font-semibold" } isDisabled={ !canSaveProgress } isPending={ isPending } onPress={ onSave }>
-					{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <FloppyDisk/> }
+					{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Save/> }
 					{ isPending ? "Guardando..." : "Guardar" }
 				</Button>
 			</div>
@@ -54,11 +54,11 @@ export function RoutineHeaderActions( {
 					onPress={ onRefresh }
 					variant={ "secondary" }
 				>
-					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+					<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
 				<Button className={ "font-semibold" } isDisabled={ !canSaveProgress } isPending={ isPending } size={ "lg" } onPress={ onSave }>
-					{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <FloppyDisk/> }
+					{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Save/> }
 					{ isPending ? "Guardando..." : "Guardar progreso" }
 				</Button>
 			</div>

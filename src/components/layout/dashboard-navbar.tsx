@@ -1,8 +1,8 @@
 "use client";
 
-import { Moon } from "@gravity-ui/icons";
 import { useTheme } from "@heroui/react";
 import { Navbar, Sidebar } from "@heroui-pro/react";
+import { Moon, Sun } from "lucide-react";
 
 import { IconButton } from "../ui/icon-button";
 
@@ -22,7 +22,7 @@ export function DashboardNavbar() {
 						variant={ "tertiary" }
 						onPress={ () => setTheme( isDarkTheme ? "light" : "dark" ) }
 					>
-						<Moon className={ "size-4" }/>
+						{ isDarkTheme ? <Sun className={ "size-4" }/> : <Moon className={ "size-4" }/> }
 					</IconButton>
 				</div>
 			</Navbar.Header>

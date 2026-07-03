@@ -1,8 +1,8 @@
 "use client";
 
-import { Calendar, Layers } from "@gravity-ui/icons";
 import { Label, ListBox, Select } from "@heroui/react";
 import { Segment } from "@heroui-pro/react";
+import { CalendarClock, Layers3 } from "lucide-react";
 
 type Option = {
 	label: string;
@@ -46,7 +46,7 @@ export function CoachCopyRoutineSheetSourceControls( {
 					<Segment.Item className={ "flex-1" } id={ "month" }>
 						{ ( { isSelected } ) => (
 							<span className={ `flex items-center justify-center gap-1.5 ${ isSelected ? "font-semibold text-accent" : "text-muted" }` }>
-								<Calendar className={ "size-3.5" }/>
+								<CalendarClock className={ "size-3.5" }/>
 								Mes
 							</span>
 						) }
@@ -54,7 +54,7 @@ export function CoachCopyRoutineSheetSourceControls( {
 					<Segment.Item className={ "flex-1" } id={ "weeks" }>
 						{ ( { isSelected } ) => (
 							<span className={ `flex items-center justify-center gap-1.5 ${ isSelected ? "font-semibold text-accent" : "text-muted" }` }>
-								<Layers className={ "size-3.5" }/>
+								<Layers3 className={ "size-3.5" }/>
 								Semanas
 							</span>
 						) }

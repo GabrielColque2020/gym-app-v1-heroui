@@ -26,7 +26,7 @@ export function useStudentSheetState( props: StudentFormSheetProps ) {
 	const isEditMode = props.mode === "edit";
 	const activeMutation = isEditMode ? updateStudent : createStudent;
 	const isOpen = props.isOpen ?? internalIsOpen;
-	const setIsOpen = props.onOpenChange ?? setInternalIsOpen;
+	const setIsOpen = props.onOpenChangeAction ?? setInternalIsOpen;
 	const placement = props.placement ?? "right";
 	const title = isEditMode ? "Editar estudiante" : "Nuevo estudiante";
 	const description = isEditMode

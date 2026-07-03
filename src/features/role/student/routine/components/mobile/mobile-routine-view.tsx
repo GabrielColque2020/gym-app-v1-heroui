@@ -1,6 +1,6 @@
-import { ArrowLeft, ArrowRight, FloppyDisk } from "@gravity-ui/icons";
 import { Button, ScrollShadow } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react";
+import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 
 import MobileExerciseCard from "@/features/role/student/routine/components/mobile/mobile-exercise-card";
 import { MobileExerciseSetCard } from "@/features/role/student/routine/components/mobile/mobile-exercise-set-card";
@@ -80,7 +80,7 @@ export default function MobileRoutineView( {
 					</div>
 
 					<Button className={ "mt-4 flex w-full font-semibold sm:hidden" } fullWidth isDisabled={ !canSaveProgress } isPending={ isPending } size={ "lg" } onPress={ onSave }>
-						<FloppyDisk/>
+						<Save/>
 						Guardar progreso
 					</Button>
 				</>

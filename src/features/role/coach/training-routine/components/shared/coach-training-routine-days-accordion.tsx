@@ -3,7 +3,7 @@
 import type { CoachTrainingRoutineDay } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 
 import { Accordion, Chip, Description, Typography } from "@heroui/react";
-import { CircleFill } from "@gravity-ui/icons";
+import { Dot } from "lucide-react";
 
 type CoachTrainingRoutineDaysAccordionProps = {
 	days: CoachTrainingRoutineDay[];
@@ -65,7 +65,7 @@ export function CoachTrainingRoutineDaysAccordion( {
 											{ day.routines.map( ( routine ) => (
 												<div key={ routine.id } className={ "grid min-w-0 gap-1 text-sm" }>
 													<div className={ "flex min-w-0 items-center gap-2" }>
-														<CircleFill className={ "size-2 shrink-0 text-accent" }/>
+														<Dot className={ "size-4 shrink-0 text-accent" }/>
 														<span className={ "min-w-0 flex-1 truncate font-medium" }>
 															{ routine.exercise?.name ?? "Ejercicio sin nombre" }
 														</span>

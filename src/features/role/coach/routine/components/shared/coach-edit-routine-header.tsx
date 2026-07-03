@@ -1,5 +1,5 @@
-import { FloppyDisk } from "@gravity-ui/icons";
 import { Button, Spinner } from "@heroui/react";
+import { Save } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
 
@@ -29,7 +29,7 @@ export function CoachEditRoutineHeader( {
 				isPending={ isSaving }
 				onPress={ onSave }
 			>
-				{ isSaving ? <Spinner color={ "current" } size={ "sm" }/> : <FloppyDisk className={ "size-4" }/> }
+				{ isSaving ? <Spinner color={ "current" } size={ "sm" }/> : <Save className={ "size-4" }/> }
 				{ isSaving ? "Guardando..." : "Guardar cambios" }
 			</Button>
 		</header>

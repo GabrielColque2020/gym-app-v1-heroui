@@ -1,19 +1,19 @@
 "use client";
 
 import { Button, Card } from "@heroui/react";
-import { Calendar, CircleFill, Clock, Gear, Person } from "@gravity-ui/icons";
 import { useRouter } from "next/navigation";
+import { CalendarClock, Clock3, Dumbbell, UtensilsCrossed, Users } from "lucide-react";
 
 import { COACH_DASHBOARD_QUICK_ACTIONS } from "@/features/role/coach/dashboard/services/coach-dashboard-links";
 
 export function CoachDashboardQuickActions() {
 	const router = useRouter();
 	const actionIcons = {
-		exercises: Gear,
-		"history-routines": Clock,
-		"meal-plans": CircleFill,
-		students: Person,
-		"training-routines": Calendar,
+		exercises: Dumbbell,
+		"history-routines": Clock3,
+		"meal-plans": UtensilsCrossed,
+		students: Users,
+		"training-routines": CalendarClock,
 	} as const;
 
 	return (

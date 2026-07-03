@@ -1,8 +1,8 @@
 "use client";
 
-import { ArrowLeft } from "@gravity-ui/icons";
 import { Breadcrumbs, Button } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 type PageBreadcrumbItem = {
 	href?: string;

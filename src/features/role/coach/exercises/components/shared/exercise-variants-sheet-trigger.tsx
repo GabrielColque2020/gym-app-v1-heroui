@@ -1,5 +1,5 @@
-import { CircleLink } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
+import { Link2 } from "lucide-react";
 
 import type { ExerciseVariantsTarget } from "./exercise-variants-sheet.types";
 
@@ -29,7 +29,7 @@ export function ExerciseVariantsTrigger( {
 			variant={ "ghost" }
 			onPress={ onPress }
 		>
-			<CircleLink className={ "size-4" }/>
+			<Link2 className={ "size-4" }/>
 			{ showLabel ? "Variantes" : null }
 		</Button>
 	);

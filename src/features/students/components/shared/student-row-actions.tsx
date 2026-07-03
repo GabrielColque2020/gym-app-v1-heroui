@@ -1,7 +1,7 @@
 import type { StudentListItem } from "@/features/students/actions/get-students";
 
-import { CircleCheck, TrashBin } from "@gravity-ui/icons";
 import { Button, Spinner } from "@heroui/react";
+import { CheckCircle2, Trash2 } from "lucide-react";
 
 import { StudentSheet } from "@/features/students/components/shared/student-sheet";
 import { useStudentStatusAction } from "@/features/students/hooks/use-student-status-action";
@@ -28,9 +28,9 @@ export function StudentRowActions( { student }: StudentRowActionsProps ) {
 				{ isPending ? (
 					<Spinner color={ "current" } size={ "sm" }/>
 				) : student.active ? (
-					<TrashBin className={ "size-4" }/>
+					<Trash2 className={ "size-4" }/>
 				) : (
-					<CircleCheck className={ "size-4" }/>
+					<CheckCircle2 className={ "size-4" }/>
 				) }
 			</Button>
 		</div>

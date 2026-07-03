@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowsRotateLeft, Calendar, ChevronDown } from "@gravity-ui/icons";
 import { Button, ButtonGroup, Dropdown, Label, Tabs } from "@heroui/react";
+import { CalendarDays, ChevronDown, RotateCcw } from "lucide-react";
 
 import { IconButton } from "@/components/ui/icon-button";
 
@@ -28,11 +28,11 @@ export function DashboardToolbar() {
 			</Tabs>
 			<div className={ "flex flex-wrap items-center gap-2" }>
 				<IconButton label={ "Refresh" } size={ "sm" } variant={ "tertiary" }>
-					<ArrowsRotateLeft className={ "size-4" }/>
+					<RotateCcw className={ "size-4" }/>
 				</IconButton>
 				<ButtonGroup size={ "sm" } variant={ "tertiary" }>
 					<Button>
-						<Calendar className={ "size-4" }/>
+						<CalendarDays className={ "size-4" }/>
 						Monthly
 					</Button>
 					<Dropdown>

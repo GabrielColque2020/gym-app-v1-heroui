@@ -1,7 +1,7 @@
 "use client";
 
-import { Pencil, Plus } from "@gravity-ui/icons";
 import { Description, Typography } from "@heroui/react";
+import { PencilLine, Plus } from "lucide-react";
 
 type CoachRoutineStructureHeaderProps = {
 	description: string;
@@ -12,7 +12,7 @@ export function CoachRoutineStructureHeader( {
 	description,
 	mode,
 }: CoachRoutineStructureHeaderProps ) {
-	const Icon = mode === "create" ? Plus : Pencil;
+	const Icon = mode === "create" ? Plus : PencilLine;
 	const title = mode === "create" ? "Crear rutina" : "Editar rutina";
 
 	return (

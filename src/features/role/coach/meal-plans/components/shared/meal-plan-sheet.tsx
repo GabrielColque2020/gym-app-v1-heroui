@@ -2,7 +2,7 @@
 
 import { Sheet } from "@heroui-pro/react";
 import { Alert, Button, Description, FieldError, Label, ListBox, Select, Spinner, TextArea, TextField } from "@heroui/react";
-import { CircleCheck, Pencil, Plus } from "@gravity-ui/icons";
+import { CheckCircle2, Pencil, Plus } from "lucide-react";
 
 import { MEAL_TIME_OPTIONS, type MealTimeValue } from "@/features/meal-plans/services/meal-plans-form";
 import type { MealPlanSheetProps } from "@/features/role/coach/meal-plans/components/shared/meal-plan-sheet.types";
@@ -129,7 +129,7 @@ export function MealPlanSheet( props: MealPlanSheetProps ) {
 						<Button isDisabled={ isSubmitDisabled } isPending={ activeMutation.isPending } type={ "submit" }>
 							{ ( { isPending } ) => (
 								<>
-									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CircleCheck className={ "size-4" }/> }
+							{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CheckCircle2 className={ "size-4" }/> }
 									{ isPending ? ( isEditMode ? "Actualizando..." : "Guardando..." ) : submitLabel }
 								</>
 							) }

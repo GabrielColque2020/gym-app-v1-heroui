@@ -5,9 +5,9 @@ import type { HistoryRoutinesStudentListItem } from "@/features/role/coach/histo
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
 import { Button, Card, Chip, Label, SearchField } from "@heroui/react";
-import { ArrowRight } from "@gravity-ui/icons";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { ArrowRight } from "lucide-react";
 
 import { ListPagination } from "@/components/common";
 import { useHistoryRoutinesStudentsList } from "@/features/role/coach/history-routines-students/hooks/use-history-routines-students-list";

@@ -2,7 +2,7 @@ import { PageHeader } from "@/components/common";
 import { FilterSelect } from "@/components/common/filter-select";
 import { MONTH_OPTIONS_PADDED } from "@/constants/months";
 import { Button, Card } from "@heroui/react";
-import { ArrowsRotateLeft } from "@gravity-ui/icons";
+import { RotateCcw } from "lucide-react";
 import { useState } from "react";
 
 type TrainingRoutinesFilterProps = {
@@ -85,7 +85,7 @@ export function TrainingRoutinesFilter( {
 						onPress={ onRefresh }
 						variant={ "secondary" }
 					>
-						<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+						<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 						{ isRefreshing ? "Actualizando" : "Actualizar" }
 					</Button>
 					<Button

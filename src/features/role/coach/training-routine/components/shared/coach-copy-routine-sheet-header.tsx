@@ -1,8 +1,8 @@
 "use client";
 
-import { Copy } from "@gravity-ui/icons";
 import { Chip, Typography } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
+import { Copy } from "lucide-react";
 
 type CoachCopyRoutineSheetHeaderProps = {
 	destLabel: string;

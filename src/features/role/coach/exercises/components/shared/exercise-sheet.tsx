@@ -12,7 +12,7 @@ import { Sheet } from "@heroui-pro/react";
 import { useCreateExercise, useUpdateExercise } from "@/features/exercises/hooks/use-exercises";
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";
 
-import { CircleCheck, ExerciseSheetHeader } from "./exercise-sheet-header";
+import { CheckCircle2, ExerciseSheetHeader } from "./exercise-sheet-header";
 import { ExerciseSheetFields } from "./exercise-sheet-fields";
 import { ExerciseSheetTrigger } from "./exercise-sheet-trigger";
 
@@ -192,7 +192,7 @@ export function ExerciseSheet( props: ExerciseFormSheetProps ) {
 						<Button isDisabled={ isSubmitDisabled } isPending={ activeMutation.isPending } type={ "submit" }>
 							{ ( { isPending } ) => (
 								<>
-									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CircleCheck className={ "size-4" }/> }
+									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CheckCircle2 className={ "size-4" }/> }
 									{ isPending ? ( isEditMode ? "Actualizando..." : "Guardando..." ) : submitLabel }
 								</>
 							) }

@@ -1,7 +1,7 @@
 "use client";
 
 import { Alert, Button, Card } from "@heroui/react";
-import { ArrowsRotateLeft } from "@gravity-ui/icons";
+import { RotateCcw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { CoachMealPlansEmptyState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-empty-state";
@@ -49,7 +49,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<MealPlanSheet mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
@@ -60,7 +60,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<MealPlanSheet mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>

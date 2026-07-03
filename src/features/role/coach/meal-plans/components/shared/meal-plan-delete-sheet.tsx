@@ -2,7 +2,7 @@
 
 import { Sheet } from "@heroui-pro/react";
 import { Alert, Button, Spinner, Surface, Typography, } from "@heroui/react";
-import { CircleFill, TrashBin } from "@gravity-ui/icons";
+import { CircleDot, Trash2 } from "lucide-react";
 
 import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import { MealPlanDeleteSheetHeader } from "@/features/role/coach/meal-plans/components/shared/meal-plan-delete-sheet-header";
@@ -47,7 +47,7 @@ export function MealPlanDeleteSheet( {
 					variant={ "ghost" }
 					onPress={ openSheet }
 				>
-					<TrashBin className={ "size-4" }/>
+					<Trash2 className={ "size-4" }/>
 					{ showTriggerLabel ? "Eliminar" : null }
 				</Button>
 			) }
@@ -88,7 +88,7 @@ export function MealPlanDeleteSheet( {
 									{ formatMealPlanDescriptionLines( mealPlan.description ).map( ( line, index ) => (
 										<div key={ `${ mealPlan.id }-${ index }` } className={ "flex gap-2" }>
 											<span className={ "mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground" }>
-												<CircleFill className={ "size-2" }/>
+												<CircleDot className={ "size-2" }/>
 											</span>
 											<p className={ "min-w-0 flex-1 whitespace-pre-wrap" }>{ line }</p>
 										</div>
@@ -111,7 +111,7 @@ export function MealPlanDeleteSheet( {
 					>
 						{ ( { isPending } ) => (
 							<>
-								{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <TrashBin className={ "size-4" }/> }
+								{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Trash2 className={ "size-4" }/> }
 								{ isPending ? "Eliminando..." : "Eliminar plan" }
 							</>
 						) }

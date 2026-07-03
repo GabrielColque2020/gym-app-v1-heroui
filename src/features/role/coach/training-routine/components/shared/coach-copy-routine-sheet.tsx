@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Copy } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
+import { Copy } from "lucide-react";
 
 import { CoachCopyRoutineSheetInnerDesktop, } from "@/features/role/coach/training-routine/components/desktop/coach-copy-routine-sheet-inner-desktop";
 import {

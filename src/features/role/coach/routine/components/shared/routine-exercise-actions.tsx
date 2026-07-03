@@ -1,8 +1,8 @@
 "use client";
 
-import { CircleLink, EllipsisVertical, TrashBin } from "@gravity-ui/icons";
 import { Button, Dropdown, Header, Label } from "@heroui/react";
 import { useState } from "react";
+import { Link2, MoreVertical, Trash2 } from "lucide-react";
 
 import { ExerciseVariantsSheet } from "@/features/role/coach/exercises/components/shared/exercise-variants-sheet";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
@@ -31,7 +31,7 @@ export function RoutineExerciseActions( {
 					className={ "size-8 shrink-0 text-foreground" }
 					variant={ "ghost" }
 				>
-					<EllipsisVertical className={ "size-4" }/>
+					<MoreVertical className={ "size-4" }/>
 				</Button>
 				<Dropdown.Popover placement={ "bottom end" }>
 					<Dropdown.Menu
@@ -42,11 +42,11 @@ export function RoutineExerciseActions( {
 					>
 						<Header>Opciones</Header>
 						<Dropdown.Item id={ "variants" } textValue={ "Variantes" } isDisabled={ !exercise || !routineId }>
-							<CircleLink className={ "size-4 shrink-0 text-accent" }/>
+							<Link2 className={ "size-4 shrink-0 text-accent" }/>
 							<Label className={ "text-accent" }>Variantes</Label>
 						</Dropdown.Item>
 						<Dropdown.Item id={ "delete" } textValue={ "Eliminar" } variant={ "danger" }>
-							<TrashBin className={ "size-4 shrink-0 text-danger" }/>
+							<Trash2 className={ "size-4 shrink-0 text-danger" }/>
 							<Label>Eliminar</Label>
 						</Dropdown.Item>
 					</Dropdown.Menu>

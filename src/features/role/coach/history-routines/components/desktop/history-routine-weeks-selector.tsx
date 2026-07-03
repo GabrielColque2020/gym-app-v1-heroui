@@ -1,7 +1,7 @@
 "use client";
 
 import { Chip, Typography } from "@heroui/react";
-import { CircleCheck } from "@gravity-ui/icons";
+import { CheckCircle2 } from "lucide-react";
 
 import type { HistoryRoutineWeekGroup } from "@/features/history-routines/services/history-routines-view";
 import { getWeekExerciseCount } from "@/features/role/coach/history-routines/components/shared/history-routine-week-metrics";
@@ -54,7 +54,7 @@ export function HistoryRoutineWeeksSelector( {
 									}`
 								}
 							>
-								<CircleCheck className={ "size-3" }/>
+								<CheckCircle2 className={ "size-3" }/>
 							</span>
 							<span className={ "min-w-0" }>
 								<span className={ "block text-sm font-semibold" }>{ `Semana ${ weekGroup.week }` }</span>

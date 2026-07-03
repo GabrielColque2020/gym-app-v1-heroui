@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback } from "react";
-import { ArrowsRotateLeft } from "@gravity-ui/icons";
 import { Alert, Button, Card, Spinner } from "@heroui/react";
+import { RotateCcw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { StudentsContentDesktop } from "@/features/students/components/desktop/students-content-desktop";
@@ -83,7 +83,7 @@ export default function CoachStudentsPageContent() {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<StudentSheet
@@ -98,7 +98,7 @@ export default function CoachStudentsPageContent() {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<StudentSheet

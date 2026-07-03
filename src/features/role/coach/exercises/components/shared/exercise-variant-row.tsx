@@ -1,5 +1,5 @@
-import { TrashBin } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
+import { Trash2 } from "lucide-react";
 
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
 
@@ -33,7 +33,7 @@ export function ExerciseVariantRow( {
 				variant={ "ghost" }
 				onPress={ () => onRemove( variant.exercise.id ) }
 			>
-				<TrashBin className={ "size-4 text-danger" }/>
+				<Trash2 className={ "size-4 text-danger" }/>
 			</Button>
 		</div>
 	);

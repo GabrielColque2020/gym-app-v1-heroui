@@ -1,6 +1,6 @@
-import { Plus } from "@gravity-ui/icons";
 import { Description } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
+import { Plus } from "lucide-react";
 
 export function SearchAndCreateExerciseSheetHeader() {
 	return (

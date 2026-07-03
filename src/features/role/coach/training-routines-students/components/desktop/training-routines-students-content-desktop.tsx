@@ -4,9 +4,9 @@ import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
 import type { TrainingRoutinesStudentListItem } from "@/features/role/coach/training-routines-students/actions/get-training-routines-students";
 import { Button, Card, Chip, Label, SearchField } from "@heroui/react";
-import { ArrowRight } from "@gravity-ui/icons";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { ArrowRight } from "lucide-react";
 
 import { ListPagination } from "@/components/common";
 import { useTrainingRoutinesStudentsList } from "@/features/role/coach/training-routines-students/hooks/use-training-routines-students-list";

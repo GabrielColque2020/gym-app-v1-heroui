@@ -5,7 +5,7 @@ export type StudentFormSheetProps =
 		hideTrigger?: boolean;
 		isOpen?: boolean;
 		mode: "create";
-		onOpenChange?: ( isOpen: boolean ) => void;
+		onOpenChangeAction?: ( isOpen: boolean ) => void;
 		placement?: "bottom" | "right";
 		student?: never;
 		triggerClassName?: string;
@@ -15,7 +15,7 @@ export type StudentFormSheetProps =
 		hideTrigger?: boolean;
 		isOpen?: boolean;
 		mode: "edit";
-		onOpenChange?: ( isOpen: boolean ) => void;
+		onOpenChangeAction?: ( isOpen: boolean ) => void;
 		placement?: "bottom" | "right";
 		student: StudentListItem;
 		triggerClassName?: string;

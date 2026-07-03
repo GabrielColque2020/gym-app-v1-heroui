@@ -1,8 +1,8 @@
 "use client";
 
-import { Plus } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
 import { useState } from "react";
+import { Plus } from "lucide-react";
 
 import CoachRoutineStructure from "@/features/role/coach/training-routine/components/shared/coach-routine-structure";
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";

@@ -1,9 +1,9 @@
 "use client";
 
-import { CircleLink } from "@gravity-ui/icons";
 import { Alert, Chip, Description, Spinner } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
 import { useState } from "react";
+import { Link2 } from "lucide-react";
 
 import { useExerciseVariants } from "@/features/exercises/hooks/use-exercise-variants";
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
@@ -36,7 +36,7 @@ function ExerciseVariantsSheetHeader( { exercise }: { exercise: ExerciseVariants
 		<Sheet.Header className={ "border-default-100 relative border-b pb-4" }>
 			<div className={ "flex gap-3" }>
 				<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
-					<CircleLink className={ "size-5" }/>
+					<Link2 className={ "size-5" }/>
 				</div>
 				<div className={ "min-w-0" }>
 					<Sheet.Heading>{ exercise.name }</Sheet.Heading>

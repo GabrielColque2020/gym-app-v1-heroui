@@ -1,9 +1,9 @@
 "use client";
 
-import { EllipsisVertical, Pencil } from "@gravity-ui/icons";
 import { Button, Dropdown, Header, Label } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { MoreVertical, PencilLine } from "lucide-react";
 
 type CoachTrainingRoutineDayOptionsMenuProps = {
 	month: number;
@@ -41,7 +41,7 @@ export function CoachTrainingRoutineDayOptionsMenu( {
 					variant={ "outline" }
 					className={ "border border-accent/50 text-accent shadow-s" }
 				>
-					<EllipsisVertical/>
+					<MoreVertical/>
 				</Button>
 				<Dropdown.Popover>
 					<Dropdown.Menu onAction={ ( key ) => {
@@ -52,7 +52,7 @@ export function CoachTrainingRoutineDayOptionsMenu( {
 						<Dropdown.Section>
 							<Header>Opciones</Header>
 							<Dropdown.Item id={ "edit-day" } textValue={ "Editar Dia" } variant={ "default" }>
-								<Pencil className={ "size-4 shrink-0 text-warning" }/>
+								<PencilLine className={ "size-4 shrink-0 text-warning" }/>
 								<Label className={ "text-warning" }>Editar</Label>
 							</Dropdown.Item>
 						</Dropdown.Section>

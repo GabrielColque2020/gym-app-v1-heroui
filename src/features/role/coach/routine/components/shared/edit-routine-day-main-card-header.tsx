@@ -1,5 +1,5 @@
-import { ArrowsRotateLeft } from "@gravity-ui/icons";
 import { Button, Card } from "@heroui/react";
+import { RotateCcw } from "lucide-react";
 
 import { SearchAndCreateExerciseSheet } from "@/features/role/coach/routine/components/shared/search-and-create-exercise-sheet";
 
@@ -38,7 +38,7 @@ export function EditRoutineDayMainCardHeader( {
 					variant={ "secondary" }
 					onPress={ onRefreshAction }
 				>
-					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+					<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
 				<SearchAndCreateExerciseSheet

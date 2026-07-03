@@ -1,10 +1,10 @@
 "use client";
 
-import { EllipsisVertical } from "@gravity-ui/icons";
 import { Card } from "@heroui/react";
 import { LineChart } from "@heroui-pro/react";
+import { MoreVertical } from "lucide-react";
 
-import { IconButton } from "../../../components/ui/icon-button";
+import { IconButton } from "@/components/ui/icon-button";
 import { TRAFFIC_DATA } from "../data/traffic";
 
 const Y_TICKS = [ 0, 5000, 10000, 20000 ];
@@ -24,7 +24,7 @@ export function TrafficSourceCard() {
 						<LegendDot color={ "var(--chart-4)" } label={ "Paid Ads" }/>
 					</div>
 					<IconButton label={ "More options" } size={ "sm" } variant={ "tertiary" }>
-						<EllipsisVertical className={ "size-4" }/>
+						<MoreVertical className={ "size-4" }/>
 					</IconButton>
 				</div>
 			</Card.Header>

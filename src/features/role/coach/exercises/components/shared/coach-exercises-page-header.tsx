@@ -1,5 +1,5 @@
-import { ArrowsRotateLeft } from "@gravity-ui/icons";
 import { Button, Card } from "@heroui/react";
+import { RotateCcw } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
 import { ExerciseSheet } from "@/features/role/coach/exercises/components/shared/exercise-sheet";
@@ -26,7 +26,7 @@ export function CoachExercisesPageHeader( {
 					variant={ "secondary" }
 					onPress={ onRefreshAction }
 				>
-					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+					<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
 				<ExerciseSheet
@@ -41,7 +41,7 @@ export function CoachExercisesPageHeader( {
 					variant={ "secondary" }
 					onPress={ onRefreshAction }
 				>
-					<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+					<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
 				<ExerciseSheet

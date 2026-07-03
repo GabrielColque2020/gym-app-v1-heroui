@@ -4,7 +4,7 @@ import React from "react";
 
 import { Sheet } from "@heroui-pro/react";
 import { Alert, Button, Spinner, } from "@heroui/react";
-import { CircleCheck } from "@gravity-ui/icons";
+import { CheckCircle2 } from "lucide-react";
 import { StudentSheetDetailsSection } from "@/features/students/components/shared/student-sheet-details-section";
 import { StudentSheetHeader } from "@/features/students/components/shared/student-sheet-header";
 import { StudentSheetProfileSection } from "@/features/students/components/shared/student-sheet-profile-section";
@@ -95,7 +95,7 @@ export function StudentSheet( props: StudentFormSheetProps ) {
 						<Button isDisabled={ isSubmitDisabled } isPending={ activeMutation.isPending } type={ "submit" }>
 							{ ( { isPending } ) => (
 								<>
-									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CircleCheck className={ "size-4" }/> }
+									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CheckCircle2 className={ "size-4" }/> }
 									{ isPending ? ( isEditMode ? "Actualizando..." : "Guardando..." ) : submitLabel }
 								</>
 							) }

@@ -1,8 +1,8 @@
 import type { StudentTrainingRoutineDay } from "@/features/role/student/training-routine/actions/get-training-routines-by-student";
 
 import Link from "next/link";
-import { CircleCheckFill } from "@gravity-ui/icons";
 import { Button, Card, Chip } from "@heroui/react";
+import { CheckCircle2 } from "lucide-react";
 
 import {
 	getTrainingRoutineDayDescription,
@@ -30,7 +30,7 @@ export function TrainingRoutinesDayCard( { day }: TrainingRoutinesDayCardProps )
 							size={ "md" }
 							variant={ "soft" }
 						>
-							<CircleCheckFill width={ 12 }/>
+							<CheckCircle2 className={ "size-3" }/>
 							<Chip.Label>
 								{ getTrainingRoutineDayStatusLabel( day.isFinalized ) }
 							</Chip.Label>

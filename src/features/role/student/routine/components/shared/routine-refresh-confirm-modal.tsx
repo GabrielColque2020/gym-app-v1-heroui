@@ -1,5 +1,5 @@
-import { ArrowsRotateLeft } from "@gravity-ui/icons";
 import { Button, Modal } from "@heroui/react";
+import { RotateCcw } from "lucide-react";
 
 type RoutineRefreshConfirmModalProps = {
 	isOpen: boolean;
@@ -42,7 +42,7 @@ export function RoutineRefreshConfirmModal( {
 										close();
 										onConfirmAction();
 									} }>
-										<ArrowsRotateLeft className={ "size-4" }/>
+										<RotateCcw className={ "size-4" }/>
 										Actualizar
 									</Button>
 								</Modal.Footer>

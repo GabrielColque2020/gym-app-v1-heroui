@@ -4,10 +4,10 @@ import type { CoachTrainingRoutine } from "@/features/role/coach/training-routin
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Card } from "@heroui/react";
-import { ArrowsRotateLeft, Magnifier } from "@gravity-ui/icons";
 import { FilterSelect, PageHeader } from "@/components/common";
 import { CoachDeleteRoutineSheet } from "@/features/role/coach/training-routine/components/shared/coach-delete-routine-sheet";
 import { CoachCreateRoutineSheet } from "@/features/role/coach/training-routine/components/shared/coach-create-routine-sheet";
+import { Search, RotateCcw } from "lucide-react";
 
 type CoachTrainingRoutineFilterProps = {
 	month: number;
@@ -80,7 +80,7 @@ export function CoachTrainingRoutineFilter( {
 				</div>
 				<div className={ "form-control flex flex-row items-end gap-2" }>
 					<Button className={ "shadow-sm" } onPress={ handleSearch }>
-						<Magnifier/> Buscar
+						<Search/> Buscar
 					</Button>
 					<Button
 						className={ "shadow-sm" }
@@ -88,7 +88,7 @@ export function CoachTrainingRoutineFilter( {
 						variant={ "secondary" }
 						onPress={ onRefreshAction }
 					>
-						<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+						<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 						{ isRefreshing ? "Actualizando..." : "Actualizar" }
 					</Button>
 					{ routineCount === 0 ? (

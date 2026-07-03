@@ -1,5 +1,5 @@
-import { ArrowsRotateLeft } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
+import { RotateCcw } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
 
@@ -26,7 +26,7 @@ export function StudentDashboardHero( {
 				variant={ "secondary" }
 				onPress={ onRefresh }
 			>
-				<ArrowsRotateLeft className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+				<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 				{ isRefreshing ? "Actualizando..." : "Actualizar" }
 			</Button>
 		</div>

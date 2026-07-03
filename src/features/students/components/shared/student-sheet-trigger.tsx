@@ -1,5 +1,5 @@
-import { Pencil, Plus } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
+import { PencilLine, Plus } from "lucide-react";
 
 import type { StudentFormSheetProps } from "@/features/students/components/shared/student-sheet.types";
 
@@ -32,7 +32,7 @@ export function StudentSheetTrigger( {
 				variant={ "ghost" }
 				onPress={ onPress }
 			>
-				<Pencil className={ "size-4 text-warning" }/>
+				<PencilLine className={ "size-4 text-warning" }/>
 				{ showEditTriggerLabel ? "Editar" : null }
 			</Button>
 		);

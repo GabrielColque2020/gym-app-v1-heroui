@@ -4,7 +4,6 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { Eye, EyeSlash } from "@gravity-ui/icons";
 import {
 	Alert,
 	Button,
@@ -16,6 +15,7 @@ import {
 	TextField,
 	Typography,
 } from "@heroui/react";
+import { Dumbbell, Eye, EyeOff } from "lucide-react";
 
 import { useLogin } from "@/features/login/hooks/use-login";
 
@@ -114,13 +114,7 @@ export default function LoginPageContent() {
 				<Card.Content className={ "space-y-6 px-5 py-6 sm:px-8 sm:py-8" }>
 					<div className={ "space-y-2 text-center" }>
 						<div className={ "mx-auto flex size-12 items-center justify-center rounded-xl border border-border bg-surface-secondary" }>
-							<span aria-hidden={ "true" } className={ "flex items-center justify-center gap-0.5 text-accent" }>
-								<span className={ "h-4 w-1 rounded-full bg-current" }/>
-								<span className={ "h-6 w-1.5 rounded-full bg-current" }/>
-								<span className={ "h-1.5 w-5 rounded-full bg-current" }/>
-								<span className={ "h-6 w-1.5 rounded-full bg-current" }/>
-								<span className={ "h-4 w-1 rounded-full bg-current" }/>
-							</span>
+							<Dumbbell className={ "size-6 text-accent" }/>
 						</div>
 						<div className={ "space-y-1" }>
 							<Typography className={ "font-semibold tracking-normal" } type={ "h4" }>
@@ -183,7 +177,7 @@ export default function LoginPageContent() {
 									variant={ "ghost" }
 									onPress={ () => setIsPasswordVisible( ( current ) => !current ) }
 								>
-									{ isPasswordVisible ? <EyeSlash className={ "size-4" }/> : <Eye className={ "size-4" }/> }
+									{ isPasswordVisible ? <EyeOff className={ "size-4" }/> : <Eye className={ "size-4" }/> }
 								</Button>
 							</div>
 							{ isPasswordInvalid ? <FieldError>La contraseña es obligatoria.</FieldError> : null }

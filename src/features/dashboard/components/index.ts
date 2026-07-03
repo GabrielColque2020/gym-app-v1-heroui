@@ -1,3 +1,4 @@
+// Pendiente: este barrel se mantiene mientras termina la migracion de iconos a lucide-react.
 export { DashboardToolbar } from './dashboard-toolbar';
 export { KpiRow } from './kpi-row';
 export { SalesPerformanceCard } from './sales-performance-card';

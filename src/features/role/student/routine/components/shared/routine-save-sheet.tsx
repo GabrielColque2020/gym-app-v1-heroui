@@ -1,8 +1,8 @@
 "use client";
 
-import { CircleInfo, FloppyDisk } from "@gravity-ui/icons";
 import { Button, Card, Description, Spinner } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
+import { Info, Save } from "lucide-react";
 
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";
 import { useResponsiveSheetPlacement } from "@/features/shared/hooks/use-responsive-sheet-placement";
@@ -42,7 +42,7 @@ export default function RoutineSaveSheet( {
 			<Sheet.Header className={ "border-default-100 border-b px-6 pb-4 pt-5" }>
 				<div className={ "flex items-start gap-3" }>
 					<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
-						<CircleInfo className={ "size-5" }/>
+						<Info className={ "size-5" }/>
 					</div>
 					<div className={ "min-w-0" }>
 						<Sheet.Heading>Guardar progreso</Sheet.Heading>
@@ -57,7 +57,7 @@ export default function RoutineSaveSheet( {
 				<Card className={ "border border-border bg-surface/60" }>
 					<Card.Content className={ "space-y-3 p-4" }>
 						<div className={ "flex items-center gap-2 text-sm font-semibold text-foreground" }>
-							<CircleInfo className={ "size-4" }/>
+							<Info className={ "size-4" }/>
 							Resumen de guardado
 						</div>
 						{ summaryItems.length > 0 ? (
@@ -80,7 +80,7 @@ export default function RoutineSaveSheet( {
 					<Button variant={ "secondary" }>Cancelar</Button>
 				</Sheet.Close>
 				<Button isDisabled={ !canConfirmSave } isPending={ isPending } onPress={ onConfirmAction }>
-					{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <FloppyDisk className={ "size-4" }/> }
+					{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Save className={ "size-4" }/> }
 					{ isPending ? "Guardando..." : "Guardar progreso" }
 				</Button>
 			</Sheet.Footer>

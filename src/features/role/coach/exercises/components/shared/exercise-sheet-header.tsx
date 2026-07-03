@@ -1,6 +1,6 @@
-import { CircleCheck, Pencil, Plus } from "@gravity-ui/icons";
 import { Description } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
+import { CheckCircle2, PencilLine, Plus } from "lucide-react";
 
 type ExerciseSheetHeaderProps = {
 	isEditMode: boolean;
@@ -18,7 +18,7 @@ export function ExerciseSheetHeader( {
 		<Sheet.Header className={ "border-default-100 relative border-b pb-4" }>
 			<div className={ "flex gap-3 " }>
 				<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
-					{ isEditMode ? <Pencil className={ "size-5" }/> : <Plus className={ "size-5" }/> }
+					{ isEditMode ? <PencilLine className={ "size-5" }/> : <Plus className={ "size-5" }/> }
 				</div>
 				<div>
 					<Sheet.Heading>{ title }</Sheet.Heading>
@@ -29,4 +29,4 @@ export function ExerciseSheetHeader( {
 	);
 }
 
-export { CircleCheck };
+export { CheckCircle2 };

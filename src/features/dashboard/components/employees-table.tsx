@@ -3,10 +3,10 @@
 import type { Employee } from "../data/employees";
 import type { DataGridColumn, DataGridSortDescriptor } from "@heroui-pro/react";
 
-import { BarsDescendingAlignCenter, Copy, LayoutColumns3, Sliders } from "@gravity-ui/icons";
 import { Avatar, Button, Chip, SearchField } from "@heroui/react";
 import { DataGrid } from "@heroui-pro/react";
 import { useCallback, useMemo, useState } from "react";
+import { ArrowDownUp, Copy, LayoutGrid, SlidersHorizontal } from "lucide-react";
 
 import { EMPLOYEES } from "../data/employees";
 import { RowActions } from "./employees-table-row-actions";
@@ -55,11 +55,11 @@ export function EmployeesTable() {
 				accessorKey: "workerId",
 				allowsSorting: true,
 				cell: ( item ) => (
-					<div className={ "flex items-center gap-2" }>
-						<span className={ "font-medium tabular-nums" }>{ item.workerId }</span>
-						<Button isIconOnly aria-label={ "Copy ID" } size={ "sm" } variant={ "ghost" }>
-							<Copy className={ "text-muted size-3.5" }/>
-						</Button>
+						<div className={ "flex items-center gap-2" }>
+							<span className={ "font-medium tabular-nums" }>{ item.workerId }</span>
+							<Button isIconOnly aria-label={ "Copy ID" } size={ "sm" } variant={ "ghost" }>
+								<Copy className={ "text-muted size-3.5" }/>
+							</Button>
 					</div>
 				),
 				header: "Worker ID",
@@ -128,15 +128,15 @@ export function EmployeesTable() {
 				<div className={ "flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between" }>
 					<div className={ "flex flex-wrap items-center gap-2" }>
 						<Button size={ "sm" } variant={ "tertiary" }>
-							<Sliders className={ "size-4" }/>
+							<SlidersHorizontal className={ "size-4" }/>
 							Filter
 						</Button>
 						<Button size={ "sm" } variant={ "tertiary" }>
-							<BarsDescendingAlignCenter className={ "size-4" }/>
+							<ArrowDownUp className={ "size-4" }/>
 							Sort
 						</Button>
 						<Button size={ "sm" } variant={ "tertiary" }>
-							<LayoutColumns3 className={ "size-4" }/>
+							<LayoutGrid className={ "size-4" }/>
 							Columns
 						</Button>
 					</div>
