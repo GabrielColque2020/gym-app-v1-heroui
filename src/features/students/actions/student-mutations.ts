@@ -5,63 +5,14 @@ import bcryptjs from "bcryptjs";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
 import {
-	NO_GENDER,
-	emptyToNull,
-	isGenderValue,
-	isValidEmail,
-	parseBirthDate,
-	parseNonNegativeNumber,
-	parsePositiveInteger,
 	type CreateStudentInput,
 	type UpdateStudentInput,
 } from "@/features/students/services/student-form";
-
-function validateStudentInput( input: CreateStudentInput, mode: "create" | "edit" ) {
-	const name = input.name.trim();
-	const email = input.email.trim().toLowerCase();
-	const password = input.password.trim();
-
-	if (name.length < 2) {
-		throw new Error( "El nombre del estudiante debe tener al menos 2 caracteres." );
-	}
-
-	if (!isValidEmail( email )) {
-		throw new Error( "Ingresa un email valido." );
-	}
-
-	if (mode === "create" && password.length < 1) {
-		throw new Error( "La contrasenia es obligatoria al crear un estudiante." );
-	}
-
-	const dni = parsePositiveInteger( input.dni, "El DNI" );
-	const height = parseNonNegativeNumber( input.height, "La altura" );
-	const weight = parseNonNegativeNumber( input.weight, "El peso" );
-	const birthDate = parseBirthDate( input.birthDate );
-	const gender = input.gender === NO_GENDER ? null : input.gender;
-
-	if (gender !== null && !isGenderValue( gender )) {
-		throw new Error( "Selecciona un genero valido." );
-	}
-
-	return {
-		descriptionData: {
-			birthDate,
-			height,
-			objective: emptyToNull( input.objective ),
-			observations: emptyToNull( input.observations ),
-			weight,
-		},
-		password,
-		userData: {
-			active: input.active,
-			dni,
-			email,
-			gender,
-			name,
-			role: "STUDENT" as const,
-		},
-	};
-}
+import {
+	buildStudentStatusUpdateData,
+	validateStudentInput,
+} from "@/features/students/actions/student-mutations.utils";
+import { studentListSelect } from "@/features/students/services/student-select";
 
 export async function createStudentAction( input: CreateStudentInput ) {
 	try {
@@ -77,26 +28,7 @@ export async function createStudentAction( input: CreateStudentInput ) {
 				},
 				password: bcryptjs.hashSync( password ),
 			},
-			select: {
-				DescriptionStudent: {
-					select: {
-						birthDate: true,
-						height: true,
-						id: true,
-						objective: true,
-						observations: true,
-						weight: true,
-					},
-				},
-				active: true,
-				createdAt: true,
-				dni: true,
-				email: true,
-				gender: true,
-				id: true,
-				name: true,
-				updatedAt: true,
-			},
+			select: studentListSelect,
 		} );
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al crear el estudiante.";
@@ -122,26 +54,7 @@ export async function updateStudentAction( input: UpdateStudentInput ) {
 					},
 				},
 			},
-			select: {
-				DescriptionStudent: {
-					select: {
-						birthDate: true,
-						height: true,
-						id: true,
-						objective: true,
-						observations: true,
-						weight: true,
-					},
-				},
-				active: true,
-				createdAt: true,
-				dni: true,
-				email: true,
-				gender: true,
-				id: true,
-				name: true,
-				updatedAt: true,
-			},
+			select: studentListSelect,
 			where: {
 				coachId: session.sub,
 				id: input.id,
@@ -159,29 +72,8 @@ export async function deactivateStudentAction( id: string ) {
 	try {
 		const session = await requireCoachSession( "gestionar estudiantes" );
 		return await prisma.user.update( {
-			data: {
-				active: false,
-			},
-			select: {
-				DescriptionStudent: {
-					select: {
-						birthDate: true,
-						height: true,
-						id: true,
-						objective: true,
-						observations: true,
-						weight: true,
-					},
-				},
-				active: true,
-				createdAt: true,
-				dni: true,
-				email: true,
-				gender: true,
-				id: true,
-				name: true,
-				updatedAt: true,
-			},
+			data: buildStudentStatusUpdateData( false ),
+			select: studentListSelect,
 			where: {
 				coachId: session.sub,
 				id,
@@ -199,29 +91,8 @@ export async function restoreStudentAction( id: string ) {
 	try {
 		const session = await requireCoachSession( "gestionar estudiantes" );
 		return await prisma.user.update( {
-			data: {
-				active: true,
-			},
-			select: {
-				DescriptionStudent: {
-					select: {
-						birthDate: true,
-						height: true,
-						id: true,
-						objective: true,
-						observations: true,
-						weight: true,
-					},
-				},
-				active: true,
-				createdAt: true,
-				dni: true,
-				email: true,
-				gender: true,
-				id: true,
-				name: true,
-				updatedAt: true,
-			},
+			data: buildStudentStatusUpdateData( true ),
+			select: studentListSelect,
 			where: {
 				coachId: session.sub,
 				id,

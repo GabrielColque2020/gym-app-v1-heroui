@@ -14,14 +14,14 @@ type TrainingRoutinesFilterProps = {
 	isRefreshing?: boolean;
 };
 
-export default function TrainingRoutinesFilter( {
-													defaultMonth,
-													defaultYear,
-													onClear,
-													onSearch,
-													onRefresh,
-													isRefreshing = false,
-												}: TrainingRoutinesFilterProps ) {
+export function TrainingRoutinesFilter( {
+	defaultMonth,
+	defaultYear,
+	onClear,
+	onSearch,
+	onRefresh,
+	isRefreshing = false,
+}: TrainingRoutinesFilterProps ) {
 	const currentYear = new Date().getFullYear();
 	const yearOptions = Array.from( { length: 8 }, ( _, i ) => ( {
 		label: String( currentYear - 3 + i ),

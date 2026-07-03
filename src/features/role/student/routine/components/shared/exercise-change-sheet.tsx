@@ -5,7 +5,7 @@ import { useResponsiveSheetPlacement } from "@/features/shared/hooks/use-respons
 import ExerciseChangeSheetContent from "@/features/role/student/routine/components/shared/exercise-change-sheet-content";
 import { ExerciseChangeSheetTrigger } from "@/features/role/student/routine/components/shared/exercise-change-sheet-trigger";
 import { useExerciseChangeSheetState } from "@/features/role/student/routine/components/shared/use-exercise-change-sheet-state";
-import type { Exercise, ExerciseVariantOption } from "@/features/routine/types/routine-types";
+import type { Exercise, ExerciseVariantOption } from "@/features/routine/types/routine-exercise.types";
 
 type ExerciseChangeSheetProps = {
 	exercise: Exercise;

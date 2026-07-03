@@ -1,28 +1,27 @@
 "use client";
 
-import { Plus, TrashBin } from "@gravity-ui/icons";
-import {
-	Alert,
-	Button,
-	Input,
-	Label,
-	ListBox,
-	Select,
-	Separator,
-	Spinner,
-	TextField,
-	toast,
-} from "@heroui/react";
+import { Alert, Button, Separator, Spinner, toast } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
 import { useMemo, useState } from "react";
 
-import { formatBodyPart, ALL_BODY_PARTS, type BodyPartFilter, BODY_PART_OPTIONS } from "@/features/exercises/services/exercise-form";
+import {
+	ALL_BODY_PARTS,
+	type BodyPartFilter,
+} from "@/features/exercises/services/exercise-form";
 import {
 	useExerciseVariantCandidates,
 	useSaveExerciseVariants,
 } from "@/features/exercises/hooks/use-exercise-variants";
 import { useDebouncedValue } from "@/features/shared/hooks/use-debounced-value";
-import { EMPTY_ARRAY, SEARCH_DEBOUNCE_MS, type DraftVariantItem, type ExerciseVariantsTarget } from "./exercise-variants-sheet.types";
+
+import { ExerciseVariantRow } from "./exercise-variant-row";
+import { ExerciseVariantsSheetSearch } from "./exercise-variants-sheet-search";
+import {
+	EMPTY_ARRAY,
+	SEARCH_DEBOUNCE_MS,
+	type DraftVariantItem,
+	type ExerciseVariantsTarget,
+} from "./exercise-variants-sheet.types";
 
 type ExerciseVariantsSheetContentProps = {
 	exercise: ExerciseVariantsTarget;
@@ -31,70 +30,6 @@ type ExerciseVariantsSheetContentProps = {
 	onClose: () => void;
 };
 
-function ExerciseVariantRow( {
-	isRemoveDisabled,
-	onRemove,
-	variant,
-}: {
-	isRemoveDisabled: boolean;
-	onRemove: ( variantExerciseId: string ) => void;
-	variant: DraftVariantItem;
-} ) {
-	return (
-		<div className={ "flex items-center justify-between gap-3 rounded-xl border border-border bg-surface-secondary px-4 py-3" }>
-			<div className={ "min-w-0" }>
-				<p className={ "truncate text-sm font-medium text-foreground" }>{ variant.exercise.name }</p>
-				<p className={ "truncate text-xs text-muted" }>
-					{ formatBodyPart( variant.exercise.bodyPart ) }
-					{ variant.exercise.active ? " · Activo" : " · Inactivo" }
-				</p>
-			</div>
-			<Button
-				isIconOnly
-				aria-label={ `Eliminar variante ${ variant.exercise.name }` }
-				isDisabled={ isRemoveDisabled }
-				size={ "sm" }
-				variant={ "ghost" }
-				onPress={ () => onRemove( variant.exercise.id ) }
-			>
-				<TrashBin className={ "size-4 text-danger" }/>
-			</Button>
-		</div>
-	);
-}
-
-function ExerciseCandidateRow( {
-	candidate,
-	isDisabled,
-	onAdd,
-}: {
-	candidate: ExerciseVariantsTarget;
-	isDisabled: boolean;
-	onAdd: ( candidate: ExerciseVariantsTarget ) => void;
-} ) {
-	return (
-		<div className={ "flex items-center justify-between gap-3 rounded-xl border border-border bg-surface-secondary px-4 py-3" }>
-			<div className={ "min-w-0" }>
-				<p className={ "truncate text-sm font-medium text-foreground" }>{ candidate.name }</p>
-				<p className={ "truncate text-xs text-muted" }>
-					{ formatBodyPart( candidate.bodyPart ) }
-					{ candidate.active ? " · Activo" : " · Inactivo" }
-				</p>
-			</div>
-			<Button
-				isDisabled={ isDisabled }
-				size={ "sm" }
-				variant={ "secondary" }
-				onPress={ () => onAdd( candidate ) }
-			>
-				<Plus className={ "size-4" }/>
-				Agregar
-			</Button>
-		</div>
-	);
-}
-
-// Contiene el formulario y la logica de edicion de variantes dentro del Sheet.
 export function ExerciseVariantsSheetContent( {
 	exercise,
 	initialVariants,
@@ -108,6 +43,7 @@ export function ExerciseVariantsSheetContent( {
 	const debouncedSearchValue = useDebouncedValue( searchValue, SEARCH_DEBOUNCE_MS );
 	const saveVariants = useSaveExerciseVariants( routineId );
 	const hasCandidateFilters = debouncedSearchValue.trim().length > 0 || bodyPartFilter !== ALL_BODY_PARTS;
+	const isSearching = searchValue !== debouncedSearchValue;
 	const candidatesQuery = useExerciseVariantCandidates(
 		exercise.id,
 		debouncedSearchValue,
@@ -222,92 +158,18 @@ export function ExerciseVariantsSheetContent( {
 
 				<Separator/>
 
-				<section className={ "space-y-4" }>
-					<div>
-						<h3 className={ "text-sm font-semibold text-foreground" }>Buscar ejercicio</h3>
-						<p className={ "text-sm text-muted" }>Localiza un ejercicio existente para sumarlo al borrador.</p>
-					</div>
-
-					<TextField name={ "variant-search" }>
-						<Label>Buscar por nombre</Label>
-						<Input
-							aria-label={ "Buscar ejercicio" }
-							autoComplete={ "off" }
-							placeholder={ "Ej: press inclinado" }
-							value={ searchValue }
-							onChange={ ( event ) => setSearchValue( event.target.value ) }
-						/>
-					</TextField>
-
-					<Select
-						name={ "variant-body-part-filter" }
-						placeholder={ "Todas las partes del cuerpo" }
-						value={ bodyPartFilter }
-						onChange={ ( value ) => {
-							if (value) {
-								setBodyPartFilter( value as BodyPartFilter );
-							}
-						} }
-					>
-						<Label>Parte del cuerpo</Label>
-						<Select.Trigger aria-label={ "Filtrar por parte del cuerpo" }>
-							<Select.Value/>
-							<Select.Indicator/>
-						</Select.Trigger>
-						<Select.Popover>
-							<ListBox>
-								<ListBox.Item id={ ALL_BODY_PARTS } textValue={ "Todas" }>
-									Todas
-									<ListBox.ItemIndicator/>
-								</ListBox.Item>
-								{ BODY_PART_OPTIONS.map( ( option ) => (
-									<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-										{ option.label }
-										<ListBox.ItemIndicator/>
-									</ListBox.Item>
-								) ) }
-							</ListBox>
-						</Select.Popover>
-					</Select>
-
-					<div className={ "space-y-3" }>
-						<div className={ "flex items-center justify-between gap-3" }>
-							<p className={ "text-sm font-medium text-foreground" }>Resultados</p>
-							{ candidatesQuery.isFetching ? (
-								<div className={ "flex items-center gap-2 text-xs text-muted" } role={ "status" }>
-									<Spinner size={ "sm" }/>
-									Buscando...
-								</div>
-							) : null }
-						</div>
-
-						{ !hasCandidateFilters ? (
-							<div className={ "rounded-xl border border-dashed border-border bg-surface-secondary px-4 py-6 text-sm text-muted" }>
-								Empieza a escribir un nombre o ajusta el filtro de parte del cuerpo para ver sugerencias.
-							</div>
-						) : candidatesQuery.isLoading ? (
-							<div className={ "flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-secondary p-4 text-sm text-muted" }>
-								<Spinner size={ "sm" }/>
-								Cargando catalogo
-							</div>
-						) : candidateExercises.length === 0 ? (
-							<div className={ "rounded-xl border border-dashed border-border bg-surface-secondary px-4 py-6 text-sm text-muted" }>
-								No hay ejercicios disponibles para asociar con estos filtros.
-							</div>
-						) : (
-							<div className={ "space-y-2" }>
-								{ candidateExercises.map( ( candidate ) => (
-									<ExerciseCandidateRow
-										key={ candidate.id }
-										candidate={ candidate }
-										isDisabled={ saveVariants.isPending }
-										onAdd={ handleAddVariant }
-									/>
-								) ) }
-							</div>
-						) }
-					</div>
-				</section>
+				<ExerciseVariantsSheetSearch
+					bodyPartFilter={ bodyPartFilter }
+					candidateExercises={ candidateExercises }
+					hasCandidateFilters={ hasCandidateFilters }
+					isLoading={ candidatesQuery.isLoading }
+					isPending={ saveVariants.isPending }
+					isSearching={ isSearching }
+					searchValue={ searchValue }
+					onAddVariant={ handleAddVariant }
+					onBodyPartFilterChange={ setBodyPartFilter }
+					onSearchValueChange={ setSearchValue }
+				/>
 			</Sheet.Body>
 
 			<Sheet.Footer className={ "border-default-100 bg-background flex shrink-0 justify-end gap-2 border-t px-6 py-4" }>

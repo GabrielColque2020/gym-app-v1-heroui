@@ -33,7 +33,7 @@ export function buildStudentHistoryHref( studentId: string ) {
 export const COACH_DASHBOARD_QUICK_ACTIONS = [
 	{
 		compactLabel: "Estudiantes",
-		description: "Alta, edición y seguimiento de estudiantes.",
+		description: "Alta, edicion y seguimiento de estudiantes.",
 		href: buildStudentsIndexHref(),
 		id: "students",
 		label: "Estudiantes",
@@ -53,7 +53,7 @@ export const COACH_DASHBOARD_QUICK_ACTIONS = [
 		label: "Rutinas por estudiante",
 	},
 	{
-		compactLabel: "Alimentación",
+		compactLabel: "Alimentacion",
 		description: "Acceso directo a planes alimenticios por alumno.",
 		href: buildMealPlansStudentsHref(),
 		id: "meal-plans",

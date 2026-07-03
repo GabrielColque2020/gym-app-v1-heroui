@@ -7,7 +7,7 @@ import type { StudentRoutineSession, StudentRoutineSet } from "@/features/routin
 import type {
 	ExerciseProgressRoutine,
 	RoutinePageStudent,
-} from "@/features/routine/types/routine-types";
+} from "@/features/routine/types/routine-progress.types";
 import {
 	mapStudentRoutineSessionDetailToRoutinePages,
 	mergeStudentRoutineSessionDraft,

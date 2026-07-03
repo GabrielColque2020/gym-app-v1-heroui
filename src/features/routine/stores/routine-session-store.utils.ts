@@ -2,7 +2,7 @@ import type { StudentRoutineSession } from "@/features/routine/services/routine-
 import type {
 	ExerciseProgressRoutineOld,
 	RoutinePageStudent,
-} from "@/features/routine/types/routine-types";
+} from "@/features/routine/types/routine-progress.types";
 
 type PersistedDraftExercise = Omit<StudentRoutineSession["exercises"][ number ], "lastSession" | "variantOptions"> & {
 	lastSession?: StudentRoutineSession["exercises"][ number ]["lastSession"];

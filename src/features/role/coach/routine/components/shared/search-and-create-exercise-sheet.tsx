@@ -77,7 +77,6 @@ export function SearchAndCreateExerciseSheet( {
 					<SearchAndCreateExerciseSheetFilters
 						addedExerciseIds={ addedExerciseIds }
 						bodyPartFilter={ bodyPartFilter }
-						debouncedSearchValue={ searchValue }
 						exercises={ filteredExercises }
 						exercisesQuery={ {
 							error: exercisesQuery.error ? { message: exercisesQuery.error.message } : null,
@@ -91,6 +90,7 @@ export function SearchAndCreateExerciseSheet( {
 						onRegisterAddButtonRef={ registerAddButtonRef }
 						onSearchValueChange={ updateSearchValue }
 						orderValue={ orderValue }
+						searchValue={ searchValue }
 						selectedExerciseId={ selectedExerciseId }
 					/>
 

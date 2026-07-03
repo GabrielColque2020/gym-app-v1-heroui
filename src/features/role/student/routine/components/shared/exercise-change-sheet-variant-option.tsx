@@ -3,7 +3,7 @@
 import { Chip, Button } from "@heroui/react";
 
 import { formatBodyPart } from "@/features/exercises/services/exercise-formatters";
-import type { ExerciseVariantOption } from "@/features/routine/types/routine-types";
+import type { ExerciseVariantOption } from "@/features/routine/types/routine-exercise.types";
 
 type ExerciseChangeSheetVariantOptionProps = {
 	isCurrentVariant: boolean;

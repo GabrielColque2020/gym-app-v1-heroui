@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useRef } from "react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+import type { RoutineDayExerciseBase } from "@/features/routine/actions/get-routine-day";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
-import type { CoachRoutineDayExercise } from "@/features/role/coach/routine/actions/get-routine-day";
 import {
 	buildActiveDraftState,
 	buildSourceDraftState,
@@ -16,7 +16,7 @@ import { serializeRoutineDayDraft } from "@/features/routine/services/routine-da
 
 type UseRoutineDayDraftOptions = {
 	routineDayId: string;
-	sourceRoutines: CoachRoutineDayExercise[];
+	sourceRoutines: RoutineDayExerciseBase[];
 };
 
 type DraftMutationResult =
@@ -109,7 +109,7 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 		return getSuggestedRoutineExerciseOrder( sortedDraftRoutines );
 	}
 
-	function resetDraft( nextSourceRoutines: CoachRoutineDayExercise[] ) {
+	function resetDraft( nextSourceRoutines: RoutineDayExerciseBase[] ) {
 		const nextDraftRoutines = buildSourceDraftState( nextSourceRoutines ).sourceDraftRoutines;
 
 		setDraft( routineDayId, nextDraftRoutines );

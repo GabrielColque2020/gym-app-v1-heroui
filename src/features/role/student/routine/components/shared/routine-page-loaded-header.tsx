@@ -3,7 +3,7 @@
 import { ArrowsRotateLeft, FloppyDisk } from "@gravity-ui/icons";
 import { Button, Card, Spinner } from "@heroui/react";
 
-import { RoutineHeader } from "@/features/role/student/routine/components/shared";
+import RoutineHeader from "@/features/role/student/routine/components/shared/routine-header";
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
 
 type RoutinePageState = ReturnType<typeof useRoutinePageState>;

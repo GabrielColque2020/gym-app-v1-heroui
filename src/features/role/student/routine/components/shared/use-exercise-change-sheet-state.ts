@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 
-import type { ExerciseVariantOption } from "@/features/routine/types/routine-types";
+import type { ExerciseVariantOption } from "@/features/routine/types/routine-exercise.types";
 
 type UseExerciseChangeSheetStateOptions = {
 	exerciseId: string;

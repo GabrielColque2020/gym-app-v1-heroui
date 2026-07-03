@@ -1,26 +1,15 @@
 "use server";
 
-import type { Prisma } from "@/generated/prisma/client";
 import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import {
-	compareStudentsByPriority,
-	mapCoachDashboardStudent,
-	RECENT_ACTIVITY_WINDOW_DAYS,
-} from "@/features/role/coach/dashboard/services/coach-dashboard-mappers";
+	buildCoachDashboardCurrentPeriod,
+	buildCoachDashboardSummary,
+	dashboardStudentSelect,
+	type DashboardStudentRecord,
+} from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary.utils";
+import { mapCoachDashboardStudent } from "@/features/role/coach/dashboard/services/coach-dashboard-mappers";
 import prisma from "@/lib/prisma";
-
-const dashboardStudentSelect = {
-	active: true,
-	dni: true,
-	email: true,
-	id: true,
-	name: true,
-} satisfies Prisma.UserSelect;
-
-type DashboardStudentRecord = Prisma.UserGetPayload<{
-	select: typeof dashboardStudentSelect;
-}>;
 
 export type CoachDashboardStudentSummary = ReturnType<typeof mapCoachDashboardStudent>;
 
@@ -47,11 +36,7 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 	try {
 		const session = await requireCoachSession( "consultar el dashboard del coach" );
 		const now = new Date();
-		const month = now.getMonth() + 1;
-		const year = now.getFullYear();
-		const recentActivityCutoff = new Date( now );
-
-		recentActivityCutoff.setDate( recentActivityCutoff.getDate() - RECENT_ACTIVITY_WINDOW_DAYS );
+		const currentPeriod = buildCoachDashboardCurrentPeriod( now );
 
 		const [
 			students,
@@ -93,7 +78,7 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 					studentId: true,
 				},
 				where: {
-					month,
+					month: currentPeriod.month,
 					student: {
 						is: {
 							coachId: session.sub,
@@ -103,7 +88,7 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 					studentId: {
 						not: null,
 					},
-					year,
+					year: currentPeriod.year,
 				},
 			} ),
 			prisma.trainingRoutine.findMany( {
@@ -181,64 +166,15 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 			} ),
 		] );
 
-		const currentRoutineStudentIds = new Set(
-			currentRoutineRecords.flatMap( ( routine ) => routine.studentId ? [ routine.studentId ] : [] ),
-		);
-		const latestRoutineByStudent = new Map(
-			latestRoutineRecords.flatMap( ( routine ) => routine.studentId ? [ [
-				routine.studentId,
-				{ month: routine.month, year: routine.year },
-			] as const ] : [] ),
-		);
-		const latestMealPlanByStudent = new Map(
-			latestMealPlanRecords.flatMap( ( mealPlan ) => mealPlan.studentId ? [ [
-				mealPlan.studentId,
-				mealPlan.updatedAt,
-			] as const ] : [] ),
-		);
-		const latestProgressByStudent = new Map(
-			latestProgressRecords.flatMap( ( progress ) => progress.studentId ? [ [
-				progress.studentId,
-				progress.date,
-			] as const ] : [] ),
-		);
-
-		const studentSummaries = students
-			.map( ( student ) => mapCoachDashboardStudent( {
-				active: student.active,
-				dni: student.dni,
-				email: student.email,
-				hasMealPlan: latestMealPlanByStudent.has( student.id ),
-				hasRoutineThisMonth: currentRoutineStudentIds.has( student.id ),
-				id: student.id,
-				lastMealPlanUpdatedAt: latestMealPlanByStudent.get( student.id ) ?? null,
-				lastProgressAt: latestProgressByStudent.get( student.id ) ?? null,
-				lastRoutineMonth: latestRoutineByStudent.get( student.id ) ?? null,
-				name: student.name,
-				recentActivityCutoff,
-			} ) )
-			.sort( compareStudentsByPriority );
-
-		const activeStudents = studentSummaries.filter( ( student ) => student.active );
-
-		return {
-			currentPeriod: {
-				label: `${ String( month ).padStart( 2, "0" ) }/${ year }`,
-				month,
-				recentActivityCutoff: recentActivityCutoff.toISOString(),
-				year,
-			},
-			students: studentSummaries,
-			totals: {
-				activeExercises: activeExerciseRecords.length,
-				activeStudents: activeStudents.length,
-				studentsWithMealPlan: activeStudents.filter( ( student ) => student.hasMealPlan ).length,
-				studentsWithRoutineThisMonth: activeStudents.filter( ( student ) => student.hasRoutineThisMonth ).length,
-				studentsWithoutMealPlan: activeStudents.filter( ( student ) => !student.hasMealPlan ).length,
-				studentsWithoutRecentActivity: activeStudents.filter( ( student ) => student.needsRecentActivityAttention ).length,
-				studentsWithoutRoutineThisMonth: activeStudents.filter( ( student ) => !student.hasRoutineThisMonth ).length,
-			},
-		};
+		return buildCoachDashboardSummary( {
+			activeExerciseCount: activeExerciseRecords.length,
+			currentRoutineRecords,
+			latestMealPlanRecords,
+			latestProgressRecords,
+			latestRoutineRecords,
+			now,
+			students,
+		} );
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
 

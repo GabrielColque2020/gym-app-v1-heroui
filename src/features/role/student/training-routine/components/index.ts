@@ -1,1 +1,0 @@
-export { default as TrainingRoutinesFilter } from "./training-routines-filter";

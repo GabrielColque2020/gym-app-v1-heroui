@@ -46,7 +46,7 @@ export const QUERY_DEFAULTS = {
 		refetchOnWindowFocus: false,
 		// 1 hora de datos estables en React Query.
 		staleTime: QUERY_TIME_BASE,
-		// 2 horas entre refetch automÃ¡ticos.
+		// 2 horas entre refetch automaticos.
 		refetchInterval: 2 * 60 * 60 * 1000, // 2 hora
 		retry: 2,
 	},
@@ -58,7 +58,7 @@ export const QUERY_DEFAULTS = {
 		refetchOnWindowFocus: false,
 		// 1 hora de datos estables en React Query.
 		staleTime: QUERY_TIME_BASE,
-		// 2 horas entre refetch automáticos.
+		// 2 horas entre refetch automaticos.
 		refetchInterval: 2 * 60 * 60 * 1000, // 2 hora
 		retry: 2,
 	},

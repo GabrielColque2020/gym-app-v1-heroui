@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-import type { Exercise, ExerciseSessionHistory } from "@/features/routine/types/routine-types";
+import type { Exercise, ExerciseSessionHistory } from "@/features/routine/types/routine-exercise.types";
 
 export function useExerciseCardState( exercise: Exercise ) {
 	const variantOptions = useMemo( () => exercise.variantOptions ?? [], [ exercise.variantOptions ] );

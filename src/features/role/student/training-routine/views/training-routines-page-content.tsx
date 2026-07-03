@@ -1,15 +1,16 @@
 "use client";
 
 import type { Key } from "react-aria-components/Breadcrumbs";
-import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CircleCheckFill } from "@gravity-ui/icons";
-import { Button, Card, Chip, Spinner, Typography } from "@heroui/react";
-import { Segment } from "@heroui-pro/react";
+import { Typography } from "@heroui/react";
 
 import { PageBreadcrumbs } from "@/components/common";
-import { formatBodyPart } from "@/features/exercises/services/exercise-formatters";
-import TrainingRoutinesFilter from "@/features/role/student/training-routine/components/training-routines-filter";
+import { TrainingRoutinesDayCard } from "@/features/role/student/training-routine/components/training-routines-day-card";
+import { TrainingRoutinesEmptyState } from "@/features/role/student/training-routine/components/training-routines-empty-state";
+import { TrainingRoutinesErrorState } from "@/features/role/student/training-routine/components/training-routines-error-state";
+import { TrainingRoutinesFilter } from "@/features/role/student/training-routine/components/training-routines-filter";
+import { TrainingRoutinesLoadingState } from "@/features/role/student/training-routine/components/training-routines-loading-state";
+import { TrainingRoutinesWeekSelector } from "@/features/role/student/training-routine/components/training-routines-week-selector";
 import { useTrainingRoutines } from "@/features/role/student/training-routine/hooks/use-training-routines";
 
 type TrainingRoutinesPageContentProps = {
@@ -27,42 +28,10 @@ function getCurrentYear() {
 	return new Date().getFullYear();
 }
 
-function formatDayLabel( dayNumber: number ) {
-	return `Dia ${ dayNumber }`;
-}
-
-function getDayDescription( day: {
-	routines: Array<{
-		exercise?: {
-			bodyPart?: Parameters<typeof formatBodyPart>[0] | null;
-		} | null;
-	}>;
-} ) {
-	const bodyParts = Array.from(
-		new Set(
-			day.routines
-				.map( ( routine ) => routine.exercise?.bodyPart )
-				.filter( ( bodyPart ): bodyPart is Parameters<typeof formatBodyPart>[0] =>
-					Boolean( bodyPart ),
-				)
-				.map( ( bodyPart ) => formatBodyPart( bodyPart ) ),
-		),
-	);
-	return bodyParts.length > 0 ? bodyParts.join( " + " ) : "Sin ejercicios cargados";
-}
-
-function getDayStatusLabel( isFinalized: boolean ) {
-	return isFinalized ? "Guardado" : "Sin guardar";
-}
-
-function getDayStatusColor( isFinalized: boolean ) {
-	return isFinalized ? "success" : "warning";
-}
-
 export default function TrainingRoutinesPageContent( {
-														 initialMonth = getCurrentMonth(),
-														 initialYear = getCurrentYear(),
-													 }: TrainingRoutinesPageContentProps ) {
+	initialMonth = getCurrentMonth(),
+	initialYear = getCurrentYear(),
+}: TrainingRoutinesPageContentProps ) {
 	const [ activeMonth, setActiveMonth ] = useState( initialMonth );
 	const [ activeYear, setActiveYear ] = useState( initialYear );
 	const [ selectedWeekId, setSelectedWeekId ] = useState<Key | null>( null );
@@ -137,108 +106,34 @@ export default function TrainingRoutinesPageContent( {
 							Cargando semanas
 						</div>
 					) : routines.length > 0 ? (
-						<div className={ "flex justify-center sm:justify-end" }>
-							<Segment
-								key={ `${ activeMonth }-${ activeYear }-${ routines[ 0 ]?.id ?? "empty" }` }
-								defaultSelectedKey={ routines[ 0 ]?.id }
-								onSelectionChange={ setSelectedWeekId }
-								size={ "md" }
-								className={ "w-full max-w-full sm:w-auto" }
-							>
-								{ routines.map( ( routine ) => (
-									<Segment.Item key={ routine.id } id={ routine.id }>
-										<Segment.Separator/>
-										<span className={ "text-xs sm:text-sm" }>{ `Semana ${ routine.week }` }</span>
-									</Segment.Item>
-								) ) }
-							</Segment>
-						</div>
+						<TrainingRoutinesWeekSelector
+							activeMonth={ activeMonth }
+							activeYear={ activeYear }
+							routines={ routines }
+							onSelectionChange={ setSelectedWeekId }
+						/>
 					) : null }
 				</div>
 			</div>
 
-			{ isLoading ? (
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
-						<Spinner size={ "lg" }/>
-						<div className={ "space-y-1" }>
-							<p className={ "text-base font-semibold text-foreground" }>
-								Cargando rutina
-							</p>
-							<p className={ "text-sm text-muted" }>
-								Consultando tus semanas y dias de entrenamiento.
-							</p>
-						</div>
-					</Card.Content>
-				</Card>
-			) : null }
+			{ isLoading ? <TrainingRoutinesLoadingState/> : null }
 
 			{ isError ? (
-				<Card className={ "border border-danger/20 bg-surface" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-40 flex-col items-center justify-center gap-3 py-8 text-center" }>
-						<p className={ "text-base font-semibold text-foreground" }>
-							No se pudieron cargar tus rutinas
-						</p>
-						<p className={ "max-w-xl text-sm text-muted" }>
-							{ error instanceof Error ? error.message : "Ocurrio un error inesperado." }
-						</p>
-						<Button className={ "mt-1" } onPress={ () => refetch() }>
-							Reintentar
-						</Button>
-					</Card.Content>
-				</Card>
+				<TrainingRoutinesErrorState
+					errorMessage={ error instanceof Error ? error.message : "Ocurrio un error inesperado." }
+					onRetry={ () => {
+						void refetch();
+					} }
+				/>
 			) : null }
 
 			{ !isLoading && !isError ? (
 				routines.length === 0 ? (
-					<Card className={ "border border-dashed border-border bg-surface" } variant={ "default" }>
-						<Card.Content className={ "py-10 text-center" }>
-							<p className={ "text-base font-semibold text-foreground" }>
-								No hay rutinas cargadas
-							</p>
-							<p className={ "mt-1 text-sm text-muted" }>
-								No encontramos rutinas para { String( activeMonth ).padStart( 2, "0" ) }/{ activeYear }.
-							</p>
-						</Card.Content>
-					</Card>
+					<TrainingRoutinesEmptyState month={ activeMonth } year={ activeYear }/>
 				) : (
 					<div className={ "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" }>
 						{ selectedRoutine?.routineDays.map( ( day ) => (
-							<Card key={ day.id } className={ "w-full border border-border/70 shadow-sm" }>
-								<div className={ "flex flex-1 flex-col gap-3" }>
-									<Card.Header className={ "gap-1" }>
-										<Card.Title className={ "relative pr-8" }>
-											<span className={ "text-lg font-bold text-foreground" }>
-												{ formatDayLabel( day.dayNumber ) }
-											</span>
-											<Chip
-												color={ getDayStatusColor( day.isFinalized ) }
-												variant={ "soft" }
-												className={ "absolute right-0 top-0 z-10" }
-												size={ "md" }
-											>
-												<CircleCheckFill width={ 12 }/>
-												<Chip.Label>
-													{ getDayStatusLabel( day.isFinalized ) }
-												</Chip.Label>
-											</Chip>
-										</Card.Title>
-										<Card.Description>
-											{ getDayDescription( day ) }
-										</Card.Description>
-									</Card.Header>
-									<Card.Footer className={ "mt-auto flex w-full flex-col items-end gap-3" }>
-										<Link
-											className={ "w-full text-center" }
-											href={ `/student/routine?routineDayId=${ day.id }` }
-										>
-											<Button className={ "w-full" } variant={ "secondary" }>
-												Ver rutina
-											</Button>
-										</Link>
-									</Card.Footer>
-								</div>
-							</Card>
+							<TrainingRoutinesDayCard key={ day.id } day={ day }/>
 						) ) }
 					</div>
 				)

@@ -1,1 +1,0 @@
-export { ExercisesContentDesktop } from "./exercises-content-desktop";

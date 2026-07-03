@@ -1,55 +1,44 @@
 "use client";
 
-import React from "react";
-import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+
 import type { BodyPartValue, ExerciseFormValues } from "@/features/exercises/services/exercise-form";
 import type { Exercises } from "@/features/exercises/services/exercises-query";
+import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 
+import { Alert, Button, Spinner, toast } from "@heroui/react";
 import { Sheet } from "@heroui-pro/react";
-import {
-	Alert,
-	Button,
-	Checkbox,
-	Description,
-	FieldError,
-	Input,
-	Label,
-	ListBox,
-	Select, Spinner,
-	toast,
-	TextArea,
-	TextField,
-} from "@heroui/react";
-import { CircleCheck, Pencil, Plus } from "@gravity-ui/icons";
-import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useCreateExercise, useUpdateExercise } from "@/features/exercises/hooks/use-exercises";
-import { BODY_PART_OPTIONS } from "@/features/exercises/services/exercise-form";
 import { FeatureSheetLayout } from "@/features/shared/components/feature-sheet-layout";
+
+import { CircleCheck, ExerciseSheetHeader } from "./exercise-sheet-header";
+import { ExerciseSheetFields } from "./exercise-sheet-fields";
+import { ExerciseSheetTrigger } from "./exercise-sheet-trigger";
 
 type ExerciseFormSheetProps =
 	| {
-	exercise?: never;
-	hideTrigger?: boolean;
-	isOpen?: boolean;
-	mode: "create";
-	onSuccess?: ( exercise: Exercises[ number ] ) => void;
-	onOpenChange?: ( isOpen: boolean ) => void;
-	placement?: "bottom" | "right";
-	triggerClassName?: string;
-	triggerVariant?: "button" | "icon";
-}
+		exercise?: never;
+		hideTrigger?: boolean;
+		isOpen?: boolean;
+		mode: "create";
+		onSuccess?: ( exercise: Exercises[ number ] ) => void;
+		onOpenChange?: ( isOpen: boolean ) => void;
+		placement?: "bottom" | "right";
+		triggerClassName?: string;
+		triggerVariant?: "button" | "icon";
+	}
 	| {
-	exercise: ExerciseListItem;
-	hideTrigger?: boolean;
-	isOpen?: boolean;
-	mode: "edit";
-	onSuccess?: ( exercise: Exercises[ number ] ) => void;
-	onOpenChange?: ( isOpen: boolean ) => void;
-	placement?: "bottom" | "right";
-	triggerClassName?: string;
-	triggerVariant?: "button" | "icon";
-};
+		exercise: ExerciseListItem;
+		hideTrigger?: boolean;
+		isOpen?: boolean;
+		mode: "edit";
+		onSuccess?: ( exercise: Exercises[ number ] ) => void;
+		onOpenChange?: ( isOpen: boolean ) => void;
+		placement?: "bottom" | "right";
+		triggerClassName?: string;
+		triggerVariant?: "button" | "icon";
+	};
 
 const DEFAULT_VALUES: ExerciseFormValues = {
 	active: true,
@@ -69,7 +58,7 @@ function getInitialValues( exercise?: ExerciseListItem ): ExerciseFormValues {
 		active: exercise.active,
 		bodyPart: exercise.bodyPart as BodyPartValue,
 		name: exercise.name,
-		tips: exercise.tips ?? ""
+		tips: exercise.tips ?? "",
 	};
 }
 
@@ -84,10 +73,6 @@ export function ExerciseSheet( props: ExerciseFormSheetProps ) {
 	const activeMutation = isEditMode ? updateExercise : createExercise;
 	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
 	const isSubmitDisabled = values.name.trim().length < 2 || activeMutation.isPending;
-	const title = isEditMode ? "Editar ejercicio" : "Nuevo ejercicio";
-	const description = isEditMode
-		? "Actualiza los datos del ejercicio y su estado dentro del catalogo."
-		: "Carga un ejercicio disponible para rutinas y seguimiento de alumnos.";
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear ejercicio";
 	const showEditTriggerLabel = props.triggerVariant === "button";
 	const isOpen = props.isOpen ?? internalIsOpen;
@@ -161,9 +146,7 @@ export function ExerciseSheet( props: ExerciseFormSheetProps ) {
 			setIsOpen( false );
 		} catch {
 			toast.danger( isEditMode ? "Error al actualizar" : "Error al crear", {
-				description: isEditMode
-					? "No se pudieron guardar los cambios."
-					: "No se pudo crear el ejercicio.",
+				description: isEditMode ? "No se pudieron guardar los cambios." : "No se pudo crear el ejercicio.",
 			} );
 		}
 	}
@@ -171,134 +154,45 @@ export function ExerciseSheet( props: ExerciseFormSheetProps ) {
 	return (
 		<>
 			{ props.hideTrigger ? null : (
-				isEditMode ? (
-					<Button
-						isIconOnly={ !showEditTriggerLabel }
-						aria-label={ `Editar ${ props.exercise.name }` }
-						className={ props.triggerClassName }
-						size={ "sm" }
-						variant={ "ghost" }
-						onPress={ openSheet }
-					>
-						<Pencil className={ "size-4 text-warning" }/>
-						{ showEditTriggerLabel ? "Editar" : null }
-					</Button>
-				) : (
-					<Button className={ props.triggerClassName } onPress={ openSheet }>
-						<Plus className={ "size-4" }/>
-						Nuevo ejercicio
-					</Button>
-				)
+				<ExerciseSheetTrigger
+					ariaLabel={ isEditMode ? `Editar ${ props.exercise.name }` : "Nuevo ejercicio" }
+					className={ props.triggerClassName }
+					isEditMode={ isEditMode }
+					showEditTriggerLabel={ showEditTriggerLabel }
+					onPress={ openSheet }
+				/>
 			) }
 			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChange={ handleOpenChange }>
-				<Sheet.Header className={ "border-default-100 relative border-b pb-4" }>
-					<div className={ "flex gap-3 " }>
-						<div
-							className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
-							{ isEditMode ? <Pencil className={ "size-5" }/> : <Plus className={ "size-5" }/> }
-						</div>
-						<div>
-							<Sheet.Heading>{ title }</Sheet.Heading>
-							<Description className={ "mt-1 text-sm" }>{ description }</Description>
-						</div>
-					</div>
-				</Sheet.Header>
+				<ExerciseSheetHeader isEditMode={ isEditMode }/>
 
 				<form className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleSubmit }>
-					<Sheet.Body className={ "min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-5" }>
-						{ activeMutation.isError && (
+					{ activeMutation.isError ? (
+						<div className={ "px-6 pt-5" }>
 							<Alert className={ "border border-danger/20" } status={ "danger" }>
 								<Alert.Content>
 									<Alert.Title>Error al guardar</Alert.Title>
 									<Alert.Description>{ activeMutation.error.message }</Alert.Description>
 								</Alert.Content>
 							</Alert>
-						) }
+						</div>
+					) : null }
 
-						<TextField
-							isRequired
-							fullWidth
-							isInvalid={ isNameInvalid }
-							name={ "name" }
-							value={ values.name }
-							onChange={ ( value ) => updateValue( "name", value ) }
-						>
-							<Label>Nombre</Label>
-							<Input placeholder={ "Ej: Press banca" }/>
-							{ isNameInvalid ?
-								<FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
-						</TextField>
+					<ExerciseSheetFields
+						isNameInvalid={ isNameInvalid }
+						updateValue={ updateValue }
+						values={ values }
+					/>
 
-						<Select
-							name={ "bodyPart" }
-							placeholder={ "Selecciona una parte del cuerpo" }
-							value={ values.bodyPart }
-							onChange={ ( value ) => {
-								if (value) {
-									updateValue( "bodyPart", value as BodyPartValue );
-								}
-							} }
-						>
-							<Label>Parte del cuerpo</Label>
-							<Select.Trigger>
-								<Select.Value/>
-								<Select.Indicator/>
-							</Select.Trigger>
-							<Select.Popover>
-								<ListBox>
-									{ BODY_PART_OPTIONS.map( ( option ) => (
-										<ListBox.Item key={ option.value } id={ option.value }
-										              textValue={ option.label }>
-											{ option.label }
-											<ListBox.ItemIndicator/>
-										</ListBox.Item>
-									) ) }
-								</ListBox>
-							</Select.Popover>
-						</Select>
-
-						<TextField
-							fullWidth
-							name={ "tips" }
-							value={ values.tips }
-							onChange={ ( value ) => updateValue( "tips", value ) }
-						>
-							<Label>Tips</Label>
-							<TextArea className={ "min-h-28" }
-							          placeholder={ "Indicaciones tecnicas, errores comunes o recomendaciones." }/>
-						</TextField>
-
-						<Checkbox
-							isSelected={ values.active }
-							onChange={ ( isSelected ) => updateValue( "active", isSelected ) }
-						>
-							<Checkbox.Control>
-								<Checkbox.Indicator/>
-							</Checkbox.Control>
-							<Checkbox.Content>
-								<Label>Ejercicio activo</Label>
-								<Description className={ "text-sm" }>
-									Los ejercicios inactivos quedan ocultos para nuevas rutinas, pero se
-									conservan en el historial.
-								</Description>
-							</Checkbox.Content>
-						</Checkbox>
-					</Sheet.Body>
-
-					<Sheet.Footer
-						className={ "border-default-100 bg-background flex shrink-0 justify-end gap-2 border-t px-6 py-4" }>
+					<Sheet.Footer className={ "border-default-100 bg-background flex shrink-0 justify-end gap-2 border-t px-6 py-4" }>
 						<Sheet.Close>
 							<Button isDisabled={ activeMutation.isPending } variant={ "secondary" }>
 								Cancelar
 							</Button>
 						</Sheet.Close>
-						<Button isDisabled={ isSubmitDisabled } isPending={ activeMutation.isPending }
-						        type={ "submit" }>
+						<Button isDisabled={ isSubmitDisabled } isPending={ activeMutation.isPending } type={ "submit" }>
 							{ ( { isPending } ) => (
 								<>
-
-									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> :
-										<CircleCheck className={ "size-4" }/> }
+									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CircleCheck className={ "size-4" }/> }
 									{ isPending ? ( isEditMode ? "Actualizando..." : "Guardando..." ) : submitLabel }
 								</>
 							) }

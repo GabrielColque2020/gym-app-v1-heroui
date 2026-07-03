@@ -7,7 +7,7 @@ type QuickStatItem = {
 };
 
 type CoachDashboardQuickStatsProps = {
-	items: QuickStatItem[];
+	items: readonly QuickStatItem[];
 };
 
 export function CoachDashboardQuickStats( { items }: CoachDashboardQuickStatsProps ) {

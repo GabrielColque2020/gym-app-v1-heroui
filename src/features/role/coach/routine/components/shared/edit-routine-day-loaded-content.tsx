@@ -1,10 +1,8 @@
 "use client";
 
 import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routine-day";
-import { Card } from "@heroui/react";
 
-import { PageBreadcrumbs } from "@/components/common";
-import { CoachEditRoutineHeader } from "@/features/role/coach/routine/components/shared/coach-edit-routine-header";
+import { EditRoutineDayLoadedHeader } from "@/features/role/coach/routine/components/shared/edit-routine-day-loaded-header";
 import { EditRoutineDayMainCard } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card";
 import { EditRoutineDayRefreshModal } from "@/features/role/coach/routine/components/shared/edit-routine-day-refresh-modal";
 import { useEditRoutineDayLoadedState } from "@/features/role/coach/routine/hooks/use-edit-routine-day-loaded-state";
@@ -62,16 +60,15 @@ export function EditRoutineDayLoadedContent( {
 
 	return (
 		<div className={ "flex flex-col gap-4" }>
-			<PageBreadcrumbs backHref={ backHref } backLabel={ "Volver a rutina" } crumbs={ breadcrumbs }/>
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<CoachEditRoutineHeader
-					description={ description }
-					isSaveDisabled={ !draftRoutines.length || Boolean( validationError ) || isSaving }
-					isSaving={ isSaving }
-					title={ title }
-					onSave={ handleSave }
-				/>
-			</Card>
+			<EditRoutineDayLoadedHeader
+				backHref={ backHref }
+				breadcrumbs={ breadcrumbs }
+				description={ description }
+				isSaveDisabled={ !draftRoutines.length || Boolean( validationError ) || isSaving }
+				isSaving={ isSaving }
+				title={ title }
+				onSave={ handleSave }
+			/>
 
 			<EditRoutineDayMainCard
 				addedExerciseIds={ addedExerciseIds }

@@ -1,10 +1,10 @@
 "use client";
 
-import { Alert, Card } from "@heroui/react";
+import { Card } from "@heroui/react";
 
-import { EditRoutineDayMainCardEmptyState } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card-empty-state";
+import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+import { EditRoutineDayMainCardContent } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card-content";
 import { EditRoutineDayMainCardHeader } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card-header";
-import { RoutineDayExercisesDesktop, RoutineDayExercisesMobile } from "@/features/role/coach/routine/components/shared/routine-day-exercise-editor";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
 type EditRoutineDayMainCardProps = {
@@ -15,7 +15,7 @@ type EditRoutineDayMainCardProps = {
 	routineSubtitle: string;
 	routineTitle: string;
 	validationError: string | null;
-	onAddExercise: ( exercise: import("@/features/exercises/types/exercise-list-item").ExerciseListItem, order: number ) => void;
+	onAddExercise: ( exercise: ExerciseListItem, order: number ) => void;
 	onDeleteExercise: ( clientId: string ) => void;
 	onRefresh: () => void;
 	onUpdateExerciseField: ( clientId: string, field: "observation" | "order" | "reps" | "sets", value: number | string ) => void;
@@ -47,33 +47,12 @@ export function EditRoutineDayMainCard( {
 				onRefresh={ onRefresh }
 			/>
 
-			<Card.Content className={ "space-y-4" }>
-				{ validationError ? (
-					<Alert className={ "border border-warning/20" } status={ "warning" }>
-						<Alert.Content>
-							<Alert.Title>Revisa el borrador antes de guardar</Alert.Title>
-							<Alert.Description>{ validationError }</Alert.Description>
-						</Alert.Content>
-					</Alert>
-				) : null }
-
-				{ draftRoutines.length === 0 ? (
-					<EditRoutineDayMainCardEmptyState/>
-				) : (
-					<>
-						<RoutineDayExercisesDesktop
-							onDelete={ onDeleteExercise }
-							onUpdateField={ onUpdateExerciseField }
-							routines={ draftRoutines }
-						/>
-						<RoutineDayExercisesMobile
-							onDelete={ onDeleteExercise }
-							onUpdateField={ onUpdateExerciseField }
-							routines={ draftRoutines }
-						/>
-					</>
-				) }
-			</Card.Content>
+			<EditRoutineDayMainCardContent
+				draftRoutines={ draftRoutines }
+				onDeleteExercise={ onDeleteExercise }
+				onUpdateExerciseField={ onUpdateExerciseField }
+				validationError={ validationError }
+			/>
 		</Card>
 	);
 }

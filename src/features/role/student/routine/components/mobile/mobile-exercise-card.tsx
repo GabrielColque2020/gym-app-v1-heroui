@@ -1,24 +1,18 @@
 "use client";
 
 import React from "react";
-import { Card, Chip } from "@heroui/react";
+import { Card } from "@heroui/react";
 
 import ExerciseChangeSheet from "@/features/role/student/routine/components/shared/exercise-change-sheet";
+import { ExerciseCardSessionHistory } from "@/features/role/student/routine/components/shared/exercise-card-session-history";
+import { ExerciseCardStatusChips } from "@/features/role/student/routine/components/shared/exercise-card-status-chips";
 import { useExerciseCardState } from "@/features/role/student/routine/components/shared/use-exercise-card-state";
-import type { Exercise } from "@/features/routine/types/routine-types";
+import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 
 interface ExerciseCardProps {
 	exercise: Exercise;
 	children: React.ReactNode;
 	onVariantChange: ( exerciseId: string, variantExerciseId: string | null ) => void;
-}
-
-function formatSessionDateLabel( date: Date ) {
-	return new Intl.DateTimeFormat( "es-AR", {
-		day: "numeric",
-		month: "long",
-		year: "numeric",
-	} ).format( date );
 }
 
 export default function MobileExerciseCard( { exercise, children, onVariantChange }: ExerciseCardProps ) {
@@ -41,11 +35,6 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 						<div className={ "flex items-start justify-between gap-3" }>
 							<div className={ "min-w-0 space-y-1" }>
 								<h2 className={ "min-w-0 text-2xl font-black tracking-tight text-foreground" }>{ displayedExerciseName }</h2>
-								{ selectedVariant ? (
-									<Chip color={ "warning" } size={ "sm" } variant={ "soft" }>
-										<Chip.Label>{ `Original: ${ exercise.baseName }` }</Chip.Label>
-									</Chip>
-								) : null }
 							</div>
 							<ExerciseChangeSheet
 								exercise={ exercise }
@@ -56,34 +45,19 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 							/>
 						</div>
 						<div className={ "flex flex-wrap items-center gap-2" }>
-							<Chip size={ "sm" } variant={ "soft" }>{ exercise.equipment }</Chip>
-							<Chip color={ hasCompletedSets ? "success" : "default" } size={ "sm" } variant={ "soft" }>
-								<Chip.Label>{ `Series completadas: ${ completedSetsSummary.completedSets }/${ completedSetsSummary.totalSets }` }</Chip.Label>
-							</Chip>
-							{ selectedVariant ? (
-								<Chip color={ "warning" } size={ "sm" } variant={ "soft" }>
-									<Chip.Label>Ejercicio cambiado</Chip.Label>
-								</Chip>
-							) : null }
+							<ExerciseCardStatusChips
+								baseName={ exercise.baseName }
+								completedSets={ completedSetsSummary.completedSets }
+								hasCompletedSets={ hasCompletedSets }
+								isCompact
+								isVariantSelected={ Boolean( selectedVariant ) }
+								label={ exercise.equipment }
+								totalSets={ completedSetsSummary.totalSets }
+							/>
 						</div>
 						<div className={ "space-y-1" }>
 							<p className={ "text-xs font-medium text-foreground" }>Ultima sesion</p>
-							{ hasSessionHistory && displayedSessionHistory ? (
-								<div className={ "flex flex-wrap items-center gap-2" }>
-									<Chip size={ "sm" } variant={ "soft" }>
-										<Chip.Label>{ formatSessionDateLabel( displayedSessionHistory.date ) }</Chip.Label>
-									</Chip>
-									{ displayedSessionHistory.sets.map( ( set, index ) => (
-										<Chip key={ `${ displayedSessionHistory.date.toISOString() }-${ set.setNumber }-${ index }` } size={ "sm" } variant={ "soft" }>
-											<Chip.Label>{ `${ String( set.setNumber ).padStart( 2, "0" ) } x ${ set.repsCompleted ?? 0 } reps · ${ set.weightUsed ?? 0 } kg` }</Chip.Label>
-										</Chip>
-									) ) }
-								</div>
-							) : (
-								<Chip color={ "warning" } size={ "sm" } variant={ "soft" }>
-									<Chip.Label>Sin registro anterior</Chip.Label>
-								</Chip>
-							) }
+							<ExerciseCardSessionHistory history={ hasSessionHistory ? displayedSessionHistory : null } isCompact/>
 						</div>
 					</div>
 				</Card.Title>

@@ -1,8 +1,7 @@
 "use client";
 
-import type { StudentListItem } from "@/features/students/actions/get-students";
-import type { StudentFormValues } from "@/features/students/services/student-form";
 import type { StudentFormSheetProps } from "@/features/students/components/shared/student-sheet.types";
+import type { StudentFormValues } from "@/features/students/services/student-form";
 
 import { toast } from "@heroui/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -12,58 +11,14 @@ import {
 	useUpdateStudent,
 } from "@/features/students/hooks/use-students";
 import {
-	NO_GENDER,
-	formatDateInputValue,
-	isValidEmail,
-} from "@/features/students/services/student-form";
-
-const DEFAULT_VALUES: StudentFormValues = {
-	active: true,
-	birthDate: "",
-	dni: "",
-	email: "",
-	gender: NO_GENDER,
-	height: "0",
-	name: "",
-	objective: "",
-	observations: "",
-	password: "",
-	weight: "0",
-};
-
-function getDefaultValues(): StudentFormValues {
-	return { ...DEFAULT_VALUES };
-}
-
-function getInitialValues( student?: StudentListItem ): StudentFormValues {
-	if (!student) return getDefaultValues();
-
-	return {
-		active: student.active,
-		birthDate: formatDateInputValue( student.DescriptionStudent?.birthDate ),
-		dni: String( student.dni ),
-		email: student.email,
-		gender: student.gender ?? NO_GENDER,
-		height: String( student.DescriptionStudent?.height ?? 0 ),
-		name: student.name,
-		objective: student.DescriptionStudent?.objective ?? "",
-		observations: student.DescriptionStudent?.observations ?? "",
-		password: "",
-		weight: String( student.DescriptionStudent?.weight ?? 0 ),
-	};
-}
-
-function isNonNegativeNumberInput( value: string ) {
-	if (value.trim().length === 0) return true;
-
-	const normalizedValue = value.trim().replace( ",", "." );
-
-	return Number.isFinite( Number( normalizedValue ) ) && Number( normalizedValue ) >= 0;
-}
+	getDefaultStudentFormValues,
+	getInitialStudentFormValues,
+	getStudentSheetValidationState,
+} from "@/features/students/components/shared/use-student-sheet-state.utils";
 
 export function useStudentSheetState( props: StudentFormSheetProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
-	const [ values, setValues ] = useState<StudentFormValues>( () => getInitialValues( props.student ) );
+	const [ values, setValues ] = useState<StudentFormValues>( () => getInitialStudentFormValues( props.student ) );
 	const createStudent = useCreateStudent();
 	const updateStudent = useUpdateStudent();
 	const wasOpenRef = useRef( false );
@@ -79,23 +34,18 @@ export function useStudentSheetState( props: StudentFormSheetProps ) {
 		: "Carga un estudiante disponible para seguimiento del coach.";
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear estudiante";
 	const showEditTriggerLabel = props.triggerVariant === "button";
-	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
-	const isEmailInvalid = values.email.trim().length > 0 && !isValidEmail( values.email );
-	const isDniInvalid = values.dni.trim().length > 0 && !/^\d+$/.test( values.dni.trim() );
-	const isPasswordInvalid = !isEditMode && values.password.trim().length === 0;
-	const isHeightInvalid = !isNonNegativeNumberInput( values.height );
-	const isWeightInvalid = !isNonNegativeNumberInput( values.weight );
-	const isSubmitDisabled = values.name.trim().length < 2
-		|| !isValidEmail( values.email )
-		|| !/^\d+$/.test( values.dni.trim() )
-		|| Number( values.dni ) <= 0
-		|| isPasswordInvalid
-		|| isHeightInvalid
-		|| isWeightInvalid
-		|| activeMutation.isPending;
+	const {
+		isDniInvalid,
+		isEmailInvalid,
+		isHeightInvalid,
+		isNameInvalid,
+		isPasswordInvalid,
+		isSubmitDisabled,
+		isWeightInvalid,
+	} = getStudentSheetValidationState( values, isEditMode, activeMutation.isPending );
 
 	const resetFormState = useCallback( () => {
-		setValues( getInitialValues( props.student ) );
+		setValues( getInitialStudentFormValues( props.student ) );
 		createStudent.reset();
 		updateStudent.reset();
 	}, [ createStudent, props.student, updateStudent ] );
@@ -148,7 +98,7 @@ export function useStudentSheetState( props: StudentFormSheetProps ) {
 				} );
 			} else {
 				await createStudent.mutateAsync( values );
-				setValues( getDefaultValues() );
+				setValues( getDefaultStudentFormValues() );
 				toast.success( "Estudiante creado", {
 					description: "Se agrego al listado.",
 				} );

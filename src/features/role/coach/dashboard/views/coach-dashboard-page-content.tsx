@@ -1,13 +1,15 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
-import { Alert, Card, Spinner } from "@heroui/react";
+import { useCallback } from "react";
 
+import { CoachDashboardErrorState } from "@/features/role/coach/dashboard/components/coach-dashboard-error-state";
 import { CoachDashboardHero } from "@/features/role/coach/dashboard/components/coach-dashboard-hero";
+import { CoachDashboardLoadingState } from "@/features/role/coach/dashboard/components/coach-dashboard-loading-state";
 import { CoachDashboardQuickActions } from "@/features/role/coach/dashboard/components/coach-dashboard-quick-actions";
 import { CoachDashboardQuickStats } from "@/features/role/coach/dashboard/components/coach-dashboard-quick-stats";
 import { CoachDashboardStudentsTable } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table";
 import { useCoachDashboardSummary } from "@/features/role/coach/dashboard/hooks/use-coach-dashboard-summary";
+import { buildCoachDashboardQuickStats } from "@/features/role/coach/dashboard/services/coach-dashboard-summary-cards";
 
 export default function CoachDashboardPageContent() {
 	const { data, error, isError, isFetching, isLoading, refetch } = useCoachDashboardSummary();
@@ -17,52 +19,13 @@ export default function CoachDashboardPageContent() {
 
 		void refetch();
 	}, [ isRefreshing, refetch ] );
-	const quickStats = useMemo( () => data ? [
-		{
-			description: "Alumnos activos vinculados al coach.",
-			label: "Estudiantes activos",
-			value: data.totals.activeStudents,
-		},
-		{
-			description: "Catalogo disponible para armar rutinas.",
-			label: "Ejercicios activos",
-			value: data.totals.activeExercises,
-		},
-		{
-			description: "Estudiantes activos con rutina cargada este mes.",
-			label: "Rutinas del mes",
-			value: data.totals.studentsWithRoutineThisMonth,
-		},
-		{
-			description: "Estudiantes activos con plan alimenticio registrado.",
-			label: "Planes alimenticios",
-			value: data.totals.studentsWithMealPlan,
-		},
-	] : [], [ data ] );
 
 	if (isLoading) {
-		return (
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Content className={ "flex min-h-72 flex-col items-center justify-center gap-3 py-10 text-center" }>
-					<Spinner size={ "lg" }/>
-					<div className={ "space-y-1" }>
-						<p className={ "text-base font-semibold text-foreground" }>Cargando dashboard coach</p>
-						<p className={ "text-sm text-muted" }>Consultando estudiantes, rutinas, planes y actividad reciente.</p>
-					</div>
-				</Card.Content>
-			</Card>
-		);
+		return <CoachDashboardLoadingState/>;
 	}
 
 	if (isError || !data) {
-		return (
-			<Alert className={ "border border-danger/20" } status={ "danger" }>
-				<Alert.Content>
-					<Alert.Title>Error al cargar el dashboard coach</Alert.Title>
-					<Alert.Description>{ error?.message ?? "No pudimos cargar el resumen operativo del coach." }</Alert.Description>
-				</Alert.Content>
-			</Alert>
-		);
+		return <CoachDashboardErrorState message={ error?.message ?? "No pudimos cargar el resumen operativo del coach." }/>;
 	}
 
 	return (
@@ -72,7 +35,7 @@ export default function CoachDashboardPageContent() {
 				isRefreshing={ isRefreshing }
 				onRefresh={ handleRefresh }
 			/>
-			<CoachDashboardQuickStats items={ quickStats }/>
+			<CoachDashboardQuickStats items={ buildCoachDashboardQuickStats( data ) }/>
 			<CoachDashboardQuickActions/>
 			<CoachDashboardStudentsTable
 				currentPeriodLabel={ data.currentPeriod.label }

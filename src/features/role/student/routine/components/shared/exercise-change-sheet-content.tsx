@@ -1,7 +1,7 @@
 "use client";
 
 import { Sheet } from "@heroui-pro/react";
-import type { Exercise, ExerciseVariantOption } from "@/features/routine/types/routine-types";
+import type { Exercise, ExerciseVariantOption } from "@/features/routine/types/routine-exercise.types";
 import { ExerciseChangeSheetEmptyState } from "@/features/role/student/routine/components/shared/exercise-change-sheet-empty-state";
 import { ExerciseChangeSheetFooter } from "@/features/role/student/routine/components/shared/exercise-change-sheet-footer";
 import { ExerciseChangeSheetHeader } from "@/features/role/student/routine/components/shared/exercise-change-sheet-header";

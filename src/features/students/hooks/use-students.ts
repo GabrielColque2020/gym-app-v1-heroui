@@ -2,8 +2,6 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import type { Students } from "@/features/students/services/students-query";
-
 import {
 	createStudentAction,
 	deactivateStudentAction,
@@ -11,28 +9,14 @@ import {
 	updateStudentAction,
 } from "@/features/students/actions/student-mutations";
 import {
-	STUDENTS_QUERY_KEY,
-	studentsQueryOptions,
-} from "@/features/students/services/students-query";
-import { TRAINING_ROUTINES_STUDENTS_QUERY_KEY } from "@/features/students/services/training-routines-students-query";
+	prependStudentInCache,
+	refetchStudentsInBackground,
+	replaceStudentInCache,
+} from "@/features/students/hooks/use-students.utils";
+import { studentsQueryOptions } from "@/features/students/services/students-query";
 
 export function useStudents() {
 	return useQuery( studentsQueryOptions() );
-}
-
-function refetchStudentsInBackground( queryClient: ReturnType<typeof useQueryClient> ) {
-	void queryClient.invalidateQueries( { queryKey: STUDENTS_QUERY_KEY } );
-	void queryClient.invalidateQueries( { queryKey: TRAINING_ROUTINES_STUDENTS_QUERY_KEY } );
-}
-
-function replaceStudentInCache( queryClient: ReturnType<typeof useQueryClient>, updatedStudent: Students[ number ] ) {
-	queryClient.setQueryData<Students>( STUDENTS_QUERY_KEY, ( currentStudents ) => {
-		if (!currentStudents) return currentStudents;
-
-		return currentStudents.map( ( student ) =>
-			student.id === updatedStudent.id ? updatedStudent : student
-		);
-	} );
 }
 
 export function useCreateStudent() {
@@ -41,11 +25,7 @@ export function useCreateStudent() {
 	return useMutation( {
 		mutationFn: createStudentAction,
 		onSuccess: ( student ) => {
-			queryClient.setQueryData<Students>( STUDENTS_QUERY_KEY, ( currentStudents ) => {
-				if (!currentStudents) return [ student ];
-
-				return [ student, ...currentStudents ];
-			} );
+			prependStudentInCache( queryClient, student );
 			refetchStudentsInBackground( queryClient );
 		},
 	} );

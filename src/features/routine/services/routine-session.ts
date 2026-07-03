@@ -23,7 +23,7 @@ import type {
 import type {
 	ExerciseProgressRoutine,
 	RoutinePageStudent,
-} from "@/features/routine/types/routine-types";
+} from "@/features/routine/types/routine-progress.types";
 export type {
 	StudentRoutineExercise,
 	StudentRoutineProgressEntry,

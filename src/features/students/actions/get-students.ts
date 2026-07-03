@@ -1,30 +1,10 @@
 "use server";
 
-import type { Prisma } from "@/generated/prisma/client";
 import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { requireCoachSession } from "@/features/auth/coach-session";
+import { studentListSelect } from "@/features/students/services/student-select";
 import prisma from "@/lib/prisma";
-
-const studentListSelect = {
-	DescriptionStudent: {
-		select: {
-			birthDate: true,
-			height: true,
-			id: true,
-			objective: true,
-			observations: true,
-			weight: true,
-		},
-	},
-	active: true,
-	createdAt: true,
-	dni: true,
-	email: true,
-	gender: true,
-	id: true,
-	name: true,
-	updatedAt: true,
-} satisfies Prisma.UserSelect;
+import type { Prisma } from "@/generated/prisma/client";
 
 export type StudentListItem = Prisma.UserGetPayload<{
 	select: typeof studentListSelect;

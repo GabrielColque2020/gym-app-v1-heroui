@@ -3,7 +3,7 @@
 import { Bulb, Calendar, ChartLine } from "@gravity-ui/icons";
 
 import { formatDateLabel } from "@/features/role/student/routine/views/routine-page-content.utils";
-import type { Exercise } from "@/features/routine/types/routine-types";
+import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 import { RoutineSessionOverviewCard } from "@/features/role/student/routine/components/shared/routine-session-overview-card";
 
 type RoutineSessionOverviewCardsProps = {

@@ -4,6 +4,10 @@ import prisma from "@/lib/prisma";
 
 import { getAuthenticatedSession } from "@/features/auth/session";
 import { getRoutineDayAction } from "@/features/routine/actions/get-routine-day";
+import {
+	buildStudentRoutineProgressWhere,
+	collectStudentRoutineProgressIds,
+} from "@/features/role/student/routine/actions/get-routine-session.utils";
 import type { StudentRoutineProgressEntry, StudentRoutineSessionDetail } from "@/features/routine/services/routine-session";
 
 type GetStudentRoutineSessionInput = {
@@ -36,21 +40,7 @@ export async function getStudentRoutineSessionAction( {
 			routineDayId,
 			studentId: activeStudentId,
 		} );
-
-		const exerciseIds = Array.from(
-			new Set(
-				routineDay.routines.flatMap( ( routine ) => [
-					routine.exerciseId ?? routine.exercise?.id,
-					...routine.variants.map( ( variant ) => variant.variantExerciseId ),
-				] ).filter( ( exerciseId ): exerciseId is string => Boolean( exerciseId ) ),
-			),
-		);
-		const variantExerciseIds = Array.from(
-			new Set(
-				routineDay.routines.flatMap( ( routine ) => routine.variants.map( ( variant ) => variant.variantExerciseId ) )
-					.filter( ( exerciseId ): exerciseId is string => Boolean( exerciseId ) ),
-			),
-		);
+		const { exerciseIds, variantExerciseIds } = collectStudentRoutineProgressIds( routineDay );
 		const progressEntries = ( await prisma.exerciseProgress.findMany( {
 			orderBy: [
 				{
@@ -60,25 +50,7 @@ export async function getStudentRoutineSessionAction( {
 					id: "desc",
 				},
 			],
-			where: {
-				studentId: activeStudentId,
-				OR: [
-					exerciseIds.length > 0
-						? {
-							exerciseId: {
-								in: exerciseIds,
-							},
-						}
-						: undefined,
-					variantExerciseIds.length > 0
-						? {
-							variantExerciseId: {
-								in: variantExerciseIds,
-							},
-						}
-						: undefined,
-				].filter( Boolean ) as Array<Record<string, unknown>>,
-			},
+			where: buildStudentRoutineProgressWhere( activeStudentId, exerciseIds, variantExerciseIds ),
 		} ) ) as unknown as StudentRoutineProgressEntry[];
 
 		return {

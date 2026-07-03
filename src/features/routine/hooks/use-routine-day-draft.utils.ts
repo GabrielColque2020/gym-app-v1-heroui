@@ -1,5 +1,5 @@
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
-import type { CoachRoutineDayExercise } from "@/features/role/coach/routine/actions/get-routine-day";
+import type { RoutineDayExerciseBase } from "@/features/routine/actions/get-routine-day";
 
 import {
 	mapRoutineExercisesToDraft,
@@ -8,7 +8,7 @@ import {
 	validateRoutineDayDraft,
 } from "@/features/routine/services/routine-day-editor";
 
-export function buildSourceDraftState( sourceRoutines: CoachRoutineDayExercise[] ) {
+export function buildSourceDraftState( sourceRoutines: RoutineDayExerciseBase[] ) {
 	const sourceDraftRoutines = mapRoutineExercisesToDraft( sourceRoutines );
 	const sourceSignature = serializeRoutineDayDraft( sourceDraftRoutines );
 
