@@ -41,6 +41,7 @@ export type UserMinAggregateOutputType = {
   dni: number | null
   password: string | null
   gender: $Enums.Gender | null
+  themePreference: $Enums.ThemePreference | null
   role: $Enums.Role | null
   active: boolean | null
   createdAt: Date | null
@@ -55,6 +56,7 @@ export type UserMaxAggregateOutputType = {
   dni: number | null
   password: string | null
   gender: $Enums.Gender | null
+  themePreference: $Enums.ThemePreference | null
   role: $Enums.Role | null
   active: boolean | null
   createdAt: Date | null
@@ -69,6 +71,7 @@ export type UserCountAggregateOutputType = {
   dni: number
   password: number
   gender: number
+  themePreference: number
   role: number
   active: number
   createdAt: number
@@ -93,6 +96,7 @@ export type UserMinAggregateInputType = {
   dni?: true
   password?: true
   gender?: true
+  themePreference?: true
   role?: true
   active?: true
   createdAt?: true
@@ -107,6 +111,7 @@ export type UserMaxAggregateInputType = {
   dni?: true
   password?: true
   gender?: true
+  themePreference?: true
   role?: true
   active?: true
   createdAt?: true
@@ -121,6 +126,7 @@ export type UserCountAggregateInputType = {
   dni?: true
   password?: true
   gender?: true
+  themePreference?: true
   role?: true
   active?: true
   createdAt?: true
@@ -222,6 +228,7 @@ export type UserGroupByOutputType = {
   dni: number
   password: string
   gender: $Enums.Gender | null
+  themePreference: $Enums.ThemePreference
   role: $Enums.Role
   active: boolean
   createdAt: Date
@@ -259,6 +266,7 @@ export type UserWhereInput = {
   dni?: Prisma.IntFilter<"User"> | number
   password?: Prisma.StringFilter<"User"> | string
   gender?: Prisma.EnumGenderNullableFilter<"User"> | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFilter<"User"> | $Enums.ThemePreference
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   active?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -282,6 +290,7 @@ export type UserOrderByWithRelationInput = {
   dni?: Prisma.SortOrder
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
+  themePreference?: Prisma.SortOrder
   role?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -308,6 +317,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
   gender?: Prisma.EnumGenderNullableFilter<"User"> | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFilter<"User"> | $Enums.ThemePreference
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   active?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -331,6 +341,7 @@ export type UserOrderByWithAggregationInput = {
   dni?: Prisma.SortOrder
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
+  themePreference?: Prisma.SortOrder
   role?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -353,6 +364,7 @@ export type UserScalarWhereWithAggregatesInput = {
   dni?: Prisma.IntWithAggregatesFilter<"User"> | number
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   gender?: Prisma.EnumGenderNullableWithAggregatesFilter<"User"> | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceWithAggregatesFilter<"User"> | $Enums.ThemePreference
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   active?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -367,6 +379,7 @@ export type UserCreateInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -389,6 +402,7 @@ export type UserUncheckedCreateInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -411,6 +425,7 @@ export type UserUpdateInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -433,6 +448,7 @@ export type UserUncheckedUpdateInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -455,6 +471,7 @@ export type UserCreateManyInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -469,6 +486,7 @@ export type UserUpdateManyMutationInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -482,6 +500,7 @@ export type UserUncheckedUpdateManyInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -511,6 +530,7 @@ export type UserCountOrderByAggregateInput = {
   dni?: Prisma.SortOrder
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrder
+  themePreference?: Prisma.SortOrder
   role?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -529,6 +549,7 @@ export type UserMaxOrderByAggregateInput = {
   dni?: Prisma.SortOrder
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrder
+  themePreference?: Prisma.SortOrder
   role?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -543,6 +564,7 @@ export type UserMinOrderByAggregateInput = {
   dni?: Prisma.SortOrder
   password?: Prisma.SortOrder
   gender?: Prisma.SortOrder
+  themePreference?: Prisma.SortOrder
   role?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -593,6 +615,10 @@ export type IntFieldUpdateOperationsInput = {
 
 export type NullableEnumGenderFieldUpdateOperationsInput = {
   set?: $Enums.Gender | null
+}
+
+export type EnumThemePreferenceFieldUpdateOperationsInput = {
+  set?: $Enums.ThemePreference
 }
 
 export type EnumRoleFieldUpdateOperationsInput = {
@@ -762,6 +788,7 @@ export type UserCreateWithoutStudentsInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -783,6 +810,7 @@ export type UserUncheckedCreateWithoutStudentsInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -809,6 +837,7 @@ export type UserCreateWithoutCoachInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -830,6 +859,7 @@ export type UserUncheckedCreateWithoutCoachInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -872,6 +902,7 @@ export type UserUpdateWithoutStudentsInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -893,6 +924,7 @@ export type UserUncheckedUpdateWithoutStudentsInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -933,6 +965,7 @@ export type UserScalarWhereInput = {
   dni?: Prisma.IntFilter<"User"> | number
   password?: Prisma.StringFilter<"User"> | string
   gender?: Prisma.EnumGenderNullableFilter<"User"> | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFilter<"User"> | $Enums.ThemePreference
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   active?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -947,6 +980,7 @@ export type UserCreateWithoutLoginHistoryInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -968,6 +1002,7 @@ export type UserUncheckedCreateWithoutLoginHistoryInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1005,6 +1040,7 @@ export type UserUpdateWithoutLoginHistoryInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1026,6 +1062,7 @@ export type UserUncheckedUpdateWithoutLoginHistoryInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1047,6 +1084,7 @@ export type UserCreateWithoutDescriptionStudentInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1068,6 +1106,7 @@ export type UserUncheckedCreateWithoutDescriptionStudentInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1105,6 +1144,7 @@ export type UserUpdateWithoutDescriptionStudentInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1126,6 +1166,7 @@ export type UserUncheckedUpdateWithoutDescriptionStudentInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1147,6 +1188,7 @@ export type UserCreateWithoutMealPlanInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1168,6 +1210,7 @@ export type UserUncheckedCreateWithoutMealPlanInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1205,6 +1248,7 @@ export type UserUpdateWithoutMealPlanInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1226,6 +1270,7 @@ export type UserUncheckedUpdateWithoutMealPlanInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1247,6 +1292,7 @@ export type UserCreateWithoutTrainingRoutineInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1268,6 +1314,7 @@ export type UserUncheckedCreateWithoutTrainingRoutineInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1305,6 +1352,7 @@ export type UserUpdateWithoutTrainingRoutineInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1326,6 +1374,7 @@ export type UserUncheckedUpdateWithoutTrainingRoutineInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1347,6 +1396,7 @@ export type UserCreateWithoutStudentExerciseInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1368,6 +1418,7 @@ export type UserUncheckedCreateWithoutStudentExerciseInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1405,6 +1456,7 @@ export type UserUpdateWithoutStudentExerciseInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1426,6 +1478,7 @@ export type UserUncheckedUpdateWithoutStudentExerciseInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1447,6 +1500,7 @@ export type UserCreateWithoutExerciseProgressInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1468,6 +1522,7 @@ export type UserUncheckedCreateWithoutExerciseProgressInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1505,6 +1560,7 @@ export type UserUpdateWithoutExerciseProgressInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1526,6 +1582,7 @@ export type UserUncheckedUpdateWithoutExerciseProgressInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1547,6 +1604,7 @@ export type UserCreateWithoutExerciseInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1568,6 +1626,7 @@ export type UserUncheckedCreateWithoutExerciseInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1605,6 +1664,7 @@ export type UserUpdateWithoutExerciseInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1626,6 +1686,7 @@ export type UserUncheckedUpdateWithoutExerciseInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1647,6 +1708,7 @@ export type UserCreateManyCoachInput = {
   dni: number
   password: string
   gender?: $Enums.Gender | null
+  themePreference?: $Enums.ThemePreference
   role: $Enums.Role
   active?: boolean
   createdAt?: Date | string
@@ -1660,6 +1722,7 @@ export type UserUpdateWithoutCoachInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1681,6 +1744,7 @@ export type UserUncheckedUpdateWithoutCoachInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1702,6 +1766,7 @@ export type UserUncheckedUpdateManyWithoutCoachInput = {
   dni?: Prisma.IntFieldUpdateOperationsInput | number
   password?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  themePreference?: Prisma.EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1800,6 +1865,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   dni?: boolean
   password?: boolean
   gender?: boolean
+  themePreference?: boolean
   role?: boolean
   active?: boolean
   createdAt?: boolean
@@ -1824,6 +1890,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   dni?: boolean
   password?: boolean
   gender?: boolean
+  themePreference?: boolean
   role?: boolean
   active?: boolean
   createdAt?: boolean
@@ -1839,6 +1906,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   dni?: boolean
   password?: boolean
   gender?: boolean
+  themePreference?: boolean
   role?: boolean
   active?: boolean
   createdAt?: boolean
@@ -1854,6 +1922,7 @@ export type UserSelectScalar = {
   dni?: boolean
   password?: boolean
   gender?: boolean
+  themePreference?: boolean
   role?: boolean
   active?: boolean
   createdAt?: boolean
@@ -1861,7 +1930,7 @@ export type UserSelectScalar = {
   coachId?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "dni" | "password" | "gender" | "role" | "active" | "createdAt" | "updatedAt" | "coachId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "dni" | "password" | "gender" | "themePreference" | "role" | "active" | "createdAt" | "updatedAt" | "coachId", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   coach?: boolean | Prisma.User$coachArgs<ExtArgs>
   students?: boolean | Prisma.User$studentsArgs<ExtArgs>
@@ -1901,6 +1970,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     dni: number
     password: string
     gender: $Enums.Gender | null
+    themePreference: $Enums.ThemePreference
     role: $Enums.Role
     active: boolean
     createdAt: Date
@@ -2344,6 +2414,7 @@ export interface UserFieldRefs {
   readonly dni: Prisma.FieldRef<"User", 'Int'>
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly gender: Prisma.FieldRef<"User", 'Gender'>
+  readonly themePreference: Prisma.FieldRef<"User", 'ThemePreference'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly active: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>

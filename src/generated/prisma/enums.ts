@@ -49,3 +49,12 @@ export const Role = {
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const ThemePreference = {
+  SYSTEM: 'SYSTEM',
+  LIGHT: 'LIGHT',
+  DARK: 'DARK'
+} as const
+
+export type ThemePreference = (typeof ThemePreference)[keyof typeof ThemePreference]

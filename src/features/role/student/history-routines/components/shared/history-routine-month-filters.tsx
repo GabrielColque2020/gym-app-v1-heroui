@@ -29,15 +29,15 @@ export function HistoryRoutineMonthFilters( {
 												yearOptions,
 												selectedMonth,
 												selectedYear,
-	onSearchAction,
-	onRefreshAction,
-	onClearAction,
-	onMonthChangeAction,
-	onYearChangeAction,
+												onSearchAction,
+												onRefreshAction,
+												onClearAction,
+												onMonthChangeAction,
+												onYearChangeAction,
 												isRefreshing = false,
 											}: HistoryRoutineMonthFiltersProps ) {
 	return (
-		<Card className={ "border border-border bg-surface" } variant={ "default" }>
+		<Card className={ "border border-border py-2" } variant={ "default" }>
 			<Card.Content className={ "p-3" }>
 				<div className={ "flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between" }>
 					<PageHeader

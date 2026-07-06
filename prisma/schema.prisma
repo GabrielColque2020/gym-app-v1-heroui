@@ -45,13 +45,20 @@ enum Role {
   ADMIN
 }
 
+enum ThemePreference {
+  SYSTEM
+  LIGHT
+  DARK
+}
+
 model User {
-  id       String  @id @default(uuid())
-  name     String
-  email    String  @unique
-  dni      Int     @unique
-  password String
-  gender   Gender?
+  id              String          @id @default(uuid())
+  name            String
+  email           String          @unique
+  dni             Int             @unique
+  password        String
+  gender          Gender?
+  themePreference ThemePreference @default(SYSTEM)
 
   role      Role
   active    Boolean  @default(true)

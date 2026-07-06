@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Alert, Card, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs } from "@/components/common";
@@ -20,7 +20,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 	const [ selectedYear, setSelectedYear ] = useState( String( getCurrentYear() ) );
 	const [ activeMonth, setActiveMonth ] = useState( getCurrentMonth() );
 	const [ activeYear, setActiveYear ] = useState( getCurrentYear() );
-	const [ selectedWeeks, setSelectedWeeks ] = useState<number[]>( [] );
+	const [ selectedWeeks, setSelectedWeeks ] = useState<number[] | null>( null );
 
 	const { data, error, isError, isLoading, isFetching, refetch } = useHistoryRoutines( {
 		month: activeMonth,
@@ -33,9 +33,22 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 		() => groupHistoryRoutinesByWeek( data?.historyRoutines ?? [] ),
 		[ data?.historyRoutines ],
 	);
+	const resolvedSelectedWeeks = useMemo( () => {
+		if (weekGroups.length === 0) {
+			return [];
+		}
+
+		if (selectedWeeks === null) {
+			return [ weekGroups[ 0 ].week ];
+		}
+
+		return selectedWeeks.filter( ( week ) =>
+			weekGroups.some( ( weekGroup ) => weekGroup.week === week ),
+		);
+	}, [ selectedWeeks, weekGroups ] );
 	const selectedWeekGroups = useMemo(
-		() => weekGroups.filter( ( weekGroup ) => selectedWeeks.includes( weekGroup.week ) ),
-		[ selectedWeeks, weekGroups ],
+		() => weekGroups.filter( ( weekGroup ) => resolvedSelectedWeeks.includes( weekGroup.week ) ),
+		[ resolvedSelectedWeeks, weekGroups ],
 	);
 	const desktopSummary = useMemo(
 		() => buildHistoryRoutineMonthSummary( selectedWeekGroups.length > 0 ? selectedWeekGroups : weekGroups ),
@@ -45,29 +58,6 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 		() => buildHistoryRoutineMonthSummary( weekGroups ),
 		[ weekGroups ],
 	);
-	const didInitializeWeeks = useRef( false );
-
-	useEffect( () => {
-		if (weekGroups.length === 0) {
-			didInitializeWeeks.current = false;
-			setSelectedWeeks( [] );
-
-			return;
-		}
-
-		if (!didInitializeWeeks.current) {
-			didInitializeWeeks.current = true;
-			setSelectedWeeks( [ weekGroups[ 0 ].week ] );
-
-			return;
-		}
-
-		setSelectedWeeks( ( currentSelectedWeeks ) =>
-			currentSelectedWeeks.filter( ( week ) =>
-				weekGroups.some( ( weekGroup ) => weekGroup.week === week ),
-			),
-		);
-	}, [ weekGroups ] );
 
 	function handleSearch() {
 		setActiveMonth( Number( selectedMonth ) );
@@ -85,11 +75,13 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 	}
 
 	function handleWeekToggle( week: number ) {
-		setSelectedWeeks( ( currentSelectedWeeks ) => (
-			currentSelectedWeeks.includes( week )
-				? currentSelectedWeeks.filter( ( currentWeek ) => currentWeek !== week )
-				: [ ...currentSelectedWeeks, week ].sort( ( left, right ) => left - right )
-		) );
+		setSelectedWeeks( ( currentSelectedWeeks ) => {
+			const current = currentSelectedWeeks ?? (weekGroups.length > 0 ? [ weekGroups[ 0 ].week ] : []);
+
+			return current.includes( week )
+				? current.filter( ( currentWeek ) => currentWeek !== week )
+				: [ ...current, week ].sort( ( left, right ) => left - right );
+		} );
 	}
 
 	const breadcrumbs = [
@@ -99,7 +91,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 	const monthLabel = `${ String( activeMonth ).padStart( 2, "0" ) }/${ activeYear }`;
 
 	return (
-		<div className={ "mx-auto flex w-full max-w-350 flex-col gap-4" }>
+		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
 				backHref={ "/student/dashboard" }
 				backLabel={ "Volver al inicio" }
@@ -158,7 +150,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 							<StudentHistoryRoutinesDesktopContent
 								monthLabel={ monthLabel }
 								selectedWeekGroups={ selectedWeekGroups }
-								selectedWeeks={ selectedWeeks }
+								selectedWeeks={ resolvedSelectedWeeks }
 								summary={ desktopSummary }
 								weekGroups={ weekGroups }
 								onWeekToggleAction={ handleWeekToggle }
@@ -168,7 +160,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 							<StudentHistoryRoutinesMobileContent
 								monthLabel={ monthLabel }
 								selectedWeekGroups={ selectedWeekGroups }
-								selectedWeeks={ selectedWeeks }
+								selectedWeeks={ resolvedSelectedWeeks }
 								summary={ mobileSummary }
 								weekGroups={ weekGroups }
 								onWeekToggleAction={ handleWeekToggle }

@@ -1,7 +1,9 @@
-import type {Metadata} from "next";
-import type {ReactNode} from "react";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
-import {Toast} from "@heroui/react";
+import { Toast } from "@heroui/react";
+import { getAuthenticatedSession } from "@/features/auth/session";
+import { themePreferenceToUiThemePreference } from "@/features/theme/theme-preference";
 import { Providers } from "./providers";
 
 import "./globals.css";
@@ -11,16 +13,18 @@ export const metadata: Metadata = {
   title: "HeroUI Pro - Dashboard Template",
 };
 
-export default function RootLayout({children}: {children: ReactNode}) {
+export default async function RootLayout( { children }: { children: ReactNode } ) {
+  const session = await getAuthenticatedSession();
+  const defaultTheme = themePreferenceToUiThemePreference( session?.themePreference ?? "SYSTEM" );
+
   return (
     <html
       suppressHydrationWarning
       className={ "bg-background text-foreground" }
       lang={ "en" }
-      data-theme={ "light" }
     >
       <body className={ "font-sans antialiased" }>
-        <Providers>
+        <Providers defaultTheme={ defaultTheme }>
           { children }
           <Toast.Provider placement={ "top end" } />
         </Providers>

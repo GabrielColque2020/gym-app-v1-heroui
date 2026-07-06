@@ -15,13 +15,13 @@ type TrainingRoutinesFilterProps = {
 };
 
 export function TrainingRoutinesFilter( {
-	defaultMonth,
-	defaultYear,
-	onClear,
-	onSearch,
-	onRefresh,
-	isRefreshing = false,
-}: TrainingRoutinesFilterProps ) {
+											defaultMonth,
+											defaultYear,
+											onClear,
+											onSearch,
+											onRefresh,
+											isRefreshing = false,
+										}: TrainingRoutinesFilterProps ) {
 	const currentYear = new Date().getFullYear();
 	const yearOptions = Array.from( { length: 8 }, ( _, i ) => ( {
 		label: String( currentYear - 3 + i ),
@@ -47,12 +47,14 @@ export function TrainingRoutinesFilter( {
 
 	return (
 		<Card className={ "p-5" }>
-			<PageHeader
-				description={ "Optimiza tu rendimiento con rutinas adaptadas a tus objetivos de temporada." }
-				showSeparator
-				title={ "Plan de Entrenamiento Personal" }
-			/>
-			<div className={ "grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.6fr)]" }>
+			<Card.Header>
+				<PageHeader
+					description={ "Optimiza tu rendimiento con rutinas adaptadas a tus objetivos de temporada." }
+					showSeparator
+					title={ "Plan de Entrenamiento Personal" }
+				/>
+			</Card.Header>
+			<Card.Content className={ "grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.6fr)]" }>
 				<div className={ "form-control" }>
 					<FilterSelect
 						key={ `year-${ resetVersion }` }
@@ -96,7 +98,7 @@ export function TrainingRoutinesFilter( {
 						Limpiar
 					</Button>
 				</div>
-			</div>
+			</Card.Content>
 		</Card>
 	);
 }

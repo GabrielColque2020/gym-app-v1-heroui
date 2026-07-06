@@ -29,9 +29,9 @@ function getCurrentYear() {
 }
 
 export default function TrainingRoutinesPageContent( {
-	initialMonth = getCurrentMonth(),
-	initialYear = getCurrentYear(),
-}: TrainingRoutinesPageContentProps ) {
+														 initialMonth = getCurrentMonth(),
+														 initialYear = getCurrentYear(),
+													 }: TrainingRoutinesPageContentProps ) {
 	const [ activeMonth, setActiveMonth ] = useState( initialMonth );
 	const [ activeYear, setActiveYear ] = useState( initialYear );
 	const [ selectedWeekId, setSelectedWeekId ] = useState<Key | null>( null );
@@ -73,7 +73,7 @@ export default function TrainingRoutinesPageContent( {
 	const defaultYear = String( initialYear );
 
 	return (
-		<div className={ "flex w-full flex-col gap-4" }>
+		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
 				backHref={ "/student/dashboard" }
 				backLabel={ "Volver" }

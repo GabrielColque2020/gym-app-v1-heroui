@@ -1274,6 +1274,7 @@ export const UserScalarFieldEnum = {
   dni: 'dni',
   password: 'password',
   gender: 'gender',
+  themePreference: 'themePreference',
   role: 'role',
   active: 'active',
   createdAt: 'createdAt',
@@ -1490,6 +1491,20 @@ export type EnumGenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
  * Reference to a field of type 'Gender[]'
  */
 export type ListEnumGenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Gender[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ThemePreference'
+ */
+export type EnumThemePreferenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ThemePreference'>
+    
+
+
+/**
+ * Reference to a field of type 'ThemePreference[]'
+ */
+export type ListEnumThemePreferenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ThemePreference[]'>
     
 
 

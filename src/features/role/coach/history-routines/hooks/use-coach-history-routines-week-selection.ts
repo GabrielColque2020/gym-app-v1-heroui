@@ -1,45 +1,37 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 
 import type { HistoryRoutineWeekGroup } from "@/features/history-routines/services/history-routines-view";
 
 export function useCoachHistoryRoutinesWeekSelection( weekGroups: HistoryRoutineWeekGroup[] ) {
-	const [ selectedWeeks, setSelectedWeeks ] = useState<number[]>( [] );
-	const didInitializeWeeks = useRef( false );
-
-	useEffect( () => {
+	const [ selectedWeeks, setSelectedWeeks ] = useState<number[] | null>( null );
+	const resolvedSelectedWeeks = useMemo( () => {
 		if (weekGroups.length === 0) {
-			didInitializeWeeks.current = false;
-			setSelectedWeeks( [] );
-
-			return;
+			return [];
 		}
 
-		if (!didInitializeWeeks.current) {
-			didInitializeWeeks.current = true;
-			setSelectedWeeks( [ weekGroups[ 0 ].week ] );
-
-			return;
+		if (selectedWeeks === null) {
+			return [ weekGroups[ 0 ].week ];
 		}
 
-		setSelectedWeeks( ( currentSelectedWeeks ) =>
-			currentSelectedWeeks.filter( ( week ) =>
-				weekGroups.some( ( weekGroup ) => weekGroup.week === week ),
-			),
+		return selectedWeeks.filter( ( week ) =>
+			weekGroups.some( ( weekGroup ) => weekGroup.week === week ),
 		);
-	}, [ weekGroups ] );
+	}, [ selectedWeeks, weekGroups ] );
 
 	function handleWeekToggle( week: number ) {
-		setSelectedWeeks( ( currentSelectedWeeks ) => (
-			currentSelectedWeeks.includes( week )
-				? currentSelectedWeeks.filter( ( currentWeek ) => currentWeek !== week )
-				: [ ...currentSelectedWeeks, week ].sort( ( left, right ) => left - right )
-		) );
+		setSelectedWeeks( ( currentSelectedWeeks ) => {
+			const current = currentSelectedWeeks ?? (weekGroups.length > 0 ? [ weekGroups[ 0 ].week ] : []);
+
+			return current.includes( week )
+				? current.filter( ( currentWeek ) => currentWeek !== week )
+				: [ ...current, week ].sort( ( left, right ) => left - right );
+		} );
 	}
 
 	return {
 		handleWeekToggle,
-		selectedWeeks,
+		selectedWeeks: resolvedSelectedWeeks,
 	};
 }

@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 
 import type { PrismaClient, User } from "@/generated/prisma/client";
+import type { ThemePreference } from "@/generated/prisma/enums";
 import type { AuthenticatedUser, LoginRequest, LoginResponse } from "@/types/auth";
 import { createSessionToken as buildSessionToken, getSessionSecret } from "@/features/login/services/session-token";
 
@@ -50,14 +51,17 @@ export function parseDniCredential( credential: string ) {
 }
 
 export function toAuthenticatedUser( user: User ): AuthenticatedUser {
+	const typedUser = user as User & { themePreference: ThemePreference };
+
 	return {
-		active: user.active,
-		dni: user.dni,
-		email: user.email,
-		gender: user.gender ?? null,
-		id: user.id,
-		name: user.name,
-		role: user.role,
+		active: typedUser.active,
+		dni: typedUser.dni,
+		email: typedUser.email,
+		gender: typedUser.gender ?? null,
+		id: typedUser.id,
+		name: typedUser.name,
+		role: typedUser.role,
+		themePreference: typedUser.themePreference,
 	};
 }
 

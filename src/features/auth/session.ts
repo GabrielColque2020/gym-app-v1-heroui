@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 
+import type { ThemePreference } from "@/generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
 import {
 	AUTH_SESSION_COOKIE_NAME,
@@ -24,14 +25,14 @@ export async function getAuthenticatedSession() {
 	}
 
 	const user = await prisma.user.findUnique( {
-		select: {
-			active: true,
-			name: true,
-		},
 		where: {
 			id: session.sub,
 		},
-	} );
+	} ) as {
+	active: boolean;
+	name: string;
+	themePreference: ThemePreference;
+} | null;
 
 	if (!user?.active) {
 		return null;
@@ -40,5 +41,6 @@ export async function getAuthenticatedSession() {
 	return {
 		...session,
 		name: user.name,
+		themePreference: user.themePreference,
 	};
 }

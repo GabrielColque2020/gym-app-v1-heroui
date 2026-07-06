@@ -2,10 +2,11 @@
 
 import type { ReactNode } from "react";
 
-import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { useState } from "react";
+import { ThemeProvider } from "next-themes";
 
 import {
 	QUERY_PERSIST_BUSTER,
@@ -13,35 +14,38 @@ import {
 	QUERY_PERSIST_STORAGE_KEY,
 	shouldPersistQuery,
 } from "@/constants/query";
+import { ThemeRouteSync } from "@/components/layout/theme-route-sync";
+import { HEROUI_THEME_STORAGE_KEY } from "@/features/theme/theme-preference";
 
 type ProvidersProps = {
 	children: ReactNode;
+	defaultTheme: "system" | "light" | "dark";
 };
 
 const queryPersistStorage = {
-	getItem: ( key: string ) => {
+	getItem: async ( key: string ) => {
 		if (typeof window === "undefined") return null;
 
 		return window.localStorage.getItem( key );
 	},
-	removeItem: ( key: string ) => {
+	removeItem: async ( key: string ) => {
 		if (typeof window === "undefined") return;
 
 		window.localStorage.removeItem( key );
 	},
-	setItem: ( key: string, value: string ) => {
+	setItem: async ( key: string, value: string ) => {
 		if (typeof window === "undefined") return;
 
 		window.localStorage.setItem( key, value );
 	},
 };
 
-export function Providers( { children }: ProvidersProps ) {
+export function Providers( { children, defaultTheme }: ProvidersProps ) {
 	const [ queryClient ] = useState(
 		() => new QueryClient(),
 	);
 	const [ persister ] = useState( () =>
-		createSyncStoragePersister( {
+		createAsyncStoragePersister( {
 			key: QUERY_PERSIST_STORAGE_KEY,
 			storage: queryPersistStorage,
 		} ),
@@ -59,7 +63,16 @@ export function Providers( { children }: ProvidersProps ) {
 				persister,
 			} }
 		>
-			{ children }
+			<ThemeProvider
+				attribute={ "class" }
+				defaultTheme={ defaultTheme }
+				disableTransitionOnChange
+				enableSystem
+				storageKey={ HEROUI_THEME_STORAGE_KEY }
+			>
+				<ThemeRouteSync/>
+				{ children }
+			</ThemeProvider>
 		</PersistQueryClientProvider>
 	);
 }

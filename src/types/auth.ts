@@ -1,4 +1,5 @@
-import type { Gender, Role } from "@/generated/prisma/client";
+import type { Gender, Role } from "@/generated/prisma/enums";
+import type { ThemePreference } from "@/generated/prisma/enums";
 
 export interface LoginRequest {
 	credential: string;
@@ -13,6 +14,7 @@ export interface AuthenticatedUser {
 	id: string;
 	name: string;
 	role: Role;
+	themePreference: ThemePreference;
 }
 
 export interface LoginResponse {

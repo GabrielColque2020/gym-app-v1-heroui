@@ -18,6 +18,10 @@ import {
 import { Dumbbell, Eye, EyeOff } from "lucide-react";
 
 import { useLogin } from "@/features/login/hooks/use-login";
+import {
+	persistThemePreference,
+	themePreferenceToUiThemePreference,
+} from "@/features/theme/theme-preference";
 
 export default function LoginPageContent() {
 	const router = useRouter();
@@ -72,8 +76,8 @@ export default function LoginPageContent() {
 				password,
 			} );
 
+			persistThemePreference( themePreferenceToUiThemePreference( result.user.themePreference ) );
 			router.replace( getSafeRedirectPath( searchParams.get( "next" ), result.user.role ) );
-			router.refresh();
 		} catch {
 			// La UI ya lee el estado de error de la mutacion.
 		}

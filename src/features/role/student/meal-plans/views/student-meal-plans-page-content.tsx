@@ -6,10 +6,7 @@ import { CircleDot, RotateCcw } from "lucide-react";
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import type { StudentMealPlan } from "@/features/meal-plans/types/meal-plans-types";
 import { useMealPlans } from "@/features/role/student/meal-plans/hooks/use-meal-plans";
-import {
-	formatMealPlanDescriptionLines,
-	formatMealTime,
-} from "@/features/meal-plans/services/meal-plan-formatters";
+import { formatMealPlanDescriptionLines, formatMealTime, } from "@/features/meal-plans/services/meal-plan-formatters";
 
 type StudentMealPlansPageContentProps = { studentId: string | null };
 
@@ -86,21 +83,23 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs backHref={ "/student/dashboard" } backLabel={ "Volver al inicio" } crumbs={ crumbs }/>
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:px-6" }>
+			<Card className={ "border border-border px-7 py-4" } variant={ "default" }>
+				<Card.Header className={ "flex flex-col gap-3 border-b border-border pb-4 " }>
 					<div className={ "flex flex-col gap-3 md:flex-row md:items-end md:justify-between" }>
 						<PageHeader description={ "Consulta los planes alimenticios asignados a tu cuenta." } title={ "Mis planes alimenticios" }/>
 						<Button
 							className={ "w-full shadow-sm md:w-auto" }
 							isDisabled={ isFetching && !isLoading }
-							onPress={ () => { void refetch(); } }
+							onPress={ () => {
+								void refetch();
+							} }
 						>
 							<RotateCcw className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
 							{ isFetching && !isLoading ? "Actualizando" : "Actualizar" }
 						</Button>
 					</div>
 				</Card.Header>
-				<Card.Content className={ "px-5 py-4 sm:px-6" }>
+				<Card.Content className={ "py-2" }>
 					{ data.mealPlans.length === 0 ? (
 						<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
 							<Card.Content className={ "py-10 text-center" }>
