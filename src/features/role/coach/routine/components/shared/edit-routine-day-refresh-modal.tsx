@@ -1,5 +1,5 @@
 import { Button, Modal } from "@heroui/react";
-import { RotateCcw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 
 type EditRoutineDayRefreshModalProps = {
 	isOpen: boolean;
@@ -8,10 +8,10 @@ type EditRoutineDayRefreshModalProps = {
 };
 
 export function EditRoutineDayRefreshModal( {
-	isOpen,
-	onCloseAction,
-	onConfirmAction,
-}: EditRoutineDayRefreshModalProps ) {
+												isOpen,
+												onCloseAction,
+												onConfirmAction,
+											}: EditRoutineDayRefreshModalProps ) {
 	return (
 		<Modal>
 			<Modal.Backdrop
@@ -41,7 +41,7 @@ export function EditRoutineDayRefreshModal( {
 										close();
 										onConfirmAction();
 									} }>
-										<RotateCcw className={ "size-4" }/>
+										<RotateCw className={ "size-4" }/>
 										Actualizar
 									</Button>
 								</Modal.Footer>

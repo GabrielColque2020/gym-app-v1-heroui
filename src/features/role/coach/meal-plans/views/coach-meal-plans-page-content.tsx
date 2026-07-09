@@ -1,7 +1,7 @@
 "use client";
 
 import { Alert, Button, Card } from "@heroui/react";
-import { RotateCcw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { CoachMealPlansEmptyState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-empty-state";
@@ -36,8 +36,8 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 				crumbs={ breadcrumbs }
 			/>
 
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between" }>
 					<PageHeader
 						description={ `${ data.student.name }` }
 						title={ "Planes alimenticios del estudiante" }
@@ -49,7 +49,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<MealPlanSheet mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
@@ -60,13 +60,13 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<MealPlanSheet mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
 					</div>
 				</Card.Header>
-				<Card.Content className={ "px-5 py-4 sm:px-6" }>
+				<Card.Content className={ "p-3" }>
 					{ data.mealPlans.length === 0 ? (
 						<CoachMealPlansEmptyState studentName={ data.student.name }/>
 					) : (

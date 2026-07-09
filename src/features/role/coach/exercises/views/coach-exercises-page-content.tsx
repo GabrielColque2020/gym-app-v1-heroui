@@ -57,9 +57,9 @@ export default function CoachExercisesPageContent() {
 				backLabel={ "Volver al inicio" }
 				crumbs={ breadcrumbs }
 			/>
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<CoachExercisesPageHeader isRefreshing={ isRefreshing } onRefreshAction={ handleRefresh }/>
-				<Card.Content className={ "px-5 py-4 sm:px-6" }>
+				<Card.Content className={ "p-3" }>
 					<div className={ "hidden w-full md:flex" }>
 						<ExercisesContentDesktop exercises={ exercises }/>
 					</div>
@@ -67,7 +67,7 @@ export default function CoachExercisesPageContent() {
 						<ExercisesContentMobile exercises={ exercises }/>
 					</div>
 				</Card.Content>
-				<Card.Footer className={ "border-t border-border px-5 py-4 sm:px-6" }>
+				<Card.Footer className={ "border-t border-border p-3" }>
 					<div className={ "text-sm text-muted" }>
 						Desactivar conserva el ejercicio en rutinas y progresos historicos.
 					</div>

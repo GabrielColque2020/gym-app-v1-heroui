@@ -23,7 +23,7 @@ export function CoachTrainingRoutineCardDesktop( {
 	return (
 		<div className={ "grid w-full grid-cols-12 items-start gap-4" }>
 			<Card className={ "col-span-4 w-full self-start overflow-hidden" }>
-				<Card.Header className={ "gap-3 pb-3 pt-2" }>
+				<Card.Header className={ "gap-3 pt-3 px-3" }>
 					<Card.Content className={ "min-w-0" }>
 						<Card.Title className={ "text-base font-semibold" }>
 							Rutina del mes
@@ -41,7 +41,7 @@ export function CoachTrainingRoutineCardDesktop( {
 						</Chip>
 					</Card.Content>
 				</Card.Header>
-				<Card.Content className={ "grid gap-3 pb-4" }>
+				<Card.Content className={ "grid gap-3 pb-3 px-3" }>
 					<div className={ "flex items-center justify-between gap-3" }>
 						<Label className={ "text-sm font-semibold" }>Semana</Label>
 					</div>
@@ -77,7 +77,7 @@ export function CoachTrainingRoutineCardDesktop( {
 				</Card.Content>
 			</Card>
 			<Card className={ "col-span-8 w-full overflow-hidden" }>
-				<Card.Header className={ "gap-3 pb-3 pt-2" }>
+				<Card.Header className={ "gap-3 pt-3 px-3" }>
 					<div className={ "flex w-full items-center justify-between gap-3" }>
 						<div className={ "flex min-w-0 flex-col gap-1" }>
 							<Card.Title className={ "truncate text-base font-semibold" }>
@@ -91,7 +91,7 @@ export function CoachTrainingRoutineCardDesktop( {
 						</div>
 					</div>
 				</Card.Header>
-				<Card.Content className={ "pb-4" }>
+				<Card.Content className={ "px-3 pb-3" }>
 					<CoachTrainingRoutineDaysAccordion
 						days={ selectedRoutine?.routineDays ?? [] }
 						exerciseGridClassName={

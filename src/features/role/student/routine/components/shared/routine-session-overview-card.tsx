@@ -9,14 +9,14 @@ type RoutineSessionOverviewCardProps = {
 };
 
 export function RoutineSessionOverviewCard( {
-	description,
-	icon,
-	iconClassName,
-	title,
-}: RoutineSessionOverviewCardProps ) {
+												description,
+												icon,
+												iconClassName,
+												title,
+											}: RoutineSessionOverviewCardProps ) {
 	return (
-		<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
-			<Card.Content className={ "flex h-full items-center justify-center p-1" }>
+		<Card className={ "border border-border py-2 shadow-sm" } variant={ "default" }>
+			<Card.Content className={ "flex h-full items-start justify-center p-3" }>
 				<div className={ "flex items-center gap-3" }>
 					<div className={ iconClassName }>
 						{ icon }

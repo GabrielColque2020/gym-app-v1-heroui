@@ -11,28 +11,28 @@ type RoutineSessionOverviewCardsProps = {
 };
 
 export function RoutineSessionOverviewCards( {
-	exercises,
-	latestProgressDate,
-	routineStatusDescription,
-}: RoutineSessionOverviewCardsProps ) {
+												 exercises,
+												 latestProgressDate,
+												 routineStatusDescription,
+											 }: RoutineSessionOverviewCardsProps ) {
 	return (
 		<>
 			<RoutineSessionOverviewCard
 				icon={ <Lightbulb className={ "size-5" }/> }
 				iconClassName={ "flex size-10 items-center justify-center rounded-full bg-warning/10 text-warning" }
 				title={ "Consejo del entrenador" }
-				description={ exercises[ 0 ]?.notes ?? "Manten una buena tecnica durante todo el ejercicio. Controla el movimiento y respira correctamente." }
+				description={ exercises[ 0 ]?.notes ?? "Mantén una buena técnica durante todo el ejercicio. Controla el movimiento y respira correctamente." }
 			/>
 			<RoutineSessionOverviewCard
 				icon={ <ChartLine className={ "size-5" }/> }
 				iconClassName={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }
-				title={ "Resumen de la sesion" }
+				title={ "Resumen de la sesión" }
 				description={ routineStatusDescription }
 			/>
 			<RoutineSessionOverviewCard
 				icon={ <Calendar className={ "size-5" }/> }
 				iconClassName={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }
-				title={ "Ultima sesion completa" }
+				title={ "Ultima sesión completa" }
 				description={ formatDateLabel( latestProgressDate ) }
 			/>
 		</>

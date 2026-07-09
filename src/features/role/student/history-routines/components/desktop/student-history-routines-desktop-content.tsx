@@ -16,29 +16,27 @@ type StudentHistoryRoutinesDesktopContentProps = {
 };
 
 export function StudentHistoryRoutinesDesktopContent( {
-	monthLabel,
-	summary,
-	selectedWeekGroups,
-	selectedWeeks,
-	weekGroups,
-	onWeekToggleAction,
-}: StudentHistoryRoutinesDesktopContentProps ) {
+														  monthLabel,
+														  summary,
+														  selectedWeekGroups,
+														  selectedWeeks,
+														  weekGroups,
+														  onWeekToggleAction,
+													  }: StudentHistoryRoutinesDesktopContentProps ) {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<div className={ "grid gap-3 grid-cols-[repeat(auto-fit,minmax(16rem,1fr))]" }>
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "p-4" }>
-						<div className={ "space-y-1" }>
-							<Typography className={ "text-sm font-semibold text-foreground" }>Vision mensual</Typography>
-							<Typography className={ "text-sm text-muted" }>
-								{ `Resumen del mes seleccionado: ${ monthLabel }. Usa las semanas para bajar al detalle.` }
-							</Typography>
-						</div>
+				<Card className={ "border border-border py-2" } variant={ "default" }>
+					<Card.Content className={ "p-3" }>
+						<Typography className={ "text-sm font-semibold text-foreground" }>Vision mensual</Typography>
+						<Typography className={ "text-sm text-muted" }>
+							{ `Resumen del mes seleccionado: ${ monthLabel }. Usa las semanas para bajar al detalle.` }
+						</Typography>
 					</Card.Content>
 				</Card>
 
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "p-4" }>
+				<Card className={ "border border-border py-2" } variant={ "default" }>
+					<Card.Content className={ "p-3" }>
 						<Typography className={ "text-sm font-semibold text-foreground" }>Exploracion</Typography>
 						<Typography className={ "mt-1 text-sm text-muted" }>
 							Selecciona una o varias semanas para comparar el avance sin perder contexto.
@@ -46,8 +44,8 @@ export function StudentHistoryRoutinesDesktopContent( {
 					</Card.Content>
 				</Card>
 
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "p-4" }>
+				<Card className={ "border border-border py-2" } variant={ "default" }>
+					<Card.Content className={ "p-3" }>
 						<Typography className={ "text-sm font-semibold text-foreground" }>Estado del mes</Typography>
 						<Typography className={ "mt-1 text-sm text-muted" }>
 							Resumen general de tu progreso mensual.
@@ -71,8 +69,8 @@ export function StudentHistoryRoutinesDesktopContent( {
 				</Card>
 			</div>
 
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Content className={ "p-4" }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Content className={ "p-3" }>
 					<HistoryRoutineWeeksSelector
 						weeks={ weekGroups }
 						selectedWeeks={ selectedWeeks }

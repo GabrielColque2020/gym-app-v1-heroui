@@ -6,10 +6,12 @@ import { Navbar, Sidebar } from "@heroui-pro/react";
 import { useTheme } from "next-themes";
 import { ChevronDown, Laptop, Moon, Sun } from "lucide-react";
 
+import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { updateThemePreferenceAction } from "@/features/theme/actions/update-theme-preference";
 import type { UiThemePreference } from "@/features/theme/theme-preference";
 
 export function DashboardNavbar() {
+	const isMounted = useIsMounted();
 	const { resolvedTheme, setTheme, theme } = useTheme();
 
 	const currentTheme = ( theme === "system" ? "system" : theme ?? "system" ) as UiThemePreference;
@@ -37,7 +39,9 @@ export function DashboardNavbar() {
 							size={ "sm" }
 							variant={ "tertiary" }
 						>
-							{ currentTheme === "system" ? (
+							{ !isMounted ? (
+								<span className={ "size-4" } aria-hidden={ "true" }/>
+							) : currentTheme === "system" ? (
 								<Laptop className={ "size-4" }/>
 							) : isDarkTheme ? (
 								<Moon className={ "size-4" }/>
@@ -50,7 +54,7 @@ export function DashboardNavbar() {
 							<Dropdown.Menu
 								aria-label={ "Selector de tema" }
 								onAction={ handleThemeAction }
-								selectedKeys={ new Set( [ currentTheme ] ) }
+								selectedKeys={ new Set( [ isMounted ? currentTheme : "system" ] ) }
 								selectionMode={ "single" }
 							>
 								<Header>Tema</Header>

@@ -46,8 +46,8 @@ export function CoachDashboardStudentsTable( {
 	}
 
 	return (
-		<Card className={ "border border-border bg-surface" } variant={ "default" }>
-			<Card.Content className={ "space-y-4 px-5 py-4 sm:px-6" }>
+		<Card className={ "border border-border py-2" } variant={ "default" }>
+			<Card.Content className={ "space-y-4 p-3" }>
 				<div className={ "flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between" }>
 					<div className={ "space-y-1" }>
 						<p className={ "text-base font-semibold text-foreground" }>Estudiantes</p>

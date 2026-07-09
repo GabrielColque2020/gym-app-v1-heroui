@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { Alert, Button, Card, Spinner } from "@heroui/react";
-import { RotateCcw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { StudentsContentDesktop } from "@/features/students/components/desktop/students-content-desktop";
@@ -32,8 +32,8 @@ export default function CoachStudentsPageContent() {
 					backLabel={ "Volver al inicio" }
 					crumbs={ breadcrumbs }
 				/>
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
+				<Card className={ "border border-border py-2" } variant={ "default" }>
+					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 p-3 text-center" }>
 						<Spinner size={ "lg" }/>
 						<div className={ "space-y-1" }>
 							<p className={ "text-base font-semibold text-foreground" }>Cargando estudiantes</p>
@@ -70,8 +70,8 @@ export default function CoachStudentsPageContent() {
 				backLabel={ "Volver al inicio" }
 				crumbs={ breadcrumbs }
 			/>
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-3 py-2 sm:flex-row sm:items-center sm:justify-between" }>
 					<PageHeader
 						description={ "Listado con DNI, contacto, estado y datos de seguimiento." }
 						title={ "Estudiantes" }
@@ -83,7 +83,7 @@ export default function CoachStudentsPageContent() {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<StudentSheet
@@ -98,7 +98,7 @@ export default function CoachStudentsPageContent() {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<StudentSheet
@@ -108,7 +108,7 @@ export default function CoachStudentsPageContent() {
 						/>
 					</div>
 				</Card.Header>
-				<Card.Content className={ "px-5 py-4 sm:px-6" }>
+				<Card.Content className={ "p-3" }>
 					<div className={ "hidden w-full md:flex" }>
 						<StudentsContentDesktop students={ students }/>
 					</div>
@@ -116,7 +116,7 @@ export default function CoachStudentsPageContent() {
 						<StudentsContentMobile students={ students }/>
 					</div>
 				</Card.Content>
-				<Card.Footer className={ "border-t border-border px-5 py-4 sm:px-6" }>
+				<Card.Footer className={ "border-t border-border px-3 py-2" }>
 					<div className={ "text-sm text-muted" }>
 						Desactivar conserva al estudiante y su informacion historica.
 					</div>

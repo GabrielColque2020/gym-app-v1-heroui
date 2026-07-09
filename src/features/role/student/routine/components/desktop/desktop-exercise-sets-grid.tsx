@@ -21,17 +21,17 @@ function renderPreviousRecord( previousValue: number | null, suffix: string ) {
 }
 
 export function DesktopExerciseSetsGrid( {
-	exercise,
-	onSetUpdate,
-}: DesktopExerciseSetsGridProps ) {
+											 exercise,
+											 onSetUpdate,
+										 }: DesktopExerciseSetsGridProps ) {
 	const columns: DataGridColumn<ExerciseSet>[] = [
 		{
 			id: "completado",
 			header: "",
 			cell: ( item ) => (
-				<div className={ "flex items-center justify-center" }>
-					<Checkbox isDisabled isSelected={ item.completed }>
-						<Checkbox.Control className={ "size-5 rounded-full border border-muted/25 shadow-md before:rounded-full" }>
+				<div className={ "flex items-center justify-center " }>
+					<Checkbox isReadOnly isSelected={ item.completed }>
+						<Checkbox.Control className={ "size-5 rounded-full border border-border shadow-md before:rounded-full" }>
 							<Checkbox.Indicator/>
 						</Checkbox.Control>
 					</Checkbox>
@@ -46,7 +46,7 @@ export function DesktopExerciseSetsGrid( {
 			isRowHeader: true,
 			cell: ( item ) => (
 				<div className={ "flex flex-col items-center gap-1" }>
-					<Chip className={ "h-8 rounded-full px-4" } size={ "sm" } variant={ "secondary" }>
+					<Chip className={ "h-8 rounded-full px-4 border border-border" } size={ "sm" } variant={ "secondary" }>
 						<Chip.Label className={ "font-mono text-xs text-muted" }>
 							{ String( item.setNumber ).padStart( 2, "0" ) }
 						</Chip.Label>
@@ -66,6 +66,7 @@ export function DesktopExerciseSetsGrid( {
 						<Input
 							fullWidth
 							placeholder={ "Reps" }
+							className={ "border border-border" }
 							type={ "number" }
 							value={ item.currentReps?.toString() || "" }
 							onChange={ ( e ) => {
@@ -91,6 +92,7 @@ export function DesktopExerciseSetsGrid( {
 							fullWidth
 							placeholder={ "Peso (kg)" }
 							type={ "number" }
+							className={ "border border-border" }
 							value={ item.currentWeight?.toString() || "" }
 							onChange={ ( e ) => {
 								const nextValue = e.target.value.trim() === "" ? null : Number.parseInt( e.target.value, 10 );
@@ -114,6 +116,7 @@ export function DesktopExerciseSetsGrid( {
 						<Input
 							fullWidth
 							placeholder={ "Opcional" }
+							className={ "border border-border" }
 							value={ item.notes ?? "" }
 							onChange={ ( e ) => onSetUpdate( exercise.id, item.id, { notes: e.target.value } ) }
 						/>

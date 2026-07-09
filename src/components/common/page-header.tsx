@@ -1,14 +1,13 @@
 import React from "react";
-import { Separator, Typography } from "@heroui/react";
+import { Typography } from "@heroui/react";
 
 interface PageHeaderProps {
 	title: string;
 	description?: string;
 	className?: string;
-	showSeparator?: boolean;
 }
 
-export const PageHeader: React.FC<PageHeaderProps> = ( { title, description, className = "", showSeparator = false } ) => {
+export const PageHeader: React.FC<PageHeaderProps> = ( { title, description, className = "" } ) => {
 	return (
 		<div className={ `w-full flex-col ${ className }` }>
 			<Typography
@@ -22,8 +21,6 @@ export const PageHeader: React.FC<PageHeaderProps> = ( { title, description, cla
 					{ description }
 				</Typography>
 			) }
-
-			{ showSeparator && <Separator className={ "w-full mt-4 mb-2" }/> }
 		</div>
 	);
 };

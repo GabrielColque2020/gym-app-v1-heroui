@@ -1,5 +1,5 @@
 import { Button, Card } from "@heroui/react";
-import { RotateCcw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
 import { ExerciseSheet } from "@/features/role/coach/exercises/components/shared/exercise-sheet";
@@ -10,11 +10,11 @@ type CoachExercisesPageHeaderProps = {
 };
 
 export function CoachExercisesPageHeader( {
-	isRefreshing,
-	onRefreshAction,
-}: CoachExercisesPageHeaderProps ) {
+											  isRefreshing,
+											  onRefreshAction,
+										  }: CoachExercisesPageHeaderProps ) {
 	return (
-		<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" }>
+		<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between " }>
 			<PageHeader
 				title={ "Ejercicios" }
 				description={ "Listado de ejercicios con estado, grupo muscular y fecha de alta." }
@@ -26,7 +26,7 @@ export function CoachExercisesPageHeader( {
 					variant={ "secondary" }
 					onPress={ onRefreshAction }
 				>
-					<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
 				<ExerciseSheet
@@ -41,7 +41,7 @@ export function CoachExercisesPageHeader( {
 					variant={ "secondary" }
 					onPress={ onRefreshAction }
 				>
-					<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
 				<ExerciseSheet

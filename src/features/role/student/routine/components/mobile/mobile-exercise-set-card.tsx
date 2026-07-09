@@ -13,18 +13,18 @@ type MobileExerciseSetCardProps = {
 };
 
 export function MobileExerciseSetCard( {
-	exerciseId,
-	onSetUpdate,
-	set,
-}: MobileExerciseSetCardProps ) {
+										   exerciseId,
+										   onSetUpdate,
+										   set,
+									   }: MobileExerciseSetCardProps ) {
 	return (
 		<Card className={ "border border-accent-soft-hover" }>
 			<Card.Header>
 				<Card.Title>
 					<div className={ "mb-4 flex w-full items-center justify-between" }>
 						<span className={ "text-xl font-bold text-foreground" }>Serie { set.setNumber }</span>
-						<Checkbox isDisabled isSelected={ set.completed }>
-							<Checkbox.Control className={ "border-2 border-accent" }>
+						<Checkbox isReadOnly isSelected={ set.completed }>
+							<Checkbox.Control className={ "size-5 rounded-full border border-border shadow-md before:rounded-full" }>
 								<Checkbox.Indicator/>
 							</Checkbox.Control>
 						</Checkbox>
@@ -37,6 +37,7 @@ export function MobileExerciseSetCard( {
 							<Input
 								fullWidth
 								placeholder={ "Reps" }
+								className={ "border border-border" }
 								type={ "number" }
 								value={ set.currentReps?.toString() || "" }
 								onChange={ ( e ) => {
@@ -56,6 +57,7 @@ export function MobileExerciseSetCard( {
 								fullWidth
 								placeholder={ "Peso (Kg)" }
 								type={ "number" }
+								className={ "border border-border" }
 								value={ set.currentWeight?.toString() || "" }
 								onChange={ ( e ) => {
 									const nextValue = e.target.value.trim() === "" ? null : Number.parseInt( e.target.value, 10 );
@@ -74,6 +76,7 @@ export function MobileExerciseSetCard( {
 						<Input
 							fullWidth
 							placeholder={ "Opcional" }
+							className={ "border border-border" }
 							value={ set.notes ?? "" }
 							onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { notes: e.target.value } ) }
 						/>

@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { Alert, Button, Card, Spinner } from "@heroui/react";
-import { RotateCcw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { TrainingRoutinesStudentsContentDesktop } from "@/features/role/coach/training-routines-students/components/desktop/training-routines-students-content-desktop";
@@ -75,8 +75,8 @@ export default function CoachTrainingRoutinesStudentsPageContent() {
 					crumbs={ breadcrumbs }
 				/>
 			</div>
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between" }>
 					<PageHeader
 						description={ "Selecciona un estudiante activo para consultar sus rutinas de entrenamiento." }
 						title={ "Rutinas por estudiante" }
@@ -88,7 +88,7 @@ export default function CoachTrainingRoutinesStudentsPageContent() {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 					</div>
@@ -98,12 +98,12 @@ export default function CoachTrainingRoutinesStudentsPageContent() {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 					</div>
 				</Card.Header>
-				<Card.Content className={ "px-5 py-4 sm:px-6" }>
+				<Card.Content className={ "p-3" }>
 					<div className={ "hidden w-full md:flex" }>
 						<TrainingRoutinesStudentsContentDesktop students={ students }/>
 					</div>
@@ -111,7 +111,7 @@ export default function CoachTrainingRoutinesStudentsPageContent() {
 						<TrainingRoutinesStudentsContentMobile students={ students }/>
 					</div>
 				</Card.Content>
-				<Card.Footer className={ "border-t border-border px-5 py-4 sm:px-6" }>
+				<Card.Footer className={ "border-t border-border p-3" }>
 					<div className={ "text-sm text-muted" }>
 						Solo se muestran estudiantes activos.
 					</div>

@@ -29,16 +29,16 @@ export function HistoryRoutineMonthFilters( {
 												yearOptions,
 												selectedMonth,
 												selectedYear,
-	onSearchAction,
-	onClearAction,
-	onMonthChangeAction,
-	onRefreshAction,
-	onYearChangeAction,
+												onSearchAction,
+												onClearAction,
+												onMonthChangeAction,
+												onRefreshAction,
+												onYearChangeAction,
 												userName,
 												isRefreshing = false,
-}: HistoryRoutineMonthFiltersProps ) {
+											}: HistoryRoutineMonthFiltersProps ) {
 	return (
-		<Card className={ "border border-border bg-surface" } variant={ "default" }>
+		<Card className={ "border border-border bg-surface py-2" } variant={ "default" }>
 			<Card.Content className={ "p-3" }>
 				<HistoryRoutineMonthFiltersHeader userName={ userName }/>
 				<HistoryRoutineMonthFiltersActions

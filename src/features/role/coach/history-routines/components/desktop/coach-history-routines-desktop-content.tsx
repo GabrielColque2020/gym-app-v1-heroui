@@ -22,14 +22,14 @@ export function CoachHistoryRoutinesDesktopContent( {
 														selectedWeekGroups,
 														selectedWeeks,
 														weekGroups,
-	onWeekToggleAction,
-}: CoachHistoryRoutinesDesktopContentProps ) {
+														onWeekToggleAction,
+													}: CoachHistoryRoutinesDesktopContentProps ) {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<CoachHistoryRoutinesOverviewCards monthLabel={ monthLabel } summary={ summary }/>
 
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Content className={ "p-4" }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Content className={ "p-3" }>
 					<HistoryRoutineWeeksSelector
 						weeks={ weekGroups }
 						selectedWeeks={ selectedWeeks }

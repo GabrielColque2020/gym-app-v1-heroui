@@ -21,26 +21,24 @@ function getSummaryStatusLabel( status: HistoryRoutineMonthSummary["status"] ) {
 }
 
 export function CoachHistoryRoutinesOverviewCards( {
-	monthLabel,
-	summary,
-}: CoachHistoryRoutinesOverviewCardsProps ) {
+													   monthLabel,
+													   summary,
+												   }: CoachHistoryRoutinesOverviewCardsProps ) {
 	return (
 		<div className={ "grid gap-3 grid-cols-[repeat(auto-fit,minmax(16rem,1fr))]" }>
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Content className={ "p-4" }>
-					<div className={ "space-y-1" }>
-						<Typography className={ "text-sm font-semibold text-foreground" }>
-							Vision mensual
-						</Typography>
-						<Typography className={ "text-sm text-muted" }>
-							{ `Resumen del mes seleccionado: ${ monthLabel }. Usa las semanas para bajar al detalle.` }
-						</Typography>
-					</div>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Content className={ "p-3" }>
+					<Typography className={ "text-sm font-semibold text-foreground" }>
+						Vision mensual
+					</Typography>
+					<Typography className={ "text-sm text-muted" }>
+						{ `Resumen del mes seleccionado: ${ monthLabel }. Usa las semanas para bajar al detalle.` }
+					</Typography>
 				</Card.Content>
 			</Card>
 
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Content className={ "p-4" }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Content className={ "p-3" }>
 					<Typography className={ "text-sm font-semibold text-foreground" }>
 						Exploracion
 					</Typography>
@@ -50,29 +48,27 @@ export function CoachHistoryRoutinesOverviewCards( {
 				</Card.Content>
 			</Card>
 
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Content className={ "p-4" }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Content className={ "p-3" }>
 					<Typography className={ "text-sm font-semibold text-foreground" }>
 						Estado del mes
 					</Typography>
 					<Typography className={ "mt-1 text-sm text-muted" }>
 						Resumen general del progreso mensual del estudiante.
 					</Typography>
-					<div className={ "mt-3" }>
-						<div className={ "inline-flex" }>
-							<Chip
-								color={
-									summary.status === "complete"
-										? "success"
-										: summary.status === "partial"
-											? "warning"
-											: "default"
-								}
-								variant={ "soft" }
-							>
-								{ getSummaryStatusLabel( summary.status ) }
-							</Chip>
-						</div>
+					<div className={ "inline-flex" }>
+						<Chip
+							color={
+								summary.status === "complete"
+									? "success"
+									: summary.status === "partial"
+										? "warning"
+										: "default"
+							}
+							variant={ "soft" }
+						>
+							{ getSummaryStatusLabel( summary.status ) }
+						</Chip>
 					</div>
 				</Card.Content>
 			</Card>

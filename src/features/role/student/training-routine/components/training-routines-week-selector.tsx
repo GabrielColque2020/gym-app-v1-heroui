@@ -19,9 +19,9 @@ export function TrainingRoutinesWeekSelector( {
 	if (routines.length === 0) return null;
 
 	return (
-		<div className={ "flex justify-center sm:justify-end" }>
+		<div className={ "w-full min-w-0 overflow-x-auto sm:w-auto sm:overflow-visible" }>
 			<Segment
-				className={ "w-full max-w-full sm:w-auto" }
+				className={ "min-w-max sm:w-auto" }
 				defaultSelectedKey={ routines[ 0 ]?.id }
 				key={ `${ activeMonth }-${ activeYear }-${ routines[ 0 ]?.id ?? "empty" }` }
 				size={ "md" }

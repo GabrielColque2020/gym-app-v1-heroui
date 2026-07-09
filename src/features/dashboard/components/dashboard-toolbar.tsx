@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, ButtonGroup, Dropdown, Label, Tabs } from "@heroui/react";
-import { CalendarDays, ChevronDown, RotateCcw } from "lucide-react";
+import { CalendarDays, ChevronDown, RotateCw } from "lucide-react";
 
 import { IconButton } from "@/components/ui/icon-button";
 
@@ -28,7 +28,7 @@ export function DashboardToolbar() {
 			</Tabs>
 			<div className={ "flex flex-wrap items-center gap-2" }>
 				<IconButton label={ "Refresh" } size={ "sm" } variant={ "tertiary" }>
-					<RotateCcw className={ "size-4" }/>
+					<RotateCw className={ "size-4" }/>
 				</IconButton>
 				<ButtonGroup size={ "sm" } variant={ "tertiary" }>
 					<Button>

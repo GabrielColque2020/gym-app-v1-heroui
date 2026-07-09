@@ -26,8 +26,8 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 	} = useExerciseCardState( exercise );
 
 	return (
-		<Card className={ "border border-border bg-surface shadow-sm" }>
-			<Card.Header className={ "pb-2" }>
+		<Card className={ "border border-border py-2 shadow-sm" }>
+			<Card.Header className={ "px-3 pt-3" }>
 				<Card.Title className={ "w-full text-xl font-bold text-foreground" }>
 					<div className={ "space-y-2" }>
 						<div className={ "flex items-start justify-between gap-3" }>
@@ -54,13 +54,13 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 							/>
 						</div>
 						<div className={ "space-y-1" }>
-							<p className={ "text-xs font-medium text-foreground" }>Ultima sesion</p>
+							<p className={ "text-xs font-medium text-foreground" }>Ultima sesión</p>
 							<ExerciseCardSessionHistory history={ hasSessionHistory ? displayedSessionHistory : null } isCompact/>
 						</div>
 					</div>
 				</Card.Title>
 			</Card.Header>
-			<Card.Content className={ "pt-2" }>
+			<Card.Content className={ "px-3 pb-3" }>
 				<div className={ "space-y-3 border-t border-border pt-4" }>{ children }</div>
 			</Card.Content>
 		</Card>

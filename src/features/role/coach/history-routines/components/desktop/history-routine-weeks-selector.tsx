@@ -13,10 +13,10 @@ type HistoryRoutineWeeksSelectorProps = {
 };
 
 export function HistoryRoutineWeeksSelector( {
-	weeks,
-	selectedWeeks,
-	onWeekToggleAction,
-}: HistoryRoutineWeeksSelectorProps ) {
+												 weeks,
+												 selectedWeeks,
+												 onWeekToggleAction,
+											 }: HistoryRoutineWeeksSelectorProps ) {
 	if (weeks.length === 0) return null;
 
 	return (
@@ -30,7 +30,7 @@ export function HistoryRoutineWeeksSelector( {
 				</Chip>
 			</div>
 
-			<div className={ "grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(10rem,1fr))]" }>
+			<div className={ "grid gap-2 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]" }>
 				{ weeks.map( ( weekGroup ) => {
 					const isSelected = selectedWeeks.includes( weekGroup.week );
 

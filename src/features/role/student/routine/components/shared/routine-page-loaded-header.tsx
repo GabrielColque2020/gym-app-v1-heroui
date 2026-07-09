@@ -1,8 +1,9 @@
 import { Button, Card, Spinner } from "@heroui/react";
-import { RotateCcw, Save } from "lucide-react";
+import { RotateCw, Save } from "lucide-react";
 
 import RoutineHeader from "@/features/role/student/routine/components/shared/routine-header";
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
+import { PageHeader } from "@/components/common";
 
 type RoutinePageState = ReturnType<typeof useRoutinePageState>;
 
@@ -11,8 +12,8 @@ type RoutinePageLoadedHeaderProps = {
 };
 
 export function RoutinePageLoadedHeader( {
-	state,
-}: RoutinePageLoadedHeaderProps ) {
+											 state,
+										 }: RoutinePageLoadedHeaderProps ) {
 	const {
 		activeSession,
 		canSaveProgress,
@@ -25,8 +26,8 @@ export function RoutinePageLoadedHeader( {
 	} = state;
 
 	return (
-		<Card className={ "px-5" }>
-			<div className={ "sm:hidden" }>
+		<Card className={ "py-2" }>
+			<div className={ "sm:hidden p-3" }>
 				<RoutineHeader
 					title={ `Rutina - Dia ${ activeSession.dayNumber }` }
 					description={ `${ activeSession.title } - Sesion de entrenamiento` }
@@ -38,28 +39,31 @@ export function RoutinePageLoadedHeader( {
 					onSave={ handleOpenSaveSheet }
 				/>
 			</div>
-			<div className={ "hidden items-end gap-4 sm:flex" }>
-				<div className={ "flex-1 space-y-2" }>
-					<h1 className={ "text-4xl font-black tracking-tight text-foreground" }>{ `Rutina - Dia ${ activeSession.dayNumber }` }</h1>
-					<p className={ "text-base font-semibold text-muted" }>{ `${ activeSession.title } · Sesion de entrenamiento` }</p>
+			<Card.Content className={ "hidden sm:flex p-3" }>
+				<div className={ "items-end gap-4 flex" }>
+					<PageHeader
+						title={ `Rutina - Dia ${ activeSession.dayNumber }` }
+						description={ `${ activeSession.title } · Sesion de entrenamiento` }
+					/>
+					<Button
+						isDisabled={ isFetching && !isLoading }
+						onPress={ handleRefresh }
+						variant={ "secondary" }
+					>
+						<RotateCw className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
+						{ isFetching && !isLoading ? "Actualizando..." : "Actualizar" }
+					</Button>
+					<Button isDisabled={ !canSaveProgress } isPending={ saveRoutineSession.isPending } onPress={ handleOpenSaveSheet }>
+						{ ( { isPending } ) => (
+							<>
+								{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Save/> }
+								Guardar progreso
+							</>
+						) }
+					</Button>
 				</div>
-				<Button
-					isDisabled={ isFetching && !isLoading }
-					onPress={ handleRefresh }
-					variant={ "secondary" }
-				>
-					<RotateCcw className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
-					{ isFetching && !isLoading ? "Actualizando..." : "Actualizar" }
-				</Button>
-				<Button isDisabled={ !canSaveProgress } isPending={ saveRoutineSession.isPending } onPress={ handleOpenSaveSheet }>
-					{ ( { isPending } ) => (
-						<>
-							{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Save/> }
-							Guardar progreso
-						</>
-					) }
-				</Button>
-			</div>
+
+			</Card.Content>
 		</Card>
 	);
 }

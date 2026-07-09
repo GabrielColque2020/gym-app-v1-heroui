@@ -1,5 +1,5 @@
 import { Button, Modal } from "@heroui/react";
-import { RotateCcw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 
 type RoutineRefreshConfirmModalProps = {
 	isOpen: boolean;
@@ -8,10 +8,10 @@ type RoutineRefreshConfirmModalProps = {
 };
 
 export function RoutineRefreshConfirmModal( {
-	isOpen,
-	onCloseAction,
-	onConfirmAction,
-}: RoutineRefreshConfirmModalProps ) {
+												isOpen,
+												onCloseAction,
+												onConfirmAction,
+											}: RoutineRefreshConfirmModalProps ) {
 	return (
 		<Modal>
 			<Modal.Backdrop
@@ -42,7 +42,7 @@ export function RoutineRefreshConfirmModal( {
 										close();
 										onConfirmAction();
 									} }>
-										<RotateCcw className={ "size-4" }/>
+										<RotateCw className={ "size-4" }/>
 										Actualizar
 									</Button>
 								</Modal.Footer>

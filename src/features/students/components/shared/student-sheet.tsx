@@ -50,14 +50,20 @@ export function StudentSheet( props: StudentFormSheetProps ) {
 				showEditTriggerLabel={ showEditTriggerLabel }
 				onPress={ openSheet }
 			/>
-			<FeatureSheetLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange }>
+			<FeatureSheetLayout
+				isDismissable={ false }
+				isHandleOnly={ true }
+				isOpen={ isOpen }
+				placement={ placement }
+				onOpenChangeAction={ handleOpenChange }
+			>
 				<StudentSheetHeader
 					description={ description }
 					isEditMode={ isEditMode }
 					title={ title }
 				/>
 
-				<form className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleFormSubmit }>
+				<form autoComplete={ "off" } className={ "flex min-h-0 flex-1 flex-col" } data-sheet-no-drag onSubmit={ handleFormSubmit }>
 					<Sheet.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto px-6 py-5" }>
 						{ activeMutation.isError && (
 							<Alert className={ "border border-danger/20" } status={ "danger" }>

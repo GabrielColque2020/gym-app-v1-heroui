@@ -1,7 +1,7 @@
 "use client";
 
 import { Alert, Button, Card, Spinner } from "@heroui/react";
-import { CircleDot, RotateCcw } from "lucide-react";
+import { CircleDot, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import type { StudentMealPlan } from "@/features/meal-plans/types/meal-plans-types";
@@ -13,14 +13,14 @@ type StudentMealPlansPageContentProps = { studentId: string | null };
 function MealPlanCard( { mealPlan }: { mealPlan: StudentMealPlan } ) {
 	return (
 		<Card className={ "overflow-hidden border border-border/70 shadow-sm" } variant={ "default" }>
-			<Card.Header className={ "border-b border-border px-4 py-4" }>
+			<Card.Header className={ "border-b border-border px-3 py-2" }>
 				<div className={ "min-w-0" }>
 					<p className={ "truncate text-base font-semibold text-foreground" }>
 						{ formatMealTime( mealPlan.title ) }
 					</p>
 				</div>
 			</Card.Header>
-			<Card.Content className={ "px-4 py-4" }>
+			<Card.Content className={ "p-3" }>
 				<div className={ "space-y-2 text-sm leading-6 text-muted" }>
 					{ formatMealPlanDescriptionLines( mealPlan.description ).map( ( line, index ) => (
 						<div key={ `${ mealPlan.id }-${ index }` } className={ "flex gap-2" }>
@@ -49,8 +49,8 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 				<div className={ "mb-0" }>
 					<PageBreadcrumbs backHref={ "/student/dashboard" } backLabel={ "Volver al inicio" } crumbs={ crumbs }/>
 				</div>
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
+				<Card className={ "border border-border py-2" } variant={ "default" }>
+					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 p-3 text-center" }>
 						<Spinner size={ "lg" }/>
 						<div className={ "space-y-1" }>
 							<p className={ "text-base font-semibold text-foreground" }>Cargando planes alimenticios</p>
@@ -83,8 +83,8 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs backHref={ "/student/dashboard" } backLabel={ "Volver al inicio" } crumbs={ crumbs }/>
-			<Card className={ "border border-border px-7 py-4" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border pb-4 " }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-3 py-2" }>
 					<div className={ "flex flex-col gap-3 md:flex-row md:items-end md:justify-between" }>
 						<PageHeader description={ "Consulta los planes alimenticios asignados a tu cuenta." } title={ "Mis planes alimenticios" }/>
 						<Button
@@ -94,12 +94,12 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 								void refetch();
 							} }
 						>
-							<RotateCcw className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCw className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
 							{ isFetching && !isLoading ? "Actualizando" : "Actualizar" }
 						</Button>
 					</div>
 				</Card.Header>
-				<Card.Content className={ "py-2" }>
+				<Card.Content className={ "p-3" }>
 					{ data.mealPlans.length === 0 ? (
 						<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
 							<Card.Content className={ "py-10 text-center" }>

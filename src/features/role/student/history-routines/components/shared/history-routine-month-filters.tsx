@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Card } from "@heroui/react";
-import { RotateCcw, Search } from "lucide-react";
+import { RotateCw, Search } from "lucide-react";
 
 import { FilterSelect, PageHeader } from "@/components/common";
 
@@ -43,7 +43,6 @@ export function HistoryRoutineMonthFilters( {
 					<PageHeader
 						description={ `Consulta tu progreso mensual` }
 						title={ "Mi historial de rutinas" }
-						showSeparator
 					/>
 				</div>
 				<div className={ "grid gap-3 lg:grid-cols-[1fr_1fr_auto_auto_auto] lg:items-end" }>
@@ -73,7 +72,7 @@ export function HistoryRoutineMonthFilters( {
 						onPress={ onRefreshAction }
 						variant={ "secondary" }
 					>
-						<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+						<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 						{ isRefreshing ? "Actualizando" : "Actualizar" }
 					</Button>
 					<Button className={ "w-full lg:w-auto" } variant={ "secondary" } onPress={ onClearAction }>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@heroui/react";
-import { RotateCcw, Search } from "lucide-react";
+import { RotateCw, Search } from "lucide-react";
 
 import { FilterSelect } from "@/components/common";
 
@@ -24,19 +24,19 @@ type HistoryRoutineMonthFiltersActionsProps = {
 };
 
 export function HistoryRoutineMonthFiltersActions( {
-	isRefreshing = false,
-	monthOptions,
-	onClearAction,
-	onMonthChangeAction,
-	onRefreshAction,
-	onSearchAction,
-	onYearChangeAction,
-	selectedMonth,
-	selectedYear,
-	yearOptions,
-}: HistoryRoutineMonthFiltersActionsProps ) {
+													   isRefreshing = false,
+													   monthOptions,
+													   onClearAction,
+													   onMonthChangeAction,
+													   onRefreshAction,
+													   onSearchAction,
+													   onYearChangeAction,
+													   selectedMonth,
+													   selectedYear,
+													   yearOptions,
+												   }: HistoryRoutineMonthFiltersActionsProps ) {
 	return (
-		<div className={ "grid gap-3 lg:grid-cols-[1fr_1fr_auto_auto_auto] lg:items-end" }>
+		<div className={ "grid gap-3 lg:grid-cols-[1fr_1fr_auto_auto_auto] lg:items-end pt-3" }>
 			<FilterSelect
 				label={ "Mes" }
 				name={ "history-routines-month-filter" }
@@ -63,7 +63,7 @@ export function HistoryRoutineMonthFiltersActions( {
 				variant={ "secondary" }
 				onPress={ onRefreshAction }
 			>
-				<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+				<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 				{ isRefreshing ? "Actualizando..." : "Actualizar" }
 			</Button>
 			<Button className={ "w-full lg:w-auto" } variant={ "secondary" } onPress={ onClearAction }>

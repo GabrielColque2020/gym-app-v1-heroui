@@ -114,8 +114,8 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 			/>
 
 			{ isLoading ? (
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
+				<Card className={ "border border-border py-2" } variant={ "default" }>
+					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 p-3 text-center" }>
 						<Spinner size={ "lg" }/>
 						<div className={ "space-y-1" }>
 							<p className={ "text-base font-semibold text-foreground" }>Cargando historial</p>
@@ -136,8 +136,8 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 
 			{ !isLoading && !isError && data ? (
 				data.historyRoutines.length === 0 ? (
-					<Card className={ "border border-dashed border-border" } variant={ "default" }>
-						<Card.Content className={ "py-10 text-center" }>
+					<Card className={ "border border-dashed border-border py-2" } variant={ "default" }>
+						<Card.Content className={ "p-3 text-center" }>
 							<p className={ "text-base font-semibold text-foreground" }>No hay historial de rutinas cargado</p>
 							<p className={ "mt-1 text-sm text-muted" }>
 								No encontramos registros para { monthLabel }.

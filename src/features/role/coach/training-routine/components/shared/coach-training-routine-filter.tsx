@@ -1,13 +1,15 @@
 "use client";
-import { MONTH_OPTIONS } from "@/constants/months";
-import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
+
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Card } from "@heroui/react";
+import { RotateCw, Search } from "lucide-react";
+
+import { MONTH_OPTIONS } from "@/constants/months";
 import { FilterSelect, PageHeader } from "@/components/common";
-import { CoachDeleteRoutineSheet } from "@/features/role/coach/training-routine/components/shared/coach-delete-routine-sheet";
+import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 import { CoachCreateRoutineSheet } from "@/features/role/coach/training-routine/components/shared/coach-create-routine-sheet";
-import { Search, RotateCcw } from "lucide-react";
+import { CoachDeleteRoutineSheet } from "@/features/role/coach/training-routine/components/shared/coach-delete-routine-sheet";
 
 type CoachTrainingRoutineFilterProps = {
 	month: number;
@@ -24,12 +26,12 @@ export function CoachTrainingRoutineFilter( {
 												month,
 												isRefreshing,
 												routineCount,
-	routines,
-	studentId,
-	studentName,
-	onRefreshAction,
-	year,
-}: CoachTrainingRoutineFilterProps ) {
+												routines,
+												studentId,
+												studentName,
+												onRefreshAction,
+												year,
+											}: CoachTrainingRoutineFilterProps ) {
 	const router = useRouter();
 	const [ selectedYear, setSelectedYear ] = useState( String( year ) );
 	const [ selectedMonth, setSelectedMonth ] = useState( String( month ) );
@@ -51,63 +53,66 @@ export function CoachTrainingRoutineFilter( {
 	}
 
 	return (
-		<Card className={ "p-6" }>
-			<PageHeader
-				title={ "Rutina de Entrenamiento" }
-				description={ `Organiza las rutinas semanales y los días de entrenamiento de ${ studentName } creando, editando y copiando rutinas fácilmente.` }
-				showSeparator
-			/>
-			<div className={ " flex flex-col items-end gap-4 md:flex-row" }>
-				<div className={ "form-control w-full" }>
-					<FilterSelect
-						defaultValue={ selectedYear }
-						label={ "Anio" }
-						name={ "year" }
-						options={ yearOptions }
-						placeholder={ "Todos los anios" }
-						onSelectionChange={ setSelectedYear }
-					/>
-				</div>
-				<div className={ "form-control w-full" }>
-					<FilterSelect
-						defaultValue={ selectedMonth }
-						label={ "Mes" }
-						name={ "month" }
-						options={ MONTH_OPTIONS }
-						placeholder={ "Todos los meses" }
-						onSelectionChange={ setSelectedMonth }
-					/>
-				</div>
-				<div className={ "form-control flex flex-row items-end gap-2" }>
-					<Button className={ "shadow-sm" } onPress={ handleSearch }>
-						<Search/> Buscar
-					</Button>
-					<Button
-						className={ "shadow-sm" }
-						isDisabled={ isRefreshing }
-						variant={ "secondary" }
-						onPress={ onRefreshAction }
-					>
-						<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-						{ isRefreshing ? "Actualizando..." : "Actualizar" }
-					</Button>
-					{ routineCount === 0 ? (
-						<CoachCreateRoutineSheet
-							month={ Number( selectedMonth ) }
-							studentId={ studentId }
-							year={ Number( selectedYear ) }
+		<Card className={ "border border-border py-2" } variant={ "default" }>
+			<Card.Header className={ "gap-3 border-b border-border p-3" }>
+				<PageHeader
+					title={ "Rutina de Entrenamiento" }
+					description={ `Organiza las rutinas semanales y los dias de entrenamiento de ${ studentName } creando, editando y copiando rutinas facilmente.` }
+				/>
+			</Card.Header>
+			<Card.Content className={ "space-y-4 p-3" }>
+				<div className={ "flex flex-col items-end gap-4 md:flex-row" }>
+					<div className={ "form-control w-full" }>
+						<FilterSelect
+							defaultValue={ selectedYear }
+							label={ "Anio" }
+							name={ "year" }
+							options={ yearOptions }
+							placeholder={ "Todos los anios" }
+							onSelectionChange={ setSelectedYear }
 						/>
-					) : (
-						<CoachDeleteRoutineSheet
-							month={ Number( selectedMonth ) }
-							routines={ routines }
-							studentId={ studentId }
-							studentName={ studentName }
-							year={ Number( selectedYear ) }
+					</div>
+					<div className={ "form-control w-full" }>
+						<FilterSelect
+							defaultValue={ selectedMonth }
+							label={ "Mes" }
+							name={ "month" }
+							options={ MONTH_OPTIONS }
+							placeholder={ "Todos los meses" }
+							onSelectionChange={ setSelectedMonth }
 						/>
-					) }
+					</div>
+					<div className={ "form-control flex flex-row items-end gap-2" }>
+						<Button className={ "shadow-sm" } onPress={ handleSearch }>
+							<Search/> Buscar
+						</Button>
+						<Button
+							className={ "shadow-sm" }
+							isDisabled={ isRefreshing }
+							variant={ "secondary" }
+							onPress={ onRefreshAction }
+						>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
+						{ routineCount === 0 ? (
+							<CoachCreateRoutineSheet
+								month={ Number( selectedMonth ) }
+								studentId={ studentId }
+								year={ Number( selectedYear ) }
+							/>
+						) : (
+							<CoachDeleteRoutineSheet
+								month={ Number( selectedMonth ) }
+								routines={ routines }
+								studentId={ studentId }
+								studentName={ studentName }
+								year={ Number( selectedYear ) }
+							/>
+						) }
+					</div>
 				</div>
-			</div>
+			</Card.Content>
 		</Card>
 	);
 }

@@ -2,7 +2,7 @@
 
 import type { Key } from "react-aria-components/Breadcrumbs";
 import { useMemo, useState } from "react";
-import { Typography } from "@heroui/react";
+import { Card, Typography } from "@heroui/react";
 
 import { PageBreadcrumbs } from "@/components/common";
 import { TrainingRoutinesDayCard } from "@/features/role/student/training-routine/components/training-routines-day-card";
@@ -94,8 +94,8 @@ export default function TrainingRoutinesPageContent( {
 				onSearch={ handleSearch }
 			/>
 
-			<div className={ "w-full" }>
-				<div className={ "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" }>
+			<Card className={ "border border-border shadow-sm py-2" } variant={ "default" }>
+				<Card.Header className={ "flex flex-col border-b border-border gap-4 sm:flex-row sm:items-center sm:justify-between p-3" }>
 					<Typography type={ "h3" } className={ "font-black" }>
 						Plan Semanal
 					</Typography>
@@ -113,31 +113,32 @@ export default function TrainingRoutinesPageContent( {
 							onSelectionChange={ setSelectedWeekId }
 						/>
 					) : null }
-				</div>
-			</div>
+				</Card.Header>
+				{ isLoading ? <TrainingRoutinesLoadingState/> : null }
 
-			{ isLoading ? <TrainingRoutinesLoadingState/> : null }
+				{ isError ? (
+					<TrainingRoutinesErrorState
+						errorMessage={ error instanceof Error ? error.message : "Ocurrio un error inesperado." }
+						onRetry={ () => {
+							void refetch();
+						} }
+					/>
+				) : null }
 
-			{ isError ? (
-				<TrainingRoutinesErrorState
-					errorMessage={ error instanceof Error ? error.message : "Ocurrio un error inesperado." }
-					onRetry={ () => {
-						void refetch();
-					} }
-				/>
-			) : null }
+				{ !isLoading && !isError ? (
+					routines.length === 0 ? (
+						<TrainingRoutinesEmptyState month={ activeMonth } year={ activeYear }/>
+					) : (
+						<Card.Content className={ "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 p-3" }>
+							{ selectedRoutine?.routineDays.map( ( day ) => (
+								<TrainingRoutinesDayCard key={ day.id } day={ day }/>
+							) ) }
+						</Card.Content>
+					)
+				) : null }
+			</Card>
 
-			{ !isLoading && !isError ? (
-				routines.length === 0 ? (
-					<TrainingRoutinesEmptyState month={ activeMonth } year={ activeYear }/>
-				) : (
-					<div className={ "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" }>
-						{ selectedRoutine?.routineDays.map( ( day ) => (
-							<TrainingRoutinesDayCard key={ day.id } day={ day }/>
-						) ) }
-					</div>
-				)
-			) : null }
+
 		</div>
 	);
 }

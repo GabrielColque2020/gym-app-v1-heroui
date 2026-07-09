@@ -30,8 +30,8 @@ export function StudentDashboardActivityCard( {
 	lastRecordedMonthValue,
 }: StudentDashboardActivityCardProps ) {
 	return (
-		<Card className={ "border border-border bg-surface" } variant={ "default" }>
-			<Card.Content className={ "space-y-4 px-5 py-4 sm:px-6" }>
+		<Card className={ "border border-border py-2" } variant={ "default" }>
+			<Card.Content className={ "space-y-4 p-3" }>
 				<div className={ "space-y-1" }>
 					<p className={ "text-base font-semibold text-foreground" }>Actividad reciente</p>
 					<p className={ "text-sm text-muted" }>Una referencia rapida de tus ultimos movimientos cargados.</p>

@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { Alert, Button, Card, Spinner } from "@heroui/react";
-import { RotateCcw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { HistoryRoutinesStudentsContentDesktop } from "@/features/role/coach/history-routines-students/components/desktop/history-routines-students-content-desktop";
@@ -32,8 +32,8 @@ export default function CoachHistoryRoutinesStudentsPageContent() {
 						crumbs={ breadcrumbs }
 					/>
 				</div>
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
+				<Card className={ "border border-border py-2" } variant={ "default" }>
+					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 p-3 text-center" }>
 						<Spinner size={ "lg" }/>
 						<div className={ "space-y-1" }>
 							<p className={ "text-base font-semibold text-foreground" }>Cargando estudiantes activos</p>
@@ -74,8 +74,8 @@ export default function CoachHistoryRoutinesStudentsPageContent() {
 					crumbs={ breadcrumbs }
 				/>
 			</div>
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" }>
+			<Card className={ "border border-border py-2" } variant={ "default" }>
+				<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between" }>
 					<PageHeader
 						description={ "Selecciona un estudiante activo para consultar su historial de rutinas mensual." }
 						title={ "Historial de rutinas por estudiante" }
@@ -87,7 +87,7 @@ export default function CoachHistoryRoutinesStudentsPageContent() {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 					</div>
@@ -97,12 +97,12 @@ export default function CoachHistoryRoutinesStudentsPageContent() {
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
-							<RotateCcw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 					</div>
 				</Card.Header>
-				<Card.Content className={ "px-5 py-4 sm:px-6" }>
+				<Card.Content className={ "p-3" }>
 					<div className={ "hidden w-full md:flex" }>
 						<HistoryRoutinesStudentsContentDesktop students={ students }/>
 					</div>
@@ -110,7 +110,7 @@ export default function CoachHistoryRoutinesStudentsPageContent() {
 						<HistoryRoutinesStudentsContentMobile students={ students }/>
 					</div>
 				</Card.Content>
-				<Card.Footer className={ "border-t border-border px-5 py-4 sm:px-6" }>
+				<Card.Footer className={ "border-t border-border p-3" }>
 					<div className={ "text-sm text-muted" }>
 						Solo se muestran estudiantes activos.
 					</div>

@@ -1,4 +1,4 @@
-import { Chip, Button } from "@heroui/react";
+import { Button, Chip } from "@heroui/react";
 
 import { formatBodyPart } from "@/features/exercises/services/exercise-formatters";
 import type { ExerciseVariantOption } from "@/features/routine/types/routine-exercise.types";
@@ -18,10 +18,10 @@ function formatSessionDateLabel( date: Date ) {
 }
 
 export function ExerciseChangeSheetVariantOption( {
-	isCurrentVariant,
-	variant,
-	onSelect,
-}: ExerciseChangeSheetVariantOptionProps ) {
+													  isCurrentVariant,
+													  variant,
+													  onSelect,
+												  }: ExerciseChangeSheetVariantOptionProps ) {
 	return (
 		<Button
 			className={ "h-auto w-full justify-start px-4 py-3 text-left" }
@@ -36,7 +36,7 @@ export function ExerciseChangeSheetVariantOption( {
 					</p>
 					<p className={ "truncate text-xs text-muted" }>
 						{ variant.lastSession ? (
-							`Ultima sesion: ${ formatSessionDateLabel( variant.lastSession.date ) }`
+							`Ultima sesión: ${ formatSessionDateLabel( variant.lastSession.date ) }`
 						) : (
 							"Sin registro anterior"
 						) }

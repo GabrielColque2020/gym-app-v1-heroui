@@ -7,14 +7,13 @@ type HistoryRoutineMonthFiltersHeaderProps = {
 };
 
 export function HistoryRoutineMonthFiltersHeader( {
-	userName,
-}: HistoryRoutineMonthFiltersHeaderProps ) {
+													  userName,
+												  }: HistoryRoutineMonthFiltersHeaderProps ) {
 	return (
-		<div className={ "flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between" }>
+		<div className={ "flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-end sm:justify-between" }>
 			<PageHeader
 				description={ `Consulta el progreso mensual del estudiante seleccionado: ${ userName ?? "Sin estudiante seleccionado" }` }
 				title={ "Historial de rutinas" }
-				showSeparator
 			/>
 		</div>
 	);

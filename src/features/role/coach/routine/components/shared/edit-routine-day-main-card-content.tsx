@@ -19,7 +19,7 @@ export function EditRoutineDayMainCardContent( {
 												   onUpdateExerciseField,
 											   }: EditRoutineDayMainCardContentProps ) {
 	return (
-		<Card.Content className={ "space-y-4" }>
+		<Card.Content className={ "px-3 pb-3" }>
 			{ validationError ? (
 				<Alert className={ "border border-warning/20" } status={ "warning" }>
 					<Alert.Content>
