@@ -28,8 +28,8 @@ export async function middleware( request: NextRequest ) {
 		const session = await verifySessionToken( token, getSessionSecret() );
 
 		if (session?.active) {
-			const dashboardPath = session.role === "STUDENT"
-				? "/student/dashboard"
+			const dashboardPath = session.role === "ADMIN"
+				? "/admin/dashboard"
 				: session.role === "COACH"
 					? "/coach/dashboard"
 					: "/student/dashboard";

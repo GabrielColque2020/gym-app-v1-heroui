@@ -221,5 +221,9 @@ function getInitials( name: string ) {
 }
 
 function getRoleLabel( role: Role ) {
+	if (role === "ADMIN") {
+		return "Administrador";
+	}
+
 	return role === "COACH" ? "Entrenador" : "Estudiante";
 }

@@ -24,6 +24,8 @@ export function PageBreadcrumbs( {
 	const pathname = usePathname();
 	const dashboardHref = pathname.startsWith( "/coach" )
 		? "/coach/dashboard"
+		: pathname.startsWith( "/admin" )
+			? "/admin/dashboard"
 		: pathname.startsWith( "/student" )
 			? "/student/dashboard"
 			: "/dashboard";

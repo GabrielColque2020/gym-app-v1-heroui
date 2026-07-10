@@ -36,6 +36,10 @@ export default function LoginPageContent() {
 	const isSubmitDisabled = isCredentialInvalid || isPasswordInvalid || loginMutation.isPending;
 
 	function getDefaultRedirectPath( role: string ) {
+		if (role === "ADMIN") {
+			return "/admin/dashboard";
+		}
+
 		return role === "COACH" ? "/coach/dashboard" : "/student/dashboard";
 	}
 

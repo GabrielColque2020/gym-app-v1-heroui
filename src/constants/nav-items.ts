@@ -13,6 +13,7 @@ export type NavItem = {
 };
 
 export const NAV_ITEMS: readonly NavItem[] = [
+	{ href: "/admin/dashboard", icon: House, label: "Inicio", roles: [ "ADMIN" ] },
 	{ href: "/coach/dashboard", icon: House, label: "Inicio", roles: [ "COACH" ] },
 	{ href: "/student/dashboard", icon: House, label: "Inicio", roles: [ "STUDENT" ] },
 	{ href: "/student/training-routine", icon: Dumbbell, label: "Rutina de Entrenamiento", roles: [ "STUDENT" ] },
@@ -42,11 +43,19 @@ export const NAV_ITEMS: readonly NavItem[] = [
 			},
 		],
 		icon: Settings2,
-		label: "Administración",
+		label: "Administracion operativa",
 		roles: [ "COACH" ],
+	},
+	{
+		children: [
+			{ href: "/admin/users", icon: Users, label: "Usuarios", roles: [ "ADMIN" ] },
+		],
+		icon: Settings2,
+		label: "Sistema",
+		roles: [ "ADMIN" ],
 	},
 ] as const;
 
 export const FOOTER_ITEMS: readonly NavItem[] = [
-	{ href: "/logout", icon: LogOut, label: "Cerrar Sesión" },
+	{ href: "/logout", icon: LogOut, label: "Cerrar Sesion" },
 ] as const;
