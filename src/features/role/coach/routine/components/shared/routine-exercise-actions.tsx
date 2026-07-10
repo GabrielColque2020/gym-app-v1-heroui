@@ -4,7 +4,7 @@ import { Button, Dropdown, Header, Label } from "@heroui/react";
 import { useState } from "react";
 import { Link2, MoreVertical, Trash2 } from "lucide-react";
 
-import { ExerciseVariantsSheet } from "@/features/role/coach/exercises/components/shared/exercise-variants-sheet";
+import { ExerciseVariantsDrawer } from "@/features/role/coach/exercises/components/shared/exercise-variants-drawer";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
 type RoutineExerciseActionsProps = {
@@ -15,11 +15,11 @@ type RoutineExerciseActionsProps = {
 };
 
 export function RoutineExerciseActions( {
-	exercise,
-	exerciseName,
-	routineId,
-	onDeleteAction,
-}: RoutineExerciseActionsProps ) {
+											exercise,
+											exerciseName,
+											routineId,
+											onDeleteAction,
+										}: RoutineExerciseActionsProps ) {
 	const [ isVariantsOpen, setIsVariantsOpen ] = useState( false );
 
 	return (
@@ -54,7 +54,7 @@ export function RoutineExerciseActions( {
 			</Dropdown>
 
 			{ exercise ? (
-				<ExerciseVariantsSheet
+				<ExerciseVariantsDrawer
 					hideTrigger
 					exercise={ exercise }
 					routineId={ routineId }

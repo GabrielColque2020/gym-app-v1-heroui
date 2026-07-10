@@ -8,8 +8,9 @@ type AddExercisePickerButtonProps = {
 export function AddExercisePickerButton( { onPress }: AddExercisePickerButtonProps ) {
 	return (
 		<Button
-			variant={ "ghost" }
-			className={ "h-9 shrink-0 border border-dashed border-accent/50 bg-surface px-3 text-accent" }
+			variant={ "secondary" }
+			className={ "shadow-sm" }
+			// className={ "shrink-0 border border-dashed border-accent bg-surface px-3 text-accent" }
 			onPress={ onPress }
 		>
 			<Plus className={ "size-4" }/>

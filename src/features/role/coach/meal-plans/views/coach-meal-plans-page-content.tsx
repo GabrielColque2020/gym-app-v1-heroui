@@ -8,7 +8,7 @@ import { CoachMealPlansEmptyState } from "@/features/role/coach/meal-plans/compo
 import { CoachMealPlansErrorState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-error-state";
 import { CoachMealPlansLoadingState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-loading-state";
 import { MealPlanCard } from "@/features/role/coach/meal-plans/components/shared/meal-plan-card";
-import { MealPlanSheet } from "@/features/role/coach/meal-plans/components/shared/meal-plan-sheet";
+import { MealPlanDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer";
 import { useCoachMealPlansPageState } from "@/features/role/coach/meal-plans/hooks/use-coach-meal-plans-page-state";
 
 type CoachMealPlansPageContentProps = {
@@ -52,7 +52,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
-						<MealPlanSheet mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
+						<MealPlanDrawer mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
 					</div>
 					<div className={ "hidden items-center gap-2 md:flex" }>
 						<Button
@@ -63,7 +63,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
-						<MealPlanSheet mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
+						<MealPlanDrawer mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
 					</div>
 				</Card.Header>
 				<Card.Content className={ "p-3" }>

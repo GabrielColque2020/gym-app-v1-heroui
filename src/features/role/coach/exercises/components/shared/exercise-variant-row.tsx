@@ -3,7 +3,7 @@ import { Trash2 } from "lucide-react";
 
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
 
-import type { DraftVariantItem } from "./exercise-variants-sheet.types";
+import type { DraftVariantItem } from "./exercise-variants-drawer.types";
 
 type ExerciseVariantRowProps = {
 	isRemoveDisabled: boolean;

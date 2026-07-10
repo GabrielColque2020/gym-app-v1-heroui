@@ -1,4 +1,4 @@
-import { Card, Spinner } from "@heroui/react";
+﻿import { Card, Spinner } from "@heroui/react";
 
 export function RoutinePageLoadingState() {
 	return (
@@ -13,3 +13,4 @@ export function RoutinePageLoadingState() {
 		</Card>
 	);
 }
+

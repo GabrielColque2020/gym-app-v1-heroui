@@ -3,7 +3,7 @@ import type { StudentListItem } from "@/features/students/actions/get-students";
 import { Button, Spinner } from "@heroui/react";
 import { CheckCircle2, Trash2 } from "lucide-react";
 
-import { StudentSheet } from "@/features/students/components/shared/student-sheet";
+import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
 import { useStudentStatusAction } from "@/features/students/hooks/use-student-status-action";
 
 type StudentRowActionsProps = {
@@ -15,7 +15,7 @@ export function StudentRowActions( { student }: StudentRowActionsProps ) {
 
 	return (
 		<div className={ "flex items-center justify-start gap-2" }>
-			<StudentSheet mode={ "edit" } student={ student }/>
+			<StudentDrawer mode={ "edit" } student={ student }/>
 			<Button
 				isIconOnly
 				aria-label={ `${ statusLabel } ${ student.name }` }

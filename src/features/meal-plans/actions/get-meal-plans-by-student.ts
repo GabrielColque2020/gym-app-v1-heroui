@@ -26,7 +26,7 @@ type MealPlanStudent = Prisma.UserGetPayload<{
 	select: typeof mealPlanStudentSelect;
 }>;
 
-type MealPlanItem = Prisma.MealPlanGetPayload<{}>;
+type MealPlanItem = Prisma.MealPlanGetPayload<Prisma.MealPlanDefaultArgs>;
 
 function assertStudentId( studentId: string ) {
 	const normalizedStudentId = studentId.trim();

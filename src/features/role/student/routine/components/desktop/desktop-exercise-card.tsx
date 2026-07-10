@@ -1,7 +1,7 @@
-import React from "react";
+﻿import React from "react";
 import { Card, Typography } from "@heroui/react";
 
-import ExerciseChangeSheet from "@/features/role/student/routine/components/shared/exercise-change-sheet";
+import ExerciseChangeDrawer from "@/features/role/student/routine/components/shared/exercise-change-drawer";
 import { ExerciseCardSessionHistory } from "@/features/role/student/routine/components/shared/exercise-card-session-history";
 import { ExerciseCardStatusChips } from "@/features/role/student/routine/components/shared/exercise-card-status-chips";
 import { useExerciseCardState } from "@/features/role/student/routine/components/shared/use-exercise-card-state";
@@ -35,7 +35,7 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 								<div className={ "min-w-0 space-y-1" }>
 									<Typography type={ "h3" } className={ "font-black" }> { displayedExerciseName }</Typography>
 								</div>
-								<ExerciseChangeSheet
+								<ExerciseChangeDrawer
 									exercise={ exercise }
 									hasVariants={ hasVariants }
 									selectedVariant={ selectedVariant }
@@ -65,3 +65,4 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 		</Card>
 	);
 }
+

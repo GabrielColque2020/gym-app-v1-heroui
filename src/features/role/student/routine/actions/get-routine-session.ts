@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import prisma from "@/lib/prisma";
 
@@ -63,3 +63,4 @@ export async function getStudentRoutineSessionAction( {
 		throw new Error( `No se pudo obtener la rutina del estudiante. ${ message }` );
 	}
 }
+

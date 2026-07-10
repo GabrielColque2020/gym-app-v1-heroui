@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -36,3 +36,4 @@ export function useSaveStudentRoutineSession() {
 }
 
 export type { SaveStudentRoutineSessionMutationInput };
+

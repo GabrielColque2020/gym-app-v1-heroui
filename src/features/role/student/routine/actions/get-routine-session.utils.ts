@@ -1,4 +1,4 @@
-import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routine-day";
+﻿import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routine-day";
 
 export function collectStudentRoutineProgressIds( routineDay: RoutineDayDetailBase ) {
 	const exerciseIds = Array.from(
@@ -48,3 +48,4 @@ export function buildStudentRoutineProgressWhere(
 		].filter( Boolean ) as Array<Record<string, unknown>>,
 	};
 }
+

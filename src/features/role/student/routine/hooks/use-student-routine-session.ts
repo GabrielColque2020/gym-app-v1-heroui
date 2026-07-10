@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -35,3 +35,4 @@ export function useStudentRoutineSession( {
 		queryKey: studentRoutineSessionQueryKey( routineDayId ?? "", studentId ),
 	} );
 }
+

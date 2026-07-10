@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,8 +8,8 @@ import { RotateCw, Search } from "lucide-react";
 import { MONTH_OPTIONS } from "@/constants/months";
 import { FilterSelect, PageHeader } from "@/components/common";
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
-import { CoachCreateRoutineSheet } from "@/features/role/coach/training-routine/components/shared/coach-create-routine-sheet";
-import { CoachDeleteRoutineSheet } from "@/features/role/coach/training-routine/components/shared/coach-delete-routine-sheet";
+import { CoachCreateRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-create-routine-drawer";
+import { CoachOptionRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-option-routine-drawer";
 
 type CoachTrainingRoutineFilterProps = {
 	month: number;
@@ -96,13 +96,13 @@ export function CoachTrainingRoutineFilter( {
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						{ routineCount === 0 ? (
-							<CoachCreateRoutineSheet
+							<CoachCreateRoutineDrawer
 								month={ Number( selectedMonth ) }
 								studentId={ studentId }
 								year={ Number( selectedYear ) }
 							/>
 						) : (
-							<CoachDeleteRoutineSheet
+							<CoachOptionRoutineDrawer
 								month={ Number( selectedMonth ) }
 								routines={ routines }
 								studentId={ studentId }
@@ -116,3 +116,4 @@ export function CoachTrainingRoutineFilter( {
 		</Card>
 	);
 }
+

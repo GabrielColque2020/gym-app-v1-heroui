@@ -1,4 +1,4 @@
-import { Checkbox, Chip, Input, Label } from "@heroui/react";
+﻿import { Checkbox, Chip, Input, Label } from "@heroui/react";
 import { DataGrid, type DataGridColumn } from "@heroui-pro/react";
 
 import type { Exercise, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
@@ -137,3 +137,4 @@ export function DesktopExerciseSetsGrid( {
 		/>
 	);
 }
+

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @import "@heroui/styles";
 @import "@heroui-pro/react/css";
 
@@ -16,16 +16,6 @@
     }
 }
 
-/*
- * Sheet + snap points: primera apertura puede no asignar --sheet-backdrop-opacity;
- * el CSS de HeroUI Pro usa var(..., 0) en el :before del overlay. Si el fade ya está
- * activo (data-sheet-snap-points-overlay=true), el fallback debe ser 1 para mostrar blur/opaque.
- */
-/*@layer overrides {*/
-/*    [data-sheet-overlay][data-sheet-snap-points="true"][data-sheet-snap-points-overlay="true"]:before {*/
-/*        opacity: var(--sheet-backdrop-opacity, 1);*/
-/*    }*/
-/*}*/
 
 /*.custom_border_accent {*/
 /*    border-left: 6px solid var(--heroui-colors-accent);*/

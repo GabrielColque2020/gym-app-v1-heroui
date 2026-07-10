@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
 
-import type { ExerciseVariantsTarget } from "./exercise-variants-sheet.types";
+import type { ExerciseVariantsTarget } from "./exercise-variants-drawer.types";
 
 type ExerciseCandidateRowProps = {
 	candidate: ExerciseVariantsTarget;

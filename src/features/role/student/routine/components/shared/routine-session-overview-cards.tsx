@@ -1,4 +1,4 @@
-import { Calendar, ChartLine, Lightbulb } from "lucide-react";
+﻿import { Calendar, ChartLine, Lightbulb } from "lucide-react";
 
 import { formatDateLabel } from "@/features/role/student/routine/views/routine-page-content.utils";
 import type { Exercise } from "@/features/routine/types/routine-exercise.types";
@@ -21,7 +21,7 @@ export function RoutineSessionOverviewCards( {
 				icon={ <Lightbulb className={ "size-5" }/> }
 				iconClassName={ "flex size-10 items-center justify-center rounded-full bg-warning/10 text-warning" }
 				title={ "Consejo del entrenador" }
-				description={ exercises[ 0 ]?.notes ?? "Mantén una buena técnica durante todo el ejercicio. Controla el movimiento y respira correctamente." }
+				description={ exercises[ 0 ]?.notes ?? "MantÃ©n una buena tÃ©cnica durante todo el ejercicio. Controla el movimiento y respira correctamente." }
 			/>
 			<RoutineSessionOverviewCard
 				icon={ <ChartLine className={ "size-5" }/> }
@@ -38,3 +38,4 @@ export function RoutineSessionOverviewCards( {
 		</>
 	);
 }
+

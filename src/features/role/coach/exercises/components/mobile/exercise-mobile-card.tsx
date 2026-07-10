@@ -6,7 +6,7 @@ import { Button, Card, Chip, Dropdown, Header, Label, Spinner, } from "@heroui/r
 import { useState } from "react";
 import { CheckCircle2, EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
 
-import { ExerciseSheet } from "@/features/role/coach/exercises/components/shared/exercise-sheet";
+import { ExerciseDrawer } from "@/features/role/coach/exercises/components/shared/exercise-drawer";
 import { useExerciseStatusAction } from "@/features/exercises/hooks/use-exercise-status-action";
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
 
@@ -116,7 +116,7 @@ export function ExerciseMobileCard( {
 				</div>
 			</Card.Content>
 
-			<ExerciseSheet
+			<ExerciseDrawer
 				hideTrigger
 				exercise={ exercise }
 				isOpen={ isEditOpen }

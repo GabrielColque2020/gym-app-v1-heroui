@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import type { EmblaCarouselType } from "embla-carousel";
@@ -30,3 +30,4 @@ export function useExerciseCarouselState() {
 		setApi,
 	};
 }
+

@@ -15,7 +15,7 @@ import {
 import { useState } from "react";
 import { CheckCircle2, EllipsisVertical, PencilLine, UserRound, Trash2 } from "lucide-react";
 
-import { StudentSheet } from "@/features/students/components/shared/student-sheet";
+import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
 import { useStudentStatusAction } from "@/features/students/hooks/use-student-status-action";
 
 type StudentMobileCardProps = {
@@ -98,7 +98,7 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 				</div>
 			</Card.Content>
 
-			<StudentSheet
+			<StudentDrawer
 				hideTrigger
 				isOpen={ isEditOpen }
 				mode={ "edit" }

@@ -7,8 +7,8 @@ import { CircleDot, MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 import type { CoachMealPlan } from "@/features/meal-plans/types/meal-plans-types";
 import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
-import { MealPlanDeleteSheet } from "@/features/role/coach/meal-plans/components/shared/meal-plan-delete-sheet";
-import { MealPlanSheet } from "@/features/role/coach/meal-plans/components/shared/meal-plan-sheet";
+import { MealPlanDeleteDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-delete-drawer";
+import { MealPlanDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer";
 
 type MealPlanCardProps = {
 	mealPlan: CoachMealPlan;
@@ -82,7 +82,7 @@ export function MealPlanCard( {
 				</div>
 			</Card.Content>
 
-			<MealPlanSheet
+			<MealPlanDrawer
 				hideTrigger
 				isOpen={ isEditOpen }
 				mealPlan={ mealPlan }
@@ -90,7 +90,7 @@ export function MealPlanCard( {
 				studentId={ studentId }
 				onOpenChangeAction={ setIsEditOpen }
 			/>
-			<MealPlanDeleteSheet
+			<MealPlanDeleteDrawer
 				hideTrigger
 				isOpen={ isDeleteOpen }
 				mealPlan={ mealPlan }

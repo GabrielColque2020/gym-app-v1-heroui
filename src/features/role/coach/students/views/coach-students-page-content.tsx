@@ -7,7 +7,7 @@ import { RotateCw } from "lucide-react";
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { StudentsContentDesktop } from "@/features/students/components/desktop/students-content-desktop";
 import { StudentsContentMobile } from "@/features/students/components/mobile/students-content-mobile";
-import { StudentSheet } from "@/features/students/components/shared/student-sheet";
+import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
 import { useStudents } from "@/features/students/hooks/use-students";
 
 // Renderiza el listado de estudiantes y sus estados de carga.
@@ -86,7 +86,7 @@ export default function CoachStudentsPageContent() {
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
-						<StudentSheet
+						<StudentDrawer
 							mode={ "create" }
 							placement={ "bottom" }
 							triggerClassName={ "w-full bg-accent text-accent-foreground" }
@@ -101,7 +101,7 @@ export default function CoachStudentsPageContent() {
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
-						<StudentSheet
+						<StudentDrawer
 							mode={ "create" }
 							placement={ "right" }
 							triggerClassName={ "bg-accent text-accent-foreground" }

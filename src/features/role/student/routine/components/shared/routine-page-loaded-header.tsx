@@ -1,4 +1,4 @@
-import { Button, Card, Spinner } from "@heroui/react";
+﻿import { Button, Card, Spinner } from "@heroui/react";
 import { RotateCw, Save } from "lucide-react";
 
 import RoutineHeader from "@/features/role/student/routine/components/shared/routine-header";
@@ -17,7 +17,7 @@ export function RoutinePageLoadedHeader( {
 	const {
 		activeSession,
 		canSaveProgress,
-		handleOpenSaveSheet,
+		handleOpenSaveDrawer,
 		handleRefresh,
 		isFetching,
 		isLoading,
@@ -36,14 +36,14 @@ export function RoutinePageLoadedHeader( {
 					isPending={ saveRoutineSession.isPending }
 					onRefreshAction={ handleRefresh }
 					statusDescription={ routineStatusDescription }
-					onSave={ handleOpenSaveSheet }
+					onSave={ handleOpenSaveDrawer }
 				/>
 			</div>
 			<Card.Content className={ "hidden sm:flex p-3" }>
 				<div className={ "items-end gap-4 flex" }>
 					<PageHeader
 						title={ `Rutina - Dia ${ activeSession.dayNumber }` }
-						description={ `${ activeSession.title } · Sesion de entrenamiento` }
+						description={ `${ activeSession.title } · Sesión de entrenamiento` }
 					/>
 					<Button
 						isDisabled={ isFetching && !isLoading }
@@ -53,7 +53,7 @@ export function RoutinePageLoadedHeader( {
 						<RotateCw className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
 						{ isFetching && !isLoading ? "Actualizando..." : "Actualizar" }
 					</Button>
-					<Button isDisabled={ !canSaveProgress } isPending={ saveRoutineSession.isPending } onPress={ handleOpenSaveSheet }>
+					<Button isDisabled={ !canSaveProgress } isPending={ saveRoutineSession.isPending } onPress={ handleOpenSaveDrawer }>
 						{ ( { isPending } ) => (
 							<>
 								{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Save/> }
@@ -67,3 +67,4 @@ export function RoutinePageLoadedHeader( {
 		</Card>
 	);
 }
+

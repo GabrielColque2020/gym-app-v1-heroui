@@ -1,4 +1,4 @@
-import { Chip } from "@heroui/react";
+﻿import { Chip } from "@heroui/react";
 
 import type { ExerciseSessionHistory } from "@/features/routine/types/routine-exercise.types";
 
@@ -16,9 +16,9 @@ function formatSessionDateLabel( date: Date ) {
 }
 
 export function ExerciseCardSessionHistory( {
-	history,
-	isCompact = false,
-}: ExerciseCardSessionHistoryProps ) {
+												history,
+												isCompact = false,
+											}: ExerciseCardSessionHistoryProps ) {
 	if (!history?.sets.length) {
 		return (
 			<Chip color={ "warning" } size={ "sm" } variant={ "soft" }>
@@ -50,3 +50,4 @@ export function ExerciseCardSessionHistory( {
 		</div>
 	);
 }
+

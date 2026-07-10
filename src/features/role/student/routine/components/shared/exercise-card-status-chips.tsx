@@ -1,4 +1,4 @@
-import { Chip } from "@heroui/react";
+﻿import { Chip } from "@heroui/react";
 
 type ExerciseCardStatusChipsProps = {
 	baseName: string;
@@ -48,3 +48,4 @@ export function ExerciseCardStatusChips( {
 		</>
 	);
 }
+

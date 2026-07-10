@@ -1,8 +1,8 @@
-import { PageBreadcrumbs } from "@/components/common";
+﻿import { PageBreadcrumbs } from "@/components/common";
 import DesktopRoutineView from "@/features/role/student/routine/components/desktop/desktop-routine-view";
 import MobileRoutineView from "@/features/role/student/routine/components/mobile/mobile-routine-view";
 import { RoutinePageLoadedHeader } from "@/features/role/student/routine/components/shared/routine-page-loaded-header";
-import RoutineSaveSheet from "@/features/role/student/routine/components/shared/routine-save-sheet";
+import RoutineSaveDrawer from "@/features/role/student/routine/components/shared/routine-save-drawer";
 import { RoutineRefreshConfirmModal } from "@/features/role/student/routine/components/shared/routine-refresh-confirm-modal";
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
 
@@ -21,16 +21,16 @@ export function RoutinePageLoadedContent( {
 		canSaveProgress,
 		handleConfirmRefresh,
 		handleConfirmSave,
-		handleOpenSaveSheet,
+		handleOpenSaveDrawer,
 		handleSetUpdate,
 		handleVariantChange,
 		isRefreshConfirmOpen,
-		isSaveSheetOpen,
+		isSaveDrawerOpen,
 		latestProgressDate,
 		saveRoutineSession,
 		saveSummary,
 		setIsRefreshConfirmOpen,
-		setIsSaveSheetOpen,
+		setIsSaveDrawerOpen,
 		validationError,
 	} = state;
 
@@ -53,7 +53,7 @@ export function RoutinePageLoadedContent( {
 				canSaveProgress={ canSaveProgress }
 				isPending={ saveRoutineSession.isPending }
 				latestProgressDate={ latestProgressDate }
-				onSave={ handleOpenSaveSheet }
+				onSave={ handleOpenSaveDrawer }
 				onSetUpdate={ handleSetUpdate }
 				onVariantChangeAction={ handleVariantChange }
 				routineStatusDescription={ state.routineStatusDescription }
@@ -65,13 +65,13 @@ export function RoutinePageLoadedContent( {
 				onSetUpdate={ handleSetUpdate }
 				routineStatusDescription={ state.routineStatusDescription }
 			/>
-			<RoutineSaveSheet
-				isOpen={ isSaveSheetOpen }
+			<RoutineSaveDrawer
+				isOpen={ isSaveDrawerOpen }
 				isPending={ saveRoutineSession.isPending }
 				validationError={ validationError }
 				summaryItems={ saveSummary }
 				onConfirmAction={ handleConfirmSave }
-				onOpenChangeAction={ setIsSaveSheetOpen }
+				onOpenChangeAction={ setIsSaveDrawerOpen }
 			/>
 			<RoutineRefreshConfirmModal
 				isOpen={ isRefreshConfirmOpen }
@@ -81,3 +81,4 @@ export function RoutinePageLoadedContent( {
 		</div>
 	);
 }
+

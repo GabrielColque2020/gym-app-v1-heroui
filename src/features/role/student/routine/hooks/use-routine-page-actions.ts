@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useState } from "react";
 
@@ -38,7 +38,7 @@ export function useRoutinePageActions( {
 	studentId,
 	validationError,
 }: UseRoutinePageActionsOptions ) {
-	const [ isSaveSheetOpen, setIsSaveSheetOpen ] = useState( false );
+	const [ isSaveDrawerOpen, setIsSaveDrawerOpen ] = useState( false );
 	const [ isRefreshConfirmOpen, setIsRefreshConfirmOpen ] = useState( false );
 
 	const handleRefresh = useCallback( () => {
@@ -89,7 +89,7 @@ export function useRoutinePageActions( {
 		} );
 	}, [ activeSession, replaceDraftAction ] );
 
-	const handleOpenSaveSheet = useCallback( () => {
+	const handleOpenSaveDrawer = useCallback( () => {
 		if (!canSaveProgress) {
 			toast.warning( "No hay ejercicios para guardar", {
 				description: "Primero debe haber ejercicios cargados para ese dia.",
@@ -97,7 +97,7 @@ export function useRoutinePageActions( {
 			return;
 		}
 
-		setIsSaveSheetOpen( true );
+		setIsSaveDrawerOpen( true );
 	}, [ canSaveProgress ] );
 
 	const handleConfirmSave = useCallback( async () => {
@@ -116,7 +116,7 @@ export function useRoutinePageActions( {
 				...mapStudentRoutineSessionToSaveInput( activeSession ),
 				studentId,
 			} );
-			setIsSaveSheetOpen( false );
+			setIsSaveDrawerOpen( false );
 			toast.success( "Rutina actualizada", { description: "Los cambios se guardaron correctamente." } );
 		} catch (saveError) {
 			toast.danger( "Error al guardar", {
@@ -128,13 +128,14 @@ export function useRoutinePageActions( {
 	return {
 		handleConfirmRefresh,
 		handleConfirmSave,
-		handleOpenSaveSheet,
+		handleOpenSaveDrawer,
 		handleRefresh,
 		handleSetUpdate,
 		handleVariantChange,
 		isRefreshConfirmOpen,
-		isSaveSheetOpen,
+		isSaveDrawerOpen,
 		setIsRefreshConfirmOpen,
-		setIsSaveSheetOpen,
+		setIsSaveDrawerOpen,
 	};
 }
+

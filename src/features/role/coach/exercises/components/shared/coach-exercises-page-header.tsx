@@ -2,7 +2,7 @@ import { Button, Card } from "@heroui/react";
 import { RotateCw } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
-import { ExerciseSheet } from "@/features/role/coach/exercises/components/shared/exercise-sheet";
+import { ExerciseDrawer } from "@/features/role/coach/exercises/components/shared/exercise-drawer";
 
 type CoachExercisesPageHeaderProps = {
 	isRefreshing: boolean;
@@ -29,7 +29,7 @@ export function CoachExercisesPageHeader( {
 					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
-				<ExerciseSheet
+				<ExerciseDrawer
 					mode={ "create" }
 					placement={ "bottom" }
 					triggerClassName={ "w-full bg-accent text-accent-foreground" }
@@ -44,7 +44,7 @@ export function CoachExercisesPageHeader( {
 					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
-				<ExerciseSheet
+				<ExerciseDrawer
 					mode={ "create" }
 					placement={ "right" }
 					triggerClassName={ "bg-accent text-accent-foreground" }

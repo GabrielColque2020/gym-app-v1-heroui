@@ -1,7 +1,7 @@
 import { Button, Card } from "@heroui/react";
 import { RotateCw } from "lucide-react";
 
-import { SearchAndCreateExerciseSheet } from "@/features/role/coach/routine/components/shared/search-and-create-exercise-sheet";
+import { SearchAndCreateExerciseDrawer } from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer";
 
 type EditRoutineDayMainCardHeaderProps = {
 	addedExerciseIds: Set<string>;
@@ -31,7 +31,7 @@ export function EditRoutineDayMainCardHeader( {
 				<p className={ "text-sm text-muted" }>{ routineSubtitle }</p>
 				<p className={ "text-sm text-muted" }>{ draftCount } ejercicios en borrador</p>
 			</div>
-			<div className={ "flex w-full flex-col gap-2 sm:w-auto sm:flex-row" }>
+			<div className={ "flex w-full sm:flex-row gap-2 sm:w-auto " }>
 				<Button
 					className={ "shadow-sm" }
 					isDisabled={ isRefreshing }
@@ -41,7 +41,7 @@ export function EditRoutineDayMainCardHeader( {
 					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
-				<SearchAndCreateExerciseSheet
+				<SearchAndCreateExerciseDrawer
 					addedExerciseIds={ addedExerciseIds }
 					onAddExerciseAction={ onAddExerciseAction }
 					suggestedOrder={ getSuggestedOrder() }

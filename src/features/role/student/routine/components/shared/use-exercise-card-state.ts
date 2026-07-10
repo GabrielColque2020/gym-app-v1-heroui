@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo } from "react";
 
@@ -34,3 +34,4 @@ export function useExerciseCardState( exercise: Exercise ) {
 		variantOptions,
 	};
 }
+
