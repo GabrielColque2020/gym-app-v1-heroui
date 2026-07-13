@@ -108,7 +108,7 @@ export function ExerciseMobileCard( {
 									) : (
 										<CheckCircle2 className={ "size-4 shrink-0 text-success" }/>
 									) }
-									<Label>{ statusLabel }</Label>
+									<Label className={ exercise.active ? "text-danger" : "text-success" }>{ statusLabel }</Label>
 								</Dropdown.Item>
 							</Dropdown.Menu>
 						</Dropdown.Popover>

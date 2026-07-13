@@ -50,10 +50,9 @@ export function StudentDrawer( props: StudentFormDrawerProps ) {
 				onPress={ openDrawer }
 			/>
 			<FeatureDrawerLayout
-				isDismissable={ false }
 				isOpen={ isOpen }
 				placement={ placement }
-				rightContentClassName={ "w-115 px-5 pt-5 pb-4" }
+				rightContentClassName={ "w-135 px-5 pt-5 pb-4" }
 				onOpenChangeAction={ handleOpenChange }
 			>
 				<Drawer.Header className={ "border-default-100 relative border-b pb-4" }>

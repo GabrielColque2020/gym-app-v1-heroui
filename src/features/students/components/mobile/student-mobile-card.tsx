@@ -2,18 +2,9 @@
 
 import type { StudentListItem } from "@/features/students/actions/get-students";
 import type { Key } from "@heroui/react";
-
-import {
-	Button,
-	Card,
-	Chip,
-	Dropdown,
-	Header,
-	Label,
-	Spinner,
-} from "@heroui/react";
+import { Button, Card, Chip, Dropdown, Header, Label, Spinner, } from "@heroui/react";
 import { useState } from "react";
-import { CheckCircle2, EllipsisVertical, PencilLine, UserRound, Trash2 } from "lucide-react";
+import { CheckCircle2, EllipsisVertical, PencilLine, Trash2, UserRound } from "lucide-react";
 
 import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
 import { useStudentStatusAction } from "@/features/students/hooks/use-student-status-action";
@@ -90,7 +81,7 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 									) : (
 										<CheckCircle2 className={ "size-4 shrink-0 text-success" }/>
 									) }
-									<Label>{ statusLabel }</Label>
+									<Label className={ student.active ? "text-danger" : "text-success" }>{ statusLabel }</Label>
 								</Dropdown.Item>
 							</Dropdown.Menu>
 						</Dropdown.Popover>

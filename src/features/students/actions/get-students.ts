@@ -1,6 +1,5 @@
 "use server";
 
-import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import { studentListSelect } from "@/features/students/services/student-select";
 import prisma from "@/lib/prisma";
@@ -15,7 +14,6 @@ export async function getStudentsAction(): Promise<StudentListItem[]> {
 		const session = await requireCoachSession( "consultar estudiantes" );
 
 		return await prisma.user.findMany( {
-			cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 			orderBy: {
 				createdAt: "desc",
 			},

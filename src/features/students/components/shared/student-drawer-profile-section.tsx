@@ -29,14 +29,14 @@ type StudentDrawerProfileSectionProps = {
 };
 
 export function StudentDrawerProfileSection( {
-												isDniInvalid,
-												isEditMode,
-												isEmailInvalid,
-												isNameInvalid,
-	isPasswordInvalid,
-	updateValue,
-	values,
-}: StudentDrawerProfileSectionProps ) {
+												 isDniInvalid,
+												 isEditMode,
+												 isEmailInvalid,
+												 isNameInvalid,
+												 isPasswordInvalid,
+												 updateValue,
+												 values,
+											 }: StudentDrawerProfileSectionProps ) {
 	const birthDateValue = getBirthDateValue( values.birthDate );
 
 	return (
@@ -55,7 +55,7 @@ export function StudentDrawerProfileSection( {
 				onChange={ ( value ) => updateValue( "name", value ) }
 			>
 				<Label>Nombre</Label>
-				<Input autoComplete={ "off" } placeholder={ "Ej: Gabriel Colque" }/>
+				<Input autoComplete={ "off" } placeholder={ "Ej: Nombre Completo" } className={ "border border-border" }/>
 				{ isNameInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
 			</TextField>
 
@@ -69,7 +69,7 @@ export function StudentDrawerProfileSection( {
 					onChange={ ( value ) => updateValue( "email", value ) }
 				>
 					<Label>Email</Label>
-					<Input autoComplete={ "off" } placeholder={ "estudiante@email.com" } type={ "email" }/>
+					<Input autoComplete={ "off" } placeholder={ "estudiante@email.com" } type={ "email" } className={ "border border-border" }/>
 					{ isEmailInvalid ? <FieldError>Ingresa un email valido.</FieldError> : null }
 				</TextField>
 
@@ -82,7 +82,7 @@ export function StudentDrawerProfileSection( {
 					onChange={ ( value ) => updateValue( "dni", value ) }
 				>
 					<Label>DNI</Label>
-					<Input autoComplete={ "off" } inputMode={ "numeric" } placeholder={ "22222222" }/>
+					<Input autoComplete={ "off" } inputMode={ "numeric" } placeholder={ "22222222" } className={ "border border-border" }/>
 					{ isDniInvalid ? <FieldError>Debe ser numerico.</FieldError> : null }
 				</TextField>
 			</div>
@@ -95,13 +95,14 @@ export function StudentDrawerProfileSection( {
 				value={ values.password }
 				onChange={ ( value ) => updateValue( "password", value ) }
 			>
-				<Label>Contrasenia</Label>
+				<Label>Contraseña</Label>
 				<Input
 					autoComplete={ "new-password" }
-					placeholder={ isEditMode ? "Dejar vacia para mantener la actual" : "Contrasenia inicial" }
+					placeholder={ isEditMode ? "Dejar vacía para mantener la actual" : "Contraseña inicial" }
 					type={ "password" }
+					className={ "border border-border" }
 				/>
-				{ isPasswordInvalid ? <FieldError>La contrasenia es obligatoria.</FieldError> : null }
+				{ isPasswordInvalid ? <FieldError>La contraseña debe tener al menos 6 caracteres.</FieldError> : null }
 			</TextField>
 
 			<div className={ "grid gap-4 sm:grid-cols-2" }>
@@ -115,7 +116,7 @@ export function StudentDrawerProfileSection( {
 					onChange={ ( value ) => updateValue( "gender", ( value ?? NO_GENDER ) as GenderFormValue ) }
 				>
 					<Label>Genero</Label>
-					<Select.Trigger>
+					<Select.Trigger className={ "border border-border" }>
 						<Select.Value/>
 						<Select.Indicator/>
 					</Select.Trigger>
@@ -143,7 +144,7 @@ export function StudentDrawerProfileSection( {
 					onChange={ ( value ) => updateValue( "birthDate", value ? value.toString() : "" ) }
 				>
 					<Label>Fecha de nacimiento</Label>
-					<DateField.Group fullWidth>
+					<DateField.Group fullWidth className={ "border border-border" }>
 						<DateField.Input>
 							{ ( segment ) => <DateField.Segment segment={ segment }/> }
 						</DateField.Input>
@@ -153,8 +154,8 @@ export function StudentDrawerProfileSection( {
 							</DatePicker.Trigger>
 						</DateField.Suffix>
 					</DateField.Group>
-					<DatePicker.Popover>
-						<Calendar aria-label={ "Fecha de nacimiento" }>
+					<DatePicker.Popover className={ "min-w-68 overflow-visible" }>
+						<Calendar aria-label={ "Fecha de nacimiento" } className={ "w-68" }>
 							<Calendar.Header>
 								<Calendar.YearPickerTrigger>
 									<Calendar.YearPickerTriggerHeading/>

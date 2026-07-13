@@ -43,7 +43,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 						{ showEditTriggerLabel ? "Editar" : null }
 					</Button>
 				) : (
-					<Button className={ props.triggerClassName } onPress={ openDrawer }>
+					<Button className={ props.triggerClassName } onPress={ openDrawer } fullWidth={ placement === "bottom" }>
 						<Plus className={ "size-4" }/>
 						Nuevo plan
 					</Button>
@@ -89,7 +89,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 							} }
 						>
 							<Label>Tipo de comida</Label>
-							<Select.Trigger>
+							<Select.Trigger className={ "border border-border" }>
 								<Select.Value/>
 								<Select.Indicator/>
 							</Select.Trigger>
@@ -114,7 +114,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 							onChange={ ( value ) => updateValue( "description", value ) }
 						>
 							<Label>Descripcion</Label>
-							<TextArea className={ "min-h-32" } placeholder={ "Escribe aqui la descripcion del plan alimenticio." }/>
+							<TextArea className={ "min-h-32 border border-border" } placeholder={ "Escribe aqui la descripcion del plan alimenticio." }/>
 							{ isDescriptionInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
 						</TextField>
 					</Drawer.Body>

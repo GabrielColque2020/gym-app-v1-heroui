@@ -115,15 +115,15 @@ export function HistoryRoutinesStudentsContentDesktop( { students }: HistoryRout
 	}
 
 	return (
-		<div className={ "flex w-full flex-col gap-4" }>
-			<div className={ "grid gap-3 rounded-xl border border-border bg-surface-secondary p-3 lg:grid-cols-[1fr_auto] lg:items-end" }>
+		<Card className={ "flex w-full flex-col gap-4 p-0" } variant={ "transparent" }>
+			<div className={ "grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end" }>
 				<SearchField
 					name={ "history-routine-student-search-filter" }
 					value={ searchFilter }
 					onChange={ updateSearchFilter }
 				>
 					<Label>Buscar</Label>
-					<SearchField.Group>
+					<SearchField.Group className={ "border border-border" }>
 						<SearchField.SearchIcon/>
 						<SearchField.Input placeholder={ "Nombre, email o DNI..." }/>
 						<SearchField.ClearButton/>
@@ -136,7 +136,7 @@ export function HistoryRoutinesStudentsContentDesktop( { students }: HistoryRout
 			</div>
 
 			{ filteredStudents.length === 0 ? (
-				<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
+				<Card className={ "border border-border" } variant={ "default" }>
 					<Card.Content className={ "py-10 text-center text-sm text-muted" }>
 						No hay estudiantes activos que coincidan con la busqueda
 					</Card.Content>
@@ -163,6 +163,6 @@ export function HistoryRoutinesStudentsContentDesktop( { students }: HistoryRout
 					/>
 				</>
 			) }
-		</div>
+		</Card>
 	);
 }

@@ -25,13 +25,13 @@ export function ExerciseDrawerFields( {
 				onChange={ ( value ) => updateValue( "name", value ) }
 			>
 				<Label>Nombre</Label>
-				<Input placeholder={ "Ej: Press banca" }/>
+				<Input placeholder={ "Ej: Press banca" } className={ "border border-border" }/>
 				{ isNameInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
 			</TextField>
 
 			<Select
 				name={ "bodyPart" }
-				placeholder={ "Selecciona una parte del cuerpo" }
+				placeholder={ "Seleccioná una parte del cuerpo" }
 				value={ values.bodyPart }
 				onChange={ ( value ) => {
 					if (value) {
@@ -40,7 +40,7 @@ export function ExerciseDrawerFields( {
 				} }
 			>
 				<Label>Parte del cuerpo</Label>
-				<Select.Trigger>
+				<Select.Trigger className={ "border border-border" }>
 					<Select.Value/>
 					<Select.Indicator/>
 				</Select.Trigger>
@@ -63,7 +63,7 @@ export function ExerciseDrawerFields( {
 				onChange={ ( value ) => updateValue( "tips", value ) }
 			>
 				<Label>Tips</Label>
-				<TextArea className={ "min-h-28" } placeholder={ "Indicaciones tecnicas, errores comunes o recomendaciones." }/>
+				<TextArea className={ "min-h-28 border border-border" } placeholder={ "Indicaciones técnicas, errores comunes o recomendaciones." }/>
 			</TextField>
 
 			<Checkbox

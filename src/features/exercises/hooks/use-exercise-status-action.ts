@@ -3,7 +3,6 @@
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 
 import { toast } from "@heroui/react";
-
 import { useDeactivateExercise, useRestoreExercise } from "@/features/exercises/hooks/use-exercises";
 
 type UseExerciseStatusActionOptions = {

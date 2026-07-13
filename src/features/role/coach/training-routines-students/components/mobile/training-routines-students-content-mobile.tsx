@@ -78,8 +78,8 @@ export function TrainingRoutinesStudentsContentMobile( { students }: TrainingRou
 	}
 
 	return (
-		<div className={ "flex w-full flex-col gap-4" }>
-			<div className={ "grid w-full min-w-0 gap-4 overflow-hidden rounded-2xl border border-border bg-surface-secondary px-4 py-5" }>
+		<Card className={ "flex w-full flex-col gap-4 p-0" } variant={ "transparent" }>
+			<Card.Content className={ "grid w-full min-w-0 gap-4 overflow-hidden" }>
 				<SearchField
 					className={ "min-w-0 gap-2" }
 					name={ "mobile-training-routine-student-search-filter" }
@@ -87,7 +87,7 @@ export function TrainingRoutinesStudentsContentMobile( { students }: TrainingRou
 					onChange={ updateSearchFilter }
 				>
 					<Label>Buscar</Label>
-					<SearchField.Group className={ "w-full min-w-0" }>
+					<SearchField.Group className={ "w-full min-w-0 border border-border" }>
 						<SearchField.SearchIcon/>
 						<SearchField.Input className={ "min-w-0" } placeholder={ "Nombre, email o DNI..." }/>
 						<SearchField.ClearButton/>
@@ -99,7 +99,7 @@ export function TrainingRoutinesStudentsContentMobile( { students }: TrainingRou
 						Limpiar
 					</Button>
 				</div>
-			</div>
+			</Card.Content>
 
 			{ filteredStudents.length === 0 ? (
 				<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
@@ -126,6 +126,6 @@ export function TrainingRoutinesStudentsContentMobile( { students }: TrainingRou
 					/>
 				</>
 			) }
-		</div>
+		</Card>
 	);
 }

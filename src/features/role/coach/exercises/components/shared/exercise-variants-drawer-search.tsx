@@ -1,17 +1,6 @@
-import {
-	Input,
-	Label,
-	ListBox,
-	Select,
-	Spinner,
-	TextField,
-} from "@heroui/react";
+import { Input, Label, ListBox, Select, Spinner, TextField, } from "@heroui/react";
 
-import {
-	ALL_BODY_PARTS,
-	BODY_PART_OPTIONS,
-	type BodyPartFilter,
-} from "@/features/exercises/services/exercise-form";
+import { ALL_BODY_PARTS, BODY_PART_OPTIONS, type BodyPartFilter, } from "@/features/exercises/services/exercise-form";
 
 import { ExerciseCandidateRow } from "./exercise-candidate-row";
 import type { ExerciseVariantsTarget } from "./exercise-variants-drawer.types";
@@ -30,17 +19,17 @@ type ExerciseVariantsDrawerSearchProps = {
 };
 
 export function ExerciseVariantsDrawerSearch( {
-	bodyPartFilter,
-	candidateExercises,
-	hasCandidateFilters,
-	isLoading,
-	isPending,
-	isSearching,
-	onAddVariantAction,
-	onBodyPartFilterChangeAction,
-	onSearchValueChangeAction,
-	searchValue,
-}: ExerciseVariantsDrawerSearchProps ) {
+												  bodyPartFilter,
+												  candidateExercises,
+												  hasCandidateFilters,
+												  isLoading,
+												  isPending,
+												  isSearching,
+												  onAddVariantAction,
+												  onBodyPartFilterChangeAction,
+												  onSearchValueChangeAction,
+												  searchValue,
+											  }: ExerciseVariantsDrawerSearchProps ) {
 	return (
 		<section className={ "space-y-4" }>
 			<div>
@@ -56,6 +45,7 @@ export function ExerciseVariantsDrawerSearch( {
 					placeholder={ "Ej: press inclinado" }
 					value={ searchValue }
 					onChange={ ( event ) => onSearchValueChangeAction( event.target.value ) }
+					className={ "border border-border" }
 				/>
 			</TextField>
 
@@ -70,7 +60,7 @@ export function ExerciseVariantsDrawerSearch( {
 				} }
 			>
 				<Label>Parte del cuerpo</Label>
-				<Select.Trigger aria-label={ "Filtrar por parte del cuerpo" }>
+				<Select.Trigger aria-label={ "Filtrar por parte del cuerpo" } className={ "border border-border" }>
 					<Select.Value/>
 					<Select.Indicator/>
 				</Select.Trigger>

@@ -37,10 +37,9 @@ export function FilterSelect( {
 			name={ name }
 			{ ...selectValueProps }
 			onChange={ ( key ) => onSelectionChange?.( key as string ) }
-			variant={ "secondary" }
 		>
 			<Label>{ label }</Label>
-			<Select.Trigger>
+			<Select.Trigger className={ "border border-border" }>
 				<Select.Value/>
 				<Select.Indicator/>
 			</Select.Trigger>

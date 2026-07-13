@@ -12,15 +12,15 @@ type EditableExerciseFieldProps = {
 };
 
 export function RoutineDayExerciseField( {
-	ariaLabel,
-	className,
-	inputClassName,
-	isMultiline = false,
-	label,
-	name,
-	onChange,
-	value,
-}: EditableExerciseFieldProps ) {
+											 ariaLabel,
+											 className,
+											 inputClassName,
+											 isMultiline = false,
+											 label,
+											 name,
+											 onChange,
+											 value,
+										 }: EditableExerciseFieldProps ) {
 	return (
 		<TextField
 			aria-label={ ariaLabel }
@@ -31,9 +31,9 @@ export function RoutineDayExerciseField( {
 		>
 			{ label ? <Label className={ "text-xs text-muted" }>{ label }</Label> : null }
 			{ isMultiline ? (
-				<TextArea className={ inputClassName } rows={ 2 } variant={ "secondary" }/>
+				<TextArea className={ `${ inputClassName } border border-border` } rows={ 2 }/>
 			) : (
-				<Input className={ inputClassName } variant={ "secondary" }/>
+				<Input className={ `${ inputClassName } border border-border` }/>
 			) }
 		</TextField>
 	);

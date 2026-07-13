@@ -1,12 +1,6 @@
 import type { StudentFormValues } from "@/features/students/services/student-form";
 
-import {
-	FieldError,
-	Input,
-	Label,
-	TextArea,
-	TextField,
-} from "@heroui/react";
+import { FieldError, Input, Label, TextArea, TextField, } from "@heroui/react";
 
 type StudentDrawerDetailsSectionProps = {
 	isHeightInvalid: boolean;
@@ -16,11 +10,11 @@ type StudentDrawerDetailsSectionProps = {
 };
 
 export function StudentDrawerDetailsSection( {
-	isHeightInvalid,
-	isWeightInvalid,
-	updateValue,
-	values,
-}: StudentDrawerDetailsSectionProps ) {
+												 isHeightInvalid,
+												 isWeightInvalid,
+												 updateValue,
+												 values,
+											 }: StudentDrawerDetailsSectionProps ) {
 	return (
 		<section className={ "space-y-4 border-t border-border pt-5" }>
 			<div>
@@ -37,7 +31,7 @@ export function StudentDrawerDetailsSection( {
 					onChange={ ( value ) => updateValue( "height", value ) }
 				>
 					<Label>Altura</Label>
-					<Input inputMode={ "decimal" } placeholder={ "175" }/>
+					<Input inputMode={ "decimal" } placeholder={ "175" } className={ "border border-border" }/>
 					{ isHeightInvalid ? <FieldError>Debe ser mayor o igual a 0.</FieldError> : null }
 				</TextField>
 
@@ -49,7 +43,7 @@ export function StudentDrawerDetailsSection( {
 					onChange={ ( value ) => updateValue( "weight", value ) }
 				>
 					<Label>Peso</Label>
-					<Input inputMode={ "decimal" } placeholder={ "72" }/>
+					<Input inputMode={ "decimal" } placeholder={ "72" } className={ "border border-border" }/>
 					{ isWeightInvalid ? <FieldError>Debe ser mayor o igual a 0.</FieldError> : null }
 				</TextField>
 			</div>
@@ -61,7 +55,7 @@ export function StudentDrawerDetailsSection( {
 				onChange={ ( value ) => updateValue( "objective", value ) }
 			>
 				<Label>Objetivo</Label>
-				<Input placeholder={ "Ej: Ganar masa muscular" }/>
+				<Input placeholder={ "Ej: Ganar masa muscular" } className={ "border border-border" }/>
 			</TextField>
 
 			<TextField
@@ -71,7 +65,7 @@ export function StudentDrawerDetailsSection( {
 				onChange={ ( value ) => updateValue( "observations", value ) }
 			>
 				<Label>Observaciones</Label>
-				<TextArea className={ "min-h-28" } placeholder={ "Notas de seguimiento o consideraciones." }/>
+				<TextArea className={ "min-h-28 border border-border" } placeholder={ "Notas de seguimiento o consideraciones." }/>
 			</TextField>
 		</section>
 	);

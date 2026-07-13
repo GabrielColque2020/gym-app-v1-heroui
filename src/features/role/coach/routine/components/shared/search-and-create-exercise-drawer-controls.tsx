@@ -12,13 +12,13 @@ type SearchAndCreateExerciseDrawerControlsProps = {
 };
 
 export function SearchAndCreateExerciseDrawerControls( {
-	bodyPartFilter,
-	onBodyPartFilterChangeAction,
-	onOrderChange,
-	onSearchValueChangeAction,
-	orderValue,
-	searchValue,
-}: SearchAndCreateExerciseDrawerControlsProps ) {
+														   bodyPartFilter,
+														   onBodyPartFilterChangeAction,
+														   onOrderChange,
+														   onSearchValueChangeAction,
+														   orderValue,
+														   searchValue,
+													   }: SearchAndCreateExerciseDrawerControlsProps ) {
 	return (
 		<>
 			<TextField name={ "search-exercise" }>
@@ -28,7 +28,8 @@ export function SearchAndCreateExerciseDrawerControls( {
 					autoComplete={ "off" }
 					placeholder={ "Buscar ejercicio..." }
 					value={ searchValue }
-				onChange={ ( event ) => onSearchValueChangeAction( event.target.value ) }
+					onChange={ ( event ) => onSearchValueChangeAction( event.target.value ) }
+					className={ "border border-border" }
 				/>
 			</TextField>
 
@@ -39,7 +40,7 @@ export function SearchAndCreateExerciseDrawerControls( {
 				onChange={ ( value ) => onBodyPartFilterChangeAction( String( value ?? ALL_BODY_PARTS ) as BodyPartFilter ) }
 			>
 				<Label>Grupo muscular</Label>
-				<Select.Trigger aria-label={ "Filtrar por grupo muscular" }>
+				<Select.Trigger aria-label={ "Filtrar por grupo muscular" } className={ "border border-border" }>
 					<Select.Value/>
 					<Select.Indicator/>
 				</Select.Trigger>
@@ -65,6 +66,7 @@ export function SearchAndCreateExerciseDrawerControls( {
 					aria-label={ "Orden del ejercicio en la rutina" }
 					inputMode={ "numeric" }
 					placeholder={ "1" }
+					className={ "border border-border" }
 				/>
 			</TextField>
 		</>

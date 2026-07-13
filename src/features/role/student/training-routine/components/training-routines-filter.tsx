@@ -59,10 +59,10 @@ export function TrainingRoutinesFilter( {
 						<FilterSelect
 							key={ `year-${ resetVersion }` }
 							defaultValue={ defaultYear }
-							label={ "Ano" }
+							label={ "Año" }
 							name={ "year" }
 							options={ yearOptions }
-							placeholder={ "Todos los anos" }
+							placeholder={ "Todos los años" }
 							onSelectionChange={ setSelectedYear }
 						/>
 					</div>

@@ -1,6 +1,5 @@
 "use server";
 
-import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
 
@@ -9,7 +8,6 @@ export async function getExercisesAction() {
 		const session = await requireCoachSession( "consultar ejercicios" );
 
 		return await prisma.exercise.findMany( {
-			cacheStrategy: QUERY_ACCELERATE_CACHE.catalog,
 			select: {
 				active: true,
 				bodyPart: true,

@@ -4,24 +4,11 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import {
-	Alert,
-	Button,
-	Card,
-	FieldError,
-	Input,
-	Label,
-	Spinner,
-	TextField,
-	Typography,
-} from "@heroui/react";
-import { Dumbbell, Eye, EyeOff } from "lucide-react";
+import { Alert, Button, Card, FieldError, Input, Label, Spinner, TextField, Typography, } from "@heroui/react";
+import { Dumbbell, Eye, EyeOff, LogIn } from "lucide-react";
 
 import { useLogin } from "@/features/login/hooks/use-login";
-import {
-	persistThemePreference,
-	themePreferenceToUiThemePreference,
-} from "@/features/theme/theme-preference";
+import { persistThemePreference, themePreferenceToUiThemePreference, } from "@/features/theme/theme-preference";
 
 export default function LoginPageContent() {
 	const router = useRouter();
@@ -55,7 +42,7 @@ export default function LoginPageContent() {
 				return getDefaultRedirectPath( role );
 			}
 
-			if (url.pathname.startsWith( "/api" ) || url.pathname.startsWith( "/_next" ) || url.pathname === "/login" ) {
+			if (url.pathname.startsWith( "/api" ) || url.pathname.startsWith( "/_next" ) || url.pathname === "/login") {
 				return getDefaultRedirectPath( role );
 			}
 
@@ -201,7 +188,8 @@ export default function LoginPageContent() {
 							{ ( { isPending } ) => (
 								<>
 									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : null }
-									{ isPending ? "Ingresando..." : "Acceder" }
+									{ isPending ? null : <LogIn className={ "size-4" }/> }
+									{ isPending ? "Ingresando..." : "Iniciar Sesión" }
 								</>
 							) }
 						</Button>

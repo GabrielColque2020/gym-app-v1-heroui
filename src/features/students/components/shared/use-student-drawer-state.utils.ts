@@ -55,13 +55,14 @@ export function getStudentDrawerValidationState( values: StudentFormValues, isEd
 	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
 	const isEmailInvalid = values.email.trim().length > 0 && !isValidEmail( values.email );
 	const isDniInvalid = values.dni.trim().length > 0 && !/^\d+$/.test( values.dni.trim() );
-	const isPasswordInvalid = !isEditMode && values.password.trim().length === 0;
+	const isPasswordInvalid = values.password.trim().length > 0 && values.password.trim().length < 6;
 	const isHeightInvalid = !isNonNegativeNumberInput( values.height );
 	const isWeightInvalid = !isNonNegativeNumberInput( values.weight );
 	const isSubmitDisabled = values.name.trim().length < 2
 		|| !isValidEmail( values.email )
 		|| !/^\d+$/.test( values.dni.trim() )
 		|| Number( values.dni ) <= 0
+		|| ( !isEditMode && values.password.trim().length === 0 )
 		|| isPasswordInvalid
 		|| isHeightInvalid
 		|| isWeightInvalid

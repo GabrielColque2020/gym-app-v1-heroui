@@ -78,8 +78,8 @@ export function HistoryRoutinesStudentsContentMobile( { students }: HistoryRouti
 	}
 
 	return (
-		<div className={ "flex w-full flex-col gap-4" }>
-			<div className={ "grid w-full min-w-0 gap-4 overflow-hidden rounded-2xl border border-border bg-surface-secondary px-4 py-5" }>
+		<Card className={ "flex w-full flex-col gap-4 p-0" } variant={ "transparent" }>
+			<div className={ "grid w-full min-w-0 gap-4" }>
 				<SearchField
 					className={ "min-w-0 gap-2" }
 					name={ "mobile-history-routine-student-search-filter" }
@@ -87,7 +87,7 @@ export function HistoryRoutinesStudentsContentMobile( { students }: HistoryRouti
 					onChange={ updateSearchFilter }
 				>
 					<Label>Buscar</Label>
-					<SearchField.Group className={ "w-full min-w-0" }>
+					<SearchField.Group className={ "w-full min-w-0 border border-border" }>
 						<SearchField.SearchIcon/>
 						<SearchField.Input className={ "min-w-0" } placeholder={ "Nombre, email o DNI..." }/>
 						<SearchField.ClearButton/>
@@ -102,7 +102,7 @@ export function HistoryRoutinesStudentsContentMobile( { students }: HistoryRouti
 			</div>
 
 			{ filteredStudents.length === 0 ? (
-				<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
+				<Card className={ "border border-border" } variant={ "default" }>
 					<Card.Content className={ "py-10 text-center text-sm text-muted" }>
 						No hay estudiantes activos que coincidan con la busqueda
 					</Card.Content>
@@ -126,6 +126,6 @@ export function HistoryRoutinesStudentsContentMobile( { students }: HistoryRouti
 					/>
 				</>
 			) }
-		</div>
+		</Card>
 	);
 }

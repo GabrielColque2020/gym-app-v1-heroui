@@ -9,9 +9,9 @@ type RoutineDayExerciseOrderFieldProps = {
 };
 
 export function RoutineDayExerciseOrderField( {
-	onUpdateField,
-	routine,
-}: RoutineDayExerciseOrderFieldProps ) {
+												  onUpdateField,
+												  routine,
+											  }: RoutineDayExerciseOrderFieldProps ) {
 	return (
 		<TextField
 			aria-label={ `Orden de ${ getExerciseName( routine ) }` }
@@ -19,7 +19,7 @@ export function RoutineDayExerciseOrderField( {
 			value={ String( routine.order ) }
 			onChange={ ( value ) => onUpdateField( routine.clientId, "order", Number( value ) || 0 ) }
 		>
-			<Input className={ "w-20 text-center" } inputMode={ "numeric" } variant={ "secondary" }/>
+			<Input className={ "w-20 text-center border border-border" } inputMode={ "numeric" }/>
 		</TextField>
 	);
 }

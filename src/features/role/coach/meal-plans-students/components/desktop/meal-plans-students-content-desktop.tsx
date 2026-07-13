@@ -114,15 +114,15 @@ export function MealPlansStudentsContentDesktop( { students }: MealPlansStudents
 	}
 
 	return (
-		<div className={ "flex w-full flex-col gap-4" }>
-			<div className={ "grid gap-3 rounded-xl border border-border bg-surface-secondary p-3 lg:grid-cols-[1fr_auto] lg:items-end" }>
+		<Card className={ "flex w-full flex-col gap-4 p-0" } variant={ "transparent" }>
+			<Card.Content className={ "grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end" }>
 				<SearchField
 					name={ "meal-plan-student-search-filter" }
 					value={ searchFilter }
 					onChange={ updateSearchFilter }
 				>
 					<Label>Buscar</Label>
-					<SearchField.Group>
+					<SearchField.Group className={ "border border-border" }>
 						<SearchField.SearchIcon/>
 						<SearchField.Input placeholder={ "Nombre, email o DNI..." }/>
 						<SearchField.ClearButton/>
@@ -132,10 +132,10 @@ export function MealPlansStudentsContentDesktop( { students }: MealPlansStudents
 				<Button isDisabled={ !hasFilters } size={ "sm" } variant={ "secondary" } onPress={ clearFilters }>
 					Limpiar
 				</Button>
-			</div>
+			</Card.Content>
 
 			{ filteredStudents.length === 0 ? (
-				<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
+				<Card className={ "border border-border" } variant={ "default" }>
 					<Card.Content className={ "py-10 text-center text-sm text-muted" }>
 						No hay estudiantes activos que coincidan con la busqueda
 					</Card.Content>
@@ -162,6 +162,6 @@ export function MealPlansStudentsContentDesktop( { students }: MealPlansStudents
 					/>
 				</>
 			) }
-		</div>
+		</Card>
 	);
 }
