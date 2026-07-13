@@ -19,9 +19,9 @@ export function RoutineDayExerciseMobileCard( {
 	const exerciseName = getExerciseName( routine );
 
 	return (
-		<Card className={ "overflow-hidden rounded-2xl border border-border/70 shadow-sm" } variant={ "default" }>
-			<Card.Content className={ "grid gap-4 py-4" }>
-				<div className={ "grid grid-cols-[1fr_auto] items-start gap-3" }>
+		<Card className={ "border border-border shadow-sm py-2" } variant={ "default" }>
+			<Card.Header className={ "grid gap-4 px-3 pt-3" }>
+				<div className={ "grid grid-cols-[1fr_auto] items-start gap-3 border-b border-border pb-3" }>
 					<div className={ "min-w-0" }>
 						<h3 className={ "truncate text-base font-semibold leading-6 text-foreground" }>{ exerciseName }</h3>
 						<p className={ "truncate text-sm text-muted" }>{ formatBodyPartValue( routine.exercise?.bodyPart ) }</p>
@@ -33,7 +33,8 @@ export function RoutineDayExerciseMobileCard( {
 						onDeleteAction={ () => onDeleteAction( routine.clientId ) }
 					/>
 				</div>
-
+			</Card.Header>
+			<Card.Content className={ "grid gap-4 px-3 pb-3" }>
 				<RoutineDayExerciseField
 					ariaLabel={ `Orden de ${ exerciseName }` }
 					label={ "Orden" }

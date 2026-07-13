@@ -105,7 +105,7 @@ export function MealPlansStudentsContentDesktop( { students }: MealPlansStudents
 
 	if (students.length === 0) {
 		return (
-			<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
+			<Card className={ "border border-border flex-1" } variant={ "default" }>
 				<Card.Content className={ "py-10 text-center text-sm text-muted" }>
 					No hay estudiantes activos cargados
 				</Card.Content>

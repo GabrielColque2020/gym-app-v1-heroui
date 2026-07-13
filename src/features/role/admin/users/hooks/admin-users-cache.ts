@@ -18,3 +18,11 @@ export function prependAdminUserInCache( queryClient: QueryClient, user: AdminUs
 		return [ user, ...currentUsers ];
 	} );
 }
+
+export function removeAdminUserFromCache( queryClient: QueryClient, userId: string ) {
+	queryClient.setQueryData<AdminUserListItem[]>( ADMIN_USERS_QUERY_KEY, ( currentUsers ) => {
+		if (!currentUsers) return currentUsers;
+
+		return currentUsers.filter( ( user ) => user.id !== userId );
+	} );
+}

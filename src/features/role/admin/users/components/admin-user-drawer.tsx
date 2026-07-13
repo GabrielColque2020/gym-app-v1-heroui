@@ -103,9 +103,9 @@ export function AdminUserDrawer( { hideTrigger = false, isOpen: controlledIsOpen
 							<PencilLine className={ "size-5" }/>
 						</div>
 						<div>
-							<Drawer.Heading>Editar usuario</Drawer.Heading>
+							<Drawer.Heading>Editar coach</Drawer.Heading>
 							<Description className={ "mt-1 text-sm" }>
-								Modifica los datos del usuario sin tocar su relacion operativa.
+								Modifica los datos del coach sin tocar su relacion operativa.
 							</Description>
 						</div>
 					</div>

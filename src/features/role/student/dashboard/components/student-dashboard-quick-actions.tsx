@@ -29,7 +29,7 @@ export function StudentDashboardQuickActions() {
 							<Button
 								key={ action.id }
 								aria-label={ action.label }
-								className={ "h-10 shrink-0 px-3 xl:flex-1" }
+								className={ "h-10 shrink-0 px-3 flex-1" }
 								variant={ "secondary" }
 								onPress={ () => router.push( action.href ) }
 							>

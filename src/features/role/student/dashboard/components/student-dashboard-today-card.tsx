@@ -5,10 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
 import { StudentDashboardEmptyState } from "@/features/role/student/dashboard/components/student-dashboard-empty-state";
-import {
-	buildRoutineDayHref,
-	buildTrainingRoutineHref,
-} from "@/features/role/student/dashboard/services/student-dashboard-links";
+import { buildRoutineDayHref, buildTrainingRoutineHref, } from "@/features/role/student/dashboard/services/student-dashboard-links";
 
 type StudentDashboardTodayCardProps = {
 	currentMonth: number;
@@ -27,20 +24,20 @@ type StudentDashboardTodayCardProps = {
 };
 
 export function StudentDashboardTodayCard( {
-	currentMonth,
-	currentYear,
-	exercisesInNextDay,
-	hasCurrentMonthRoutine,
-	nextRoutineDay,
-	totalWeeks,
-}: StudentDashboardTodayCardProps ) {
+											   currentMonth,
+											   currentYear,
+											   exercisesInNextDay,
+											   hasCurrentMonthRoutine,
+											   nextRoutineDay,
+											   totalWeeks,
+										   }: StudentDashboardTodayCardProps ) {
 	const router = useRouter();
 
 	if (!hasCurrentMonthRoutine) {
 		return (
 			<StudentDashboardEmptyState
 				description={ `No encontramos una rutina para ${ String( currentMonth ).padStart( 2, "0" ) }/${ currentYear }.` }
-				title={ "Todavia no tienes una rutina cargada este mes" }
+				title={ "Todavía no tienes una rutina cargada este mes" }
 			/>
 		);
 	}
@@ -48,7 +45,7 @@ export function StudentDashboardTodayCard( {
 	if (!nextRoutineDay) {
 		return (
 			<StudentDashboardEmptyState
-				description={ "Puedes revisar todas tus semanas y dias desde tu modulo de rutina." }
+				description={ "Puedes revisar todas tus semanas y días desde tu modulo de rutina." }
 				title={ "No hay un dia disponible para mostrar ahora mismo" }
 			/>
 		);

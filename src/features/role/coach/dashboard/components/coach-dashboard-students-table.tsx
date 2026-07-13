@@ -40,7 +40,7 @@ export function CoachDashboardStudentsTable( {
 		return (
 			<CoachDashboardEmptyState
 				description={ "Primero necesitas cargar estudiantes para usar el dashboard operativo." }
-				title={ "Todavia no hay estudiantes vinculados al coach" }
+				title={ "Todavía no hay estudiantes vinculados al coach" }
 			/>
 		);
 	}

@@ -29,6 +29,10 @@ export type ToggleUserStatusInput = {
 	id: string;
 };
 
+export type DeleteAdminUserInput = {
+	id: string;
+};
+
 export function isValidEmail( value: string ) {
 	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test( value.trim() );
 }

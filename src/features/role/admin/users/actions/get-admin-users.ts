@@ -1,6 +1,5 @@
 "use server";
 
-import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { requireAdminSession } from "@/features/auth/admin-session";
 import { adminUserSelect } from "@/features/role/admin/users/services/admin-user-select";
 import prisma from "@/lib/prisma";
@@ -15,7 +14,6 @@ export async function getAdminUsersAction(): Promise<AdminUserListItem[]> {
 		await requireAdminSession( "consultar usuarios" );
 
 		return await prisma.user.findMany( {
-			cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 			orderBy: [
 				{ role: "asc" },
 				{ active: "desc" },

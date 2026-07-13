@@ -34,8 +34,8 @@ export function MealPlanCard( {
 	}
 
 	return (
-		<Card className={ "overflow-hidden border border-border/70 shadow-sm" } variant={ "default" }>
-			<Card.Header className={ "border-b border-border px-1 py-1" }>
+		<Card className={ "border border-border shadow-sm py-2" } variant={ "default" }>
+			<Card.Header className={ "border-b border-border px-1 pt-1" }>
 				<div className={ "min-w-0" }>
 					<div className={ "flex min-w-0 items-center justify-between gap-3" }>
 						<p className={ "min-w-0 truncate text-base font-semibold text-foreground" }>
@@ -59,7 +59,7 @@ export function MealPlanCard( {
 										<Label className={ "text-warning" }>Editar plan</Label>
 									</Dropdown.Item>
 									<Dropdown.Item id={ "delete" } textValue={ "Eliminar plan" } variant={ "danger" }>
-								<Trash2 className={ "size-4 shrink-0 text-danger" }/>
+										<Trash2 className={ "size-4 shrink-0 text-danger" }/>
 										<Label>Eliminar plan</Label>
 									</Dropdown.Item>
 								</Dropdown.Menu>
@@ -69,8 +69,8 @@ export function MealPlanCard( {
 				</div>
 			</Card.Header>
 
-			<Card.Content className={ "px-4 py-4" }>
-				<div className={ "space-y-2 text-sm leading-6 text-muted" }>
+			<Card.Content className={ "p-2" }>
+				<div className={ "space-y-2 text-sm leading-6" }>
 					{ formatMealPlanDescriptionLines( mealPlan.description ).map( ( line, index ) => (
 						<div key={ `${ mealPlan.id }-${ index }` } className={ "flex gap-2" }>
 							<span className={ "mt-1 flex size-4 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground" }>

@@ -24,8 +24,8 @@ export function ExerciseChangeDrawerVariantOption( {
 												   }: ExerciseChangeDrawerVariantOptionProps ) {
 	return (
 		<Button
-			className={ "h-auto w-full justify-start px-4 py-3 text-left" }
-			variant={ isCurrentVariant ? "secondary" : "ghost" }
+			className={ "h-auto w-full justify-start px-4 py-3 text-left border border-border shadow-sm" }
+			variant={ isCurrentVariant ? "secondary" : "outline" }
 			onPress={ () => onSelect( variant ) }
 		>
 			<div className={ "flex w-full items-center justify-between gap-3" }>

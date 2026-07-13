@@ -1,6 +1,16 @@
 import type { Prisma } from "@/generated/prisma/client";
 
 export const adminUserSelect = {
+	DescriptionStudent: {
+		select: {
+			birthDate: true,
+			height: true,
+			id: true,
+			objective: true,
+			observations: true,
+			weight: true,
+		},
+	},
 	active: true,
 	coach: {
 		select: {

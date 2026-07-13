@@ -1,5 +1,4 @@
 import { Prisma } from "@/generated/prisma/client";
-import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import prisma from "@/lib/prisma";
 
 type GetTrainingRoutinesByStudentBaseInput = {
@@ -82,7 +81,6 @@ export async function getTrainingRoutinesByStudentBase( {
 	validateYear( year );
 
 	const student = await prisma.user.findFirst( {
-		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 		select: trainingRoutineStudentSelect,
 		where: {
 			active: true,
@@ -97,7 +95,6 @@ export async function getTrainingRoutinesByStudentBase( {
 	}
 
 	const routines = await prisma.trainingRoutine.findMany( {
-		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 		include: trainingRoutineInclude,
 		orderBy: {
 			week: "asc",

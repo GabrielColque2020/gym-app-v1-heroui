@@ -1,10 +1,6 @@
 import { Card } from "@heroui/react";
 
-import {
-	formatDateLabel,
-	formatLastProgressLabel,
-	formatLastRecordedMonthLabel,
-} from "@/features/role/student/dashboard/services/student-dashboard-mappers";
+import { formatDateLabel, formatLastProgressLabel, formatLastRecordedMonthLabel, } from "@/features/role/student/dashboard/services/student-dashboard-mappers";
 
 type StudentDashboardActivityCardProps = {
 	lastMealPlanUpdatedAt: string | null;
@@ -25,10 +21,10 @@ function ActivityRow( { label, value }: { label: string; value: string } ) {
 }
 
 export function StudentDashboardActivityCard( {
-	lastMealPlanUpdatedAt,
-	lastProgressAt,
-	lastRecordedMonthValue,
-}: StudentDashboardActivityCardProps ) {
+												  lastMealPlanUpdatedAt,
+												  lastProgressAt,
+												  lastRecordedMonthValue,
+											  }: StudentDashboardActivityCardProps ) {
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
 			<Card.Content className={ "space-y-4 p-3" }>
@@ -39,7 +35,7 @@ export function StudentDashboardActivityCard( {
 				<div className={ "grid gap-3" }>
 					<ActivityRow label={ "Ultimo progreso guardado" } value={ formatLastProgressLabel( lastProgressAt ) }/>
 					<ActivityRow label={ "Ultimo mes con historial" } value={ formatLastRecordedMonthLabel( lastRecordedMonthValue ) }/>
-					<ActivityRow label={ "Ultima actualizacion del plan" } value={ formatDateLabel( lastMealPlanUpdatedAt ) }/>
+					<ActivityRow label={ "Ultima actualización del plan" } value={ formatDateLabel( lastMealPlanUpdatedAt ) }/>
 				</div>
 			</Card.Content>
 		</Card>

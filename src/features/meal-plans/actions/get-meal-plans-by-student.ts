@@ -1,7 +1,6 @@
 "use server";
 
 import type { Prisma } from "@/generated/prisma/client";
-import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import prisma from "@/lib/prisma";
 
@@ -40,7 +39,6 @@ function assertStudentId( studentId: string ) {
 
 async function assertStudentForSession( studentId: string, coachId: string, role: "COACH" | "STUDENT" ) {
 	const student = await prisma.user.findFirst( {
-		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 		select: mealPlanStudentSelect,
 		where: role === "COACH"
 			? {
@@ -90,7 +88,6 @@ export async function getMealPlansByStudentAction( { studentId }: GetMealPlansBy
 		const student = await assertStudentForSession( normalizedStudentId, session.sub, session.role );
 
 		const mealPlans = await prisma.mealPlan.findMany( {
-			cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 			orderBy: [
 				{
 					order: "asc",

@@ -9,6 +9,7 @@ import { RotateCw } from "lucide-react";
 import { PageHeader } from "@/components/common";
 import { useAdminUsers } from "@/features/role/admin/users/hooks/use-admin-users";
 import { AdminCoachDrawer } from "@/features/role/admin/users/components/admin-coach-drawer";
+import { AdminStudentDrawer } from "@/features/role/admin/users/components/admin-student-drawer";
 import { AdminUserMobileCard } from "@/features/role/admin/users/components/admin-user-mobile-card";
 import { AdminUserRowActions } from "@/features/role/admin/users/components/admin-user-row-actions";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
@@ -104,9 +105,9 @@ export default function AdminUsersPageContent() {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Content className={ "flex flex-col gap-3 p-3 lg:flex-row lg:items-start lg:justify-between" }>
+				<Card.Content className={ "flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between" }>
 					<PageHeader
-						description={ "Listado global para crear coaches y revisar la asignacion estudiante-coach." }
+						description={ "Listado global para crear coaches y revisar la asignación estudiante-coach." }
 						title={ "Usuarios admin" }
 					/>
 					<div className={ "flex flex-col gap-2 sm:flex-row" }>
@@ -115,6 +116,7 @@ export default function AdminUsersPageContent() {
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<AdminCoachDrawer/>
+						<AdminStudentDrawer mode={ "create" }/>
 					</div>
 				</Card.Content>
 			</Card>

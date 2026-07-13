@@ -29,9 +29,12 @@ export type StudentFormValues = {
 	weight: string;
 };
 
-export type CreateStudentInput = StudentFormValues;
+export type CreateStudentInput = StudentFormValues & {
+	coachId?: string | null;
+};
 
 export type UpdateStudentInput = StudentFormValues & {
+	coachId?: string | null;
 	id: string;
 };
 

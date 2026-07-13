@@ -15,10 +15,10 @@ type CoachCreateRoutineDrawerContentProps = {
 };
 
 export function CoachCreateRoutineDrawer( {
-											 month,
-											 studentId,
-											 year,
-										 }: CoachCreateRoutineDrawerContentProps ) {
+											  month,
+											  studentId,
+											  year,
+										  }: CoachCreateRoutineDrawerContentProps ) {
 	const [ isOpen, setIsOpen ] = useState( false );
 	const placement = useResponsiveDrawerPlacement();
 	const isMobile = placement === "bottom";
@@ -26,12 +26,7 @@ export function CoachCreateRoutineDrawer( {
 	return (
 		<>
 			<Button
-				className={
-					isMobile
-						? "bg-accent-foreground border border-accent/50 text-accent shadow-sm"
-						: "bg-surface border border-accent/50 text-accent shadow-sm"
-				}
-				variant={ "outline" }
+				variant={ "secondary" }
 				onPress={ () => setIsOpen( true ) }
 			>
 				<Plus className={ "size-4" }/>

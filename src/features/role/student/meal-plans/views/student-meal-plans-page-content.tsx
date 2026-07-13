@@ -101,7 +101,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 				</Card.Header>
 				<Card.Content className={ "p-3" }>
 					{ data.mealPlans.length === 0 ? (
-						<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
+						<Card className={ "border border-border" } variant={ "default" }>
 							<Card.Content className={ "py-10 text-center" }>
 								<p className={ "text-base font-semibold text-foreground" }>No hay planes alimenticios cargados</p>
 								<p className={ "mt-1 text-sm text-muted" }>No tienes planes alimenticios asignados en este momento.</p>

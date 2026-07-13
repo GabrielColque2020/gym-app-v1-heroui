@@ -76,7 +76,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 
 	function handleWeekToggle( week: number ) {
 		setSelectedWeeks( ( currentSelectedWeeks ) => {
-			const current = currentSelectedWeeks ?? (weekGroups.length > 0 ? [ weekGroups[ 0 ].week ] : []);
+			const current = currentSelectedWeeks ?? ( weekGroups.length > 0 ? [ weekGroups[ 0 ].week ] : [] );
 
 			return current.includes( week )
 				? current.filter( ( currentWeek ) => currentWeek !== week )
@@ -137,7 +137,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 			{ !isLoading && !isError && data ? (
 				data.historyRoutines.length === 0 ? (
 					<Card className={ "border border-dashed border-border py-2" } variant={ "default" }>
-						<Card.Content className={ "p-3 text-center" }>
+						<Card.Content className={ "py-10 text-center" }>
 							<p className={ "text-base font-semibold text-foreground" }>No hay historial de rutinas cargado</p>
 							<p className={ "mt-1 text-sm text-muted" }>
 								No encontramos registros para { monthLabel }.

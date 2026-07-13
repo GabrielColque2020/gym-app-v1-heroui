@@ -5,10 +5,10 @@ type CoachExercisesEmptyStateProps = {
 };
 
 export function CoachExercisesEmptyState( {
-	message,
-}: CoachExercisesEmptyStateProps ) {
+											  message,
+										  }: CoachExercisesEmptyStateProps ) {
 	return (
-		<Card className={ "border border-dashed border-border bg-surface-secondary" } variant={ "default" }>
+		<Card className={ "flex-1 border border-border" } variant={ "default" }>
 			<Card.Content className={ "py-10 text-center text-sm text-muted" }>
 				{ message }
 			</Card.Content>

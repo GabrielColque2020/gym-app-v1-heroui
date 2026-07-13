@@ -1,4 +1,4 @@
-import { Input, Label, ListBox, Select, Spinner, TextField, } from "@heroui/react";
+import { Card, Input, Label, ListBox, Select, Spinner, TextField, } from "@heroui/react";
 
 import { ALL_BODY_PARTS, BODY_PART_OPTIONS, type BodyPartFilter, } from "@/features/exercises/services/exercise-form";
 
@@ -92,18 +92,18 @@ export function ExerciseVariantsDrawerSearch( {
 				</div>
 
 				{ !hasCandidateFilters ? (
-					<div className={ "rounded-xl border border-dashed border-border bg-surface-secondary px-4 py-6 text-sm text-muted" }>
+					<Card className={ "border border-border p-8 text-sm text-muted" }>
 						Empieza a escribir un nombre o ajusta el filtro de parte del cuerpo para ver sugerencias.
-					</div>
+					</Card>
 				) : isLoading ? (
-					<div className={ "flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-secondary p-4 text-sm text-muted" }>
+					<Card className={ "flex items-center justify-center gap-2 border border-border p-8 text-sm text-muted" }>
 						<Spinner size={ "sm" }/>
 						Cargando catalogo
-					</div>
+					</Card>
 				) : candidateExercises.length === 0 ? (
-					<div className={ "rounded-xl border border-dashed border-border bg-surface-secondary px-4 py-6 text-sm text-muted" }>
+					<Card className={ "border border-border p-8 text-sm text-muted" }>
 						No hay ejercicios disponibles para asociar con estos filtros.
-					</div>
+					</Card>
 				) : (
 					<div className={ "space-y-2" }>
 						{ candidateExercises.map( ( candidate ) => (

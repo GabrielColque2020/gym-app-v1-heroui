@@ -81,7 +81,7 @@ export function ExerciseVariantsDrawerContent( {
 			} );
 
 			toast.success( "Variantes guardadas", {
-				description: "La lista quedó actualizada sin recargar la página.",
+				description: "La lista quedó actualizada.",
 			} );
 			onCloseAction();
 		} catch {

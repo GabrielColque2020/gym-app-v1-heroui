@@ -62,6 +62,15 @@ export async function persistRoutineDayExercises(
 	routineDay: RoutineDayDetail,
 	exercises: NormalizedRoutineDayExerciseInput[],
 ) {
+	const existingRoutineVariants = routineDay.routines
+		.map( ( routine ) => ( {
+			exerciseId: routine.exerciseId,
+			variantExerciseIds: Array.from(
+				new Set( routine.variants.map( ( variant ) => variant.variantExerciseId ) ),
+			),
+		} ) )
+		.filter( ( routine ) => routine.exerciseId && routine.variantExerciseIds.length > 0 );
+
 	await prisma.$transaction( async ( transaction ) => {
 		await transaction.routine.deleteMany( {
 			where: {
@@ -81,6 +90,39 @@ export async function persistRoutineDayExercises(
 				sets: exercise.sets.trim(),
 			} ) ),
 		} );
+
+		if (existingRoutineVariants.length === 0) return;
+
+		const createdRoutines = await transaction.routine.findMany( {
+			select: {
+				exerciseId: true,
+				id: true,
+			},
+			where: {
+				routineDayId: routineDay.id,
+			},
+		} );
+		const routineIdByExerciseId = new Map(
+			createdRoutines
+				.filter( ( routine ) => Boolean( routine.exerciseId ) )
+				.map( ( routine ) => [ routine.exerciseId as string, routine.id ] ),
+		);
+		const variantRows = existingRoutineVariants.flatMap( ( routine ) => {
+			const routineId = routineIdByExerciseId.get( routine.exerciseId as string );
+
+			if (!routineId) return [];
+
+			return routine.variantExerciseIds.map( ( variantExerciseId ) => ( {
+				routineId,
+				variantExerciseId,
+			} ) );
+		} );
+
+		if (variantRows.length > 0) {
+			await transaction.routineExerciseVariant.createMany( {
+				data: variantRows,
+			} );
+		}
 	} );
 }
 

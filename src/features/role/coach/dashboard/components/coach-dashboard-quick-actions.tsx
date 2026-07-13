@@ -2,7 +2,7 @@
 
 import { Button, Card } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { CalendarClock, Clock3, Dumbbell, UtensilsCrossed, Users } from "lucide-react";
+import { CalendarClock, Clock3, Dumbbell, Users, UtensilsCrossed } from "lucide-react";
 
 import { COACH_DASHBOARD_QUICK_ACTIONS } from "@/features/role/coach/dashboard/services/coach-dashboard-links";
 
@@ -31,7 +31,7 @@ export function CoachDashboardQuickActions() {
 							<Button
 								key={ action.id }
 								aria-label={ action.label }
-								className={ "h-10 shrink-0 px-3 xl:flex-1" }
+								className={ "h-10 shrink-0 px-3 flex-1" }
 								variant={ "secondary" }
 								onPress={ () => router.push( action.href ) }
 							>
