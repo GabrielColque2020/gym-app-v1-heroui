@@ -77,7 +77,7 @@ export default function CoachMealPlansStudentsPageContent() {
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between" }>
 					<PageHeader
-						description={ "Selecciona un estudiante activo para consultar sus planes alimenticios." }
+						description={ "Seleccioná un estudiante activo para consultar sus planes alimenticios." }
 						title={ "Planes alimenticios por estudiante" }
 					/>
 					<div className={ "flex w-full flex-col gap-2 md:hidden" }>

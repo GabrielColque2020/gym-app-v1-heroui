@@ -21,11 +21,11 @@ export type CoachCopyRoutineDrawerProps = {
 type CopyRoutineMode = "month" | "weeks";
 
 export function useCoachCopyRoutineDrawerState( {
-	destinationMonth,
-	destinationWeeksOccupied = 0,
-	destinationYear,
-	studentId,
-}: CoachCopyRoutineDrawerProps ) {
+													destinationMonth,
+													destinationWeeksOccupied = 0,
+													destinationYear,
+													studentId,
+												}: CoachCopyRoutineDrawerProps ) {
 	const yearOptions = useMemo( () => buildYearOptions(), [] );
 	const destinationMonthNumber = Number( destinationMonth );
 	const destinationYearNumber = Number( destinationYear );
@@ -144,7 +144,7 @@ export function useCoachCopyRoutineDrawerState( {
 	const singleWeekPreview =
 		singleDestWeeks.length > 0
 			? `Semana ${ selectedSorted[ 0 ] } de ${ sourceLabel } sera copiada en ${ weekListLabel( singleDestWeeks ) }.`
-			: "Selecciona una o mas semanas destino.";
+			: "Seleccioná una o mas semanas destino.";
 	const monthPrimaryDisabled =
 		sameMonth ||
 		sourceQuery.isLoading ||

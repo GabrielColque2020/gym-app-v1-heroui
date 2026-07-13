@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Dropdown, Header, Label } from "@heroui/react";
+import { Button, Description, Dropdown, Header, Label } from "@heroui/react";
 import { useState } from "react";
 import { Link2, MoreVertical, Trash2 } from "lucide-react";
 
@@ -15,12 +15,16 @@ type RoutineExerciseActionsProps = {
 };
 
 export function RoutineExerciseActions( {
-											exercise,
-											exerciseName,
-											routineId,
-											onDeleteAction,
-										}: RoutineExerciseActionsProps ) {
+										 exercise,
+										 exerciseName,
+										 routineId,
+										 onDeleteAction,
+									 }: RoutineExerciseActionsProps ) {
 	const [ isVariantsOpen, setIsVariantsOpen ] = useState( false );
+	const canOpenVariants = Boolean( exercise && routineId );
+	const variantsHelpMessage = !routineId
+		? "Guarda primero la rutina para poder editar variantes."
+		: "Guarda este ejercicio en la rutina para poder editar variantes.";
 
 	return (
 		<>
@@ -36,14 +40,23 @@ export function RoutineExerciseActions( {
 				<Dropdown.Popover placement={ "bottom end" }>
 					<Dropdown.Menu
 						onAction={ ( key ) => {
-							if (key === "variants" && exercise && routineId) setIsVariantsOpen( true );
+							if (key === "variants" && canOpenVariants) setIsVariantsOpen( true );
 							if (key === "delete") onDeleteAction();
 						} }
 					>
 						<Header>Opciones</Header>
-						<Dropdown.Item id={ "variants" } textValue={ "Variantes" } isDisabled={ !exercise || !routineId }>
-							<Link2 className={ "size-4 shrink-0 text-accent" }/>
-							<Label className={ "text-accent" }>Variantes</Label>
+						<Dropdown.Item id={ "variants" } textValue={ "Variantes" } isDisabled={ !canOpenVariants }>
+							<div className={ "flex min-w-0 flex-col" }>
+								<div className={ "flex items-center gap-2" }>
+									<Link2 className={ "size-4 shrink-0 text-accent" }/>
+									<Label className={ "text-accent" }>Variantes</Label>
+								</div>
+								{ !canOpenVariants ? (
+									<Description className={ "text-xs text-muted" }>
+										{ variantsHelpMessage }
+									</Description>
+								) : null }
+							</div>
 						</Dropdown.Item>
 						<Dropdown.Item id={ "delete" } textValue={ "Eliminar" } variant={ "danger" }>
 							<Trash2 className={ "size-4 shrink-0 text-danger" }/>

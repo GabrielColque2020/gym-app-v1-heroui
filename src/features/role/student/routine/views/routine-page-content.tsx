@@ -13,9 +13,9 @@ type RoutinePageContentProps = {
 };
 
 export default function RoutinePageContent( {
-	routineDayId,
-	studentId,
-}: RoutinePageContentProps ) {
+												routineDayId,
+												studentId,
+											}: RoutinePageContentProps ) {
 	const state = useRoutinePageState( {
 		routineDayId,
 		studentId,
@@ -25,7 +25,7 @@ export default function RoutinePageContent( {
 		return (
 			<Alert className={ "border border-warning/20" } status={ "warning" }>
 				<Alert.Content>
-					<Alert.Title>Selecciona una rutina</Alert.Title>
+					<Alert.Title>Seleccioná una rutina</Alert.Title>
 					<Alert.Description>Para ver tu rutina primero debes elegir un dia desde la lista de rutinas.</Alert.Description>
 				</Alert.Content>
 			</Alert>

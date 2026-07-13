@@ -83,7 +83,7 @@ export function CoachDeleteRoutineDrawer( {
 					<div className={ "grid gap-3" }>
 						<CoachDeleteRoutineSummaryRow label={ "Estudiante" } value={ studentName }/>
 						<CoachDeleteRoutineSummaryRow label={ "Mes" } value={ month }/>
-						<CoachDeleteRoutineSummaryRow label={ "Anio" } value={ year }/>
+						<CoachDeleteRoutineSummaryRow label={ "Año" } value={ year }/>
 						<CoachDeleteRoutineSummaryRow label={ "Semanas" } value={ summary.weekCount }/>
 						<CoachDeleteRoutineSummaryRow label={ "Dias" } value={ summary.dayCount }/>
 						<CoachDeleteRoutineSummaryRow label={ "Ejercicios cargados" } value={ summary.exerciseCount }/>

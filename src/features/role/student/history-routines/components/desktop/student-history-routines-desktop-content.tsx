@@ -39,7 +39,7 @@ export function StudentHistoryRoutinesDesktopContent( {
 					<Card.Content className={ "p-3" }>
 						<Typography className={ "text-sm font-semibold text-foreground" }>Exploracion</Typography>
 						<Typography className={ "mt-1 text-sm text-muted" }>
-							Selecciona una o varias semanas para comparar el avance sin perder contexto.
+							Seleccioná una o varias semanas para comparar el avance sin perder contexto.
 						</Typography>
 					</Card.Content>
 				</Card>

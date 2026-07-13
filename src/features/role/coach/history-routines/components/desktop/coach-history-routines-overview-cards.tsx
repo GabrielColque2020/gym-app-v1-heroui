@@ -43,7 +43,7 @@ export function CoachHistoryRoutinesOverviewCards( {
 						Exploracion
 					</Typography>
 					<Typography className={ "mt-1 text-sm text-muted" }>
-						Selecciona una o varias semanas para comparar el avance sin perder contexto.
+						Seleccioná una o varias semanas para comparar el avance sin perder contexto.
 					</Typography>
 				</Card.Content>
 			</Card>

@@ -2,8 +2,10 @@
 
 import type { CoachTrainingRoutineDay } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 
-import { Accordion, Chip, Description, Typography } from "@heroui/react";
+import { Accordion, Card, Chip, Description, Typography } from "@heroui/react";
 import { Dot } from "lucide-react";
+import { CoachTrainingRoutineDayOptionsMenu } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-day-options-menu";
+import { formatExerciseMeta, getDayTitle } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-days-accordion.utils";
 
 type CoachTrainingRoutineDaysAccordionProps = {
 	days: CoachTrainingRoutineDay[];
@@ -13,21 +15,18 @@ type CoachTrainingRoutineDaysAccordionProps = {
 	year: number;
 };
 
-import { CoachTrainingRoutineDayOptionsMenu } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-day-options-menu";
-import { formatExerciseMeta, getDayTitle } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-days-accordion.utils";
-
 export function CoachTrainingRoutineDaysAccordion( {
 													   days,
-													   exerciseGridClassName = "grid gap-2 rounded-xl bg-default/40 p-3",
+													   exerciseGridClassName = "grid gap-2 p-3",
 													   month,
 													   studentId,
 													   year,
 												   }: CoachTrainingRoutineDaysAccordionProps ) {
 	if (days.length === 0) {
 		return (
-			<div className={ "rounded-xl border border-dashed border-border bg-surface-secondary px-4 py-8 text-center text-sm text-muted" }>
+			<Card className={ "border border-border px-4 py-8 text-center text-sm text-muted" }>
 				No hay dias de entrenamiento cargados para esta semana.
-			</div>
+			</Card>
 		);
 	}
 
@@ -57,20 +56,20 @@ export function CoachTrainingRoutineDaysAccordion( {
 							<Accordion.Body className={ "px-3 pb-3 pt-0" }>
 								<div className={ "grid gap-2" }>
 									{ day.routines.length === 0 ? (
-										<div className={ "rounded-xl bg-default/40 p-3 text-sm text-muted" }>
+										<Card className={ "p-3 text-sm text-muted" } variant={ "secondary" }>
 											Este dia no tiene ejercicios cargados.
-										</div>
+										</Card>
 									) : (
-										<div className={ exerciseGridClassName }>
+										<Card className={ exerciseGridClassName } variant={ "secondary" }>
 											{ day.routines.map( ( routine ) => (
 												<div key={ routine.id } className={ "grid min-w-0 gap-1 text-sm" }>
 													<div className={ "flex min-w-0 items-center gap-2" }>
 														<Dot className={ "size-4 shrink-0 text-accent" }/>
 														<span className={ "min-w-0 flex-1 truncate font-medium" }>
-															{ routine.exercise?.name ?? "Ejercicio sin nombre" }
-														</span>
-														<span className={ "shrink-0 text-muted" }>
-															{ formatExerciseMeta( routine.sets, routine.reps ) }
+															{ routine.exercise?.name ?? "Ejercicio sin nombre" }:
+															<span className={ "shrink-0 text-muted ml-4" }>
+																{ formatExerciseMeta( routine.sets, routine.reps ) }
+															</span>
 														</span>
 													</div>
 													{ routine.observation ? (
@@ -78,7 +77,7 @@ export function CoachTrainingRoutineDaysAccordion( {
 													) : null }
 												</div>
 											) ) }
-										</div>
+										</Card>
 									) }
 									<div className={ "flex justify-end" }>
 										<CoachTrainingRoutineDayOptionsMenu

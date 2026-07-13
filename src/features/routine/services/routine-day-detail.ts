@@ -14,10 +14,10 @@ export type RoutineDayDetail = Prisma.RoutineDayGetPayload<{
 export type RoutineDayExercise = RoutineDayDetail[ "routines" ][ number ];
 
 export async function getRoutineDayDetailBase( {
-	coachId,
-	routineDayId,
-	studentId,
-}: GetRoutineDayDetailInput ): Promise<RoutineDayDetail> {
+												   coachId,
+												   routineDayId,
+												   studentId,
+											   }: GetRoutineDayDetailInput ): Promise<RoutineDayDetail> {
 	const normalizedInput = normalizeRoutineDayDetailInput( {
 		coachId,
 		routineDayId,
@@ -25,7 +25,7 @@ export async function getRoutineDayDetailBase( {
 	} );
 
 	if (!normalizedInput.routineDayId) {
-		throw new Error( "Selecciona un dia de rutina valido." );
+		throw new Error( "seleccioná un dia de rutina valido." );
 	}
 
 	const routineDay = await prisma.routineDay.findFirst( {
@@ -34,11 +34,11 @@ export async function getRoutineDayDetailBase( {
 	} ) as RoutineDayDetail | null;
 
 	if (!routineDay) {
-		throw new Error( "No se encontro el dia de rutina seleccionado." );
+		throw new Error( "No se encontró el dia de rutina seleccionado." );
 	}
 
 	if (!routineDay.trainingRoutine.student) {
-		throw new Error( "No se encontro el estudiante asociado a la rutina." );
+		throw new Error( "No se encontró el estudiante asociado a la rutina." );
 	}
 
 	return routineDay;

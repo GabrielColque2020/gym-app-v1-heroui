@@ -50,15 +50,15 @@ export function HistoryRoutineMonthFilters( {
 						label={ "Mes" }
 						name={ "history-routines-month-filter" }
 						options={ monthOptions }
-						placeholder={ "Selecciona un mes" }
+						placeholder={ "Seleccioná un mes" }
 						value={ selectedMonth }
 						onSelectionChange={ onMonthChangeAction }
 					/>
 					<FilterSelect
-						label={ "Anio" }
+						label={ "Año" }
 						name={ "history-routines-year-filter" }
 						options={ yearOptions }
-						placeholder={ "Selecciona un anio" }
+						placeholder={ "Seleccioná un Año" }
 						value={ selectedYear }
 						onSelectionChange={ onYearChangeAction }
 					/>

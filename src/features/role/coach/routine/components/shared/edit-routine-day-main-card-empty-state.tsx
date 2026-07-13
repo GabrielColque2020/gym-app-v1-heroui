@@ -1,7 +1,9 @@
+import { Card } from "@heroui/react";
+
 export function EditRoutineDayMainCardEmptyState() {
 	return (
-		<div className={ "rounded-xl border border-dashed border-border bg-surface-secondary px-4 py-8 text-center text-sm text-muted" }>
+		<Card className={ "border border-border px-4 py-10 text-center text-sm text-muted" }>
 			Este dia no tiene ejercicios cargados.
-		</div>
+		</Card>
 	);
 }

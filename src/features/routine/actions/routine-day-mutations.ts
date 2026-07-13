@@ -27,7 +27,7 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 		} = normalizeRoutineDayMutationInput( input );
 
 		if (!routineDayId) {
-			throw new Error( "Selecciona un dia valido antes de guardar cambios." );
+			throw new Error( "Seleccioná un dia valido antes de guardar cambios." );
 		}
 
 		validateNormalizedRoutineDayExercises( exercises );

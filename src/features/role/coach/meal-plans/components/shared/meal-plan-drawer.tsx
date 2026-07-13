@@ -80,7 +80,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 
 						<Select
 							name={ "meal-plan-time" }
-							placeholder={ "Selecciona tipo de comida" }
+							placeholder={ "Seleccioná tipo de comida" }
 							value={ values.title }
 							onChange={ ( value ) => {
 								if (value) {

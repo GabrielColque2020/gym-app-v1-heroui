@@ -15,15 +15,15 @@ type CoachRoutineStructureWeekSelectorProps = {
 };
 
 export function CoachRoutineStructureWeekSelector( {
-	onChangeAction,
-	selectedWeeks,
-	weekOptions,
-}: CoachRoutineStructureWeekSelectorProps ) {
+													   onChangeAction,
+													   selectedWeeks,
+													   weekOptions,
+												   }: CoachRoutineStructureWeekSelectorProps ) {
 	return (
 		<div className={ "grid gap-2" }>
 			<div>
 				<Label className={ "mr-1 text-sm font-semibold" }>Semanas</Label>
-				<Description className={ "text-sm" }>Selecciona las semanas activas de la rutina.</Description>
+				<Description className={ "text-sm" }>Seleccioná las semanas activas de la rutina.</Description>
 			</div>
 			<CheckboxButtonGroup
 				className={ "grid-cols-2 gap-3 [--checkbox-button-group-item-radius:0.75rem] px-0.5 md:grid-cols-4" }

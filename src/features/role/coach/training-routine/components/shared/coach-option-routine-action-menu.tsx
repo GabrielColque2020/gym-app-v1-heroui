@@ -16,7 +16,7 @@ export function CoachOptionRoutineActionMenu( {
 											  }: CoachDeleteRoutineActionMenuProps ) {
 	return (
 		<Dropdown>
-			<Button isIconOnly aria-label={ "Menu" } variant={ "outline" } className={ "border border-accent/50 text-accent shadow-s" }>
+			<Button isIconOnly aria-label={ "Menu" } variant={ "secondary" }>
 				<MoreVertical/>
 			</Button>
 			<Dropdown.Popover>

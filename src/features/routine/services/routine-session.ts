@@ -24,6 +24,7 @@ import type {
 	ExerciseProgressRoutine,
 	RoutinePageStudent,
 } from "@/features/routine/types/routine-progress.types";
+
 export type {
 	StudentRoutineExercise,
 	StudentRoutineProgressEntry,
@@ -321,7 +322,7 @@ export function serializeStudentRoutineSession( session: StudentRoutineSession )
 
 export function validateStudentRoutineSession( session: StudentRoutineSession ) {
 	if (!session.id.trim()) {
-		return "Selecciona un dia valido antes de guardar.";
+		return "Seleccioná un dia valido antes de guardar.";
 	}
 
 	if (session.exercises.length === 0) {

@@ -77,7 +77,7 @@ export default function CoachHistoryRoutinesStudentsPageContent() {
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between" }>
 					<PageHeader
-						description={ "Selecciona un estudiante activo para consultar su historial de rutinas mensual." }
+						description={ "Seleccioná un estudiante activo para consultar su historial de rutinas mensual." }
 						title={ "Historial de rutinas por estudiante" }
 					/>
 					<div className={ "flex w-full flex-col gap-2 md:hidden" }>

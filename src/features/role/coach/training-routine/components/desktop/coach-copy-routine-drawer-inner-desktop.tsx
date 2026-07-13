@@ -178,7 +178,7 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 
 										{ selectedSorted.length === 0 ? (
 											<Surface className={ "rounded-xl border border-default-hover px-4 py-5 text-center sm:py-8" }>
-												<Description className={ "text-sm" }>Selecciona al menos una semana para ver los destinos.</Description>
+												<Description className={ "text-sm" }>Seleccioná al menos una semana para ver los destinos.</Description>
 											</Surface>
 										) : isSingleWeek ? (
 											<div className={ "grid gap-3" }>

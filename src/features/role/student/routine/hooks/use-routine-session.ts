@@ -27,7 +27,7 @@ export function useRoutineSession( { routineDayId, sourceDetail }: UseRoutineSes
 	const activeSession = useMemo( () => ( sourceSession ? mergeStudentRoutineSessionDraft( sourceSession, draftSession ) : draftSession ), [ draftSession, sourceSession ] );
 	const sourceSignature = useMemo( () => ( sourceSession ? serializeStudentRoutineSession( sourceSession ) : null ), [ sourceSession ] );
 	const draftSignature = useMemo( () => ( activeSession ? serializeStudentRoutineSession( activeSession ) : null ), [ activeSession ] );
-	const validationError = useMemo( () => ( activeSession ? validateStudentRoutineSession( activeSession ) : "Selecciona un dia valido antes de guardar." ), [ activeSession ] );
+	const validationError = useMemo( () => ( activeSession ? validateStudentRoutineSession( activeSession ) : "Seleccioná un dia valido antes de guardar." ), [ activeSession ] );
 	const isDirty = Boolean( sourceSignature && draftSignature && sourceSignature !== draftSignature );
 
 	useEffect( () => {

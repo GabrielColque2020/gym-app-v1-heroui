@@ -22,16 +22,16 @@ type CoachCopyRoutineDrawerSourceControlsProps = {
 };
 
 export function CoachCopyRoutineDrawerSourceControls( {
-	handleSourceMonthChangeAction,
-	handleSourceYearChangeAction,
-	mode,
-	onModeChangeAction,
-	padMonthAction,
-	sourceMonth,
-	sourceYear,
-	yearOptions,
-	monthOptions,
-}: CoachCopyRoutineDrawerSourceControlsProps ) {
+														  handleSourceMonthChangeAction,
+														  handleSourceYearChangeAction,
+														  mode,
+														  onModeChangeAction,
+														  padMonthAction,
+														  sourceMonth,
+														  sourceYear,
+														  yearOptions,
+														  monthOptions,
+													  }: CoachCopyRoutineDrawerSourceControlsProps ) {
 	return (
 		<div className={ "grid gap-3 md:grid-cols-[240px_1fr] md:gap-4" }>
 			<div className={ "grid w-full gap-1.5 sm:max-w-80" }>
@@ -64,7 +64,7 @@ export function CoachCopyRoutineDrawerSourceControls( {
 
 			<div className={ "grid grid-cols-2 gap-3" }>
 				<Select value={ sourceYear } variant={ "secondary" } onChange={ ( key ) => handleSourceYearChangeAction( key as string ) }>
-					<Label>Anio origen</Label>
+					<Label>Año origen</Label>
 					<Select.Trigger className={ "h-10 rounded-xl shadow-sm" }>
 						<Select.Value/>
 						<Select.Indicator/>

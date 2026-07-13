@@ -17,10 +17,10 @@ type SaveStudentRoutineSessionInput = StudentRoutineSessionSaveInput & {
 };
 
 export async function saveStudentRoutineSessionAction( {
-	exercises,
-	routineDayId,
-	studentId,
-}: SaveStudentRoutineSessionInput ) {
+														   exercises,
+														   routineDayId,
+														   studentId,
+													   }: SaveStudentRoutineSessionInput ) {
 	try {
 		const session = await getAuthenticatedSession();
 
@@ -41,7 +41,7 @@ export async function saveStudentRoutineSessionAction( {
 		const normalizedRoutineDayId = routineDayId.trim();
 
 		if (!normalizedRoutineDayId) {
-			throw new Error( "Selecciona un dia valido antes de guardar cambios." );
+			throw new Error( "Seleccioná un dia valido antes de guardar cambios." );
 		}
 
 		const routineDay = await getRoutineDayAction( {

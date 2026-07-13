@@ -57,7 +57,7 @@ export function CoachTrainingRoutineFilter( {
 			<Card.Header className={ "gap-3 border-b border-border p-3" }>
 				<PageHeader
 					title={ "Rutina de Entrenamiento" }
-					description={ `Organiza las rutinas semanales y los dias de entrenamiento de ${ studentName } creando, editando y copiando rutinas facilmente.` }
+					description={ `Organiza las rutinas semanales y los días de entrenamiento de ${ studentName } creando, editando y copiando rutinas facilmente.` }
 				/>
 			</Card.Header>
 			<Card.Content className={ "space-y-4 p-3" }>
@@ -65,10 +65,10 @@ export function CoachTrainingRoutineFilter( {
 					<div className={ "form-control w-full" }>
 						<FilterSelect
 							defaultValue={ selectedYear }
-							label={ "Anio" }
+							label={ "Año" }
 							name={ "year" }
 							options={ yearOptions }
-							placeholder={ "Todos los anios" }
+							placeholder={ "Todos los años" }
 							onSelectionChange={ setSelectedYear }
 						/>
 					</div>

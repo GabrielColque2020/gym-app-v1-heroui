@@ -82,7 +82,7 @@ async function assertRoutineExists( routineId: string ) {
 	} );
 
 	if (!routine) {
-		throw new Error( "No se encontro la rutina seleccionada." );
+		throw new Error( "No se encontró la rutina seleccionada." );
 	}
 
 	if (!routine.exerciseId) {
@@ -101,7 +101,7 @@ export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQ
 		const normalizedRoutineId = normalizeId( routineId );
 
 		if (!normalizedRoutineId) {
-			throw new Error( "Selecciona una rutina valida." );
+			throw new Error( "Seleccioná una rutina valida." );
 		}
 
 		await assertRoutineExists( normalizedRoutineId );
@@ -131,7 +131,7 @@ export async function searchExerciseVariantCandidatesAction( input: ExerciseVari
 		const normalizedExerciseId = normalizeId( input.exerciseId );
 
 		if (!normalizedExerciseId) {
-			throw new Error( "Selecciona un ejercicio valido." );
+			throw new Error( "Seleccioná un ejercicio valido." );
 		}
 
 		return await prisma.exercise.findMany( {
@@ -158,7 +158,7 @@ export async function createExerciseVariantAction( input: ExerciseVariantCreateI
 		const variantExerciseId = normalizeId( input.variantExerciseId );
 
 		if (!routineId || !variantExerciseId) {
-			throw new Error( "Selecciona una rutina y un ejercicio validos." );
+			throw new Error( "Seleccioná una rutina y un ejercicio validos." );
 		}
 
 		const routine = await assertRoutineExists( routineId );
@@ -218,7 +218,7 @@ export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput
 		const variantExerciseIds = normalizeVariantIds( input.variantExerciseIds );
 
 		if (!routineId) {
-			throw new Error( "Selecciona una rutina valida." );
+			throw new Error( "Seleccioná una rutina valida." );
 		}
 
 		const routine = await assertRoutineExists( routineId );

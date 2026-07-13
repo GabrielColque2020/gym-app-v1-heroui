@@ -43,7 +43,7 @@ export type RoutineStructureScopeInput = {
 
 export function validateRoutineStructureScopeInput( input: RoutineStructureScopeInput ) {
 	if (!input.studentId.trim()) {
-		throw new Error( "Selecciona un estudiante valido." );
+		throw new Error( "Seleccioná un estudiante valido." );
 	}
 
 	if (!Number.isInteger( input.month ) || input.month < 1 || input.month > 12) {
@@ -51,7 +51,7 @@ export function validateRoutineStructureScopeInput( input: RoutineStructureScope
 	}
 
 	if (!Number.isInteger( input.year ) || input.year < 2000 || input.year > 2100) {
-		throw new Error( "El anio seleccionado no es valido." );
+		throw new Error( "El año seleccionado no es valido." );
 	}
 }
 
@@ -59,7 +59,7 @@ export function validateRoutineStructureInput( input: RoutineStructureInput ) {
 	validateRoutineStructureScopeInput( input );
 
 	if (input.weeks.length === 0 || input.weeks.length > MAX_ROUTINE_WEEKS) {
-		throw new Error( `Selecciona entre 1 y ${ MAX_ROUTINE_WEEKS } semanas.` );
+		throw new Error( `Seleccioná entre 1 y ${ MAX_ROUTINE_WEEKS } semanas.` );
 	}
 
 	const weekSet = new Set<number>();

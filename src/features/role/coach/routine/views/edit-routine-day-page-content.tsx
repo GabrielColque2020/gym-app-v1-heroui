@@ -6,6 +6,7 @@ import { EditRoutineDayLoadingState } from "@/features/role/coach/routine/compon
 import { EditRoutineDayLoadedContent } from "@/features/role/coach/routine/components/shared/edit-routine-day-loaded-content";
 import { EditRoutineDayStateBlock } from "@/features/role/coach/routine/components/shared/edit-routine-day-state-block";
 import { useEditRoutineDayPageState } from "@/features/role/coach/routine/hooks/use-edit-routine-day-page-state";
+import React from "react";
 
 type EditRoutineDayPageContentProps = {
 	month: number | null;

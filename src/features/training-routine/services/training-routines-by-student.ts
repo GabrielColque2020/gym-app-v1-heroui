@@ -67,16 +67,16 @@ function validateMonth( month: number ) {
 
 function validateYear( year: number ) {
 	if (!Number.isInteger( year ) || year < 2000 || year > 2100) {
-		throw new Error( "El anio seleccionado no es valido." );
+		throw new Error( "El año seleccionado no es valido." );
 	}
 }
 
 export async function getTrainingRoutinesByStudentBase( {
-	coachId,
-	month,
-	studentId,
-	year,
-}: GetTrainingRoutinesByStudentBaseInput ) {
+															coachId,
+															month,
+															studentId,
+															year,
+														}: GetTrainingRoutinesByStudentBaseInput ) {
 	validateMonth( month );
 	validateYear( year );
 

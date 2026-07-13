@@ -13,11 +13,11 @@ type CoachTrainingRoutineDayOptionsMenuProps = {
 };
 
 export function CoachTrainingRoutineDayOptionsMenu( {
-	month,
-	routineDayId,
-	studentId,
-	year,
-}: CoachTrainingRoutineDayOptionsMenuProps ) {
+														month,
+														routineDayId,
+														studentId,
+														year,
+													}: CoachTrainingRoutineDayOptionsMenuProps ) {
 	const router = useRouter();
 	const menuRef = useRef<HTMLDivElement | null>( null );
 
@@ -38,8 +38,7 @@ export function CoachTrainingRoutineDayOptionsMenu( {
 				<Button
 					isIconOnly
 					aria-label={ "Menu" }
-					variant={ "outline" }
-					className={ "border border-accent/50 text-accent shadow-s" }
+					variant={ "secondary" }
 				>
 					<MoreVertical/>
 				</Button>

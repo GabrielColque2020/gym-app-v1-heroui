@@ -34,7 +34,7 @@ export function validateStudentInput( input: CreateStudentInput | UpdateStudentI
 	const gender = input.gender === NO_GENDER ? null : input.gender;
 
 	if (gender !== null && !isGenderValue( gender )) {
-		throw new Error( "Selecciona un genero valido." );
+		throw new Error( "Seleccioná un genero valido." );
 	}
 
 	return {

@@ -95,7 +95,7 @@ export function CoachTrainingRoutineCardDesktop( {
 					<CoachTrainingRoutineDaysAccordion
 						days={ selectedRoutine?.routineDays ?? [] }
 						exerciseGridClassName={
-							"grid grid-cols-2 gap-2 rounded-xl bg-default/40 p-3"
+							"grid grid-cols-2 gap-x-8 gap-y-2 p-3"
 						}
 						month={ month }
 						studentId={ studentId }

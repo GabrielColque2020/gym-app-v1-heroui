@@ -88,17 +88,17 @@ function validateMonth( month: number ) {
 
 function validateYear( year: number ) {
 	if (!Number.isInteger( year ) || year < 2000 || year > 2100) {
-		throw new Error( "El anio seleccionado no es valido." );
+		throw new Error( "El año seleccionado no es valido." );
 	}
 }
 
 export async function getHistoryRoutinesByStudentBase( {
-	month,
-	studentId,
-	studentNotFoundMessage,
-	studentWhere,
-	year,
-}: GetHistoryRoutinesByStudentBaseInput ) {
+														   month,
+														   studentId,
+														   studentNotFoundMessage,
+														   studentWhere,
+														   year,
+													   }: GetHistoryRoutinesByStudentBaseInput ) {
 	validateMonth( month );
 	validateYear( year );
 
@@ -166,7 +166,7 @@ export async function getHistoryRoutinesByStudentBase( {
 		if (dateDiff !== 0) return dateDiff;
 
 		return right.id.localeCompare( left.id );
-	} ) ) {
+	} )) {
 		const entryKey = `${ entry.week }:${ entry.dayNumber }:${ entry.exerciseId ?? "" }:${ entry.variantExerciseId ?? "" }:${ getProgressRepsNumber( entry ) ?? 0 }`;
 
 		if (seenProgressEntries.has( entryKey )) {
