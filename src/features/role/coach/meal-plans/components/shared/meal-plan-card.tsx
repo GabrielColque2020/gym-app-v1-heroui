@@ -5,13 +5,13 @@ import { Button, Card, Dropdown, Header, Label } from "@heroui/react";
 import { useState } from "react";
 import { CircleDot, MoreVertical, Pencil, Trash2 } from "lucide-react";
 
-import type { CoachMealPlan } from "@/features/meal-plans/types/meal-plans-types";
+import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
 import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import { MealPlanDeleteDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-delete-drawer";
 import { MealPlanDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer";
 
 type MealPlanCardProps = {
-	mealPlan: CoachMealPlan;
+	mealPlan: MealPlan;
 	studentId: string;
 };
 

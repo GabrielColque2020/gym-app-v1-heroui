@@ -7,6 +7,7 @@ import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routin
 
 import { toast } from "@heroui/react";
 
+import { syncCoachTrainingRoutinesAfterSave } from "@/features/role/coach/routine/hooks/use-save-routine-day-exercises.utils";
 import { useRoutineDayDraft } from "@/features/routine/hooks/use-routine-day-draft";
 import { useSaveRoutineDayExercises } from "@/features/routine/hooks/use-routine-day-mutations";
 import { mapDraftToSaveInput } from "@/features/routine/services/routine-day-editor";
@@ -27,7 +28,9 @@ export function useEditRoutineDayLoadedState( {
 	studentId,
 }: UseEditRoutineDayLoadedStateParams ) {
 	const [ isRefreshConfirmOpen, setIsRefreshConfirmOpen ] = useState( false );
-	const saveRoutineDay = useSaveRoutineDayExercises();
+	const saveRoutineDay = useSaveRoutineDayExercises( {
+		onSuccessAction: syncCoachTrainingRoutinesAfterSave,
+	} );
 	const {
 		addExercise,
 		addedExerciseIds,

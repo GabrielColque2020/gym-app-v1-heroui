@@ -2,6 +2,3 @@ import type { getMealPlansByStudentAction } from "@/features/meal-plans/actions/
 
 export type MealPlansByStudent = Awaited<ReturnType<typeof getMealPlansByStudentAction>>;
 export type MealPlan = MealPlansByStudent["mealPlans"][number];
-
-export type CoachMealPlan = MealPlan;
-export type StudentMealPlan = MealPlan;

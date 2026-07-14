@@ -8,13 +8,13 @@ import { useReactToPrint } from "react-to-print";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { MealPlansPrintable } from "@/features/meal-plans/components/shared/meal-plans-printable";
-import type { StudentMealPlan } from "@/features/meal-plans/types/meal-plans-types";
+import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
 import { useMealPlans } from "@/features/role/student/meal-plans/hooks/use-meal-plans";
 import { formatMealPlanDescriptionLines, formatMealTime, } from "@/features/meal-plans/services/meal-plan-formatters";
 
 type StudentMealPlansPageContentProps = { studentId: string | null };
 
-function MealPlanCard( { mealPlan }: { mealPlan: StudentMealPlan } ) {
+function MealPlanCard( { mealPlan }: { mealPlan: MealPlan } ) {
 	return (
 		<Card className={ "border border-border shadow-sm" } variant={ "default" }>
 			<Card.Header className={ "border-b border-border px-3 py-2" }>

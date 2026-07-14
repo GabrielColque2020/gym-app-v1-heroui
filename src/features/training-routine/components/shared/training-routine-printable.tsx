@@ -4,7 +4,7 @@ import type { RefObject } from "react";
 
 import { Chip } from "@heroui/react";
 
-import { getDayTitle } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-days-accordion.utils";
+import { getTrainingRoutineDayTitle } from "@/features/training-routine/services/training-routine-day-formatters";
 import type { TrainingRoutineWeek } from "@/features/training-routine/services/training-routines-by-student";
 
 type TrainingRoutinePrintableProps = {
@@ -114,7 +114,7 @@ export function TrainingRoutinePrintable( {
 											<p className={ "text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-800" }>
 												Dia { day.dayNumber }
 											</p>
-											<p className={ "truncate text-[9px] text-slate-500" }>{ getDayTitle( day ) }</p>
+											<p className={ "truncate text-[9px] text-slate-500" }>{ getTrainingRoutineDayTitle( day ) }</p>
 										</div>
 									</div>
 									<p className={ "text-[9px] font-medium text-slate-500" }>{ day.routines.length } ejercicios</p>

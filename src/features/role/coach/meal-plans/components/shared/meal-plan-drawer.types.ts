@@ -1,4 +1,4 @@
-import type { CoachMealPlan } from "@/features/meal-plans/types/meal-plans-types";
+import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
 
 export type MealPlanDrawerProps =
 	| {
@@ -15,7 +15,7 @@ export type MealPlanDrawerProps =
 	| {
 		hideTrigger?: boolean;
 		isOpen?: boolean;
-		mealPlan: CoachMealPlan;
+		mealPlan: MealPlan;
 		mode: "edit";
 		onOpenChangeAction?: ( isOpen: boolean ) => void;
 		placement?: "bottom" | "right";
