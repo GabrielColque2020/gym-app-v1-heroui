@@ -70,13 +70,13 @@ model User {
   coach    User?   @relation("CoachStudents", fields: [coachId], references: [id])
   students User[]  @relation("CoachStudents")
 
-  DescriptionStudent DescriptionStudent?
-  MealPlan           MealPlan[]
-  TrainingRoutine    TrainingRoutine[]
-  ExerciseProgress   ExerciseProgress[]
-  Exercise           Exercise[]
-  StudentExercise    StudentExercise[]
-  loginHistory       UserLoginHistory[]
+  DescriptionStudent    DescriptionStudent?
+  MealPlan              MealPlan[]
+  trainingRoutineMonths TrainingRoutineMonth[]
+  ExerciseProgress      ExerciseProgress[]
+  Exercise              Exercise[]
+  StudentExercise       StudentExercise[]
+  loginHistory          UserLoginHistory[]
 
   @@index([email, active])
   @@index([dni, active])
@@ -121,28 +121,44 @@ model MealPlan {
   studentId String?
 }
 
-model TrainingRoutine {
+model TrainingRoutineMonth {
   id        String   @id @default(uuid())
-  name      String
-  week      Int
   month     Int
   year      Int
   objective String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  student   User?   @relation(fields: [studentId], references: [id])
-  studentId String?
+  student   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String
+
+  weeks TrainingRoutineWeek[]
+
+  @@unique([studentId, month, year])
+  @@index([studentId, year, month])
+}
+
+model TrainingRoutineWeek {
+  id                     String               @id @default(uuid())
+  name                   String
+  week                   Int
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  trainingRoutineMonth   TrainingRoutineMonth @relation(fields: [trainingRoutineMonthId], references: [id], onDelete: Cascade)
+  trainingRoutineMonthId String
 
   routineDays RoutineDay[]
+
+  @@unique([trainingRoutineMonthId, week])
+  @@index([trainingRoutineMonthId])
 }
 
 model RoutineDay {
-  id                String          @id @default(uuid())
-  dayNumber         Int // 1 a 5
-  trainingRoutine   TrainingRoutine @relation(fields: [trainingRoutineId], references: [id], onDelete: Cascade)
-  trainingRoutineId String
-  isFinalized       Boolean         @default(false)
+  id                    String              @id @default(uuid())
+  dayNumber             Int // 1 a 5
+  trainingRoutineWeek   TrainingRoutineWeek @relation(fields: [trainingRoutineWeekId], references: [id], onDelete: Cascade)
+  trainingRoutineWeekId String
+  isFinalized           Boolean             @default(false)
 
   routines Routine[]
 }
@@ -168,11 +184,11 @@ model Routine {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  exercise           Exercise?                @relation(fields: [exerciseId], references: [id])
-  exerciseId         String?
-  variants           RoutineExerciseVariant[]
-  RoutineDay         RoutineDay?              @relation(fields: [routineDayId], references: [id], onDelete: Cascade)
-  routineDayId       String?
+  exercise     Exercise?                @relation(fields: [exerciseId], references: [id])
+  exerciseId   String?
+  variants     RoutineExerciseVariant[]
+  RoutineDay   RoutineDay?              @relation(fields: [routineDayId], references: [id], onDelete: Cascade)
+  routineDayId String?
 }
 
 model ExerciseProgress {
@@ -217,10 +233,10 @@ model Exercise {
   updatedAt  DateTime @updatedAt
 
   // Relations
-  routines         Routine[]
-  exerciseProgress ExerciseProgress[] @relation("ExerciseProgressExercise")
-  variantExerciseProgress ExerciseProgress[] @relation("ExerciseProgressVariantExercise")
-  variantIn        RoutineExerciseVariant[] @relation("RoutineExerciseVariantVariantExercise")
+  routines                Routine[]
+  exerciseProgress        ExerciseProgress[]       @relation("ExerciseProgressExercise")
+  variantExerciseProgress ExerciseProgress[]       @relation("ExerciseProgressVariantExercise")
+  variantIn               RoutineExerciseVariant[] @relation("RoutineExerciseVariantVariantExercise")
 
   coachId         String?
   coach           User?             @relation(fields: [coachId], references: [id])

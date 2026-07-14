@@ -20,9 +20,7 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 		data,
 		desktopSummary,
 		error,
-		handleClear,
 		handleRefresh,
-		handleSearch,
 		handleWeekToggle,
 		isError,
 		isLoading,
@@ -51,10 +49,8 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 			<HistoryRoutineMonthFilters
 				isRefreshing={ isRefreshing }
 				monthOptions={ monthOptions }
-				onClearAction={ handleClear }
 				onMonthChangeAction={ onMonthChange }
 				onRefreshAction={ handleRefresh }
-				onSearchAction={ handleSearch }
 				onYearChangeAction={ onYearChange }
 				selectedMonth={ selectedMonth }
 				selectedYear={ selectedYear }

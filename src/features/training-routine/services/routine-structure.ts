@@ -30,6 +30,7 @@ export type RoutineStructureWeekInput = {
 
 export type RoutineStructureInput = {
 	month: number;
+	objective: string;
 	studentId: string;
 	weeks: RoutineStructureWeekInput[];
 	year: number;
@@ -57,6 +58,9 @@ export function validateRoutineStructureScopeInput( input: RoutineStructureScope
 
 export function validateRoutineStructureInput( input: RoutineStructureInput ) {
 	validateRoutineStructureScopeInput( input );
+	if (input.objective.trim().length > 180) {
+		throw new Error( "El objetivo mensual no puede superar los 180 caracteres." );
+	}
 
 	if (input.weeks.length === 0 || input.weeks.length > MAX_ROUTINE_WEEKS) {
 		throw new Error( `Seleccioná entre 1 y ${ MAX_ROUTINE_WEEKS } semanas.` );
@@ -95,17 +99,19 @@ export function validateRoutineStructureInput( input: RoutineStructureInput ) {
 	}
 }
 
-export function buildSelectedWeeks( routines: TrainingRoutinesByStudent[ "routines" ] ) {
-	return routines
-		.map( ( routine ) => String( routine.week ) )
+type RoutineStructureWeek = TrainingRoutinesByStudent["routineMonth"]["weeks"][number];
+
+export function buildSelectedWeeks( routineWeeks: RoutineStructureWeek[] ) {
+	return routineWeeks
+		.map( ( routineWeek ) => String( routineWeek.week ) )
 		.sort( ( a, b ) => Number( a ) - Number( b ) );
 }
 
-export function buildSelectedDays( routines: TrainingRoutinesByStudent[ "routines" ] ) {
+export function buildSelectedDays( routineWeeks: RoutineStructureWeek[] ) {
 	const dayNumbers = new Set<string>();
 
-	for (const routine of routines) {
-		for (const day of routine.routineDays) {
+	for (const routineWeek of routineWeeks) {
+		for (const day of routineWeek.routineDays) {
 			dayNumbers.add( String( day.dayNumber ) );
 		}
 	}
@@ -119,11 +125,13 @@ export function buildRoutineStructureInput(
 	studentId: string,
 	month: number,
 	year: number,
+	objective: string,
 ): RoutineStructureInput {
 	const days = selectedDays.map( Number ).sort( ( a, b ) => a - b );
 
 	return {
 		month,
+		objective: objective.trim(),
 		studentId,
 		weeks: selectedWeeks
 			.map( ( week ) => ( {
@@ -136,21 +144,21 @@ export function buildRoutineStructureInput(
 }
 
 export function getStructureRemovalWarning(
-	routines: TrainingRoutinesByStudent[ "routines" ],
+	routineWeeks: RoutineStructureWeek[],
 	selectedWeeks: string[],
 	selectedDays: string[],
 ) {
 	const selectedWeekSet = new Set( selectedWeeks );
 	const selectedDaySet = new Set( selectedDays );
 
-	return routines.some( ( routine ) => {
-		const weekStillSelected = selectedWeekSet.has( String( routine.week ) );
+	return routineWeeks.some( ( routineWeek ) => {
+		const weekStillSelected = selectedWeekSet.has( String( routineWeek.week ) );
 
 		if (!weekStillSelected) {
-			return routine.routineDays.some( ( day ) => day.routines.length > 0 );
+			return routineWeek.routineDays.some( ( day ) => day.routines.length > 0 );
 		}
 
-		return routine.routineDays.some( ( day ) => {
+		return routineWeek.routineDays.some( ( day ) => {
 			const dayStillSelected = selectedDaySet.has( String( day.dayNumber ) );
 
 			return !dayStillSelected && day.routines.length > 0;

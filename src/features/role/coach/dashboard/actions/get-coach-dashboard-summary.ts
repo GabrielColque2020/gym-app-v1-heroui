@@ -68,7 +68,7 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 					coachId: session.sub,
 				},
 			} ),
-			prisma.trainingRoutine.findMany( {
+			prisma.trainingRoutineMonth.findMany( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 				distinct: [ "studentId" ],
 				orderBy: [
@@ -85,20 +85,16 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 							role: "STUDENT",
 						},
 					},
-					studentId: {
-						not: null,
-					},
 					year: currentPeriod.year,
 				},
 			} ),
-			prisma.trainingRoutine.findMany( {
+			prisma.trainingRoutineMonth.findMany( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 				distinct: [ "studentId" ],
 				orderBy: [
 					{ studentId: "asc" },
 					{ year: "desc" },
 					{ month: "desc" },
-					{ week: "desc" },
 					{ updatedAt: "desc" },
 				],
 				select: {
@@ -112,9 +108,6 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 							coachId: session.sub,
 							role: "STUDENT",
 						},
-					},
-					studentId: {
-						not: null,
 					},
 				},
 			} ),

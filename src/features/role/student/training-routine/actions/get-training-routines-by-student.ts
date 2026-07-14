@@ -33,5 +33,5 @@ export async function getTrainingRoutinesByStudentAction( { month, year }: GetTr
 }
 
 export type StudentTrainingRoutines = Awaited<ReturnType<typeof getTrainingRoutinesByStudentAction>>;
-export type StudentTrainingRoutine = StudentTrainingRoutines[ "routines" ][ number ];
+export type StudentTrainingRoutine = StudentTrainingRoutines[ "routineMonth" ][ "weeks" ][ number ];
 export type StudentTrainingRoutineDay = StudentTrainingRoutine[ "routineDays" ][ number ];

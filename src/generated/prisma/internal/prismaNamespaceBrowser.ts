@@ -55,7 +55,8 @@ export const ModelName = {
   UserLoginHistory: 'UserLoginHistory',
   DescriptionStudent: 'DescriptionStudent',
   MealPlan: 'MealPlan',
-  TrainingRoutine: 'TrainingRoutine',
+  TrainingRoutineMonth: 'TrainingRoutineMonth',
+  TrainingRoutineWeek: 'TrainingRoutineWeek',
   RoutineDay: 'RoutineDay',
   StudentExercise: 'StudentExercise',
   Routine: 'Routine',
@@ -138,10 +139,8 @@ export const MealPlanScalarFieldEnum = {
 export type MealPlanScalarFieldEnum = (typeof MealPlanScalarFieldEnum)[keyof typeof MealPlanScalarFieldEnum]
 
 
-export const TrainingRoutineScalarFieldEnum = {
+export const TrainingRoutineMonthScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  week: 'week',
   month: 'month',
   year: 'year',
   objective: 'objective',
@@ -150,13 +149,25 @@ export const TrainingRoutineScalarFieldEnum = {
   studentId: 'studentId'
 } as const
 
-export type TrainingRoutineScalarFieldEnum = (typeof TrainingRoutineScalarFieldEnum)[keyof typeof TrainingRoutineScalarFieldEnum]
+export type TrainingRoutineMonthScalarFieldEnum = (typeof TrainingRoutineMonthScalarFieldEnum)[keyof typeof TrainingRoutineMonthScalarFieldEnum]
+
+
+export const TrainingRoutineWeekScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  week: 'week',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  trainingRoutineMonthId: 'trainingRoutineMonthId'
+} as const
+
+export type TrainingRoutineWeekScalarFieldEnum = (typeof TrainingRoutineWeekScalarFieldEnum)[keyof typeof TrainingRoutineWeekScalarFieldEnum]
 
 
 export const RoutineDayScalarFieldEnum = {
   id: 'id',
   dayNumber: 'dayNumber',
-  trainingRoutineId: 'trainingRoutineId',
+  trainingRoutineWeekId: 'trainingRoutineWeekId',
   isFinalized: 'isFinalized'
 } as const
 

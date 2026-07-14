@@ -56,7 +56,7 @@ export function useCoachCopyRoutineDrawerState( {
 	const copyWeeks = useCopyTrainingRoutineWeeks();
 	const source = sourceQuery.data;
 	const sourceLabel = monthYearLabel( sourceMonth, sourceYear );
-	const sourceWeeks = source?.routines ?? [];
+	const sourceWeeks = source?.routineWeeks ?? [];
 	const selectedSorted = useMemo(
 		() => [ ...selectedSourceWeeks ].sort( ( a, b ) => Number( a ) - Number( b ) ),
 		[ selectedSourceWeeks ],
@@ -110,14 +110,14 @@ export function useCoachCopyRoutineDrawerState( {
 		}
 
 		const selectedSet = new Set( selectedSorted );
-		const routines = source.routines.filter( ( routine ) =>
-			selectedSet.has( String( routine.week ) ),
+		const selectedRoutineWeeks = source.routineWeeks.filter( ( routineWeek ) =>
+			selectedSet.has( String( routineWeek.week ) ),
 		);
 
-		return routines.reduce(
-			( totals, routine ) => ( {
-				dayCount: totals.dayCount + routine.dayCount,
-				exerciseCount: totals.exerciseCount + routine.exerciseCount,
+		return selectedRoutineWeeks.reduce(
+			( totals, routineWeek ) => ( {
+				dayCount: totals.dayCount + routineWeek.dayCount,
+				exerciseCount: totals.exerciseCount + routineWeek.exerciseCount,
 			} ),
 			{ dayCount: 0, exerciseCount: 0 },
 		);

@@ -1,91 +1,100 @@
-﻿"use client";
+"use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Card } from "@heroui/react";
-import { RotateCw, Search } from "lucide-react";
 
-import { MONTH_OPTIONS } from "@/constants/months";
+import { Button, Card } from "@heroui/react";
+import { RotateCw } from "lucide-react";
+
 import { FilterSelect, PageHeader } from "@/components/common";
+import { MONTH_OPTIONS } from "@/constants/months";
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 import { CoachCreateRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-create-routine-drawer";
 import { CoachOptionRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-option-routine-drawer";
 
 type CoachTrainingRoutineFilterProps = {
-	month: number;
 	isRefreshing: boolean;
+	month: number;
+	onRefreshAction: () => void;
 	routineCount: number;
-	routines: CoachTrainingRoutine[];
+	routineObjective?: string | null;
+	routineWeeks: CoachTrainingRoutine[];
 	studentId: string;
 	studentName: string;
-	onRefreshAction: () => void;
 	year: number;
 };
 
 export function CoachTrainingRoutineFilter( {
-												month,
-												isRefreshing,
-												routineCount,
-												routines,
-												studentId,
-												studentName,
-												onRefreshAction,
-												year,
-											}: CoachTrainingRoutineFilterProps ) {
+	isRefreshing,
+	month,
+	onRefreshAction,
+	routineCount,
+	routineObjective,
+	routineWeeks,
+	studentId,
+	studentName,
+	year,
+}: CoachTrainingRoutineFilterProps ) {
 	const router = useRouter();
-	const [ selectedYear, setSelectedYear ] = useState( String( year ) );
-	const [ selectedMonth, setSelectedMonth ] = useState( String( month ) );
 	const yearOptions = useMemo( () => {
 		const currentYear = new Date().getFullYear();
+
 		return Array.from( { length: 8 }, ( _, index ) => {
 			const optionYear = currentYear - 3 + index;
+
 			return { label: String( optionYear ), value: String( optionYear ) };
 		} );
 	}, [] );
 
-	function handleSearch() {
+	function updateRoute( nextMonth: string, nextYear: string ) {
 		const params = new URLSearchParams( {
-			month: selectedMonth,
+			month: nextMonth,
 			studentId,
-			year: selectedYear,
+			year: nextYear,
 		} );
+
 		router.replace( `/coach/training-routine?${ params.toString() }` );
+	}
+
+	function handleMonthChange( nextMonth: string ) {
+		updateRoute( nextMonth, String( year ) );
+	}
+
+	function handleYearChange( nextYear: string ) {
+		updateRoute( String( month ), nextYear );
 	}
 
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
 			<Card.Header className={ "gap-3 border-b border-border p-3" }>
 				<PageHeader
-					title={ "Rutina de Entrenamiento" }
 					description={ `Organiza las rutinas semanales y los días de entrenamiento de ${ studentName } creando, editando y copiando rutinas facilmente.` }
+					title={ "Rutina de Entrenamiento" }
 				/>
 			</Card.Header>
 			<Card.Content className={ "space-y-4 p-3" }>
 				<div className={ "flex flex-col items-end gap-4 md:flex-row" }>
 					<div className={ "form-control w-full" }>
 						<FilterSelect
-							defaultValue={ selectedYear }
+							defaultValue={ String( year ) }
 							label={ "Año" }
 							name={ "year" }
 							options={ yearOptions }
 							placeholder={ "Todos los años" }
-							onSelectionChange={ setSelectedYear }
+							onSelectionChange={ handleYearChange }
 						/>
 					</div>
 					<div className={ "form-control w-full" }>
 						<FilterSelect
-							defaultValue={ selectedMonth }
+							defaultValue={ String( month ) }
 							label={ "Mes" }
 							name={ "month" }
 							options={ MONTH_OPTIONS }
 							placeholder={ "Todos los meses" }
-							onSelectionChange={ setSelectedMonth }
+							onSelectionChange={ handleMonthChange }
 						/>
 					</div>
 					<div className={ "form-control flex flex-row items-end gap-2" }>
-						<Button className={ "shadow-sm" } onPress={ handleSearch }>
-							<Search/> Buscar
-						</Button>
 						<Button
 							className={ "shadow-sm" }
 							isDisabled={ isRefreshing }
@@ -97,17 +106,18 @@ export function CoachTrainingRoutineFilter( {
 						</Button>
 						{ routineCount === 0 ? (
 							<CoachCreateRoutineDrawer
-								month={ Number( selectedMonth ) }
+								month={ month }
 								studentId={ studentId }
-								year={ Number( selectedYear ) }
+								year={ year }
 							/>
 						) : (
 							<CoachOptionRoutineDrawer
-								month={ Number( selectedMonth ) }
-								routines={ routines }
+								month={ month }
+								routineObjective={ routineObjective }
+								routineWeeks={ routineWeeks }
 								studentId={ studentId }
 								studentName={ studentName }
-								year={ Number( selectedYear ) }
+								year={ year }
 							/>
 						) }
 					</div>
@@ -116,4 +126,3 @@ export function CoachTrainingRoutineFilter( {
 		</Card>
 	);
 }
-

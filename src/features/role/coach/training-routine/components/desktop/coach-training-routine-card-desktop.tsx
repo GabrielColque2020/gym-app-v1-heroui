@@ -1,25 +1,28 @@
 "use client";
+
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 import { Card, Chip, Description, Label, ScrollShadow } from "@heroui/react";
 import { RadioButtonGroup } from "@heroui-pro/react";
+
 import { useTrainingRoutineSelection } from "@/features/training-routine/hooks/use-training-routine-selection";
 import { CoachTrainingRoutineDaysAccordion } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-days-accordion";
 
 type CoachTrainingRoutineCardDesktopProps = {
 	month: number;
-	routines: CoachTrainingRoutine[];
+	routineWeeks: CoachTrainingRoutine[];
 	studentId: string;
 	year: number;
 };
 
 export function CoachTrainingRoutineCardDesktop( {
 													 month,
-													 routines,
+													 routineWeeks,
 													 studentId,
 													 year,
 												 }: CoachTrainingRoutineCardDesktopProps ) {
 	const { selectedRoutine, selectedRoutineId, setSelectedRoutineId } =
-		useTrainingRoutineSelection( routines );
+		useTrainingRoutineSelection( routineWeeks );
+
 	return (
 		<div className={ "grid w-full grid-cols-12 items-start gap-4" }>
 			<Card className={ "col-span-4 w-full self-start overflow-hidden" }>
@@ -37,7 +40,7 @@ export function CoachTrainingRoutineCardDesktop( {
 							size={ "sm" }
 							variant={ "soft" }
 						>
-							{ routines.length } semanas
+							{ routineWeeks.length } semanas
 						</Chip>
 					</Card.Content>
 				</Card.Header>
@@ -55,19 +58,19 @@ export function CoachTrainingRoutineCardDesktop( {
 							variant={ "secondary" }
 							onChange={ ( value ) => setSelectedRoutineId( value as string ) }
 						>
-							{ routines.map( ( routine ) => (
+							{ routineWeeks.map( ( routineWeek ) => (
 								<RadioButtonGroup.Item
-									key={ routine.id }
+									key={ routineWeek.id }
 									className={ "w-full gap-2 px-3 py-2.5" }
-									value={ routine.id }
+									value={ routineWeek.id }
 								>
 									<RadioButtonGroup.Indicator/>
 									<RadioButtonGroup.ItemContent>
 										<Label className={ "text-sm" }>
-											Semana { routine.week }
+											Semana { routineWeek.week }
 										</Label>
 										<Description className={ "text-xs" }>
-											{ routine.routineDays.length } dias
+											{ routineWeek.routineDays.length } dias
 										</Description>
 									</RadioButtonGroup.ItemContent>
 								</RadioButtonGroup.Item>

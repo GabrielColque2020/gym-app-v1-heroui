@@ -1,9 +1,13 @@
 "use client";
 
+import { useRef } from "react";
+
 import { Alert, Button, Card } from "@heroui/react";
-import { RotateCw } from "lucide-react";
+import { Printer, RotateCw } from "lucide-react";
+import { useReactToPrint } from "react-to-print";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { MealPlansPrintable } from "@/features/meal-plans/components/shared/meal-plans-printable";
 import { CoachMealPlansEmptyState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-empty-state";
 import { CoachMealPlansErrorState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-error-state";
 import { CoachMealPlansLoadingState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-loading-state";
@@ -17,6 +21,21 @@ type CoachMealPlansPageContentProps = {
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const { breadcrumbs, data, error, handleRefresh, isError, isLoading, isRefreshing } = useCoachMealPlansPageState( studentId );
+	const printRef = useRef<HTMLDivElement | null>( null );
+	const handlePrint = useReactToPrint( {
+		contentRef: printRef,
+		documentTitle: `planes-alimenticios-${ studentId }`,
+		pageStyle: `
+			@page {
+				size: A4 portrait;
+				margin: 6mm;
+			}
+			body {
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+		`,
+	} );
 
 	if (isLoading) {
 		return <CoachMealPlansLoadingState breadcrumbs={ breadcrumbs }/>;
@@ -45,6 +64,15 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
 						<Button
 							className={ "w-full" }
+							isDisabled={ data.mealPlans.length === 0 }
+							variant={ "secondary" }
+							onPress={ () => void handlePrint() }
+						>
+							<Printer className={ "size-4" }/>
+							Imprimir
+						</Button>
+						<Button
+							className={ "w-full" }
 							isDisabled={ isRefreshing }
 							variant={ "secondary" }
 							onPress={ handleRefresh }
@@ -55,6 +83,14 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 						<MealPlanDrawer mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
 					</div>
 					<div className={ "hidden items-center gap-2 md:flex" }>
+						<Button
+							isDisabled={ data.mealPlans.length === 0 }
+							variant={ "secondary" }
+							onPress={ () => void handlePrint() }
+						>
+							<Printer className={ "size-4" }/>
+							Imprimir
+						</Button>
 						<Button
 							isDisabled={ isRefreshing }
 							variant={ "secondary" }
@@ -78,6 +114,14 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 					) }
 				</Card.Content>
 			</Card>
+
+			<MealPlansPrintable
+				contentRef={ printRef }
+				mealPlans={ data.mealPlans }
+				studentName={ data.student.name }
+				studentObjective={ data.student.DescriptionStudent?.objective }
+				studentObservations={ data.student.DescriptionStudent?.observations }
+			/>
 		</div>
 	);
 }

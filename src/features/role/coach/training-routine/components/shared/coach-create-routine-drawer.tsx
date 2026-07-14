@@ -41,6 +41,7 @@ export function CoachCreateRoutineDrawer( {
 				<CoachRoutineStructure
 					mode={ "create" }
 					month={ month }
+					routineObjective={ "" }
 					studentId={ studentId }
 					year={ year }
 					onSavedAction={ () => setIsOpen( false ) }
@@ -49,4 +50,3 @@ export function CoachCreateRoutineDrawer( {
 		</>
 	);
 }
-

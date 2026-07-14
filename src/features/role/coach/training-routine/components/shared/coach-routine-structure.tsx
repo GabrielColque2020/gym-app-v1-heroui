@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
-import { Button, Description, Drawer, ScrollShadow, Spinner, toast, Typography } from "@heroui/react";
+import { Button, Description, Drawer, Label, ScrollShadow, Spinner, TextArea, TextField, toast, Typography } from "@heroui/react";
 
 import {
 	buildRoutineStructureInput,
@@ -24,7 +24,8 @@ type CoachRoutineStructureProps = {
 	mode: "create" | "edit";
 	month: number;
 	onSavedAction: () => void;
-	routines?: CoachTrainingRoutine[];
+	routineObjective?: string | null;
+	routineWeeks?: CoachTrainingRoutine[];
 	studentId: string;
 	year: number;
 };
@@ -33,16 +34,18 @@ export default function CoachRoutineStructure( {
 												   mode,
 												   month,
 												   onSavedAction,
-												   routines = [],
+												   routineObjective,
+												   routineWeeks = [],
 												   studentId,
 												   year,
 											   }: CoachRoutineStructureProps ) {
 	const [ selectedWeeks, setSelectedWeeks ] = useState<string[]>( () =>
-		mode === "edit" ? buildSelectedWeeks( routines ) : [],
+		mode === "edit" ? buildSelectedWeeks( routineWeeks ) : [],
 	);
 	const [ selectedDays, setSelectedDays ] = useState<string[]>( () =>
-		mode === "edit" ? buildSelectedDays( routines ) : [],
+		mode === "edit" ? buildSelectedDays( routineWeeks ) : [],
 	);
+	const [ objective, setObjective ] = useState( () => routineObjective ?? "" );
 
 	const Icon = mode === "create" ? Plus : PencilLine;
 	const title = mode === "create" ? "Crear rutina" : "Editar rutina";
@@ -62,7 +65,7 @@ export default function CoachRoutineStructure( {
 	);
 
 	const hasRemovalWarning =
-		mode === "edit" && getStructureRemovalWarning( routines, sortedSelectedWeeks, sortedSelectedDays );
+		mode === "edit" && getStructureRemovalWarning( routineWeeks, sortedSelectedWeeks, sortedSelectedDays );
 	const isSubmitDisabled =
 		sortedSelectedWeeks.length === 0 || sortedSelectedDays.length === 0 || activeMutation.isPending;
 
@@ -82,7 +85,7 @@ export default function CoachRoutineStructure( {
 	async function handleSave() {
 		if (isSubmitDisabled) return;
 
-		const input = buildRoutineStructureInput( sortedSelectedWeeks, sortedSelectedDays, studentId, month, year );
+		const input = buildRoutineStructureInput( sortedSelectedWeeks, sortedSelectedDays, studentId, month, year, objective );
 
 		try {
 			if (mode === "create") {
@@ -142,6 +145,24 @@ export default function CoachRoutineStructure( {
 							onChangeAction={ handleDaysChange }
 							selectedDays={ sortedSelectedDays }
 						/>
+
+						<div className={ "border-t border-default-100" }/>
+
+						<TextField
+							fullWidth
+							maxLength={ 180 }
+							name={ "objective" }
+							value={ objective }
+							onChange={ setObjective }
+							className={ "p-1.5" }
+						>
+							<Label>Objetivo del mes</Label>
+							<TextArea
+								className={ "min-h-24 border border-border" }
+								placeholder={ "Ej. hipertrofia de tren superior, ganancia de fuerza o enfoque técnico del mes." }
+								rows={ 3 }
+							/>
+						</TextField>
 
 						<CoachRoutineStructureSummary
 							selectedDaysCount={ sortedSelectedDays.length }

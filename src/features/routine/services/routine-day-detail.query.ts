@@ -40,19 +40,23 @@ export const routineDayDetailInclude = {
 			order: "asc",
 		},
 	},
-	trainingRoutine: {
+	trainingRoutineWeek: {
 		include: {
-			student: {
-				select: {
-					DescriptionStudent: {
+			trainingRoutineMonth: {
+				include: {
+					student: {
 						select: {
-							objective: true,
+							DescriptionStudent: {
+								select: {
+									objective: true,
+								},
+							},
+							dni: true,
+							email: true,
+							id: true,
+							name: true,
 						},
 					},
-					dni: true,
-					email: true,
-					id: true,
-					name: true,
 				},
 			},
 		},
@@ -78,12 +82,14 @@ export function buildRoutineDayDetailWhere( {
 }: ReturnType<typeof normalizeRoutineDayDetailInput> ): Prisma.RoutineDayWhereInput {
 	return {
 		id: routineDayId,
-		trainingRoutine: {
-			student: {
-				active: true,
-				coachId: coachId ?? undefined,
-				id: studentId || undefined,
-				role: "STUDENT",
+		trainingRoutineWeek: {
+			trainingRoutineMonth: {
+				student: {
+					active: true,
+					coachId: coachId ?? undefined,
+					id: studentId || undefined,
+					role: "STUDENT",
+				},
 			},
 		},
 	};

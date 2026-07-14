@@ -1,64 +1,59 @@
+import { useEffect, useState } from "react";
+
+import { Button, Card } from "@heroui/react";
+import { Printer, RotateCw } from "lucide-react";
+
 import { PageHeader } from "@/components/common";
 import { FilterSelect } from "@/components/common/filter-select";
 import { MONTH_OPTIONS_PADDED } from "@/constants/months";
-import { Button, Card } from "@heroui/react";
-import { RotateCw, Search } from "lucide-react";
-import { useState } from "react";
 
 type TrainingRoutinesFilterProps = {
 	defaultMonth: string;
 	defaultYear: string;
-	onClear: () => void;
-	onSearch: ( value: { month: string; year: string } ) => void;
-	onRefresh: () => void;
+	isPrintDisabled?: boolean;
 	isRefreshing?: boolean;
+	onPrint: () => void;
+	onRefresh: () => void;
+	onSearch: ( value: { month: string; year: string } ) => void;
 };
 
 export function TrainingRoutinesFilter( {
-											defaultMonth,
-											defaultYear,
-											onClear,
-											onSearch,
-											onRefresh,
-											isRefreshing = false,
-										}: TrainingRoutinesFilterProps ) {
+	defaultMonth,
+	defaultYear,
+	isPrintDisabled = false,
+	isRefreshing = false,
+	onPrint,
+	onRefresh,
+	onSearch,
+}: TrainingRoutinesFilterProps ) {
 	const currentYear = new Date().getFullYear();
-	const yearOptions = Array.from( { length: 8 }, ( _, i ) => ( {
-		label: String( currentYear - 3 + i ),
-		value: String( currentYear - 3 + i ),
+	const yearOptions = Array.from( { length: 8 }, ( _, index ) => ( {
+		label: String( currentYear - 3 + index ),
+		value: String( currentYear - 3 + index ),
 	} ) );
-	const [ selectedYear, setSelectedYear ] = useState<string>( defaultYear );
-	const [ selectedMonth, setSelectedMonth ] = useState<string>( defaultMonth );
-	const [ resetVersion, setResetVersion ] = useState( 0 );
+	const [ selectedYear, setSelectedYear ] = useState( defaultYear );
+	const [ selectedMonth, setSelectedMonth ] = useState( defaultMonth );
 
-	const handleSearch = () => {
+	useEffect( () => {
 		onSearch( {
 			month: selectedMonth,
 			year: selectedYear,
 		} );
-	};
-
-	const handleClear = () => {
-		setSelectedYear( defaultYear );
-		setSelectedMonth( defaultMonth );
-		setResetVersion( ( current ) => current + 1 );
-		onClear();
-	};
+	}, [ onSearch, selectedMonth, selectedYear ] );
 
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
-			<Card.Header className={ "p-3 border-b border-border" }>
+			<Card.Header className={ "border-b border-border p-3" }>
 				<PageHeader
 					title={ "Plan de Entrenamiento Personal" }
 					description={ "Optimiza tu rendimiento con rutinas adaptadas a tus objetivos de temporada." }
 				/>
 			</Card.Header>
-			<Card.Content className={ "px-3 pb-3 " }>
-				<div className={ "grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.6fr)]" }>
+			<Card.Content className={ "px-3 pb-3" }>
+				<div className={ "grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.2fr)]" }>
 					<div className={ "form-control" }>
 						<FilterSelect
-							key={ `year-${ resetVersion }` }
-							defaultValue={ defaultYear }
+							defaultValue={ selectedYear }
 							label={ "Año" }
 							name={ "year" }
 							options={ yearOptions }
@@ -68,8 +63,7 @@ export function TrainingRoutinesFilter( {
 					</div>
 					<div className={ "form-control" }>
 						<FilterSelect
-							key={ `month-${ resetVersion }` }
-							defaultValue={ defaultMonth }
+							defaultValue={ selectedMonth }
 							label={ "Mes" }
 							name={ "month" }
 							options={ MONTH_OPTIONS_PADDED }
@@ -77,26 +71,24 @@ export function TrainingRoutinesFilter( {
 							onSelectionChange={ setSelectedMonth }
 						/>
 					</div>
-					<div className={ "form-control flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end" }>
-						<Button className={ "w-full shadow-sm sm:w-auto sm:flex-1" } onPress={ handleSearch }>
-							<Search/>
-							Buscar
+					<div className={ "form-control flex flex-col gap-2 sm:flex-row sm:items-end" }>
+						<Button
+							className={ "w-full shadow-sm sm:w-auto sm:flex-1" }
+							isDisabled={ isPrintDisabled }
+							variant={ "secondary" }
+							onPress={ onPrint }
+						>
+							<Printer className={ "size-4" }/>
+							Imprimir
 						</Button>
 						<Button
 							className={ "w-full shadow-sm sm:w-auto sm:flex-1" }
 							isDisabled={ isRefreshing }
-							onPress={ onRefresh }
 							variant={ "secondary" }
+							onPress={ onRefresh }
 						>
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando" : "Actualizar" }
-						</Button>
-						<Button
-							className={ "w-full shadow-sm sm:w-auto" }
-							variant={ "secondary" }
-							onPress={ handleClear }
-						>
-							Limpiar
 						</Button>
 					</div>
 				</div>

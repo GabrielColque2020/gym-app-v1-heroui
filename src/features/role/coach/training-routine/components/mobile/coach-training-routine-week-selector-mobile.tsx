@@ -6,13 +6,13 @@ import { RadioButtonGroup } from "@heroui-pro/react";
 
 type CoachTrainingRoutineWeekSelectorMobileProps = {
 	onSelectedRoutineIdChangeAction: ( routineId: string ) => void;
-	routines: CoachTrainingRoutine[];
+	routineWeeks: CoachTrainingRoutine[];
 	selectedRoutineId: string;
 };
 
 export function CoachTrainingRoutineWeekSelectorMobile( {
 	onSelectedRoutineIdChangeAction,
-	routines,
+	routineWeeks,
 	selectedRoutineId,
 }: CoachTrainingRoutineWeekSelectorMobileProps ) {
 	return (
@@ -31,19 +31,19 @@ export function CoachTrainingRoutineWeekSelectorMobile( {
 					onChange={ ( value ) => onSelectedRoutineIdChangeAction( value as string ) }
 				>
 					<div className={ "grid grid-cols-2 gap-2" }>
-						{ routines.map( ( routine ) => (
+						{ routineWeeks.map( ( routineWeek ) => (
 							<RadioButtonGroup.Item
-								key={ routine.id }
+								key={ routineWeek.id }
 								className={ "w-full gap-2 px-3 py-2.5" }
-								value={ routine.id }
+								value={ routineWeek.id }
 							>
 								<RadioButtonGroup.Indicator/>
 								<RadioButtonGroup.ItemContent>
 									<Label className={ "text-sm" }>
-										Semana { routine.week }
+										Semana { routineWeek.week }
 									</Label>
 									<Description className={ "text-xs" }>
-										{ routine.routineDays.length } dias
+										{ routineWeek.routineDays.length } dias
 									</Description>
 								</RadioButtonGroup.ItemContent>
 							</RadioButtonGroup.Item>

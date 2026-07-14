@@ -4,7 +4,8 @@ import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
 import {
 	getTrainingRoutinesByStudentBase,
-	type TrainingRoutine,
+	type TrainingRoutineMonth,
+	type TrainingRoutineWeek,
 	type TrainingRoutineDay,
 } from "@/features/training-routine/services/training-routines-by-student";
 
@@ -49,5 +50,6 @@ export async function getTrainingRoutinesByStudentAction( {
 		throw new Error( `No se pudieron obtener las rutinas del estudiante. ${ message }` );
 	}
 }
-export type CoachTrainingRoutine = TrainingRoutine;
+export type CoachTrainingRoutine = TrainingRoutineWeek;
 export type CoachTrainingRoutineDay = TrainingRoutineDay;
+export type CoachTrainingRoutineMonth = TrainingRoutineMonth;

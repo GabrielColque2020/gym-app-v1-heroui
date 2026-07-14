@@ -129,9 +129,9 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 									</Chip>
 								</div>
 								<div className={ "mt-3 flex flex-wrap gap-1.5" }>
-									{ source.routines.map( ( routine ) => (
-										<CoachCopyRoutineWeekPill key={ routine.id }>
-											S{ routine.week }
+									{ source.routineWeeks.map( ( routineWeek ) => (
+										<CoachCopyRoutineWeekPill key={ routineWeek.id }>
+											S{ routineWeek.week }
 										</CoachCopyRoutineWeekPill>
 									) ) }
 								</div>
@@ -147,13 +147,13 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 										variant={ "secondary" }
 										onChange={ ( value ) => setSelectedSourceWeeks( value as string[] ) }
 									>
-										{ sourceWeeks.map( ( routine ) => (
-											<CheckboxButtonGroup.Item key={ routine.week } className={ "min-h-16 gap-2 px-3 py-2" } value={ String( routine.week ) }>
+										{ sourceWeeks.map( ( routineWeek ) => (
+											<CheckboxButtonGroup.Item key={ routineWeek.week } className={ "min-h-16 gap-2 px-3 py-2" } value={ String( routineWeek.week ) }>
 												<CheckboxButtonGroup.Indicator/>
 												<CheckboxButtonGroup.ItemContent>
-													<Label className={ "text-sm" }>Semana { routine.week }</Label>
+													<Label className={ "text-sm" }>Semana { routineWeek.week }</Label>
 													<Description className={ "line-clamp-1 text-xs" }>
-														{ routine.dayCount } dias / { routine.exerciseCount } ejercicios
+														{ routineWeek.dayCount } dias / { routineWeek.exerciseCount } ejercicios
 													</Description>
 												</CheckboxButtonGroup.ItemContent>
 											</CheckboxButtonGroup.Item>
@@ -268,4 +268,3 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 		</>
 	);
 }
-

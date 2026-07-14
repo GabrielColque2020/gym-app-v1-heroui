@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { assignCoachToStudentAction, createAdminStudentAction, createCoachAction, deleteAdminUserAction, toggleUserStatusAction, updateAdminStudentAction, updateAdminUserAction } from "@/features/role/admin/users/actions/admin-user-mutations";
+import { prependAdminCoachInCache, removeAdminCoachFromCache, replaceAdminCoachInCache } from "@/features/role/admin/users/hooks/admin-coaches-cache";
 import { ADMIN_USERS_QUERY_KEY, adminUsersQueryOptions } from "@/features/role/admin/users/services/admin-users-query";
 import { ADMIN_COACHES_QUERY_KEY } from "@/features/role/admin/users/services/admin-coaches-query";
 import { prependAdminUserInCache, removeAdminUserFromCache, replaceAdminUserInCache } from "@/features/role/admin/users/hooks/admin-users-cache";
@@ -18,6 +19,7 @@ export function useCreateCoach() {
 		mutationFn: createCoachAction,
 		onSuccess: ( createdUser ) => {
 			prependAdminUserInCache( queryClient, createdUser );
+			prependAdminCoachInCache( queryClient, createdUser );
 			void queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
 			void queryClient.invalidateQueries( { queryKey: ADMIN_COACHES_QUERY_KEY } );
 		},
@@ -43,6 +45,16 @@ export function useToggleUserStatus() {
 		mutationFn: toggleUserStatusAction,
 		onSuccess: ( updatedUser ) => {
 			replaceAdminUserInCache( queryClient, updatedUser );
+			if (updatedUser.role === "COACH") {
+				replaceAdminCoachInCache( queryClient, {
+					active: updatedUser.active,
+					dni: updatedUser.dni,
+					email: updatedUser.email,
+					id: updatedUser.id,
+					name: updatedUser.name,
+					role: updatedUser.role,
+				} );
+			}
 			void queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
 			void queryClient.invalidateQueries( { queryKey: ADMIN_COACHES_QUERY_KEY } );
 		},
@@ -56,6 +68,16 @@ export function useUpdateAdminUser() {
 		mutationFn: updateAdminUserAction,
 		onSuccess: ( updatedUser ) => {
 			replaceAdminUserInCache( queryClient, updatedUser );
+			if (updatedUser.role === "COACH") {
+				replaceAdminCoachInCache( queryClient, {
+					active: updatedUser.active,
+					dni: updatedUser.dni,
+					email: updatedUser.email,
+					id: updatedUser.id,
+					name: updatedUser.name,
+					role: updatedUser.role,
+				} );
+			}
 			void queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
 			void queryClient.invalidateQueries( { queryKey: ADMIN_COACHES_QUERY_KEY } );
 		},
@@ -93,6 +115,7 @@ export function useDeleteAdminUser() {
 		mutationFn: deleteAdminUserAction,
 		onSuccess: async ( _, input ) => {
 			removeAdminUserFromCache( queryClient, input.id );
+			removeAdminCoachFromCache( queryClient, input.id );
 			await queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
 			await queryClient.invalidateQueries( { queryKey: ADMIN_COACHES_QUERY_KEY } );
 		},

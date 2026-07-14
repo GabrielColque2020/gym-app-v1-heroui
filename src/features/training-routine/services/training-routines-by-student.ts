@@ -20,7 +20,7 @@ const trainingRoutineStudentSelect = {
 	name: true,
 } satisfies Prisma.UserSelect;
 
-const trainingRoutineInclude = {
+const trainingRoutineWeekInclude = {
 	routineDays: {
 		include: {
 			routines: {
@@ -32,6 +32,7 @@ const trainingRoutineInclude = {
 							id: true,
 							imageUrl: true,
 							name: true,
+							tips: true,
 							videoUrl: true,
 						},
 					},
@@ -45,18 +46,29 @@ const trainingRoutineInclude = {
 			dayNumber: "asc",
 		},
 	},
-} satisfies Prisma.TrainingRoutineInclude;
+} satisfies Prisma.TrainingRoutineWeekInclude;
 
 export type TrainingRoutineStudent = Prisma.UserGetPayload<{
 	select: typeof trainingRoutineStudentSelect;
 }>;
 
-export type TrainingRoutineDay = Prisma.TrainingRoutineGetPayload<{
-	include: typeof trainingRoutineInclude;
+export type TrainingRoutineDay = Prisma.TrainingRoutineWeekGetPayload<{
+	include: typeof trainingRoutineWeekInclude;
 }>["routineDays"][number];
 
-export type TrainingRoutine = Prisma.TrainingRoutineGetPayload<{
-	include: typeof trainingRoutineInclude;
+export type TrainingRoutineWeek = Prisma.TrainingRoutineWeekGetPayload<{
+	include: typeof trainingRoutineWeekInclude;
+}>;
+
+export type TrainingRoutineMonth = Prisma.TrainingRoutineMonthGetPayload<{
+	include: {
+		weeks: {
+			include: typeof trainingRoutineWeekInclude;
+			orderBy: {
+				week: "asc";
+			};
+		};
+	};
 }>;
 
 function validateMonth( month: number ) {
@@ -94,21 +106,34 @@ export async function getTrainingRoutinesByStudentBase( {
 		throw new Error( "No se encontro un estudiante activo para consultar rutinas." );
 	}
 
-	const routines = await prisma.trainingRoutine.findMany( {
-		include: trainingRoutineInclude,
-		orderBy: {
-			week: "asc",
+	const routineMonth = await prisma.trainingRoutineMonth.findFirst( {
+		include: {
+			weeks: {
+				include: trainingRoutineWeekInclude,
+				orderBy: {
+					week: "asc",
+				},
+			},
 		},
 		where: {
 			month,
 			studentId,
 			year,
 		},
-	} ) as TrainingRoutine[];
+	} ) as TrainingRoutineMonth | null;
 
 	return {
 		month,
-		routines,
+		routineMonth: routineMonth ?? {
+			createdAt: new Date(),
+			id: "",
+			month,
+			objective: null,
+			studentId,
+			updatedAt: new Date(),
+			weeks: [],
+			year,
+		},
 		student,
 		year,
 	};

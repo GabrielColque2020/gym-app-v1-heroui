@@ -10,7 +10,8 @@ import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-respon
 
 type CoachEditRoutineDrawerContentProps = {
 	month: number;
-	routines: CoachTrainingRoutine[];
+	routineObjective?: string | null;
+	routineWeeks: CoachTrainingRoutine[];
 	studentId: string;
 	year: number;
 	hideTrigger?: boolean;
@@ -20,7 +21,8 @@ type CoachEditRoutineDrawerContentProps = {
 
 export function CoachEditRoutineDrawer( {
 										   month,
-										   routines,
+										   routineObjective,
+										   routineWeeks,
 										   studentId,
 										   year,
 										   hideTrigger = false,
@@ -50,7 +52,8 @@ export function CoachEditRoutineDrawer( {
 				<CoachRoutineStructure
 					mode={ "edit" }
 					month={ month }
-					routines={ routines }
+					routineObjective={ routineObjective }
+					routineWeeks={ routineWeeks }
 					studentId={ studentId }
 					year={ year }
 					onSavedAction={ () => setOpen( false ) }

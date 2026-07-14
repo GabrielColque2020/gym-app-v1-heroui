@@ -313,7 +313,7 @@ export async function deleteAdminUserAction( input: DeleteAdminUserInput ) {
 					},
 				} );
 
-				await tx.trainingRoutine.deleteMany( {
+				await tx.trainingRoutineMonth.deleteMany( {
 					where: {
 						studentId: input.id,
 					},

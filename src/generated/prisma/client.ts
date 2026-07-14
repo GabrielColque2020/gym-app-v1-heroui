@@ -62,10 +62,15 @@ export type DescriptionStudent = Prisma.DescriptionStudentModel
  */
 export type MealPlan = Prisma.MealPlanModel
 /**
- * Model TrainingRoutine
+ * Model TrainingRoutineMonth
  * 
  */
-export type TrainingRoutine = Prisma.TrainingRoutineModel
+export type TrainingRoutineMonth = Prisma.TrainingRoutineMonthModel
+/**
+ * Model TrainingRoutineWeek
+ * 
+ */
+export type TrainingRoutineWeek = Prisma.TrainingRoutineWeekModel
 /**
  * Model RoutineDay
  * 

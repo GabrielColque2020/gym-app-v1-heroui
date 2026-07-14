@@ -276,7 +276,7 @@ export type UserWhereInput = {
   students?: Prisma.UserListRelationFilter
   DescriptionStudent?: Prisma.XOR<Prisma.DescriptionStudentNullableScalarRelationFilter, Prisma.DescriptionStudentWhereInput> | null
   MealPlan?: Prisma.MealPlanListRelationFilter
-  TrainingRoutine?: Prisma.TrainingRoutineListRelationFilter
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthListRelationFilter
   ExerciseProgress?: Prisma.ExerciseProgressListRelationFilter
   Exercise?: Prisma.ExerciseListRelationFilter
   StudentExercise?: Prisma.StudentExerciseListRelationFilter
@@ -300,7 +300,7 @@ export type UserOrderByWithRelationInput = {
   students?: Prisma.UserOrderByRelationAggregateInput
   DescriptionStudent?: Prisma.DescriptionStudentOrderByWithRelationInput
   MealPlan?: Prisma.MealPlanOrderByRelationAggregateInput
-  TrainingRoutine?: Prisma.TrainingRoutineOrderByRelationAggregateInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthOrderByRelationAggregateInput
   ExerciseProgress?: Prisma.ExerciseProgressOrderByRelationAggregateInput
   Exercise?: Prisma.ExerciseOrderByRelationAggregateInput
   StudentExercise?: Prisma.StudentExerciseOrderByRelationAggregateInput
@@ -327,7 +327,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   students?: Prisma.UserListRelationFilter
   DescriptionStudent?: Prisma.XOR<Prisma.DescriptionStudentNullableScalarRelationFilter, Prisma.DescriptionStudentWhereInput> | null
   MealPlan?: Prisma.MealPlanListRelationFilter
-  TrainingRoutine?: Prisma.TrainingRoutineListRelationFilter
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthListRelationFilter
   ExerciseProgress?: Prisma.ExerciseProgressListRelationFilter
   Exercise?: Prisma.ExerciseListRelationFilter
   StudentExercise?: Prisma.StudentExerciseListRelationFilter
@@ -388,7 +388,7 @@ export type UserCreateInput = {
   students?: Prisma.UserCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutStudentInput
@@ -411,7 +411,7 @@ export type UserUncheckedCreateInput = {
   students?: Prisma.UserUncheckedCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanUncheckedCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseUncheckedCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutStudentInput
@@ -434,7 +434,7 @@ export type UserUpdateInput = {
   students?: Prisma.UserUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutStudentNestedInput
@@ -457,7 +457,7 @@ export type UserUncheckedUpdateInput = {
   students?: Prisma.UserUncheckedUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUncheckedUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUncheckedUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutStudentNestedInput
@@ -719,20 +719,18 @@ export type UserUpdateOneWithoutMealPlanNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMealPlanInput, Prisma.UserUpdateWithoutMealPlanInput>, Prisma.UserUncheckedUpdateWithoutMealPlanInput>
 }
 
-export type UserCreateNestedOneWithoutTrainingRoutineInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutTrainingRoutineInput, Prisma.UserUncheckedCreateWithoutTrainingRoutineInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTrainingRoutineInput
+export type UserCreateNestedOneWithoutTrainingRoutineMonthsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTrainingRoutineMonthsInput, Prisma.UserUncheckedCreateWithoutTrainingRoutineMonthsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTrainingRoutineMonthsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneWithoutTrainingRoutineNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutTrainingRoutineInput, Prisma.UserUncheckedCreateWithoutTrainingRoutineInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTrainingRoutineInput
-  upsert?: Prisma.UserUpsertWithoutTrainingRoutineInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
+export type UserUpdateOneRequiredWithoutTrainingRoutineMonthsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTrainingRoutineMonthsInput, Prisma.UserUncheckedCreateWithoutTrainingRoutineMonthsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTrainingRoutineMonthsInput
+  upsert?: Prisma.UserUpsertWithoutTrainingRoutineMonthsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTrainingRoutineInput, Prisma.UserUpdateWithoutTrainingRoutineInput>, Prisma.UserUncheckedUpdateWithoutTrainingRoutineInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTrainingRoutineMonthsInput, Prisma.UserUpdateWithoutTrainingRoutineMonthsInput>, Prisma.UserUncheckedUpdateWithoutTrainingRoutineMonthsInput>
 }
 
 export type UserCreateNestedOneWithoutStudentExerciseInput = {
@@ -796,7 +794,7 @@ export type UserCreateWithoutStudentsInput = {
   coach?: Prisma.UserCreateNestedOneWithoutStudentsInput
   DescriptionStudent?: Prisma.DescriptionStudentCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutStudentInput
@@ -818,7 +816,7 @@ export type UserUncheckedCreateWithoutStudentsInput = {
   coachId?: string | null
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanUncheckedCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseUncheckedCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutStudentInput
@@ -845,7 +843,7 @@ export type UserCreateWithoutCoachInput = {
   students?: Prisma.UserCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutStudentInput
@@ -867,7 +865,7 @@ export type UserUncheckedCreateWithoutCoachInput = {
   students?: Prisma.UserUncheckedCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanUncheckedCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseUncheckedCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutStudentInput
@@ -910,7 +908,7 @@ export type UserUpdateWithoutStudentsInput = {
   coach?: Prisma.UserUpdateOneWithoutStudentsNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutStudentNestedInput
@@ -932,7 +930,7 @@ export type UserUncheckedUpdateWithoutStudentsInput = {
   coachId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUncheckedUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUncheckedUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutStudentNestedInput
@@ -989,7 +987,7 @@ export type UserCreateWithoutLoginHistoryInput = {
   students?: Prisma.UserCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutStudentInput
@@ -1011,7 +1009,7 @@ export type UserUncheckedCreateWithoutLoginHistoryInput = {
   students?: Prisma.UserUncheckedCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanUncheckedCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseUncheckedCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutStudentInput
@@ -1049,7 +1047,7 @@ export type UserUpdateWithoutLoginHistoryInput = {
   students?: Prisma.UserUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutStudentNestedInput
@@ -1071,7 +1069,7 @@ export type UserUncheckedUpdateWithoutLoginHistoryInput = {
   students?: Prisma.UserUncheckedUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUncheckedUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUncheckedUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutStudentNestedInput
@@ -1092,7 +1090,7 @@ export type UserCreateWithoutDescriptionStudentInput = {
   coach?: Prisma.UserCreateNestedOneWithoutStudentsInput
   students?: Prisma.UserCreateNestedManyWithoutCoachInput
   MealPlan?: Prisma.MealPlanCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutStudentInput
@@ -1114,7 +1112,7 @@ export type UserUncheckedCreateWithoutDescriptionStudentInput = {
   coachId?: string | null
   students?: Prisma.UserUncheckedCreateNestedManyWithoutCoachInput
   MealPlan?: Prisma.MealPlanUncheckedCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseUncheckedCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutStudentInput
@@ -1152,7 +1150,7 @@ export type UserUpdateWithoutDescriptionStudentInput = {
   coach?: Prisma.UserUpdateOneWithoutStudentsNestedInput
   students?: Prisma.UserUpdateManyWithoutCoachNestedInput
   MealPlan?: Prisma.MealPlanUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutStudentNestedInput
@@ -1174,7 +1172,7 @@ export type UserUncheckedUpdateWithoutDescriptionStudentInput = {
   coachId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   students?: Prisma.UserUncheckedUpdateManyWithoutCoachNestedInput
   MealPlan?: Prisma.MealPlanUncheckedUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUncheckedUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutStudentNestedInput
@@ -1196,7 +1194,7 @@ export type UserCreateWithoutMealPlanInput = {
   coach?: Prisma.UserCreateNestedOneWithoutStudentsInput
   students?: Prisma.UserCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentCreateNestedOneWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutStudentInput
@@ -1218,7 +1216,7 @@ export type UserUncheckedCreateWithoutMealPlanInput = {
   coachId?: string | null
   students?: Prisma.UserUncheckedCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedCreateNestedOneWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseUncheckedCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutStudentInput
@@ -1256,7 +1254,7 @@ export type UserUpdateWithoutMealPlanInput = {
   coach?: Prisma.UserUpdateOneWithoutStudentsNestedInput
   students?: Prisma.UserUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUpdateOneWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutStudentNestedInput
@@ -1278,14 +1276,14 @@ export type UserUncheckedUpdateWithoutMealPlanInput = {
   coachId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   students?: Prisma.UserUncheckedUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedUpdateOneWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUncheckedUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutStudentNestedInput
   loginHistory?: Prisma.UserLoginHistoryUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutTrainingRoutineInput = {
+export type UserCreateWithoutTrainingRoutineMonthsInput = {
   id?: string
   name: string
   email: string
@@ -1307,7 +1305,7 @@ export type UserCreateWithoutTrainingRoutineInput = {
   loginHistory?: Prisma.UserLoginHistoryCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutTrainingRoutineInput = {
+export type UserUncheckedCreateWithoutTrainingRoutineMonthsInput = {
   id?: string
   name: string
   email: string
@@ -1329,23 +1327,23 @@ export type UserUncheckedCreateWithoutTrainingRoutineInput = {
   loginHistory?: Prisma.UserLoginHistoryUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutTrainingRoutineInput = {
+export type UserCreateOrConnectWithoutTrainingRoutineMonthsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutTrainingRoutineInput, Prisma.UserUncheckedCreateWithoutTrainingRoutineInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTrainingRoutineMonthsInput, Prisma.UserUncheckedCreateWithoutTrainingRoutineMonthsInput>
 }
 
-export type UserUpsertWithoutTrainingRoutineInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutTrainingRoutineInput, Prisma.UserUncheckedUpdateWithoutTrainingRoutineInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutTrainingRoutineInput, Prisma.UserUncheckedCreateWithoutTrainingRoutineInput>
+export type UserUpsertWithoutTrainingRoutineMonthsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTrainingRoutineMonthsInput, Prisma.UserUncheckedUpdateWithoutTrainingRoutineMonthsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTrainingRoutineMonthsInput, Prisma.UserUncheckedCreateWithoutTrainingRoutineMonthsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutTrainingRoutineInput = {
+export type UserUpdateToOneWithWhereWithoutTrainingRoutineMonthsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutTrainingRoutineInput, Prisma.UserUncheckedUpdateWithoutTrainingRoutineInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTrainingRoutineMonthsInput, Prisma.UserUncheckedUpdateWithoutTrainingRoutineMonthsInput>
 }
 
-export type UserUpdateWithoutTrainingRoutineInput = {
+export type UserUpdateWithoutTrainingRoutineMonthsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1367,7 +1365,7 @@ export type UserUpdateWithoutTrainingRoutineInput = {
   loginHistory?: Prisma.UserLoginHistoryUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutTrainingRoutineInput = {
+export type UserUncheckedUpdateWithoutTrainingRoutineMonthsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1405,7 +1403,7 @@ export type UserCreateWithoutStudentExerciseInput = {
   students?: Prisma.UserCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseCreateNestedManyWithoutCoachInput
   loginHistory?: Prisma.UserLoginHistoryCreateNestedManyWithoutUserInput
@@ -1427,7 +1425,7 @@ export type UserUncheckedCreateWithoutStudentExerciseInput = {
   students?: Prisma.UserUncheckedCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanUncheckedCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseUncheckedCreateNestedManyWithoutCoachInput
   loginHistory?: Prisma.UserLoginHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -1465,7 +1463,7 @@ export type UserUpdateWithoutStudentExerciseInput = {
   students?: Prisma.UserUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUpdateManyWithoutCoachNestedInput
   loginHistory?: Prisma.UserLoginHistoryUpdateManyWithoutUserNestedInput
@@ -1487,7 +1485,7 @@ export type UserUncheckedUpdateWithoutStudentExerciseInput = {
   students?: Prisma.UserUncheckedUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUncheckedUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUncheckedUpdateManyWithoutCoachNestedInput
   loginHistory?: Prisma.UserLoginHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -1509,7 +1507,7 @@ export type UserCreateWithoutExerciseProgressInput = {
   students?: Prisma.UserCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutStudentInput
   loginHistory?: Prisma.UserLoginHistoryCreateNestedManyWithoutUserInput
@@ -1531,7 +1529,7 @@ export type UserUncheckedCreateWithoutExerciseProgressInput = {
   students?: Prisma.UserUncheckedCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanUncheckedCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedCreateNestedManyWithoutStudentInput
   Exercise?: Prisma.ExerciseUncheckedCreateNestedManyWithoutCoachInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutStudentInput
   loginHistory?: Prisma.UserLoginHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -1569,7 +1567,7 @@ export type UserUpdateWithoutExerciseProgressInput = {
   students?: Prisma.UserUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutStudentNestedInput
   loginHistory?: Prisma.UserLoginHistoryUpdateManyWithoutUserNestedInput
@@ -1591,7 +1589,7 @@ export type UserUncheckedUpdateWithoutExerciseProgressInput = {
   students?: Prisma.UserUncheckedUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUncheckedUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUncheckedUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutStudentNestedInput
   loginHistory?: Prisma.UserLoginHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -1613,7 +1611,7 @@ export type UserCreateWithoutExerciseInput = {
   students?: Prisma.UserCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressCreateNestedManyWithoutStudentInput
   StudentExercise?: Prisma.StudentExerciseCreateNestedManyWithoutStudentInput
   loginHistory?: Prisma.UserLoginHistoryCreateNestedManyWithoutUserInput
@@ -1635,7 +1633,7 @@ export type UserUncheckedCreateWithoutExerciseInput = {
   students?: Prisma.UserUncheckedCreateNestedManyWithoutCoachInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedCreateNestedOneWithoutStudentInput
   MealPlan?: Prisma.MealPlanUncheckedCreateNestedManyWithoutStudentInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedCreateNestedManyWithoutStudentInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedCreateNestedManyWithoutStudentInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedCreateNestedManyWithoutStudentInput
   StudentExercise?: Prisma.StudentExerciseUncheckedCreateNestedManyWithoutStudentInput
   loginHistory?: Prisma.UserLoginHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -1673,7 +1671,7 @@ export type UserUpdateWithoutExerciseInput = {
   students?: Prisma.UserUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutStudentNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutStudentNestedInput
   loginHistory?: Prisma.UserLoginHistoryUpdateManyWithoutUserNestedInput
@@ -1695,7 +1693,7 @@ export type UserUncheckedUpdateWithoutExerciseInput = {
   students?: Prisma.UserUncheckedUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUncheckedUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutStudentNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutStudentNestedInput
   loginHistory?: Prisma.UserLoginHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -1730,7 +1728,7 @@ export type UserUpdateWithoutCoachInput = {
   students?: Prisma.UserUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUpdateManyWithoutStudentNestedInput
@@ -1752,7 +1750,7 @@ export type UserUncheckedUpdateWithoutCoachInput = {
   students?: Prisma.UserUncheckedUpdateManyWithoutCoachNestedInput
   DescriptionStudent?: Prisma.DescriptionStudentUncheckedUpdateOneWithoutStudentNestedInput
   MealPlan?: Prisma.MealPlanUncheckedUpdateManyWithoutStudentNestedInput
-  TrainingRoutine?: Prisma.TrainingRoutineUncheckedUpdateManyWithoutStudentNestedInput
+  trainingRoutineMonths?: Prisma.TrainingRoutineMonthUncheckedUpdateManyWithoutStudentNestedInput
   ExerciseProgress?: Prisma.ExerciseProgressUncheckedUpdateManyWithoutStudentNestedInput
   Exercise?: Prisma.ExerciseUncheckedUpdateManyWithoutCoachNestedInput
   StudentExercise?: Prisma.StudentExerciseUncheckedUpdateManyWithoutStudentNestedInput
@@ -1781,7 +1779,7 @@ export type UserUncheckedUpdateManyWithoutCoachInput = {
 export type UserCountOutputType = {
   students: number
   MealPlan: number
-  TrainingRoutine: number
+  trainingRoutineMonths: number
   ExerciseProgress: number
   Exercise: number
   StudentExercise: number
@@ -1791,7 +1789,7 @@ export type UserCountOutputType = {
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   students?: boolean | UserCountOutputTypeCountStudentsArgs
   MealPlan?: boolean | UserCountOutputTypeCountMealPlanArgs
-  TrainingRoutine?: boolean | UserCountOutputTypeCountTrainingRoutineArgs
+  trainingRoutineMonths?: boolean | UserCountOutputTypeCountTrainingRoutineMonthsArgs
   ExerciseProgress?: boolean | UserCountOutputTypeCountExerciseProgressArgs
   Exercise?: boolean | UserCountOutputTypeCountExerciseArgs
   StudentExercise?: boolean | UserCountOutputTypeCountStudentExerciseArgs
@@ -1825,8 +1823,8 @@ export type UserCountOutputTypeCountMealPlanArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountTrainingRoutineArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TrainingRoutineWhereInput
+export type UserCountOutputTypeCountTrainingRoutineMonthsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TrainingRoutineMonthWhereInput
 }
 
 /**
@@ -1875,7 +1873,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   students?: boolean | Prisma.User$studentsArgs<ExtArgs>
   DescriptionStudent?: boolean | Prisma.User$DescriptionStudentArgs<ExtArgs>
   MealPlan?: boolean | Prisma.User$MealPlanArgs<ExtArgs>
-  TrainingRoutine?: boolean | Prisma.User$TrainingRoutineArgs<ExtArgs>
+  trainingRoutineMonths?: boolean | Prisma.User$trainingRoutineMonthsArgs<ExtArgs>
   ExerciseProgress?: boolean | Prisma.User$ExerciseProgressArgs<ExtArgs>
   Exercise?: boolean | Prisma.User$ExerciseArgs<ExtArgs>
   StudentExercise?: boolean | Prisma.User$StudentExerciseArgs<ExtArgs>
@@ -1936,7 +1934,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   students?: boolean | Prisma.User$studentsArgs<ExtArgs>
   DescriptionStudent?: boolean | Prisma.User$DescriptionStudentArgs<ExtArgs>
   MealPlan?: boolean | Prisma.User$MealPlanArgs<ExtArgs>
-  TrainingRoutine?: boolean | Prisma.User$TrainingRoutineArgs<ExtArgs>
+  trainingRoutineMonths?: boolean | Prisma.User$trainingRoutineMonthsArgs<ExtArgs>
   ExerciseProgress?: boolean | Prisma.User$ExerciseProgressArgs<ExtArgs>
   Exercise?: boolean | Prisma.User$ExerciseArgs<ExtArgs>
   StudentExercise?: boolean | Prisma.User$StudentExerciseArgs<ExtArgs>
@@ -1957,7 +1955,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     students: Prisma.$UserPayload<ExtArgs>[]
     DescriptionStudent: Prisma.$DescriptionStudentPayload<ExtArgs> | null
     MealPlan: Prisma.$MealPlanPayload<ExtArgs>[]
-    TrainingRoutine: Prisma.$TrainingRoutinePayload<ExtArgs>[]
+    trainingRoutineMonths: Prisma.$TrainingRoutineMonthPayload<ExtArgs>[]
     ExerciseProgress: Prisma.$ExerciseProgressPayload<ExtArgs>[]
     Exercise: Prisma.$ExercisePayload<ExtArgs>[]
     StudentExercise: Prisma.$StudentExercisePayload<ExtArgs>[]
@@ -2374,7 +2372,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   students<T extends Prisma.User$studentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   DescriptionStudent<T extends Prisma.User$DescriptionStudentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$DescriptionStudentArgs<ExtArgs>>): Prisma.Prisma__DescriptionStudentClient<runtime.Types.Result.GetResult<Prisma.$DescriptionStudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   MealPlan<T extends Prisma.User$MealPlanArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$MealPlanArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MealPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  TrainingRoutine<T extends Prisma.User$TrainingRoutineArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$TrainingRoutineArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrainingRoutinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  trainingRoutineMonths<T extends Prisma.User$trainingRoutineMonthsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$trainingRoutineMonthsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrainingRoutineMonthPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ExerciseProgress<T extends Prisma.User$ExerciseProgressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ExerciseProgressArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExerciseProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   Exercise<T extends Prisma.User$ExerciseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ExerciseArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExercisePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   StudentExercise<T extends Prisma.User$StudentExerciseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$StudentExerciseArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentExercisePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2907,27 +2905,27 @@ export type User$MealPlanArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * User.TrainingRoutine
+ * User.trainingRoutineMonths
  */
-export type User$TrainingRoutineArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$trainingRoutineMonthsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the TrainingRoutine
+   * Select specific fields to fetch from the TrainingRoutineMonth
    */
-  select?: Prisma.TrainingRoutineSelect<ExtArgs> | null
+  select?: Prisma.TrainingRoutineMonthSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the TrainingRoutine
+   * Omit specific fields from the TrainingRoutineMonth
    */
-  omit?: Prisma.TrainingRoutineOmit<ExtArgs> | null
+  omit?: Prisma.TrainingRoutineMonthOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.TrainingRoutineInclude<ExtArgs> | null
-  where?: Prisma.TrainingRoutineWhereInput
-  orderBy?: Prisma.TrainingRoutineOrderByWithRelationInput | Prisma.TrainingRoutineOrderByWithRelationInput[]
-  cursor?: Prisma.TrainingRoutineWhereUniqueInput
+  include?: Prisma.TrainingRoutineMonthInclude<ExtArgs> | null
+  where?: Prisma.TrainingRoutineMonthWhereInput
+  orderBy?: Prisma.TrainingRoutineMonthOrderByWithRelationInput | Prisma.TrainingRoutineMonthOrderByWithRelationInput[]
+  cursor?: Prisma.TrainingRoutineMonthWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.TrainingRoutineScalarFieldEnum | Prisma.TrainingRoutineScalarFieldEnum[]
+  distinct?: Prisma.TrainingRoutineMonthScalarFieldEnum | Prisma.TrainingRoutineMonthScalarFieldEnum[]
 }
 
 /**

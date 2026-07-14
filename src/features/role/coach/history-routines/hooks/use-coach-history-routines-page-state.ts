@@ -15,8 +15,6 @@ export function useCoachHistoryRoutinesPageState( studentId: string ) {
 	const {
 		activeMonth,
 		activeYear,
-		handleClear,
-		handleSearch,
 		onMonthChange,
 		onYearChange,
 		selectedMonth,
@@ -69,9 +67,7 @@ export function useCoachHistoryRoutinesPageState( studentId: string ) {
 		data,
 		desktopSummary,
 		error,
-		handleClear,
 		handleRefresh,
-		handleSearch,
 		handleWeekToggle,
 		isError,
 		isLoading,

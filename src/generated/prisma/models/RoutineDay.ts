@@ -37,21 +37,21 @@ export type RoutineDaySumAggregateOutputType = {
 export type RoutineDayMinAggregateOutputType = {
   id: string | null
   dayNumber: number | null
-  trainingRoutineId: string | null
+  trainingRoutineWeekId: string | null
   isFinalized: boolean | null
 }
 
 export type RoutineDayMaxAggregateOutputType = {
   id: string | null
   dayNumber: number | null
-  trainingRoutineId: string | null
+  trainingRoutineWeekId: string | null
   isFinalized: boolean | null
 }
 
 export type RoutineDayCountAggregateOutputType = {
   id: number
   dayNumber: number
-  trainingRoutineId: number
+  trainingRoutineWeekId: number
   isFinalized: number
   _all: number
 }
@@ -68,21 +68,21 @@ export type RoutineDaySumAggregateInputType = {
 export type RoutineDayMinAggregateInputType = {
   id?: true
   dayNumber?: true
-  trainingRoutineId?: true
+  trainingRoutineWeekId?: true
   isFinalized?: true
 }
 
 export type RoutineDayMaxAggregateInputType = {
   id?: true
   dayNumber?: true
-  trainingRoutineId?: true
+  trainingRoutineWeekId?: true
   isFinalized?: true
 }
 
 export type RoutineDayCountAggregateInputType = {
   id?: true
   dayNumber?: true
-  trainingRoutineId?: true
+  trainingRoutineWeekId?: true
   isFinalized?: true
   _all?: true
 }
@@ -176,7 +176,7 @@ export type RoutineDayGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 export type RoutineDayGroupByOutputType = {
   id: string
   dayNumber: number
-  trainingRoutineId: string
+  trainingRoutineWeekId: string
   isFinalized: boolean
   _count: RoutineDayCountAggregateOutputType | null
   _avg: RoutineDayAvgAggregateOutputType | null
@@ -206,18 +206,18 @@ export type RoutineDayWhereInput = {
   NOT?: Prisma.RoutineDayWhereInput | Prisma.RoutineDayWhereInput[]
   id?: Prisma.StringFilter<"RoutineDay"> | string
   dayNumber?: Prisma.IntFilter<"RoutineDay"> | number
-  trainingRoutineId?: Prisma.StringFilter<"RoutineDay"> | string
+  trainingRoutineWeekId?: Prisma.StringFilter<"RoutineDay"> | string
   isFinalized?: Prisma.BoolFilter<"RoutineDay"> | boolean
-  trainingRoutine?: Prisma.XOR<Prisma.TrainingRoutineScalarRelationFilter, Prisma.TrainingRoutineWhereInput>
+  trainingRoutineWeek?: Prisma.XOR<Prisma.TrainingRoutineWeekScalarRelationFilter, Prisma.TrainingRoutineWeekWhereInput>
   routines?: Prisma.RoutineListRelationFilter
 }
 
 export type RoutineDayOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   dayNumber?: Prisma.SortOrder
-  trainingRoutineId?: Prisma.SortOrder
+  trainingRoutineWeekId?: Prisma.SortOrder
   isFinalized?: Prisma.SortOrder
-  trainingRoutine?: Prisma.TrainingRoutineOrderByWithRelationInput
+  trainingRoutineWeek?: Prisma.TrainingRoutineWeekOrderByWithRelationInput
   routines?: Prisma.RoutineOrderByRelationAggregateInput
 }
 
@@ -227,16 +227,16 @@ export type RoutineDayWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.RoutineDayWhereInput[]
   NOT?: Prisma.RoutineDayWhereInput | Prisma.RoutineDayWhereInput[]
   dayNumber?: Prisma.IntFilter<"RoutineDay"> | number
-  trainingRoutineId?: Prisma.StringFilter<"RoutineDay"> | string
+  trainingRoutineWeekId?: Prisma.StringFilter<"RoutineDay"> | string
   isFinalized?: Prisma.BoolFilter<"RoutineDay"> | boolean
-  trainingRoutine?: Prisma.XOR<Prisma.TrainingRoutineScalarRelationFilter, Prisma.TrainingRoutineWhereInput>
+  trainingRoutineWeek?: Prisma.XOR<Prisma.TrainingRoutineWeekScalarRelationFilter, Prisma.TrainingRoutineWeekWhereInput>
   routines?: Prisma.RoutineListRelationFilter
 }, "id">
 
 export type RoutineDayOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   dayNumber?: Prisma.SortOrder
-  trainingRoutineId?: Prisma.SortOrder
+  trainingRoutineWeekId?: Prisma.SortOrder
   isFinalized?: Prisma.SortOrder
   _count?: Prisma.RoutineDayCountOrderByAggregateInput
   _avg?: Prisma.RoutineDayAvgOrderByAggregateInput
@@ -251,7 +251,7 @@ export type RoutineDayScalarWhereWithAggregatesInput = {
   NOT?: Prisma.RoutineDayScalarWhereWithAggregatesInput | Prisma.RoutineDayScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"RoutineDay"> | string
   dayNumber?: Prisma.IntWithAggregatesFilter<"RoutineDay"> | number
-  trainingRoutineId?: Prisma.StringWithAggregatesFilter<"RoutineDay"> | string
+  trainingRoutineWeekId?: Prisma.StringWithAggregatesFilter<"RoutineDay"> | string
   isFinalized?: Prisma.BoolWithAggregatesFilter<"RoutineDay"> | boolean
 }
 
@@ -259,14 +259,14 @@ export type RoutineDayCreateInput = {
   id?: string
   dayNumber: number
   isFinalized?: boolean
-  trainingRoutine: Prisma.TrainingRoutineCreateNestedOneWithoutRoutineDaysInput
+  trainingRoutineWeek: Prisma.TrainingRoutineWeekCreateNestedOneWithoutRoutineDaysInput
   routines?: Prisma.RoutineCreateNestedManyWithoutRoutineDayInput
 }
 
 export type RoutineDayUncheckedCreateInput = {
   id?: string
   dayNumber: number
-  trainingRoutineId: string
+  trainingRoutineWeekId: string
   isFinalized?: boolean
   routines?: Prisma.RoutineUncheckedCreateNestedManyWithoutRoutineDayInput
 }
@@ -275,14 +275,14 @@ export type RoutineDayUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isFinalized?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  trainingRoutine?: Prisma.TrainingRoutineUpdateOneRequiredWithoutRoutineDaysNestedInput
+  trainingRoutineWeek?: Prisma.TrainingRoutineWeekUpdateOneRequiredWithoutRoutineDaysNestedInput
   routines?: Prisma.RoutineUpdateManyWithoutRoutineDayNestedInput
 }
 
 export type RoutineDayUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  trainingRoutineId?: Prisma.StringFieldUpdateOperationsInput | string
+  trainingRoutineWeekId?: Prisma.StringFieldUpdateOperationsInput | string
   isFinalized?: Prisma.BoolFieldUpdateOperationsInput | boolean
   routines?: Prisma.RoutineUncheckedUpdateManyWithoutRoutineDayNestedInput
 }
@@ -290,7 +290,7 @@ export type RoutineDayUncheckedUpdateInput = {
 export type RoutineDayCreateManyInput = {
   id?: string
   dayNumber: number
-  trainingRoutineId: string
+  trainingRoutineWeekId: string
   isFinalized?: boolean
 }
 
@@ -303,7 +303,7 @@ export type RoutineDayUpdateManyMutationInput = {
 export type RoutineDayUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  trainingRoutineId?: Prisma.StringFieldUpdateOperationsInput | string
+  trainingRoutineWeekId?: Prisma.StringFieldUpdateOperationsInput | string
   isFinalized?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
@@ -320,7 +320,7 @@ export type RoutineDayOrderByRelationAggregateInput = {
 export type RoutineDayCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   dayNumber?: Prisma.SortOrder
-  trainingRoutineId?: Prisma.SortOrder
+  trainingRoutineWeekId?: Prisma.SortOrder
   isFinalized?: Prisma.SortOrder
 }
 
@@ -331,14 +331,14 @@ export type RoutineDayAvgOrderByAggregateInput = {
 export type RoutineDayMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   dayNumber?: Prisma.SortOrder
-  trainingRoutineId?: Prisma.SortOrder
+  trainingRoutineWeekId?: Prisma.SortOrder
   isFinalized?: Prisma.SortOrder
 }
 
 export type RoutineDayMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   dayNumber?: Prisma.SortOrder
-  trainingRoutineId?: Prisma.SortOrder
+  trainingRoutineWeekId?: Prisma.SortOrder
   isFinalized?: Prisma.SortOrder
 }
 
@@ -351,45 +351,45 @@ export type RoutineDayNullableScalarRelationFilter = {
   isNot?: Prisma.RoutineDayWhereInput | null
 }
 
-export type RoutineDayCreateNestedManyWithoutTrainingRoutineInput = {
-  create?: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput> | Prisma.RoutineDayCreateWithoutTrainingRoutineInput[] | Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput[]
-  connectOrCreate?: Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineInput | Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineInput[]
-  createMany?: Prisma.RoutineDayCreateManyTrainingRoutineInputEnvelope
+export type RoutineDayCreateNestedManyWithoutTrainingRoutineWeekInput = {
+  create?: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput> | Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput[] | Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput[]
+  connectOrCreate?: Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineWeekInput | Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineWeekInput[]
+  createMany?: Prisma.RoutineDayCreateManyTrainingRoutineWeekInputEnvelope
   connect?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
 }
 
-export type RoutineDayUncheckedCreateNestedManyWithoutTrainingRoutineInput = {
-  create?: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput> | Prisma.RoutineDayCreateWithoutTrainingRoutineInput[] | Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput[]
-  connectOrCreate?: Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineInput | Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineInput[]
-  createMany?: Prisma.RoutineDayCreateManyTrainingRoutineInputEnvelope
+export type RoutineDayUncheckedCreateNestedManyWithoutTrainingRoutineWeekInput = {
+  create?: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput> | Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput[] | Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput[]
+  connectOrCreate?: Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineWeekInput | Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineWeekInput[]
+  createMany?: Prisma.RoutineDayCreateManyTrainingRoutineWeekInputEnvelope
   connect?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
 }
 
-export type RoutineDayUpdateManyWithoutTrainingRoutineNestedInput = {
-  create?: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput> | Prisma.RoutineDayCreateWithoutTrainingRoutineInput[] | Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput[]
-  connectOrCreate?: Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineInput | Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineInput[]
-  upsert?: Prisma.RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineInput | Prisma.RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineInput[]
-  createMany?: Prisma.RoutineDayCreateManyTrainingRoutineInputEnvelope
+export type RoutineDayUpdateManyWithoutTrainingRoutineWeekNestedInput = {
+  create?: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput> | Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput[] | Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput[]
+  connectOrCreate?: Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineWeekInput | Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineWeekInput[]
+  upsert?: Prisma.RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineWeekInput | Prisma.RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineWeekInput[]
+  createMany?: Prisma.RoutineDayCreateManyTrainingRoutineWeekInputEnvelope
   set?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
   disconnect?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
   delete?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
   connect?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
-  update?: Prisma.RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineInput | Prisma.RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineInput[]
-  updateMany?: Prisma.RoutineDayUpdateManyWithWhereWithoutTrainingRoutineInput | Prisma.RoutineDayUpdateManyWithWhereWithoutTrainingRoutineInput[]
+  update?: Prisma.RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineWeekInput | Prisma.RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineWeekInput[]
+  updateMany?: Prisma.RoutineDayUpdateManyWithWhereWithoutTrainingRoutineWeekInput | Prisma.RoutineDayUpdateManyWithWhereWithoutTrainingRoutineWeekInput[]
   deleteMany?: Prisma.RoutineDayScalarWhereInput | Prisma.RoutineDayScalarWhereInput[]
 }
 
-export type RoutineDayUncheckedUpdateManyWithoutTrainingRoutineNestedInput = {
-  create?: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput> | Prisma.RoutineDayCreateWithoutTrainingRoutineInput[] | Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput[]
-  connectOrCreate?: Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineInput | Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineInput[]
-  upsert?: Prisma.RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineInput | Prisma.RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineInput[]
-  createMany?: Prisma.RoutineDayCreateManyTrainingRoutineInputEnvelope
+export type RoutineDayUncheckedUpdateManyWithoutTrainingRoutineWeekNestedInput = {
+  create?: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput> | Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput[] | Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput[]
+  connectOrCreate?: Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineWeekInput | Prisma.RoutineDayCreateOrConnectWithoutTrainingRoutineWeekInput[]
+  upsert?: Prisma.RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineWeekInput | Prisma.RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineWeekInput[]
+  createMany?: Prisma.RoutineDayCreateManyTrainingRoutineWeekInputEnvelope
   set?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
   disconnect?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
   delete?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
   connect?: Prisma.RoutineDayWhereUniqueInput | Prisma.RoutineDayWhereUniqueInput[]
-  update?: Prisma.RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineInput | Prisma.RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineInput[]
-  updateMany?: Prisma.RoutineDayUpdateManyWithWhereWithoutTrainingRoutineInput | Prisma.RoutineDayUpdateManyWithWhereWithoutTrainingRoutineInput[]
+  update?: Prisma.RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineWeekInput | Prisma.RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineWeekInput[]
+  updateMany?: Prisma.RoutineDayUpdateManyWithWhereWithoutTrainingRoutineWeekInput | Prisma.RoutineDayUpdateManyWithWhereWithoutTrainingRoutineWeekInput[]
   deleteMany?: Prisma.RoutineDayScalarWhereInput | Prisma.RoutineDayScalarWhereInput[]
 }
 
@@ -409,44 +409,44 @@ export type RoutineDayUpdateOneWithoutRoutinesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RoutineDayUpdateToOneWithWhereWithoutRoutinesInput, Prisma.RoutineDayUpdateWithoutRoutinesInput>, Prisma.RoutineDayUncheckedUpdateWithoutRoutinesInput>
 }
 
-export type RoutineDayCreateWithoutTrainingRoutineInput = {
+export type RoutineDayCreateWithoutTrainingRoutineWeekInput = {
   id?: string
   dayNumber: number
   isFinalized?: boolean
   routines?: Prisma.RoutineCreateNestedManyWithoutRoutineDayInput
 }
 
-export type RoutineDayUncheckedCreateWithoutTrainingRoutineInput = {
+export type RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput = {
   id?: string
   dayNumber: number
   isFinalized?: boolean
   routines?: Prisma.RoutineUncheckedCreateNestedManyWithoutRoutineDayInput
 }
 
-export type RoutineDayCreateOrConnectWithoutTrainingRoutineInput = {
+export type RoutineDayCreateOrConnectWithoutTrainingRoutineWeekInput = {
   where: Prisma.RoutineDayWhereUniqueInput
-  create: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput>
+  create: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput>
 }
 
-export type RoutineDayCreateManyTrainingRoutineInputEnvelope = {
-  data: Prisma.RoutineDayCreateManyTrainingRoutineInput | Prisma.RoutineDayCreateManyTrainingRoutineInput[]
+export type RoutineDayCreateManyTrainingRoutineWeekInputEnvelope = {
+  data: Prisma.RoutineDayCreateManyTrainingRoutineWeekInput | Prisma.RoutineDayCreateManyTrainingRoutineWeekInput[]
   skipDuplicates?: boolean
 }
 
-export type RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineInput = {
+export type RoutineDayUpsertWithWhereUniqueWithoutTrainingRoutineWeekInput = {
   where: Prisma.RoutineDayWhereUniqueInput
-  update: Prisma.XOR<Prisma.RoutineDayUpdateWithoutTrainingRoutineInput, Prisma.RoutineDayUncheckedUpdateWithoutTrainingRoutineInput>
-  create: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineInput>
+  update: Prisma.XOR<Prisma.RoutineDayUpdateWithoutTrainingRoutineWeekInput, Prisma.RoutineDayUncheckedUpdateWithoutTrainingRoutineWeekInput>
+  create: Prisma.XOR<Prisma.RoutineDayCreateWithoutTrainingRoutineWeekInput, Prisma.RoutineDayUncheckedCreateWithoutTrainingRoutineWeekInput>
 }
 
-export type RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineInput = {
+export type RoutineDayUpdateWithWhereUniqueWithoutTrainingRoutineWeekInput = {
   where: Prisma.RoutineDayWhereUniqueInput
-  data: Prisma.XOR<Prisma.RoutineDayUpdateWithoutTrainingRoutineInput, Prisma.RoutineDayUncheckedUpdateWithoutTrainingRoutineInput>
+  data: Prisma.XOR<Prisma.RoutineDayUpdateWithoutTrainingRoutineWeekInput, Prisma.RoutineDayUncheckedUpdateWithoutTrainingRoutineWeekInput>
 }
 
-export type RoutineDayUpdateManyWithWhereWithoutTrainingRoutineInput = {
+export type RoutineDayUpdateManyWithWhereWithoutTrainingRoutineWeekInput = {
   where: Prisma.RoutineDayScalarWhereInput
-  data: Prisma.XOR<Prisma.RoutineDayUpdateManyMutationInput, Prisma.RoutineDayUncheckedUpdateManyWithoutTrainingRoutineInput>
+  data: Prisma.XOR<Prisma.RoutineDayUpdateManyMutationInput, Prisma.RoutineDayUncheckedUpdateManyWithoutTrainingRoutineWeekInput>
 }
 
 export type RoutineDayScalarWhereInput = {
@@ -455,7 +455,7 @@ export type RoutineDayScalarWhereInput = {
   NOT?: Prisma.RoutineDayScalarWhereInput | Prisma.RoutineDayScalarWhereInput[]
   id?: Prisma.StringFilter<"RoutineDay"> | string
   dayNumber?: Prisma.IntFilter<"RoutineDay"> | number
-  trainingRoutineId?: Prisma.StringFilter<"RoutineDay"> | string
+  trainingRoutineWeekId?: Prisma.StringFilter<"RoutineDay"> | string
   isFinalized?: Prisma.BoolFilter<"RoutineDay"> | boolean
 }
 
@@ -463,13 +463,13 @@ export type RoutineDayCreateWithoutRoutinesInput = {
   id?: string
   dayNumber: number
   isFinalized?: boolean
-  trainingRoutine: Prisma.TrainingRoutineCreateNestedOneWithoutRoutineDaysInput
+  trainingRoutineWeek: Prisma.TrainingRoutineWeekCreateNestedOneWithoutRoutineDaysInput
 }
 
 export type RoutineDayUncheckedCreateWithoutRoutinesInput = {
   id?: string
   dayNumber: number
-  trainingRoutineId: string
+  trainingRoutineWeekId: string
   isFinalized?: boolean
 }
 
@@ -493,37 +493,37 @@ export type RoutineDayUpdateWithoutRoutinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isFinalized?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  trainingRoutine?: Prisma.TrainingRoutineUpdateOneRequiredWithoutRoutineDaysNestedInput
+  trainingRoutineWeek?: Prisma.TrainingRoutineWeekUpdateOneRequiredWithoutRoutineDaysNestedInput
 }
 
 export type RoutineDayUncheckedUpdateWithoutRoutinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  trainingRoutineId?: Prisma.StringFieldUpdateOperationsInput | string
+  trainingRoutineWeekId?: Prisma.StringFieldUpdateOperationsInput | string
   isFinalized?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
-export type RoutineDayCreateManyTrainingRoutineInput = {
+export type RoutineDayCreateManyTrainingRoutineWeekInput = {
   id?: string
   dayNumber: number
   isFinalized?: boolean
 }
 
-export type RoutineDayUpdateWithoutTrainingRoutineInput = {
+export type RoutineDayUpdateWithoutTrainingRoutineWeekInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isFinalized?: Prisma.BoolFieldUpdateOperationsInput | boolean
   routines?: Prisma.RoutineUpdateManyWithoutRoutineDayNestedInput
 }
 
-export type RoutineDayUncheckedUpdateWithoutTrainingRoutineInput = {
+export type RoutineDayUncheckedUpdateWithoutTrainingRoutineWeekInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isFinalized?: Prisma.BoolFieldUpdateOperationsInput | boolean
   routines?: Prisma.RoutineUncheckedUpdateManyWithoutRoutineDayNestedInput
 }
 
-export type RoutineDayUncheckedUpdateManyWithoutTrainingRoutineInput = {
+export type RoutineDayUncheckedUpdateManyWithoutTrainingRoutineWeekInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayNumber?: Prisma.IntFieldUpdateOperationsInput | number
   isFinalized?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -563,9 +563,9 @@ export type RoutineDayCountOutputTypeCountRoutinesArgs<ExtArgs extends runtime.T
 export type RoutineDaySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   dayNumber?: boolean
-  trainingRoutineId?: boolean
+  trainingRoutineWeekId?: boolean
   isFinalized?: boolean
-  trainingRoutine?: boolean | Prisma.TrainingRoutineDefaultArgs<ExtArgs>
+  trainingRoutineWeek?: boolean | Prisma.TrainingRoutineWeekDefaultArgs<ExtArgs>
   routines?: boolean | Prisma.RoutineDay$routinesArgs<ExtArgs>
   _count?: boolean | Prisma.RoutineDayCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["routineDay"]>
@@ -573,49 +573,49 @@ export type RoutineDaySelect<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type RoutineDaySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   dayNumber?: boolean
-  trainingRoutineId?: boolean
+  trainingRoutineWeekId?: boolean
   isFinalized?: boolean
-  trainingRoutine?: boolean | Prisma.TrainingRoutineDefaultArgs<ExtArgs>
+  trainingRoutineWeek?: boolean | Prisma.TrainingRoutineWeekDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["routineDay"]>
 
 export type RoutineDaySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   dayNumber?: boolean
-  trainingRoutineId?: boolean
+  trainingRoutineWeekId?: boolean
   isFinalized?: boolean
-  trainingRoutine?: boolean | Prisma.TrainingRoutineDefaultArgs<ExtArgs>
+  trainingRoutineWeek?: boolean | Prisma.TrainingRoutineWeekDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["routineDay"]>
 
 export type RoutineDaySelectScalar = {
   id?: boolean
   dayNumber?: boolean
-  trainingRoutineId?: boolean
+  trainingRoutineWeekId?: boolean
   isFinalized?: boolean
 }
 
-export type RoutineDayOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "dayNumber" | "trainingRoutineId" | "isFinalized", ExtArgs["result"]["routineDay"]>
+export type RoutineDayOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "dayNumber" | "trainingRoutineWeekId" | "isFinalized", ExtArgs["result"]["routineDay"]>
 export type RoutineDayInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  trainingRoutine?: boolean | Prisma.TrainingRoutineDefaultArgs<ExtArgs>
+  trainingRoutineWeek?: boolean | Prisma.TrainingRoutineWeekDefaultArgs<ExtArgs>
   routines?: boolean | Prisma.RoutineDay$routinesArgs<ExtArgs>
   _count?: boolean | Prisma.RoutineDayCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RoutineDayIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  trainingRoutine?: boolean | Prisma.TrainingRoutineDefaultArgs<ExtArgs>
+  trainingRoutineWeek?: boolean | Prisma.TrainingRoutineWeekDefaultArgs<ExtArgs>
 }
 export type RoutineDayIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  trainingRoutine?: boolean | Prisma.TrainingRoutineDefaultArgs<ExtArgs>
+  trainingRoutineWeek?: boolean | Prisma.TrainingRoutineWeekDefaultArgs<ExtArgs>
 }
 
 export type $RoutineDayPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "RoutineDay"
   objects: {
-    trainingRoutine: Prisma.$TrainingRoutinePayload<ExtArgs>
+    trainingRoutineWeek: Prisma.$TrainingRoutineWeekPayload<ExtArgs>
     routines: Prisma.$RoutinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     dayNumber: number
-    trainingRoutineId: string
+    trainingRoutineWeekId: string
     isFinalized: boolean
   }, ExtArgs["result"]["routineDay"]>
   composites: {}
@@ -1011,7 +1011,7 @@ readonly fields: RoutineDayFieldRefs;
  */
 export interface Prisma__RoutineDayClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  trainingRoutine<T extends Prisma.TrainingRoutineDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrainingRoutineDefaultArgs<ExtArgs>>): Prisma.Prisma__TrainingRoutineClient<runtime.Types.Result.GetResult<Prisma.$TrainingRoutinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  trainingRoutineWeek<T extends Prisma.TrainingRoutineWeekDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrainingRoutineWeekDefaultArgs<ExtArgs>>): Prisma.Prisma__TrainingRoutineWeekClient<runtime.Types.Result.GetResult<Prisma.$TrainingRoutineWeekPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   routines<T extends Prisma.RoutineDay$routinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoutineDay$routinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoutinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1044,7 +1044,7 @@ export interface Prisma__RoutineDayClient<T, Null = never, ExtArgs extends runti
 export interface RoutineDayFieldRefs {
   readonly id: Prisma.FieldRef<"RoutineDay", 'String'>
   readonly dayNumber: Prisma.FieldRef<"RoutineDay", 'Int'>
-  readonly trainingRoutineId: Prisma.FieldRef<"RoutineDay", 'String'>
+  readonly trainingRoutineWeekId: Prisma.FieldRef<"RoutineDay", 'String'>
   readonly isFinalized: Prisma.FieldRef<"RoutineDay", 'Boolean'>
 }
     

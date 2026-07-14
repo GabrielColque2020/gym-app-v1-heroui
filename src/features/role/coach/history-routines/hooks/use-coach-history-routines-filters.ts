@@ -10,28 +10,31 @@ export function useCoachHistoryRoutinesFilters() {
 	const [ activeMonth, setActiveMonth ] = useState( getCurrentMonth() );
 	const [ activeYear, setActiveYear ] = useState( getCurrentYear() );
 
-	function handleSearch() {
-		setActiveMonth( Number( selectedMonth ) );
-		setActiveYear( Number( selectedYear ) );
+	function handleMonthChange( month: string ) {
+		setSelectedMonth( month );
+
+		const nextMonth = Number( month );
+
+		if (Number.isInteger( nextMonth ) && nextMonth >= 1 && nextMonth <= 12) {
+			setActiveMonth( nextMonth );
+		}
 	}
 
-	function handleClear() {
-		const month = getCurrentMonth();
-		const year = getCurrentYear();
+	function handleYearChange( year: string ) {
+		setSelectedYear( year );
 
-		setSelectedMonth( String( month ) );
-		setSelectedYear( String( year ) );
-		setActiveMonth( month );
-		setActiveYear( year );
+		const nextYear = Number( year );
+
+		if (Number.isInteger( nextYear ) && nextYear >= 2000 && nextYear <= 2100) {
+			setActiveYear( nextYear );
+		}
 	}
 
 	return {
 		activeMonth,
 		activeYear,
-		handleClear,
-		handleSearch,
-		onMonthChange: setSelectedMonth,
-		onYearChange: setSelectedYear,
+		onMonthChange: handleMonthChange,
+		onYearChange: handleYearChange,
 		selectedMonth,
 		selectedYear,
 	};

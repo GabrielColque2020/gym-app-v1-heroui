@@ -1,8 +1,9 @@
 "use client";
 
 import type { Key } from "react-aria-components/Breadcrumbs";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Card, Typography } from "@heroui/react";
+import { useReactToPrint } from "react-to-print";
 
 import { PageBreadcrumbs } from "@/components/common";
 import { TrainingRoutinesDayCard } from "@/features/role/student/training-routine/components/training-routines-day-card";
@@ -12,13 +13,14 @@ import { TrainingRoutinesFilter } from "@/features/role/student/training-routine
 import { TrainingRoutinesLoadingState } from "@/features/role/student/training-routine/components/training-routines-loading-state";
 import { TrainingRoutinesWeekSelector } from "@/features/role/student/training-routine/components/training-routines-week-selector";
 import { useTrainingRoutines } from "@/features/role/student/training-routine/hooks/use-training-routines";
+import { TrainingRoutinePrintable } from "@/features/training-routine/components/shared/training-routine-printable";
 
 type TrainingRoutinesPageContentProps = {
 	initialMonth?: number;
 	initialYear?: number;
 };
 
-const EMPTY_ROUTINES: never[] = [];
+const EMPTY_ROUTINE_WEEKS: never[] = [];
 
 function getCurrentMonth() {
 	return new Date().getMonth() + 1;
@@ -39,18 +41,33 @@ export default function TrainingRoutinesPageContent( {
 		month: activeMonth,
 		year: activeYear,
 	} );
+	const printRef = useRef<HTMLDivElement | null>( null );
+	const handlePrint = useReactToPrint( {
+		contentRef: printRef,
+		documentTitle: `rutina-${ activeYear }-${ String( activeMonth ).padStart( 2, "0" ) }`,
+		pageStyle: `
+			@page {
+				size: A4 portrait;
+				margin: 6mm;
+			}
+			body {
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+		`,
+	} );
 
-	const routines = data?.routines ?? EMPTY_ROUTINES;
+	const routineWeeks = data?.routineMonth.weeks ?? EMPTY_ROUTINE_WEEKS;
 	const selectedWeekExists =
 		selectedWeekId !== null &&
-		routines.some( ( routine ) => routine.id === selectedWeekId );
-	const effectiveSelectedWeekId = selectedWeekExists ? selectedWeekId : ( routines[ 0 ]?.id ?? "" );
+		routineWeeks.some( ( routineWeek ) => routineWeek.id === selectedWeekId );
+	const effectiveSelectedWeekId = selectedWeekExists ? selectedWeekId : ( routineWeeks[ 0 ]?.id ?? "" );
 	const selectedRoutine = useMemo(
 		() =>
-			routines.find( ( routine ) => routine.id === effectiveSelectedWeekId ) ??
-			routines[ 0 ] ??
+			routineWeeks.find( ( routineWeek ) => routineWeek.id === effectiveSelectedWeekId ) ??
+			routineWeeks[ 0 ] ??
 			null,
-		[ effectiveSelectedWeekId, routines ],
+		[ effectiveSelectedWeekId, routineWeeks ],
 	);
 
 	function handleSearch( value: { month: string; year: string } ) {
@@ -64,14 +81,6 @@ export default function TrainingRoutinesPageContent( {
 		}
 	}
 
-	function handleClear() {
-		setActiveMonth( initialMonth );
-		setActiveYear( initialYear );
-	}
-
-	const defaultMonth = String( initialMonth ).padStart( 2, "0" );
-	const defaultYear = String( initialYear );
-
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
@@ -84,10 +93,13 @@ export default function TrainingRoutinesPageContent( {
 			/>
 
 			<TrainingRoutinesFilter
-				defaultMonth={ defaultMonth }
-				defaultYear={ defaultYear }
+				defaultMonth={ String( activeMonth ).padStart( 2, "0" ) }
+				defaultYear={ String( activeYear ) }
+				isPrintDisabled={ routineWeeks.length === 0 }
 				isRefreshing={ isFetching && !isLoading }
-				onClear={ handleClear }
+				onPrint={ () => {
+					void handlePrint();
+				} }
 				onRefresh={ () => {
 					void refetch();
 				} }
@@ -105,11 +117,11 @@ export default function TrainingRoutinesPageContent( {
 						>
 							Cargando semanas
 						</div>
-					) : routines.length > 0 ? (
+					) : routineWeeks.length > 0 ? (
 						<TrainingRoutinesWeekSelector
 							activeMonth={ activeMonth }
 							activeYear={ activeYear }
-							routines={ routines }
+							routines={ routineWeeks }
 							onSelectionChange={ setSelectedWeekId }
 						/>
 					) : null }
@@ -126,7 +138,7 @@ export default function TrainingRoutinesPageContent( {
 				) : null }
 
 				{ !isLoading && !isError ? (
-					routines.length === 0 ? (
+					routineWeeks.length === 0 ? (
 						<TrainingRoutinesEmptyState month={ activeMonth } year={ activeYear }/>
 					) : (
 						<Card.Content className={ "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 p-3" }>
@@ -137,8 +149,16 @@ export default function TrainingRoutinesPageContent( {
 					)
 				) : null }
 			</Card>
-
-
+			{ data ? (
+				<TrainingRoutinePrintable
+					contentRef={ printRef }
+					month={ activeMonth }
+					routineObjective={ data.routineMonth.objective }
+					routineWeeks={ routineWeeks }
+					studentName={ data.student.name }
+					year={ activeYear }
+				/>
+			) : null }
 		</div>
 	);
 }

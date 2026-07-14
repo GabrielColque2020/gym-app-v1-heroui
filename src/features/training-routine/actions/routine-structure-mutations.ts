@@ -34,38 +34,53 @@ async function upsertRoutineStructure( input: RoutineStructureInput ) {
 	await assertStudentExists( input.studentId, session.sub );
 
 	const selectedWeeks = input.weeks.map( ( week ) => week.week );
-	const existingRoutines = await prisma.trainingRoutine.findMany( {
-		select: {
-			id: true,
-			week: true,
-		},
-		where: {
-			month: input.month,
-			studentId: input.studentId,
-			week: {
-				in: selectedWeeks,
-			},
-			year: input.year,
-		},
-	} );
-	const existingRoutineByWeek = new Map( existingRoutines.map( ( routine ) => [ routine.week, routine ] ) );
+	const normalizedObjective = input.objective.trim() || null;
 
-	await prisma.$transaction( [
-		prisma.trainingRoutine.deleteMany( {
-			where: {
+	await prisma.$transaction( async ( tx ) => {
+		const routineMonth = await tx.trainingRoutineMonth.upsert( {
+			create: {
 				month: input.month,
+				objective: normalizedObjective,
 				studentId: input.studentId,
+				year: input.year,
+			},
+			select: {
+				id: true,
+				weeks: {
+					select: {
+						id: true,
+						week: true,
+					},
+				},
+			},
+			update: {
+				objective: normalizedObjective,
+			},
+			where: {
+				studentId_month_year: {
+					month: input.month,
+					studentId: input.studentId,
+					year: input.year,
+				},
+			},
+		} );
+
+		const existingRoutineByWeek = new Map( routineMonth.weeks.map( ( routineWeek ) => [ routineWeek.week, routineWeek ] ) );
+
+		await tx.trainingRoutineWeek.deleteMany( {
+			where: {
+				trainingRoutineMonthId: routineMonth.id,
 				week: {
 					notIn: selectedWeeks,
 				},
-				year: input.year,
 			},
-		} ),
-		...input.weeks.map( ( weekInput ) => {
+		} );
+
+		for (const weekInput of input.weeks) {
 			const existingRoutine = existingRoutineByWeek.get( weekInput.week );
 
 			if (existingRoutine) {
-				return prisma.trainingRoutine.update( {
+				await tx.trainingRoutineWeek.update( {
 					data: {
 						name: `Semana ${ weekInput.week }`,
 					},
@@ -73,76 +88,75 @@ async function upsertRoutineStructure( input: RoutineStructureInput ) {
 						id: existingRoutine.id,
 					},
 				} );
+				continue;
 			}
 
-			return prisma.trainingRoutine.create( {
+			await tx.trainingRoutineWeek.create( {
 				data: {
-					month: input.month,
 					name: `Semana ${ weekInput.week }`,
-					objective: null,
-					studentId: input.studentId,
+					trainingRoutineMonthId: routineMonth.id,
 					week: weekInput.week,
-					year: input.year,
 				},
 			} );
-		} ),
-	] );
+		}
 
-	const routines = await prisma.trainingRoutine.findMany( {
-		select: {
-			id: true,
-			week: true,
-		},
-		where: {
-			month: input.month,
-			studentId: input.studentId,
-			week: {
-				in: selectedWeeks,
+		const routineWeeks = await tx.trainingRoutineWeek.findMany( {
+			select: {
+				id: true,
+				week: true,
 			},
-			year: input.year,
-		},
-	} );
-	const routineIdByWeek = new Map( routines.map( ( routine ) => [ routine.week, routine.id ] ) );
-	const existingDays = await prisma.routineDay.findMany( {
-		select: {
-			dayNumber: true,
-			trainingRoutineId: true,
-		},
-		where: {
-			trainingRoutineId: {
-				in: routines.map( ( routine ) => routine.id ),
+			where: {
+				trainingRoutineMonthId: routineMonth.id,
+				week: {
+					in: selectedWeeks,
+				},
 			},
-		},
-	} );
-	const existingDayKeys = new Set(
-		existingDays.map( ( day ) => `${ day.trainingRoutineId }:${ day.dayNumber }` )
-	);
-	const dayOperations = input.weeks.flatMap( ( weekInput ) => {
-		const routineId = routineIdByWeek.get( weekInput.week );
+		} );
 
-		if (!routineId) return [];
+		const routineWeekIdByWeek = new Map( routineWeeks.map( ( routineWeek ) => [ routineWeek.week, routineWeek.id ] ) );
+		const existingDays = await tx.routineDay.findMany( {
+			select: {
+				dayNumber: true,
+				trainingRoutineWeekId: true,
+			},
+			where: {
+				trainingRoutineWeekId: {
+					in: routineWeeks.map( ( routineWeek ) => routineWeek.id ),
+				},
+			},
+		} );
+		const existingDayKeys = new Set(
+			existingDays.map( ( day ) => `${ day.trainingRoutineWeekId }:${ day.dayNumber }` ),
+		);
 
-		return [
-			prisma.routineDay.deleteMany( {
+		for (const weekInput of input.weeks) {
+			const routineWeekId = routineWeekIdByWeek.get( weekInput.week );
+
+			if (!routineWeekId) continue;
+
+			await tx.routineDay.deleteMany( {
 				where: {
 					dayNumber: {
 						notIn: weekInput.days,
 					},
-					trainingRoutineId: routineId,
+					trainingRoutineWeekId: routineWeekId,
 				},
-			} ),
-			...weekInput.days.map( ( dayNumber ) =>
-				existingDayKeys.has( `${ routineId }:${ dayNumber }` ) ? null : prisma.routineDay.create( {
+			} );
+
+			for (const dayNumber of weekInput.days) {
+				if (existingDayKeys.has( `${ routineWeekId }:${ dayNumber }` )) {
+					continue;
+				}
+
+				await tx.routineDay.create( {
 					data: {
 						dayNumber,
-						trainingRoutineId: routineId,
+						trainingRoutineWeekId: routineWeekId,
 					},
-				} )
-			).filter( ( operation ) => operation !== null ),
-		];
+				} );
+			}
+		}
 	} );
-
-	await prisma.$transaction( dayOperations );
 }
 
 export async function createTrainingRoutineStructureAction( input: RoutineStructureInput ) {
@@ -179,7 +193,7 @@ export async function deleteTrainingRoutineStructureAction( input: RoutineStruct
 		const session = await requireCoachSession( "eliminar rutinas" );
 		await assertStudentExists( input.studentId, session.sub );
 
-		await prisma.trainingRoutine.deleteMany( {
+		await prisma.trainingRoutineMonth.deleteMany( {
 			where: {
 				month: input.month,
 				studentId: input.studentId,

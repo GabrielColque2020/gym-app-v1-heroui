@@ -86,6 +86,8 @@ export default function CoachTrainingRoutinesPageContent( {
 
 	if (!data) return null;
 
+	const routineWeeks = data.routineMonth.weeks;
+
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
@@ -97,22 +99,23 @@ export default function CoachTrainingRoutinesPageContent( {
 			<CoachTrainingRoutineFilter
 				month={ month }
 				isRefreshing={ isRefreshing }
-				routineCount={ data.routines.length }
+				routineCount={ routineWeeks.length }
+				routineObjective={ data.routineMonth.objective }
 				onRefreshAction={ handleRefresh }
-				routines={ data.routines }
+				routineWeeks={ routineWeeks }
 				studentId={ studentId }
 				studentName={ data.student.name }
 				year={ year }
 			/>
 
-			{ data.routines.length === 0 ? (
+			{ routineWeeks.length === 0 ? (
 				<CoachTrainingRoutinesEmptyState month={ month } studentName={ data.student.name } year={ year }/>
 			) : (
 				<>
 					<div className={ "hidden md:flex" }>
 						<CoachTrainingRoutineCardDesktop
 							month={ month }
-							routines={ data.routines }
+							routineWeeks={ routineWeeks }
 							studentId={ studentId }
 							year={ year }
 						/>
@@ -121,8 +124,10 @@ export default function CoachTrainingRoutinesPageContent( {
 					<div className={ "flex md:hidden" }>
 						<CoachTrainingRoutineCardMobile
 							month={ month }
-							routines={ data.routines }
+							routineObjective={ data.routineMonth.objective }
+							routineWeeks={ routineWeeks }
 							studentId={ studentId }
+							studentName={ data.student.name }
 							year={ year }
 						/>
 					</div>

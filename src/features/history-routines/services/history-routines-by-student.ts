@@ -36,7 +36,7 @@ const historyRoutineStudentSelect = {
 	name: true,
 } satisfies Prisma.UserSelect;
 
-const historyRoutineInclude = {
+const historyRoutineWeekInclude = {
 	routineDays: {
 		include: {
 			routines: {
@@ -70,14 +70,14 @@ const historyRoutineInclude = {
 			dayNumber: "asc",
 		},
 	},
-} satisfies Prisma.TrainingRoutineInclude;
+} satisfies Prisma.TrainingRoutineWeekInclude;
 
 type HistoryRoutineStudent = Prisma.UserGetPayload<{
 	select: typeof historyRoutineStudentSelect;
 }>;
 
-type HistoryRoutineTrainingRoutine = Prisma.TrainingRoutineGetPayload<{
-	include: typeof historyRoutineInclude;
+type HistoryRoutineTrainingRoutine = Prisma.TrainingRoutineWeekGetPayload<{
+	include: typeof historyRoutineWeekInclude;
 }>;
 
 function validateMonth( month: number ) {
@@ -121,18 +121,24 @@ export async function getHistoryRoutinesByStudentBase( {
 		throw new Error( studentNotFoundMessage );
 	}
 
-	const routines = await prisma.trainingRoutine.findMany( {
+	const routineMonth = await prisma.trainingRoutineMonth.findFirst( {
 		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
-		include: historyRoutineInclude,
-		orderBy: {
-			week: "asc",
+		include: {
+			weeks: {
+				include: historyRoutineWeekInclude,
+				orderBy: {
+					week: "asc",
+				},
+			},
 		},
 		where: {
 			month,
 			studentId,
 			year,
 		},
-	} ) as HistoryRoutineTrainingRoutine[];
+	} ) as ( { objective: string | null; weeks: HistoryRoutineTrainingRoutine[] } ) | null;
+
+	const routines = routineMonth?.weeks ?? [];
 
 	const progressEntries = ( await prisma.exerciseProgress.findMany( {
 		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
@@ -207,7 +213,7 @@ export async function getHistoryRoutinesByStudentBase( {
 			return {
 				date: latestEntry.date.toISOString(),
 				dayNumber: routineDay.dayNumber,
-				description: formatDefaultDescription( routine.objective, routine.name ),
+				description: formatDefaultDescription( routineMonth?.objective ?? null, routine.name ),
 				exercises,
 				id: `${ routine.id }:${ routineDay.id }`,
 				title: formatDefaultTitle( routine.week, routineDay.dayNumber ),

@@ -59,19 +59,24 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 		[ weekGroups ],
 	);
 
-	function handleSearch() {
-		setActiveMonth( Number( selectedMonth ) );
-		setActiveYear( Number( selectedYear ) );
+	function handleMonthChange( month: string ) {
+		setSelectedMonth( month );
+
+		const nextMonth = Number( month );
+
+		if (Number.isInteger( nextMonth ) && nextMonth >= 1 && nextMonth <= 12) {
+			setActiveMonth( nextMonth );
+		}
 	}
 
-	function handleClear() {
-		const month = getCurrentMonth();
-		const year = getCurrentYear();
+	function handleYearChange( year: string ) {
+		setSelectedYear( year );
 
-		setSelectedMonth( String( month ) );
-		setSelectedYear( String( year ) );
-		setActiveMonth( month );
-		setActiveYear( year );
+		const nextYear = Number( year );
+
+		if (Number.isInteger( nextYear ) && nextYear >= 2000 && nextYear <= 2100) {
+			setActiveYear( nextYear );
+		}
 	}
 
 	function handleWeekToggle( week: number ) {
@@ -100,13 +105,11 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 
 			<HistoryRoutineMonthFilters
 				monthOptions={ MONTH_OPTIONS }
-				onClearAction={ handleClear }
-				onMonthChangeAction={ setSelectedMonth }
+				onMonthChangeAction={ handleMonthChange }
 				onRefreshAction={ () => {
 					void refetch();
 				} }
-				onSearchAction={ handleSearch }
-				onYearChangeAction={ setSelectedYear }
+				onYearChangeAction={ handleYearChange }
 				isRefreshing={ isFetching && !isLoading }
 				selectedMonth={ selectedMonth }
 				selectedYear={ selectedYear }

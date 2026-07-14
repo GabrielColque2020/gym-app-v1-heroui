@@ -16,7 +16,7 @@ type StudentRecord = Prisma.UserGetPayload<{
 	select: typeof studentSelect;
 }>;
 
-const trainingRoutineInclude = {
+const trainingRoutineWeekInclude = {
 	routineDays: {
 		include: {
 			routines: {
@@ -29,10 +29,14 @@ const trainingRoutineInclude = {
 			dayNumber: "asc",
 		},
 	},
-} satisfies Prisma.TrainingRoutineInclude;
+} satisfies Prisma.TrainingRoutineWeekInclude;
 
-type TrainingRoutineRecord = Prisma.TrainingRoutineGetPayload<{
-	include: typeof trainingRoutineInclude;
+type TrainingRoutineMonthRecord = Prisma.TrainingRoutineMonthGetPayload<{
+	include: {
+		weeks: {
+			include: typeof trainingRoutineWeekInclude;
+		};
+	};
 }>;
 
 export type StudentDashboardSummary = {
@@ -84,7 +88,7 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 		const now = new Date();
 		const currentMonth = now.getMonth() + 1;
 		const currentYear = now.getFullYear();
-		const [ student, currentMonthRoutines, mealPlans, latestProgress ] = await Promise.all( [
+		const [ student, currentMonthRoutineMonth, mealPlans, latestProgress ] = await Promise.all( [
 			prisma.user.findFirst( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 				select: studentSelect,
@@ -94,18 +98,22 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 					role: "STUDENT",
 				},
 			} ) as Promise<StudentRecord | null>,
-			prisma.trainingRoutine.findMany( {
+			prisma.trainingRoutineMonth.findFirst( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
-				include: trainingRoutineInclude,
-				orderBy: [
-					{ week: "asc" },
-				],
+				include: {
+					weeks: {
+						include: trainingRoutineWeekInclude,
+						orderBy: [
+							{ week: "asc" },
+						],
+					},
+				},
 				where: {
 					month: currentMonth,
 					studentId: session.sub,
 					year: currentYear,
 				},
-			} ) as unknown as Promise<TrainingRoutineRecord[]>,
+			} ) as Promise<TrainingRoutineMonthRecord | null>,
 			prisma.mealPlan.findMany( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 				orderBy: {
@@ -140,6 +148,7 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 			throw new Error( "No se encontro un estudiante activo para mostrar el dashboard." );
 		}
 
+		const currentMonthRoutines = currentMonthRoutineMonth?.weeks ?? [];
 		const orderedRoutineDays = currentMonthRoutines.flatMap( ( routine ) =>
 			routine.routineDays.map( ( day ) => ( {
 				dayNumber: day.dayNumber,

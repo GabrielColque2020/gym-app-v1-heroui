@@ -10,7 +10,10 @@ import {
 	validateCopySourceInput,
 	validateCopyWeeksInput,
 } from "@/features/training-routine/services/training-routine-copy";
-import type { TrainingRoutine } from "@/features/training-routine/services/training-routines-by-student";
+import type {
+	TrainingRoutineMonth,
+	TrainingRoutineWeek,
+} from "@/features/training-routine/services/training-routines-by-student";
 
 async function assertStudentExists( studentId: string, coachId: string ) {
 	const student = await prisma.user.findFirst( {
@@ -30,32 +33,43 @@ async function assertStudentExists( studentId: string, coachId: string ) {
 	}
 }
 
-async function getSourceRoutines( studentId: string, month: number, year: number, weeks?: number[] ): Promise<TrainingRoutine[]> {
-	return prisma.trainingRoutine.findMany( {
+async function getSourceRoutineMonth( studentId: string, month: number, year: number ): Promise<TrainingRoutineMonth | null> {
+	return prisma.trainingRoutineMonth.findFirst( {
 		include: {
-			routineDays: {
+			weeks: {
 				include: {
-					routines: {
+					routineDays: {
+						include: {
+							routines: {
+								orderBy: {
+									order: "asc",
+								},
+							},
+						},
 						orderBy: {
-							order: "asc",
+							dayNumber: "asc",
 						},
 					},
 				},
 				orderBy: {
-					dayNumber: "asc",
+					week: "asc",
 				},
 			},
-		},
-		orderBy: {
-			week: "asc",
 		},
 		where: {
 			month,
 			studentId,
-			week: weeks ? { in: weeks } : undefined,
 			year,
 		},
-	} ) as unknown as TrainingRoutine[];
+	} ) as unknown as TrainingRoutineMonth | null;
+}
+
+function getSourceRoutineWeeks( routineMonth: TrainingRoutineMonth | null, weeks?: number[] ): TrainingRoutineWeek[] {
+	if (!routineMonth) return [];
+
+	return weeks
+		? routineMonth.weeks.filter( ( routineWeek ) => weeks.includes( routineWeek.week ) )
+		: routineMonth.weeks;
 }
 
 export async function getTrainingRoutineCopySourceAction( input: TrainingRoutineCopySourceInput ) {
@@ -64,28 +78,29 @@ export async function getTrainingRoutineCopySourceAction( input: TrainingRoutine
 		const session = await requireCoachSession( "consultar la rutina origen" );
 		await assertStudentExists( input.studentId, session.sub );
 
-		const routines = await getSourceRoutines( input.studentId, input.month, input.year );
-		const dayCount = routines.reduce( ( count, routine ) => count + routine.routineDays.length, 0 );
-		const exerciseCount = routines.reduce(
-			( count, routine ) => count + routine.routineDays.reduce(
+		const routineMonth = await getSourceRoutineMonth( input.studentId, input.month, input.year );
+		const routineWeeks = getSourceRoutineWeeks( routineMonth );
+		const dayCount = routineWeeks.reduce( ( count, routineWeek ) => count + routineWeek.routineDays.length, 0 );
+		const exerciseCount = routineWeeks.reduce(
+			( count, routineWeek ) => count + routineWeek.routineDays.reduce(
 				( dayTotal, day ) => dayTotal + day.routines.length,
 				0,
 			),
 			0,
 		);
 
-		return {
-			dayCount,
-			exerciseCount,
-			hasRoutine: routines.length > 0,
-			routines: routines.map( ( routine ) => ( {
-				dayCount: routine.routineDays.length,
-				exerciseCount: routine.routineDays.reduce( ( count, day ) => count + day.routines.length, 0 ),
-				id: routine.id,
-				week: routine.week,
-			} ) ),
-			weekCount: routines.length,
-		};
+			return {
+				dayCount,
+				exerciseCount,
+				hasRoutine: routineWeeks.length > 0,
+				routineWeeks: routineWeeks.map( ( routineWeek ) => ( {
+					dayCount: routineWeek.routineDays.length,
+					exerciseCount: routineWeek.routineDays.reduce( ( count, day ) => count + day.routines.length, 0 ),
+					id: routineWeek.id,
+					week: routineWeek.week,
+				} ) ),
+				weekCount: routineWeeks.length,
+			};
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al consultar la rutina origen.";
 
@@ -99,14 +114,15 @@ export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutine
 		const session = await requireCoachSession( "copiar la rutina" );
 		await assertStudentExists( input.studentId, session.sub );
 
-		const sourceRoutines = await getSourceRoutines( input.studentId, input.sourceMonth, input.sourceYear );
+		const sourceRoutineMonth = await getSourceRoutineMonth( input.studentId, input.sourceMonth, input.sourceYear );
+		const sourceRoutines = getSourceRoutineWeeks( sourceRoutineMonth );
 
 		if (sourceRoutines.length === 0) {
 			throw new Error( "El mes origen no tiene rutina para copiar." );
 		}
 
 		await prisma.$transaction( async ( tx ) => {
-			await tx.trainingRoutine.deleteMany( {
+			await tx.trainingRoutineMonth.deleteMany( {
 				where: {
 					month: input.destinationMonth,
 					studentId: input.studentId,
@@ -114,15 +130,24 @@ export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutine
 				},
 			} );
 
+			const destinationRoutineMonth = await tx.trainingRoutineMonth.create( {
+				data: {
+					month: input.destinationMonth,
+					objective: sourceRoutineMonth?.objective ?? null,
+					studentId: input.studentId,
+					year: input.destinationYear,
+				},
+				select: {
+					id: true,
+				},
+			} );
+
 			for (const sourceRoutine of sourceRoutines) {
-				const destinationRoutine = await tx.trainingRoutine.create( {
+				const destinationRoutine = await tx.trainingRoutineWeek.create( {
 					data: {
-						month: input.destinationMonth,
 						name: sourceRoutine.name,
-						objective: sourceRoutine.objective,
-						studentId: input.studentId,
+						trainingRoutineMonthId: destinationRoutineMonth.id,
 						week: sourceRoutine.week,
-						year: input.destinationYear,
 					},
 					select: {
 						id: true,
@@ -134,7 +159,7 @@ export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutine
 						data: {
 							dayNumber: sourceDay.dayNumber,
 							isFinalized: false,
-							trainingRoutineId: destinationRoutine.id,
+							trainingRoutineWeekId: destinationRoutine.id,
 						},
 						select: {
 							id: true,
@@ -174,12 +199,8 @@ export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutine
 		await assertStudentExists( input.studentId, session.sub );
 
 		const sourceWeeks = input.weekMappings.map( ( mapping ) => mapping.sourceWeek );
-		const sourceRoutines = await getSourceRoutines(
-			input.studentId,
-			input.sourceMonth,
-			input.sourceYear,
-			sourceWeeks,
-		);
+		const sourceRoutineMonth = await getSourceRoutineMonth( input.studentId, input.sourceMonth, input.sourceYear );
+		const sourceRoutines = getSourceRoutineWeeks( sourceRoutineMonth, sourceWeeks );
 		const sourceRoutineByWeek = new Map( sourceRoutines.map( ( routine ) => [ routine.week, routine ] ) );
 
 		for (const mapping of input.weekMappings) {
@@ -191,14 +212,29 @@ export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutine
 		const destinationWeeks = input.weekMappings.map( ( mapping ) => mapping.destinationWeek );
 
 		await prisma.$transaction( async ( tx ) => {
-			await tx.trainingRoutine.deleteMany( {
-				where: {
+			const destinationRoutineMonth = await tx.trainingRoutineMonth.upsert( {
+				create: {
 					month: input.destinationMonth,
+					objective: sourceRoutineMonth?.objective ?? null,
 					studentId: input.studentId,
+					year: input.destinationYear,
+				},
+				update: {},
+				where: {
+					studentId_month_year: {
+						month: input.destinationMonth,
+						studentId: input.studentId,
+						year: input.destinationYear,
+					},
+				},
+			} );
+
+			await tx.trainingRoutineWeek.deleteMany( {
+				where: {
+					trainingRoutineMonthId: destinationRoutineMonth.id,
 					week: {
 						in: destinationWeeks,
 					},
-					year: input.destinationYear,
 				},
 			} );
 
@@ -207,14 +243,11 @@ export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutine
 
 				if (!sourceRoutine) continue;
 
-				const destinationRoutine = await tx.trainingRoutine.create( {
+				const destinationRoutine = await tx.trainingRoutineWeek.create( {
 					data: {
-						month: input.destinationMonth,
 						name: `Semana ${ mapping.destinationWeek }`,
-						objective: sourceRoutine.objective,
-						studentId: input.studentId,
+						trainingRoutineMonthId: destinationRoutineMonth.id,
 						week: mapping.destinationWeek,
-						year: input.destinationYear,
 					},
 					select: {
 						id: true,
@@ -226,7 +259,7 @@ export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutine
 						data: {
 							dayNumber: sourceDay.dayNumber,
 							isFinalized: false,
-							trainingRoutineId: destinationRoutine.id,
+							trainingRoutineWeekId: destinationRoutine.id,
 						},
 						select: {
 							id: true,
