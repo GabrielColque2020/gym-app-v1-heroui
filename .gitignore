@@ -4,6 +4,7 @@ node_modules
 .pnp.*
 .idea
 .junie
+.pnpm-store
 
 # next.js
 /.next/
