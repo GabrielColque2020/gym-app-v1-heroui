@@ -2,6 +2,7 @@
   "name": "@heroui-pro/template-dashboard",
   "private": true,
   "version": "1.0.4",
+  "packageManager": "pnpm@10.12.4",
   "type": "module",
   "scripts": {
     "dev": "next dev --port 3003",
