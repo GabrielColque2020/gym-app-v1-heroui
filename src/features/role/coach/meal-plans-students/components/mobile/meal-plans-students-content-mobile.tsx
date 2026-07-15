@@ -117,7 +117,6 @@ export function MealPlansStudentsContentMobile( { students }: MealPlansStudentsC
 
 					<ListPagination
 						currentPage={ currentPage }
-						mode={ "compact" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }

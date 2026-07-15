@@ -3,10 +3,7 @@ import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboa
 import { Card, Chip } from "@heroui/react";
 
 import { CoachDashboardStudentRowActions } from "@/features/role/coach/dashboard/components/coach-dashboard-student-row-actions";
-import {
-	buildCoachDashboardRoutineStatusLabel,
-	formatCoachDashboardDateLabel,
-} from "@/features/role/coach/dashboard/components/coach-dashboard-students-table.utils";
+import { buildCoachDashboardRoutineStatusLabel, formatCoachDashboardDateLabel, } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table.utils";
 
 type CoachDashboardStudentMobileCardProps = {
 	currentPeriodLabel: string;
@@ -14,12 +11,12 @@ type CoachDashboardStudentMobileCardProps = {
 };
 
 export function CoachDashboardStudentMobileCard( {
-	currentPeriodLabel,
-	student,
-}: CoachDashboardStudentMobileCardProps ) {
+													 currentPeriodLabel,
+													 student,
+												 }: CoachDashboardStudentMobileCardProps ) {
 	return (
-		<Card className={ "border border-border bg-surface-secondary" } variant={ "default" }>
-			<Card.Content className={ "space-y-3 px-4 py-4" }>
+		<Card className={ "border border-border py-2" } variant={ "default" }>
+			<Card.Content className={ "space-y-3 p-3" }>
 				<div className={ "flex items-start justify-between gap-3" }>
 					<div className={ "min-w-0" }>
 						<p className={ "truncate text-sm font-semibold text-foreground" }>{ student.name }</p>

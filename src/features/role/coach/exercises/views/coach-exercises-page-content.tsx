@@ -67,7 +67,7 @@ export default function CoachExercisesPageContent() {
 						<ExercisesContentMobile exercises={ exercises }/>
 					</div>
 				</Card.Content>
-				<Card.Footer className={ "border-t border-border p-3" }>
+				<Card.Footer className={ "border-t border-border px-3 py-2" }>
 					<div className={ "text-sm text-muted" }>
 						Desactivar conserva el ejercicio en rutinas y progresos historicos.
 					</div>

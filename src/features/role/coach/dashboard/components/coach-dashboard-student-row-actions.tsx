@@ -5,11 +5,7 @@ import { useRouter } from "next/navigation";
 import { CalendarClock, Dumbbell, MoreVertical, UtensilsCrossed } from "lucide-react";
 
 import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary";
-import {
-	buildStudentHistoryHref,
-	buildStudentMealPlanHref,
-	buildStudentTrainingRoutineHref,
-} from "@/features/role/coach/dashboard/services/coach-dashboard-links";
+import { buildStudentHistoryHref, buildStudentMealPlanHref, buildStudentTrainingRoutineHref, } from "@/features/role/coach/dashboard/services/coach-dashboard-links";
 
 type CoachDashboardStudentRowActionsProps = {
 	student: CoachDashboardStudentSummary;
@@ -20,15 +16,15 @@ export function CoachDashboardStudentRowActions( { student }: CoachDashboardStud
 
 	return (
 		<Dropdown>
-			<Button
-				isIconOnly
-				aria-label={ `Opciones de ${ student.name }` }
-				className={ "size-8 shrink-0 text-foreground" }
-				size={ "sm" }
-				variant={ "ghost" }
-			>
-				<MoreVertical className={ "size-4" }/>
-			</Button>
+			<div className={ "flex items-center justify-end gap-2" }>
+				<Button
+					aria-label={ `Opciones de ${ student.name }` }
+					className={ "size-8 shrink-0 text-foreground" }
+					variant={ "secondary" }
+				>
+					<MoreVertical className={ "size-4" }/>
+				</Button>
+			</div>
 			<Dropdown.Popover placement={ "bottom end" }>
 				<Dropdown.Menu onAction={ ( key ) => {
 					if (key === "routine") {

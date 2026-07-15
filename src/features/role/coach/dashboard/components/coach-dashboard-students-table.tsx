@@ -63,7 +63,7 @@ export function CoachDashboardStudentsTable( {
 							} }
 						>
 							<Label>Buscar estudiante</Label>
-							<SearchField.Group>
+							<SearchField.Group className={ "border border-border" }>
 								<SearchField.SearchIcon/>
 								<SearchField.Input placeholder={ "Nombre, email o DNI..." }/>
 								<SearchField.ClearButton/>

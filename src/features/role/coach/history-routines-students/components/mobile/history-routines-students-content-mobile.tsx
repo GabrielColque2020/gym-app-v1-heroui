@@ -117,7 +117,6 @@ export function HistoryRoutinesStudentsContentMobile( { students }: HistoryRouti
 
 					<ListPagination
 						currentPage={ currentPage }
-						mode={ "compact" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }

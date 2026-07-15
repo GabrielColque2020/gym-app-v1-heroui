@@ -7,8 +7,8 @@ type CoachTrainingRoutineCardMobileHeaderProps = {
 };
 
 export function CoachTrainingRoutineCardMobileHeader( {
-	routineCount,
-}: CoachTrainingRoutineCardMobileHeaderProps ) {
+														  routineCount,
+													  }: CoachTrainingRoutineCardMobileHeaderProps ) {
 	return (
 		<Card.Header className={ "gap-3 pb-3 pt-4" }>
 			<Card.Content className={ "min-w-0" }>

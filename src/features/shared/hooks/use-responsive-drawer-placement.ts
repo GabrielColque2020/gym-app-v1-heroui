@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-export type ResponsiveDrawerPlacement = "bottom" | "right";
-
 // Resuelve si el drawer debe abrirse desde abajo o desde la derecha segun el ancho de pantalla.
 export function useResponsiveDrawerPlacement() {
 	const [ isDesktop, setIsDesktop ] = useState( () => {

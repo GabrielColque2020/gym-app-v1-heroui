@@ -120,7 +120,6 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 					<ListPagination
 						currentPage={ currentPage }
 						itemLabel={ "estudiantes" }
-						mode={ "full" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }

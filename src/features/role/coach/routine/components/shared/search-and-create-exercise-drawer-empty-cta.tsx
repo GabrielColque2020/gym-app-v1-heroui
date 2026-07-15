@@ -8,7 +8,7 @@ export function SearchAndCreateExerciseDrawerEmptyCta( {
 														   onPress,
 													   }: SearchAndCreateExerciseDrawerEmptyCtaProps ) {
 	return (
-		<Card className={ "border border-border px-4 py-4" }>
+		<Card className={ "border  px-4 py-4 border-warning-soft bg-warning-soft/60" }>
 			<p className={ "text-sm font-semibold text-foreground" }>No encontras el ejercicio?</p>
 			<p className={ "mt-1 text-sm text-muted" }>
 				Crea una nueva entrada en el catalogo y vuelve a sumarla al borrador.

@@ -61,7 +61,6 @@ export function StudentsContentMobile( { students }: StudentsContentMobileProps 
 
 					<ListPagination
 						currentPage={ currentPage }
-						mode={ "compact" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }

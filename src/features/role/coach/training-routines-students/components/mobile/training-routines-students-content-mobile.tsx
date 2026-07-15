@@ -117,7 +117,6 @@ export function TrainingRoutinesStudentsContentMobile( { students }: TrainingRou
 
 					<ListPagination
 						currentPage={ currentPage }
-						mode={ "compact" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }

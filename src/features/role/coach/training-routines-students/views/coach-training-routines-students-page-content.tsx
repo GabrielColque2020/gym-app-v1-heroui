@@ -111,7 +111,7 @@ export default function CoachTrainingRoutinesStudentsPageContent() {
 						<TrainingRoutinesStudentsContentMobile students={ students }/>
 					</div>
 				</Card.Content>
-				<Card.Footer className={ "border-t border-border p-3" }>
+				<Card.Footer className={ "border-t border-border px-3 py-2" }>
 					<div className={ "text-sm text-muted" }>
 						Solo se muestran estudiantes activos.
 					</div>

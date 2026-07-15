@@ -154,7 +154,6 @@ export function HistoryRoutinesStudentsContentDesktop( { students }: HistoryRout
 					<ListPagination
 						currentPage={ currentPage }
 						itemLabel={ "estudiantes activos" }
-						mode={ "full" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }

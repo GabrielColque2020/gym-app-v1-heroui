@@ -110,7 +110,6 @@ export function SearchAndCreateExerciseDrawer( {
 							<ListPagination
 								currentPage={ pagination.currentPage }
 								itemLabel={ "ejercicios" }
-								mode={ "compact" }
 								onPageChangeAction={ changePage }
 								showingFrom={ pagination.showingFrom }
 								showingTo={ pagination.showingTo }

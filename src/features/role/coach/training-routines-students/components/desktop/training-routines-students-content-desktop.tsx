@@ -156,7 +156,6 @@ export function TrainingRoutinesStudentsContentDesktop( { students }: TrainingRo
 					<ListPagination
 						currentPage={ currentPage }
 						itemLabel={ "estudiantes activos" }
-						mode={ "full" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }
