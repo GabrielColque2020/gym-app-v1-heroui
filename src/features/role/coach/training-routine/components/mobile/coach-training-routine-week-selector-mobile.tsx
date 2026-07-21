@@ -11,10 +11,10 @@ type CoachTrainingRoutineWeekSelectorMobileProps = {
 };
 
 export function CoachTrainingRoutineWeekSelectorMobile( {
-	onSelectedRoutineIdChangeAction,
-	routineWeeks,
-	selectedRoutineId,
-}: CoachTrainingRoutineWeekSelectorMobileProps ) {
+															onSelectedRoutineIdChangeAction,
+															routineWeeks,
+															selectedRoutineId,
+														}: CoachTrainingRoutineWeekSelectorMobileProps ) {
 	return (
 		<div className={ "grid gap-2" }>
 			<div className={ "flex items-center justify-between gap-3" }>
@@ -34,11 +34,11 @@ export function CoachTrainingRoutineWeekSelectorMobile( {
 						{ routineWeeks.map( ( routineWeek ) => (
 							<RadioButtonGroup.Item
 								key={ routineWeek.id }
-								className={ "w-full gap-2 px-3 py-2.5" }
+								className={ "w-full gap-2" }
 								value={ routineWeek.id }
 							>
 								<RadioButtonGroup.Indicator/>
-								<RadioButtonGroup.ItemContent>
+								<RadioButtonGroup.ItemContent className={ "mr-4" }>
 									<Label className={ "text-sm" }>
 										Semana { routineWeek.week }
 									</Label>

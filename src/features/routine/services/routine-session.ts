@@ -39,6 +39,10 @@ export type {
 	StudentRoutineVariantOption,
 } from "@/features/routine/services/routine-session.types";
 
+function pickFirstText( ...values: Array<string | null | undefined> ) {
+	return values.find( ( value ) => value?.trim() )?.trim() ?? null;
+}
+
 function getExerciseTotals( exercise: StudentRoutineExercise, useCurrentValues: boolean ) {
 	const values = exercise.sets.map( ( set ) => ( {
 		weight: useCurrentValues ? set.currentWeight : set.previousWeight,
@@ -155,6 +159,14 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				baseName: exercise?.name ?? routine.exercise?.name ?? "Ejercicio",
 				equipment: formatBodyPart( selectedVariant?.bodyPart ?? routine.exercise?.bodyPart ?? "CHEST" ),
 				id: exerciseId,
+				imageUrl: pickFirstText(
+					routine.exercise?.imageUrl,
+					routine.exercise?.globalExercise?.imageUrl,
+				),
+				instructions: pickFirstText(
+					routine.exercise?.instructions,
+					routine.exercise?.globalExercise?.instructions,
+				),
 				muscleGroup: routine.observation ?? detail.trainingRoutine.objective ?? "",
 				name: selectedVariant?.name ?? exercise?.name ?? "Ejercicio",
 				notes: exercise?.tips ?? routine.observation ?? undefined,
@@ -163,12 +175,28 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				variantSelectionExplicit: false,
 				restTime: Math.max( setCount * 30, 0 ),
 				sets: currentSets,
+				videoUrl: pickFirstText(
+					routine.exercise?.videoUrl,
+					routine.exercise?.globalExercise?.videoUrl,
+				),
 				variantOptions: routine.variants.map( ( variant ) => ( {
 					active: variant.variantExercise.active,
 					bodyPart: variant.variantExercise.bodyPart,
 					id: variant.variantExercise.id,
+					imageUrl: pickFirstText(
+						variant.variantExercise.imageUrl,
+						variant.variantExercise.globalExercise?.imageUrl,
+					),
+					instructions: pickFirstText(
+						variant.variantExercise.instructions,
+						variant.variantExercise.globalExercise?.instructions,
+					),
 					lastSession: buildSessionHistory( getProgressEntriesByVariant( detail, variant.variantExercise.id ) ),
 					name: variant.variantExercise.name,
+					videoUrl: pickFirstText(
+						variant.variantExercise.videoUrl,
+						variant.variantExercise.globalExercise?.videoUrl,
+					),
 				} ) ),
 			};
 		} );
@@ -285,8 +313,11 @@ export function serializeStudentRoutineSession( session: StudentRoutineSession )
 					active: variant.active,
 					bodyPart: variant.bodyPart,
 					id: variant.id,
+					imageUrl: variant.imageUrl ?? null,
+					instructions: variant.instructions ?? null,
 					lastSession: serializeSessionHistory( variant.lastSession ),
 					name: variant.name,
+					videoUrl: variant.videoUrl ?? null,
 				} ) )
 			: [];
 

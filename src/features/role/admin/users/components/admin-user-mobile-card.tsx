@@ -17,16 +17,17 @@ export function AdminUserMobileCard( { user }: AdminUserMobileCardProps ) {
 
 	return (
 		<Card className={ "border border-border" } variant={ "default" }>
-			<Card.Content className={ "space-y-3 p-4" }>
+			<Card.Content className={ "space-y-3 py-2 pl-2" }>
 				<div className={ "flex items-start justify-between gap-3" }>
 					<div className={ "min-w-0" }>
-						<p className={ "truncate text-base font-semibold text-foreground" }>{ user.name }</p>
-						<p className={ "truncate text-sm text-muted" }>{ user.email }</p>
+						<p className={ "truncate text-base font-semibold text-foreground" }>Nombre: { user.name }</p>
+						<p className={ "truncate text-sm text-muted" }>Email: { user.email }</p>
 					</div>
-					<Chip color={ user.active ? "success" : "danger" } size={ "sm" } variant={ "soft" }>
-						{ user.active ? "Activo" : "Inactivo" }
-					</Chip>
+					<AdminUserRowActions user={ user }/>
 				</div>
+				<Chip color={ user.active ? "success" : "danger" } size={ "sm" } variant={ "soft" }>
+					{ user.active ? "Activo" : "Inactivo" }
+				</Chip>
 
 				<div className={ "grid grid-cols-2 gap-3 text-sm" }>
 					<div>
@@ -41,10 +42,6 @@ export function AdminUserMobileCard( { user }: AdminUserMobileCardProps ) {
 						<p className={ "text-muted" }>Coach</p>
 						<p className={ "font-medium text-foreground" }>{ coachLabel }</p>
 					</div>
-				</div>
-
-				<div className={ "flex items-center justify-between gap-2 pt-1" }>
-					<AdminUserRowActions user={ user }/>
 				</div>
 			</Card.Content>
 		</Card>

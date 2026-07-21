@@ -38,6 +38,18 @@ export const QUERY_ACCELERATE_CACHE = {
 } as const;
 
 export const QUERY_DEFAULTS = {
+	admin: {
+		gcTime: Infinity,
+		refetchIntervalInBackground: true,
+		refetchOnMount: false,
+		refetchOnReconnect: false,
+		refetchOnWindowFocus: false,
+		// 1 hora de datos estables en React Query.
+		staleTime: QUERY_TIME_BASE,
+		// 2 horas entre refetch automaticos.
+		refetchInterval: 2 * 60 * 60 * 1000, // 2 hora
+		retry: 2,
+	},
 	coach: {
 		gcTime: Infinity,
 		refetchIntervalInBackground: true,

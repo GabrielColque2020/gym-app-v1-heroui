@@ -1,7 +1,7 @@
 "use client";
 
 import type { NavItem } from "@/constants/nav-items";
-import { FOOTER_ITEMS, NAV_ITEMS } from "@/constants/nav-items";
+import { NAV_ITEMS } from "@/constants/nav-items";
 
 import { Avatar } from "@heroui/react";
 import { Sidebar, useSidebar } from "@heroui-pro/react";
@@ -68,7 +68,6 @@ function SidebarContents( {
 	const { isMobile, isOpen } = useSidebar();
 	const isCollapsed = !isMobile && !isOpen;
 	const visibleNavItems = NAV_ITEMS.filter( ( item ) => isNavItemVisible( item, userRole ) );
-	const visibleFooterItems = FOOTER_ITEMS.filter( ( item ) => isNavItemVisible( item, userRole ) );
 
 	return (
 		<>
@@ -97,20 +96,6 @@ function SidebarContents( {
 					</Sidebar.Menu>
 				</Sidebar.Group>
 			</Sidebar.Content>
-			<Sidebar.Footer>
-				<Sidebar.Menu aria-label={ "Account" }>
-					{ visibleFooterItems.map( ( item ) => (
-						<SidebarNavItem
-							key={ item.href ?? item.label }
-							basePath={ basePath }
-							disableNavigation={ disableNavigation }
-							idPrefix={ idPrefix }
-							item={ item }
-							pathname={ pathname }
-						/>
-					) ) }
-				</Sidebar.Menu>
-			</Sidebar.Footer>
 		</>
 	);
 }

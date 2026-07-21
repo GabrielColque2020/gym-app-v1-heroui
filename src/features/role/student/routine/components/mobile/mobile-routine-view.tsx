@@ -1,4 +1,4 @@
-﻿import { Button, ScrollShadow } from "@heroui/react";
+﻿import { Button } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 
@@ -14,6 +14,7 @@ interface MobileRoutineViewProps {
 	canSaveProgress: boolean;
 	isPending: boolean;
 	latestProgressDate: Date | null;
+	routineObservation: string | null;
 	routineStatusDescription: string;
 	onSave: () => void;
 	onSetUpdate: ( exerciseId: string, setId: string, updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }> ) => void;
@@ -25,6 +26,7 @@ export default function MobileRoutineView( {
 	canSaveProgress,
 	isPending,
 	latestProgressDate,
+	routineObservation,
 	routineStatusDescription,
 	onSave,
 	onSetUpdate,
@@ -38,8 +40,8 @@ export default function MobileRoutineView( {
 				<>
 					<div className={ "mb-4 grid gap-3" }>
 						<RoutineSessionOverviewCards
-							exercises={ exercises }
 							latestProgressDate={ latestProgressDate }
+							routineObservation={ routineObservation }
 							routineStatusDescription={ routineStatusDescription }
 						/>
 					</div>
@@ -47,20 +49,15 @@ export default function MobileRoutineView( {
 					<Carousel opts={ { loop: true } } setApi={ setApi }>
 						<Carousel.Content>
 							{ exercises.map( ( exercise ) => (
-								<Carousel.Item key={ exercise.id } className={ "px-2" }>
+								<Carousel.Item key={ exercise.id } className={ "flex self-stretch px-2" }>
 									<MobileExerciseCard exercise={ exercise } onVariantChangeAction={ onVariantChangeAction }>
-										<ScrollShadow className={ "h-75 pr-4" } size={ 80 } visibility={ "none" }>
-											<div className={ "space-y-4" }>
-												{ exercise.sets.map( ( set ) => (
-													<MobileExerciseSetCard
-														key={ set.id }
-														exerciseId={ exercise.id }
-														onSetUpdate={ onSetUpdate }
-														set={ set }
-													/>
-												) ) }
-											</div>
-										</ScrollShadow>
+										{ /*<ScrollShadow className={ "h-75 pr-1" } size={ 80 } visibility={ "none" }>*/ }
+											<MobileExerciseSetCard
+												exerciseId={ exercise.id }
+												onSetUpdate={ onSetUpdate }
+												sets={ exercise.sets }
+											/>
+										{ /*</ScrollShadow>*/ }
 									</MobileExerciseCard>
 								</Carousel.Item>
 							) ) }
@@ -90,4 +87,3 @@ export default function MobileRoutineView( {
 		</div>
 	);
 }
-

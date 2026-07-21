@@ -33,6 +33,8 @@ export interface Exercise {
 	name: string;
 	baseName: string;
 	equipment: string;
+	imageUrl?: string | null;
+	instructions?: string | null;
 	muscleGroup: string;
 	variantExerciseId: string | null;
 	variantSelectionExplicit: boolean;
@@ -40,6 +42,7 @@ export interface Exercise {
 	sets: ExerciseSet[];
 	notes?: string;
 	lastSession: ExerciseSessionHistory | null;
+	videoUrl?: string | null;
 	variantOptions: ExerciseVariantOption[];
 }
 
@@ -48,7 +51,10 @@ export interface ExerciseVariantOption {
 	bodyPart: string;
 	id: string;
 	lastSession: ExerciseSessionHistory | null;
+	imageUrl?: string | null;
+	instructions?: string | null;
 	name: string;
+	videoUrl?: string | null;
 }
 
 export interface WorkoutSession {

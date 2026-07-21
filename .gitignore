@@ -41,3 +41,5 @@ next-env.d.ts
 /app/generated/prisma
 /prisma/migrations
 /src/generated
+/public/exercises-dataset/images
+/public/exercises-dataset/videos

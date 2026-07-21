@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 
 import { emptyToNull } from "@/features/exercises/services/exercise-form";
+import { buildCoachExerciseSearchName, mapCategoryToBodyPart } from "@/features/role/coach/exercises/services/coach-exercise-form";
 import type { SaveRoutineDayExercisesActionInput } from "@/features/routine/actions/routine-day-mutations";
 import type { RoutineDayDetail } from "@/features/routine/services/routine-day-detail";
 import { validateRoutineDayDraft, type SaveRoutineDayExerciseInput } from "@/features/routine/services/routine-day-editor";
@@ -34,28 +35,156 @@ export function validateNormalizedRoutineDayExercises( exercises: NormalizedRout
 	}
 }
 
-export async function assertRoutineCatalogExercisesAvailable(
+async function resolveCoachExerciseIds(
+	coachId: string,
 	exercises: NormalizedRoutineDayExerciseInput[],
 ) {
 	if (exercises.length === 0) {
-		return;
+		return exercises;
 	}
 
-	const existingExercises = await prisma.exercise.findMany( {
+	const requestedIds = exercises.map( ( exercise ) => exercise.exerciseId );
+	const existingExercises = await prisma.exerciseCoach.findMany( {
 		select: {
 			id: true,
 		},
 		where: {
 			active: true,
 			id: {
-				in: exercises.map( ( exercise ) => exercise.exerciseId ),
+				in: requestedIds,
+			},
+		},
+	} );
+	const existingExerciseIds = new Set( existingExercises.map( ( exercise ) => exercise.id ) );
+	const missingIds = requestedIds.filter( ( exerciseId ) => !existingExerciseIds.has( exerciseId ) );
+
+	if (missingIds.length === 0) {
+		return exercises;
+	}
+
+	const globalExercises = await prisma.exerciseGlobal.findMany( {
+		select: {
+			active: true,
+			category: true,
+			equipment: true,
+			externalId: true,
+			id: true,
+			imageUrl: true,
+			instructions: true,
+			muscleGroup: true,
+			name: true,
+			target: true,
+			videoUrl: true,
+		},
+		where: {
+			active: true,
+			id: {
+				in: missingIds,
+			},
+		},
+	} );
+	const existingOverrides = await prisma.exerciseCoach.findMany( {
+		select: {
+			globalExerciseId: true,
+			id: true,
+		},
+		where: {
+			active: true,
+			coachId,
+			globalExerciseId: {
+				in: globalExercises.map( ( exercise ) => exercise.id ),
+			},
+		},
+	} );
+	const overrideIdByGlobalExerciseId = new Map(
+		existingOverrides
+			.filter( ( exercise ) => Boolean( exercise.globalExerciseId ) )
+			.map( ( exercise ) => [ exercise.globalExerciseId as string, exercise.id ] ),
+	);
+
+	for (const globalExercise of globalExercises) {
+		if (overrideIdByGlobalExerciseId.has( globalExercise.id )) {
+			continue;
+		}
+
+		const override = await prisma.exerciseCoach.upsert( {
+			create: {
+				active: globalExercise.active,
+				bodyPart: mapCategoryToBodyPart( globalExercise.category ),
+				category: globalExercise.category,
+				coachId,
+				equipment: globalExercise.equipment,
+				externalId: globalExercise.externalId,
+				globalExerciseId: globalExercise.id,
+				imageUrl: globalExercise.imageUrl,
+				instructions: globalExercise.instructions,
+				isOverride: true,
+				muscleGroup: globalExercise.muscleGroup,
+				name: globalExercise.name,
+				searchName: buildCoachExerciseSearchName( {
+					category: globalExercise.category,
+					equipment: globalExercise.equipment,
+					instructions: globalExercise.instructions ?? "",
+					muscleGroup: globalExercise.muscleGroup,
+					name: globalExercise.name,
+					target: globalExercise.target,
+				} ),
+				target: globalExercise.target,
+				tips: globalExercise.instructions,
+				videoUrl: globalExercise.videoUrl,
+			},
+			update: {
+				active: globalExercise.active,
+			},
+			where: {
+				coachId_globalExerciseId: {
+					coachId,
+					globalExerciseId: globalExercise.id,
+				},
+			},
+		} );
+
+		overrideIdByGlobalExerciseId.set( globalExercise.id, override.id );
+	}
+
+	const resolvedExercises = exercises.map( ( exercise ) => {
+		if (existingExerciseIds.has( exercise.exerciseId )) {
+			return exercise;
+		}
+
+		const overrideId = overrideIdByGlobalExerciseId.get( exercise.exerciseId );
+
+		return overrideId
+			? {
+				...exercise,
+				exerciseId: overrideId,
+			}
+			: exercise;
+	} );
+	const resolvedExistingExercises = await prisma.exerciseCoach.findMany( {
+		select: {
+			id: true,
+		},
+		where: {
+			active: true,
+			id: {
+				in: resolvedExercises.map( ( exercise ) => exercise.exerciseId ),
 			},
 		},
 	} );
 
-	if (existingExercises.length !== exercises.length) {
+	if (resolvedExistingExercises.length !== exercises.length) {
 		throw new Error( "Uno o mas ejercicios ya no estan disponibles en el catalogo activo." );
 	}
+
+	return resolvedExercises;
+}
+
+export async function assertRoutineCatalogExercisesAvailable(
+	coachId: string,
+	exercises: NormalizedRoutineDayExerciseInput[],
+) {
+	return resolveCoachExerciseIds( coachId, exercises );
 }
 
 export async function persistRoutineDayExercises(

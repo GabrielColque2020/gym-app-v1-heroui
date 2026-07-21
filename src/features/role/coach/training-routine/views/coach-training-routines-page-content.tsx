@@ -121,16 +121,14 @@ export default function CoachTrainingRoutinesPageContent( {
 						/>
 					</div>
 
-					<div className={ "flex md:hidden" }>
-						<CoachTrainingRoutineCardMobile
-							month={ month }
-							routineObjective={ data.routineMonth.objective }
-							routineWeeks={ routineWeeks }
-							studentId={ studentId }
-							studentName={ data.student.name }
-							year={ year }
-						/>
-					</div>
+ 					<div className={ "flex md:hidden" }>
+ 						<CoachTrainingRoutineCardMobile
+ 							month={ month }
+ 							routineWeeks={ routineWeeks }
+ 							studentId={ studentId }
+ 							year={ year }
+ 						/>
+ 					</div>
 				</>
 			) }
 		</div>

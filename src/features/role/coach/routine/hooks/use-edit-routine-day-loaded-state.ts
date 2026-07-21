@@ -12,6 +12,10 @@ import { useRoutineDayDraft } from "@/features/routine/hooks/use-routine-day-dra
 import { useSaveRoutineDayExercises } from "@/features/routine/hooks/use-routine-day-mutations";
 import { mapDraftToSaveInput } from "@/features/routine/services/routine-day-editor";
 
+function isRequiredRoutineFieldComplete( value: string ) {
+	return value.trim().length > 0;
+}
+
 type UseEditRoutineDayLoadedStateParams = {
 	data: RoutineDayDetailBase;
 	isRefreshing: boolean;
@@ -47,6 +51,15 @@ export function useEditRoutineDayLoadedState( {
 		sourceRoutines: data.routines,
 	} );
 	const routine = data.trainingRoutine;
+	const incompleteRequiredFieldsCount = draftRoutines.filter(
+		( draftRoutine ) =>
+			!isRequiredRoutineFieldComplete( draftRoutine.sets ) ||
+			!isRequiredRoutineFieldComplete( draftRoutine.reps ),
+	).length;
+	const requiredFieldsMessage = incompleteRequiredFieldsCount > 0
+		? `Completa series y repeticiones en ${ incompleteRequiredFieldsCount } ${ incompleteRequiredFieldsCount === 1 ? "ejercicio" : "ejercicios" } para habilitar Guardar cambios.`
+		: null;
+	const isSaveDisabled = !draftRoutines.length || Boolean( validationError ) || Boolean( requiredFieldsMessage ) || saveRoutineDay.isPending;
 
 	function handleAddExercise( exercise: ExerciseListItem, order: number ) {
 		const result = addExercise( exercise, order );
@@ -96,6 +109,14 @@ export function useEditRoutineDayLoadedState( {
 	}, [ handleConfirmRefresh, isDirty, isRefreshing ] );
 
 	const handleSave = useCallback( async () => {
+		if (requiredFieldsMessage) {
+			toast.danger( "No se puede guardar", {
+				description: requiredFieldsMessage,
+			} );
+
+			return;
+		}
+
 		if (validationError) {
 			toast.danger( "No se puede guardar", {
 				description: validationError,
@@ -119,7 +140,7 @@ export function useEditRoutineDayLoadedState( {
 				description: "No se pudieron guardar los cambios del dia.",
 			} );
 		}
-	}, [ draftRoutines, routineDayId, saveRoutineDay, studentId, validationError ] );
+	}, [ draftRoutines, requiredFieldsMessage, routineDayId, saveRoutineDay, studentId, validationError ] );
 
 	return {
 		addedExerciseIds,
@@ -131,8 +152,10 @@ export function useEditRoutineDayLoadedState( {
 		handleSave,
 		hasHydrated,
 		isRefreshConfirmOpen,
+		isSaveDisabled,
 		isSaving: saveRoutineDay.isPending,
 		resetRefreshConfirmOpen: () => setIsRefreshConfirmOpen( false ),
+		requiredFieldsMessage,
 		routineName: routine.name || `Semana ${ routine.week }`,
 		validationError,
 		updateExerciseField,

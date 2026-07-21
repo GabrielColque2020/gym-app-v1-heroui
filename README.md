@@ -53,6 +53,8 @@ Notas:
 - `DATABASE_URL` es obligatoria para Prisma y para el seed.
 - `AUTH_SESSION_SECRET` es la opcion recomendada para firmar la sesion.
 - Si `AUTH_SESSION_SECRET` no existe, el proyecto todavia puede caer en `AUTH_SECRET` o incluso `DATABASE_URL`, pero no conviene depender de eso.
+- `CLOUDINARY_URL` es obligatoria si vas a subir la media del catalogo global de ejercicios a Cloudinary.
+- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` es opcional en la implementacion actual del frontend. Hoy el proyecto puede inferir el `cloudName` desde la URL guardada en base de datos, pero sigue siendo una buena variable para dejar configurada.
 
 ## Instalacion inicial
 
@@ -226,6 +228,98 @@ Ademas, `next.config.ts` ya permite imagenes remotas usadas por HeroUI:
 
 - `heroui-assets.nyc3.cdn.digitaloceanspaces.com`
 - `img.heroui.chat`
+- `res.cloudinary.com`
+
+## Catalogo global de ejercicios
+
+El catalogo global de ejercicios ahora se toma desde:
+
+- `public/exercises-dataset/data/exercises.es.json`
+
+Ese archivo ya contiene:
+
+- nombres en espanol
+- categoria, body part, equipment, muscle group, secondary muscles y target traducidos
+- referencias a imagen y video del dataset
+
+### Flujo correcto de carga
+
+Si actualizas el dataset o recreas el catalogo global, el orden correcto es este:
+
+1. Subir la media a Cloudinary.
+2. Importar o recrear los ejercicios globales en la base.
+
+Comandos:
+
+```bash
+pnpm upload:exercise-media
+pnpm seed:exercise-dataset
+```
+
+Tambien se pueden forzar los archivos explicitamente:
+
+```bash
+pnpm upload:exercise-media -- --json public/exercises-dataset/data/exercises.es.json
+pnpm seed:exercise-dataset -- --json public/exercises-dataset/data/exercises.es.json --cloudinary-map public/exercises-dataset/data/cloudinary-upload-map.json
+```
+
+### Que hace cada comando
+
+`pnpm upload:exercise-media`
+
+- lee `public/exercises-dataset/data/exercises.es.json`
+- toma solo los assets realmente referenciados por ese dataset
+- sube imagenes y videos a Cloudinary
+- genera `public/exercises-dataset/data/cloudinary-upload-map.json`
+
+`pnpm seed:exercise-dataset`
+
+- lee `public/exercises-dataset/data/exercises.es.json`
+- si existe `cloudinary-upload-map.json`, usa las `secureUrl` reales de Cloudinary
+- crea o actualiza la tabla `ExerciseGlobal`
+- guarda `imageUrl` y `videoUrl` con la URL final de Cloudinary cuando el mapa existe
+
+### Render de media en la app
+
+La app ahora usa `next-cloudinary` para optimizar la entrega de media de Cloudinary al momento de renderizar.
+
+Detalles importantes:
+
+- no hace falta guardar `publicId` en la base de datos para esta etapa
+- `imageUrl` y `videoUrl` siguen siendo suficientes
+- el frontend detecta si la URL pertenece a `res.cloudinary.com`
+- si corresponde, genera una URL optimizada para mostrarla en pantalla
+
+Archivos involucrados:
+
+- `src/lib/cloudinary-media.ts`
+- `src/components/common/async-media.tsx`
+
+### GIFs de ejercicios
+
+Cuando un ejercicio tiene una URL `.gif` alojada en Cloudinary:
+
+- no se muestra el GIF crudo
+- la app intenta entregarlo como `mp4`
+- el componente lo renderiza como video
+
+Esto mejora bastante el peso, la carga y la fluidez de reproduccion sin necesidad de volver a subir archivos ni cambiar la base de datos.
+
+### Estructura de Cloudinary
+
+La media se sube con este criterio:
+
+- carpeta logica por defecto: `exercises/images` y `exercises/videos`
+- `public_id` basado en el nombre real del archivo, sin duplicar extension
+
+Ejemplos:
+
+- imagen: `https://res.cloudinary.com/.../exercises/images/5201-KOpzGBL.jpg`
+- video/gif: `https://res.cloudinary.com/.../exercises/videos/5201-KOpzGBL.gif`
+
+### Nota importante
+
+Despues de habilitar o cambiar dominios remotos de imagen en `next.config.ts`, reinicia `pnpm dev`.
 
 ## Reinstalacion completa para manaña
 

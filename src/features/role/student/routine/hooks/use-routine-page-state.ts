@@ -31,6 +31,7 @@ export function useRoutinePageState( {
 		backHref,
 		canSaveProgress,
 		latestProgressDate,
+		routineObservation,
 		routineStatusDescription,
 		saveSummary,
 	} = useMemo(
@@ -85,6 +86,7 @@ export function useRoutinePageState( {
 		isRefreshing,
 		isSaveDrawerOpen,
 		latestProgressDate,
+		routineObservation,
 		routineStatusDescription,
 		saveRoutineSession,
 		saveSummary,

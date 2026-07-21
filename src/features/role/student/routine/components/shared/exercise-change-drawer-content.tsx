@@ -1,8 +1,9 @@
-﻿import { Button, Description, Drawer } from "@heroui/react";
-import type { Exercise, ExerciseVariantOption } from "@/features/routine/types/routine-exercise.types";
+import { Button, Description, Drawer } from "@heroui/react";
+
 import { ExerciseChangeDrawerEmptyState } from "@/features/role/student/routine/components/shared/exercise-change-drawer-empty-state";
 import { ExerciseChangeDrawerSelectedVariant } from "@/features/role/student/routine/components/shared/exercise-change-drawer-selected-variant";
 import { ExerciseChangeDrawerVariantOption } from "@/features/role/student/routine/components/shared/exercise-change-drawer-variant-option";
+import type { Exercise, ExerciseVariantOption } from "@/features/routine/types/routine-exercise.types";
 import { Link2 } from "lucide-react";
 
 type ExerciseChangeDrawerContentProps = {
@@ -15,13 +16,13 @@ type ExerciseChangeDrawerContentProps = {
 };
 
 export default function ExerciseChangeDrawerContent( {
-														 exercise,
-														 hasVariants,
-														 selectedVariant,
-														 variantOptions,
-														 onResetVariant,
-														 onSelectVariant,
-													 }: ExerciseChangeDrawerContentProps ) {
+	exercise,
+	hasVariants,
+	selectedVariant,
+	variantOptions,
+	onResetVariant,
+	onSelectVariant,
+}: ExerciseChangeDrawerContentProps ) {
 	return (
 		<>
 			<Drawer.Header className={ "border-default-100 relative border-b pb-4" }>
@@ -38,10 +39,15 @@ export default function ExerciseChangeDrawerContent( {
 				</div>
 			</Drawer.Header>
 
-			<Drawer.Body className={ "min-h-0 flex-1 flex flex-col space-y-6 overflow-y-auto py-3" }>
+			<Drawer.Body className={ "min-h-0 flex flex-1 flex-col space-y-6 overflow-y-auto py-3" }>
 				{ selectedVariant ? (
-					<ExerciseChangeDrawerSelectedVariant exerciseBaseName={ exercise.baseName } onResetVariant={ onResetVariant }/>
+					<ExerciseChangeDrawerSelectedVariant
+						exerciseBaseName={ exercise.baseName }
+						imageUrl={ exercise.imageUrl }
+						onResetVariant={ onResetVariant }
+					/>
 				) : null }
+
 				{ !hasVariants ? (
 					<ExerciseChangeDrawerEmptyState/>
 				) : (
@@ -70,4 +76,3 @@ export default function ExerciseChangeDrawerContent( {
 		</>
 	);
 }
-

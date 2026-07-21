@@ -11,14 +11,24 @@ import { useCreateCoach } from "@/features/role/admin/users/hooks/use-admin-user
 import { type AdminUserFormValues, getDefaultAdminUserFormValues } from "@/features/role/admin/users/services/admin-user-form";
 
 type AdminCoachDrawerProps = {
+	hideTrigger?: boolean;
+	isOpen?: boolean;
+	onOpenChangeAction?: ( isOpen: boolean ) => void;
 	triggerLabel?: string;
 };
 
-export function AdminCoachDrawer( { triggerLabel = "Crear coach" }: AdminCoachDrawerProps ) {
-	const [ isOpen, setIsOpen ] = useState( false );
+export function AdminCoachDrawer( {
+	hideTrigger = false,
+	isOpen: controlledIsOpen,
+	onOpenChangeAction,
+	triggerLabel = "Crear coach",
+}: AdminCoachDrawerProps ) {
+	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const [ values, setValues ] = useState<AdminUserFormValues>( () => getDefaultAdminUserFormValues() );
 	const mutation = useCreateCoach();
 	const wasOpenRef = useRef( false );
+	const isOpen = controlledIsOpen ?? internalIsOpen;
+	const setIsOpen = onOpenChangeAction ?? setInternalIsOpen;
 
 	useEffect( () => {
 		if (!isOpen) {
@@ -76,10 +86,12 @@ export function AdminCoachDrawer( { triggerLabel = "Crear coach" }: AdminCoachDr
 
 	return (
 		<>
-			<Button variant={ "secondary" } onPress={ () => setIsOpen( true ) }>
-				<UserPlus className={ "size-4" }/>
-				{ triggerLabel }
-			</Button>
+			{ hideTrigger ? null : (
+				<Button variant={ "secondary" } onPress={ () => setIsOpen( true ) }>
+					<UserPlus className={ "size-4" }/>
+					{ triggerLabel }
+				</Button>
+			) }
 			<FeatureDrawerLayout
 				isDismissable={ false }
 				isOpen={ isOpen }

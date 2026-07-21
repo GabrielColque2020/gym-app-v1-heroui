@@ -1,6 +1,7 @@
-﻿import React from "react";
+import React from "react";
 import { Card, Typography } from "@heroui/react";
 
+import { AsyncMedia } from "@/components/common";
 import ExerciseChangeDrawer from "@/features/role/student/routine/components/shared/exercise-change-drawer";
 import { ExerciseCardSessionHistory } from "@/features/role/student/routine/components/shared/exercise-card-session-history";
 import { ExerciseCardStatusChips } from "@/features/role/student/routine/components/shared/exercise-card-status-chips";
@@ -32,8 +33,19 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 					<div className={ "space-y-1" }>
 						<div className={ "flex flex-col gap-2" }>
 							<div className={ "flex min-w-0 items-start justify-between gap-3" }>
-								<div className={ "min-w-0 space-y-1" }>
-									<Typography type={ "h3" } className={ "font-black" }> { displayedExerciseName }</Typography>
+								<div className={ "flex min-w-0 items-center gap-3" }>
+									<AsyncMedia
+										alt={ `Imagen de ${ displayedExerciseName }` }
+										className={ "h-12 w-12 shrink-0 rounded-xl border border-border" }
+										emptyLabel={ "Sin imagen" }
+										spinnerLabel={ `Cargando imagen de ${ displayedExerciseName }` }
+										src={ exercise.imageUrl }
+									/>
+									<div className={ "min-w-0 space-y-1" }>
+										<Typography type={ "h3" } className={ "font-black" }>
+											{ displayedExerciseName }
+										</Typography>
+									</div>
 								</div>
 								<ExerciseChangeDrawer
 									exercise={ exercise }
@@ -55,8 +67,8 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 							</div>
 						</div>
 					</div>
-					<div className={ "space-y-2" }>
-						<p className={ "shrink-0 text-sm font-medium tracking-wide text-foreground" }>Ultima sesión:</p>
+					<div className={ "space-y-2 flex" }>
+						<p className={ "shrink-0 text-sm font-medium tracking-wide text-foreground mr-1" }>Ultima sesión:</p>
 						<ExerciseCardSessionHistory history={ hasSessionHistory ? displayedSessionHistory : null }/>
 					</div>
 					<div className={ "space-y-3 border-t border-border pt-5" }>{ children }</div>
@@ -65,4 +77,3 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 		</Card>
 	);
 }
-

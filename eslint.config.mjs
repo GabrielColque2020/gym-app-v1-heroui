@@ -29,6 +29,8 @@ export default [
             ...reactHooks.configs.recommended.rules,
             "@typescript-eslint/no-unused-vars": "warn",
             "@typescript-eslint/no-explicit-any": "off",
+            // "react/jsx-curly-brace-presence": "off",
+            // "react/jsx-curly-spacing": "off",
             "react/jsx-curly-brace-presence": [
                 "error",
                 {

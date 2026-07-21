@@ -6,6 +6,8 @@ import { useMemo } from "react";
 import { Pagination } from "@heroui/react";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 
+const MOBILE_ITEMS_PER_PAGE = 4;
+
 export type PageItem = number | "ellipsis";
 
 type UsePaginationParams<TItem> = {
@@ -107,16 +109,22 @@ function PaginationControls( {
 }
 
 export function usePagination<TItem>( { items, itemsPerPage, page }: UsePaginationParams<TItem> ) {
+	const placement = useResponsiveDrawerPlacement();
+	const effectiveItemsPerPage = placement === "bottom"
+		? Math.min( itemsPerPage, MOBILE_ITEMS_PER_PAGE )
+		: itemsPerPage;
+
 	return useMemo(
 		() => {
 			const totalItems = items.length;
-			const totalPages = Math.max( 1, Math.ceil( totalItems / itemsPerPage ) );
+			const totalPages = Math.max( 1, Math.ceil( totalItems / effectiveItemsPerPage ) );
 			const currentPage = Math.min( page, totalPages );
-			const pageStartIndex = ( currentPage - 1 ) * itemsPerPage;
-			const pageEndIndex = pageStartIndex + itemsPerPage;
+			const pageStartIndex = ( currentPage - 1 ) * effectiveItemsPerPage;
+			const pageEndIndex = pageStartIndex + effectiveItemsPerPage;
 
 			return {
 				currentPage,
+				itemsPerPage: effectiveItemsPerPage,
 				pageItems: getPageItems( currentPage, totalPages ),
 				paginatedItems: items.slice( pageStartIndex, pageEndIndex ),
 				showingFrom: totalItems === 0 ? 0 : pageStartIndex + 1,
@@ -125,7 +133,7 @@ export function usePagination<TItem>( { items, itemsPerPage, page }: UsePaginati
 				totalPages,
 			};
 		},
-		[ items, itemsPerPage, page ],
+		[ effectiveItemsPerPage, items, page ],
 	);
 }
 

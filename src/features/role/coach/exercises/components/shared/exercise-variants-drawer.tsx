@@ -18,8 +18,22 @@ function buildInitialVariants( variants: Awaited<ReturnType<typeof useExerciseVa
 		exercise: {
 			active: relation.variantExercise.active,
 			bodyPart: relation.variantExercise.bodyPart,
+			category: "",
+			coachExerciseId: relation.variantExercise.id,
+			equipment: "",
+			externalId: null,
+			globalExerciseId: null,
 			id: relation.variantExercise.id,
+			imageUrl: relation.variantExercise.imageUrl ?? null,
+			instructions: null,
+			isOverride: false,
+			muscleGroup: "",
 			name: relation.variantExercise.name,
+			searchName: null,
+			sourceType: "coach",
+			target: "",
+			tips: relation.variantExercise.tips ?? null,
+			videoUrl: relation.variantExercise.videoUrl ?? null,
 		},
 		relationId: relation.id,
 	} ) );
@@ -79,7 +93,7 @@ export function ExerciseVariantsDrawer( props: ExerciseVariantsDrawerProps ) {
 			) }
 
 
-			<FeatureDrawerLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange }>
+			<FeatureDrawerLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange } rightContentClassName={ "w-[38rem]" }>
 				<ExerciseVariantsDrawerHeader exercise={ props.exercise }/>
 
 				{ variantsQuery.isError ? (

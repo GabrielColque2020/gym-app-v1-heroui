@@ -1,18 +1,18 @@
-"use client";
+﻿"use client";
 
 import { useCallback } from "react";
 import { Card } from "@heroui/react";
 
-import { useExercises } from "@/features/exercises/hooks/use-exercises";
 import { PageBreadcrumbs } from "@/components/common";
-import { ExercisesContentDesktop } from "@/features/role/coach/exercises/components/desktop/exercises-content-desktop";
-import { ExercisesContentMobile } from "@/features/role/coach/exercises/components/mobile/exercises-content-mobile";
 import { CoachExercisesErrorState } from "@/features/role/coach/exercises/components/shared/coach-exercises-error-state";
 import { CoachExercisesLoadingState } from "@/features/role/coach/exercises/components/shared/coach-exercises-loading-state";
 import { CoachExercisesPageHeader } from "@/features/role/coach/exercises/components/shared/coach-exercises-page-header";
+import { ExercisesContentDesktop } from "@/features/role/coach/exercises/components/desktop/exercises-content-desktop";
+import { ExercisesContentMobile } from "@/features/role/coach/exercises/components/mobile/exercises-content-mobile";
+import { useCoachExercises } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 
 export default function CoachExercisesPageContent() {
-	const { data: exercises = [], error, isError, isFetching, isLoading, refetch } = useExercises();
+	const { data: exercises = [], error, isError, isFetching, isLoading, refetch } = useCoachExercises();
 	const breadcrumbs = [
 		{ href: "/coach/dashboard", label: "Inicio" },
 		{ label: "Ejercicios" },
@@ -41,7 +41,7 @@ export default function CoachExercisesPageContent() {
 		return (
 			<div className={ "flex flex-col gap-4" }>
 				<PageBreadcrumbs
-					backHref={ "/" }
+					backHref={ "/coach/dashboard" }
 					backLabel={ "Volver al inicio" }
 					crumbs={ breadcrumbs }
 				/>
@@ -53,7 +53,7 @@ export default function CoachExercisesPageContent() {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
-				backHref={ "/" }
+				backHref={ "/coach/dashboard" }
 				backLabel={ "Volver al inicio" }
 				crumbs={ breadcrumbs }
 			/>
@@ -67,9 +67,9 @@ export default function CoachExercisesPageContent() {
 						<ExercisesContentMobile exercises={ exercises }/>
 					</div>
 				</Card.Content>
-				<Card.Footer className={ "border-t border-border px-3 py-2" }>
+				<Card.Footer className={ "border-t border-border p-3" }>
 					<div className={ "text-sm text-muted" }>
-						Desactivar conserva el ejercicio en rutinas y progresos historicos.
+						Los ejercicios globales se comparten entre coaches; tus cambios se guardan como version local.
 					</div>
 				</Card.Footer>
 			</Card>

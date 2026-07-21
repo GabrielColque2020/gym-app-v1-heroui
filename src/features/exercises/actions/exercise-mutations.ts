@@ -34,7 +34,7 @@ export async function createExerciseAction( input: CreateExerciseInput ) {
 	try {
 		const session = await requireCoachSession( "crear ejercicios" );
 
-		return await prisma.exercise.create( {
+		return await prisma.exerciseCoach.create( {
 			data: {
 				...validateExerciseInput( input ),
 				coachId: session.sub,
@@ -50,7 +50,7 @@ export async function createExerciseAction( input: CreateExerciseInput ) {
 export async function updateExerciseAction( input: UpdateExerciseInput ) {
 	try {
 		const session = await requireCoachSession( "actualizar ejercicios" );
-		const exercise = await prisma.exercise.findFirst( {
+		const exercise = await prisma.exerciseCoach.findFirst( {
 			select: {
 				id: true,
 			},
@@ -64,7 +64,7 @@ export async function updateExerciseAction( input: UpdateExerciseInput ) {
 			throw new Error( "No se encontro el ejercicio solicitado." );
 		}
 
-		return await prisma.exercise.update( {
+		return await prisma.exerciseCoach.update( {
 			data: validateExerciseInput( input ),
 			where: {
 				id: exercise.id,
@@ -80,7 +80,7 @@ export async function updateExerciseAction( input: UpdateExerciseInput ) {
 export async function deactivateExerciseAction( id: string ) {
 	try {
 		const session = await requireCoachSession( "desactivar ejercicios" );
-		const exercise = await prisma.exercise.findFirst( {
+		const exercise = await prisma.exerciseCoach.findFirst( {
 			select: {
 				id: true,
 			},
@@ -94,7 +94,7 @@ export async function deactivateExerciseAction( id: string ) {
 			throw new Error( "No se encontro el ejercicio solicitado." );
 		}
 
-		return await prisma.exercise.update( {
+		return await prisma.exerciseCoach.update( {
 			data: {
 				active: false,
 			},
@@ -112,7 +112,7 @@ export async function deactivateExerciseAction( id: string ) {
 export async function restoreExerciseAction( id: string ) {
 	try {
 		const session = await requireCoachSession( "restaurar ejercicios" );
-		const exercise = await prisma.exercise.findFirst( {
+		const exercise = await prisma.exerciseCoach.findFirst( {
 			select: {
 				id: true,
 			},
@@ -126,7 +126,7 @@ export async function restoreExerciseAction( id: string ) {
 			throw new Error( "No se encontro el ejercicio solicitado." );
 		}
 
-		return await prisma.exercise.update( {
+		return await prisma.exerciseCoach.update( {
 			data: {
 				active: true,
 			},

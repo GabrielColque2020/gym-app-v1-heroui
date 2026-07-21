@@ -8,23 +8,21 @@ import type { ExerciseVariantsTarget } from "./exercise-variants-drawer.types";
 type ExerciseVariantsDrawerSearchProps = {
 	bodyPartFilter: BodyPartFilter;
 	candidateExercises: ExerciseVariantsTarget[];
-	hasCandidateFilters: boolean;
 	isLoading: boolean;
 	isPending: boolean;
 	isSearching: boolean;
-	onAddVariantAction: ( candidate: ExerciseVariantsTarget ) => void;
+	onAddVariantAction: ( candidate: ExerciseVariantsTarget ) => void | Promise<void>;
 	onBodyPartFilterChangeAction: ( value: BodyPartFilter ) => void;
 	onSearchValueChangeAction: ( value: string ) => void;
 	searchValue: string;
 };
 
 export function ExerciseVariantsDrawerSearch( {
-												  bodyPartFilter,
-												  candidateExercises,
-												  hasCandidateFilters,
-												  isLoading,
-												  isPending,
-												  isSearching,
+	bodyPartFilter,
+	candidateExercises,
+	isLoading,
+	isPending,
+	isSearching,
 												  onAddVariantAction,
 												  onBodyPartFilterChangeAction,
 												  onSearchValueChangeAction,
@@ -83,6 +81,7 @@ export function ExerciseVariantsDrawerSearch( {
 			<div className={ "space-y-3" }>
 				<div className={ "flex items-center justify-between gap-3" }>
 					<p className={ "text-sm font-medium text-foreground" }>Resultados</p>
+					<p className={ "text-xs text-muted" }>Mostrando el catalogo completo de ejercicios.</p>
 					{ isSearching ? (
 						<div className={ "flex items-center gap-2 text-xs text-muted" } role={ "status" }>
 							<Spinner size={ "sm" }/>
@@ -91,11 +90,7 @@ export function ExerciseVariantsDrawerSearch( {
 					) : null }
 				</div>
 
-				{ !hasCandidateFilters ? (
-					<Card className={ "border border-border p-8 text-sm text-muted" }>
-						Empieza a escribir un nombre o ajusta el filtro de parte del cuerpo para ver sugerencias.
-					</Card>
-				) : isLoading ? (
+				{ isLoading ? (
 					<Card className={ "flex items-center justify-center gap-2 border border-border p-8 text-sm text-muted" }>
 						<Spinner size={ "sm" }/>
 						Cargando catalogo

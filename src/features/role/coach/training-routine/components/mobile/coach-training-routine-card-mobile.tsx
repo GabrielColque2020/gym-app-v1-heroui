@@ -9,28 +9,24 @@ import { CoachTrainingRoutineWeekSelectorMobile } from "@/features/role/coach/tr
 
 type CoachTrainingRoutineCardMobileProps = {
 	month: number;
-	routineObjective: string | null;
 	routineWeeks: CoachTrainingRoutine[];
 	studentId: string;
-	studentName: string;
 	year: number;
 };
 
 export function CoachTrainingRoutineCardMobile( {
-	month,
-	routineObjective,
-	routineWeeks,
-	studentId,
-	studentName,
-	year,
-}: CoachTrainingRoutineCardMobileProps ) {
+													month,
+													routineWeeks,
+													studentId,
+													year,
+												}: CoachTrainingRoutineCardMobileProps ) {
 	const { selectedRoutine, selectedRoutineId, setSelectedRoutineId } =
 		useTrainingRoutineSelection( routineWeeks );
 
 	return (
-		<Card className={ "w-full overflow-hidden" }>
+		<Card className={ "w-full py-2" }>
 			<CoachTrainingRoutineCardMobileHeader routineCount={ routineWeeks.length }/>
-			<Card.Content className={ "flex flex-col gap-4 pb-4" }>
+			<Card.Content className={ "flex flex-col gap-4 px-3 pb-3" }>
 				<CoachTrainingRoutineWeekSelectorMobile
 					onSelectedRoutineIdChangeAction={ setSelectedRoutineId }
 					routineWeeks={ routineWeeks }
@@ -38,11 +34,8 @@ export function CoachTrainingRoutineCardMobile( {
 				/>
 				<CoachTrainingRoutineSelectedRoutinePanelMobile
 					month={ month }
-					routineObjective={ routineObjective }
-					routineWeeks={ routineWeeks }
 					selectedRoutine={ selectedRoutine }
 					studentId={ studentId }
-					studentName={ studentName }
 					year={ year }
 				/>
 			</Card.Content>

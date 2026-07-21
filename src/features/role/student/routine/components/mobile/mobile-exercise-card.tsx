@@ -1,6 +1,7 @@
-﻿import React from "react";
+import React from "react";
 import { Card } from "@heroui/react";
 
+import { AsyncMedia } from "@/components/common";
 import ExerciseChangeDrawer from "@/features/role/student/routine/components/shared/exercise-change-drawer";
 import { ExerciseCardSessionHistory } from "@/features/role/student/routine/components/shared/exercise-card-session-history";
 import { ExerciseCardStatusChips } from "@/features/role/student/routine/components/shared/exercise-card-status-chips";
@@ -26,13 +27,22 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 	} = useExerciseCardState( exercise );
 
 	return (
-		<Card className={ "border border-border py-2 shadow-sm" }>
-			<Card.Header className={ "px-3 pt-3" }>
+		<Card className={ "flex h-full w-full flex-col border border-border py-2 shadow-sm" }>
+			<Card.Header className={ "shrink-0 px-3 pt-3" }>
 				<Card.Title className={ "w-full text-xl font-bold text-foreground" }>
 					<div className={ "space-y-2" }>
 						<div className={ "flex items-start justify-between gap-3" }>
-							<div className={ "min-w-0 space-y-1" }>
-								<h2 className={ "min-w-0 text-2xl font-black tracking-tight text-foreground" }>{ displayedExerciseName }</h2>
+							<div className={ "flex min-w-0 items-center gap-3" }>
+								<AsyncMedia
+									alt={ `Imagen de ${ displayedExerciseName }` }
+									className={ "size-10 shrink-0 rounded-xl border border-border" }
+									emptyLabel={ "Sin imagen" }
+									spinnerLabel={ `Cargando imagen de ${ displayedExerciseName }` }
+									src={ exercise.imageUrl }
+								/>
+								<div className={ "min-w-0 space-y-1" }>
+									<h2 className={ "min-w-0 text-2xl font-black tracking-tight text-foreground" }>{ displayedExerciseName }</h2>
+								</div>
 							</div>
 							<ExerciseChangeDrawer
 								exercise={ exercise }
@@ -60,10 +70,9 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 					</div>
 				</Card.Title>
 			</Card.Header>
-			<Card.Content className={ "px-3 pb-3" }>
-				<div className={ "space-y-3 border-t border-border pt-4" }>{ children }</div>
+			<Card.Content className={ "flex min-h-0 flex-1 flex-col px-3 pb-3" }>
+				<div className={ "flex min-h-0 flex-1 flex-col space-y-3 border-t border-border pt-4" }>{ children }</div>
 			</Card.Content>
 		</Card>
 	);
 }
-

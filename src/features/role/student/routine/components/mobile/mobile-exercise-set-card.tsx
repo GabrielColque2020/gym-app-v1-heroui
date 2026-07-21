@@ -1,5 +1,11 @@
-﻿import { Card, Checkbox, Input, Label } from "@heroui/react";
+"use client";
 
+import { useState } from "react";
+
+import { Button, Card, Checkbox, Drawer, Input, Label, TextArea } from "@heroui/react";
+import { MessageSquarePlus } from "lucide-react";
+
+import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import type { ExerciseSet } from "@/features/routine/types/routine-exercise.types";
 
 type MobileExerciseSetCardProps = {
@@ -9,81 +15,111 @@ type MobileExerciseSetCardProps = {
 		setId: string,
 		updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }>,
 	) => void;
-	set: ExerciseSet;
+	sets: ExerciseSet[];
 };
 
-export function MobileExerciseSetCard( {
-										   exerciseId,
-										   onSetUpdate,
-										   set,
-									   }: MobileExerciseSetCardProps ) {
-	return (
-		<Card className={ "border border-accent-soft-hover" }>
-			<Card.Header>
-				<Card.Title>
-					<div className={ "mb-4 flex w-full items-center justify-between" }>
-						<span className={ "text-xl font-bold text-foreground" }>Serie { set.setNumber }</span>
-						<Checkbox isReadOnly isSelected={ set.completed }>
-							<Checkbox.Control className={ "size-5 rounded-full border border-border shadow-md before:rounded-full" }>
-								<Checkbox.Indicator/>
-							</Checkbox.Control>
-						</Checkbox>
-					</div>
-				</Card.Title>
-				<Card.Content>
-					<div className={ "mb-2 grid grid-cols-2 gap-10" }>
-						<div className={ "flex flex-col space-y-2" }>
-							<Label className={ "ml-2 text-sm text-muted" }>Reps</Label>
-							<Input
-								fullWidth
-								placeholder={ "Reps" }
-								className={ "border border-border" }
-								type={ "number" }
-								value={ set.currentReps?.toString() || "" }
-								onChange={ ( e ) => {
-									const nextValue = e.target.value.trim() === "" ? null : Number.parseInt( e.target.value, 10 );
-									onSetUpdate( exerciseId, set.id, { reps: Number.isNaN( nextValue ) ? null : nextValue } );
-								} }
-							/>
-							{ set.previousReps === null && set.previousWeight === null ? (
-								<span className={ "text-muted" }>Sin registro anterior</span>
-							) : (
-								<span className={ "px-1 text-sm text-muted" }>{ `${ set.previousReps ?? 0 } reps Anterior` }</span>
-							) }
-						</div>
-						<div className={ "flex flex-col space-y-2" }>
-							<Label className={ "ml-2 text-sm text-muted" }>Peso</Label>
-							<Input
-								fullWidth
-								placeholder={ "Peso (Kg)" }
-								type={ "number" }
-								className={ "border border-border" }
-								value={ set.currentWeight?.toString() || "" }
-								onChange={ ( e ) => {
-									const nextValue = e.target.value.trim() === "" ? null : Number.parseInt( e.target.value, 10 );
-									onSetUpdate( exerciseId, set.id, { weight: Number.isNaN( nextValue ) ? null : nextValue } );
-								} }
-							/>
-							{ set.previousReps === null && set.previousWeight === null ? (
-								<span className={ "text-muted" }>Sin registro anterior</span>
-							) : (
-								<span className={ "px-1 text-sm text-muted" }>{ `${ set.previousWeight ?? 0 } Kg Anterior` }</span>
-							) }
-						</div>
-					</div>
-					<div className={ "flex flex-col space-y-2" }>
-						<Label className={ "ml-2 text-sm text-muted" }>Notas</Label>
-						<Input
-							fullWidth
-							placeholder={ "Opcional" }
-							className={ "border border-border" }
-							value={ set.notes ?? "" }
-							onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { notes: e.target.value } ) }
-						/>
-					</div>
-				</Card.Content>
-			</Card.Header>
-		</Card>
-	);
+function parseNumericInput( value: string ) {
+	const nextValue = value.trim() === "" ? null : Number.parseInt( value, 10 );
+
+	return Number.isNaN( nextValue ) ? null : nextValue;
 }
 
+export function MobileExerciseSetCard( { exerciseId, onSetUpdate, sets }: MobileExerciseSetCardProps ) {
+	const [ noteSetId, setNoteSetId ] = useState<string | null>( null );
+	const selectedNoteSet = sets.find( ( set ) => set.id === noteSetId ) ?? null;
+
+	return (
+		<>
+			<Card className={ "flex h-full flex-col border border-accent-soft-hover shadow-sm" }>
+				<Card.Content className={ "min-h-0 flex-1 divide-y divide-border px-1" }>
+					{ sets.map( ( set ) => (
+						<div key={ set.id } className={ "space-y-3 py-4 first:pt-2 last:pb-2" }>
+							<div className={ "flex items-center gap-3" }>
+								<Checkbox isReadOnly isSelected={ set.completed }>
+									<Checkbox.Control className={ "size-5 rounded-md border border-border shadow-sm" }>
+										<Checkbox.Indicator/>
+									</Checkbox.Control>
+								</Checkbox>
+								<span className={ "text-base font-bold text-foreground" }>Serie { set.setNumber }</span>
+							</div>
+
+							<div className={ "grid grid-cols-2 gap-4" }>
+								<div className={ "space-y-2" }>
+									<Label className={ "text-xs  text-muted" }>{ `Meta ${ set.targetReps } reps` }</Label>
+									<Input
+										fullWidth
+										className={ "border border-border" }
+										placeholder={ "Reps" }
+										type={ "number" }
+										value={ set.currentReps?.toString() || "" }
+										onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { reps: parseNumericInput( e.target.value ) } ) }
+									/>
+									<span className={ "block text-xs text-muted" }>
+										{ set.previousReps === null ? "Sin registro anterior" : `${ set.previousReps } reps Anterior` }
+									</span>
+								</div>
+
+								<div className={ "space-y-2" }>
+									<Label className={ "text-xs text-muted" }>Peso (Kg)</Label>
+									<Input
+										fullWidth
+										className={ "border border-border" }
+										placeholder={ "Peso kg" }
+										type={ "number" }
+										value={ set.currentWeight?.toString() || "" }
+										onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { weight: parseNumericInput( e.target.value ) } ) }
+									/>
+									<span className={ "block text-xs text-muted" }>
+										{ set.previousWeight === null ? "Sin registro anterior" : `${ set.previousWeight } Kg Anterior` }
+									</span>
+								</div>
+							</div>
+
+							<Button
+								className={ "h-auto min-h-0 justify-start px-0 py-0 text-sm text-accent" }
+								variant={ "ghost" }
+								onPress={ () => setNoteSetId( set.id ) }
+							>
+								<MessageSquarePlus className={ "size-4" }/>
+								{ set.notes?.trim() ? "Editar nota" : "Agregar nota" }
+							</Button>
+						</div>
+					) ) }
+				</Card.Content>
+			</Card>
+
+			<FeatureDrawerLayout
+				bottomContentClassName={ "mx-auto flex max-h-[82dvh] w-full max-w-105 flex-col" }
+				isOpen={ Boolean( selectedNoteSet ) }
+				placement={ "bottom" }
+				onOpenChangeAction={ ( isOpen ) => {
+					if (!isOpen) setNoteSetId( null );
+				} }
+			>
+				<Drawer.Header className={ "border-default-100 relative border-b pb-4" }>
+					<Drawer.Heading>Nota de la serie { selectedNoteSet?.setNumber }</Drawer.Heading>
+				</Drawer.Header>
+				<Drawer.Body className={ "min-h-0 flex-1 overflow-y-auto py-4" }>
+					<Label htmlFor={ "textarea-rows-3" }>Nota</Label>
+					<TextArea
+						fullWidth
+						aria-label={ "Nota" }
+						placeholder={ "Agrega una observacion para esta serie" }
+						value={ selectedNoteSet?.notes ?? "" }
+						className={ "border border-border" }
+						onChange={ ( e ) => {
+							if (!selectedNoteSet) return;
+
+							onSetUpdate( exerciseId, selectedNoteSet.id, { notes: e.target.value } );
+						} }
+					/>
+				</Drawer.Body>
+				<Drawer.Footer className={ "border-default-100 shrink-0 justify-end gap-2 border-t pt-4" }>
+					<Button slot={ "close" } variant={ "secondary" }>
+						Cerrar
+					</Button>
+				</Drawer.Footer>
+			</FeatureDrawerLayout>
+		</>
+	);
+}

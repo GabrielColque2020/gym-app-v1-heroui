@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
+        hostname: "res.cloudinary.com",
+        protocol: "https",
+      },
+      {
         hostname: "heroui-assets.nyc3.cdn.digitaloceanspaces.com",
         protocol: "https",
       },

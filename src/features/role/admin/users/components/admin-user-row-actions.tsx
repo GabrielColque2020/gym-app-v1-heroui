@@ -4,7 +4,7 @@ import type { Key } from "@heroui/react";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 
 import { Button, Dropdown, Header, Label, Spinner, toast } from "@heroui/react";
-import { CheckCircle2, MoreVertical, PencilLine, Trash2 } from "lucide-react";
+import { CheckCircle2, EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { AdminDeleteUserDrawer } from "@/features/role/admin/users/components/admin-delete-user-drawer";
@@ -95,11 +95,10 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 				<Button
 					isIconOnly
 					aria-label={ `Opciones de ${ user.name }` }
-					className={ "size-8 shrink-0 text-foreground" }
-					size={ "sm" }
+					className={ "size-8" }
 					variant={ "ghost" }
 				>
-					{ mutation.isPending ? <Spinner color={ "current" } size={ "sm" }/> : <MoreVertical className={ "size-4" }/> }
+					{ mutation.isPending ? <Spinner color={ "current" } size={ "sm" }/> : <EllipsisVertical className={ "size-4" }/> }
 				</Button>
 				<Dropdown.Popover placement={ "bottom end" }>
 					<Dropdown.Menu onAction={ handleAction }>

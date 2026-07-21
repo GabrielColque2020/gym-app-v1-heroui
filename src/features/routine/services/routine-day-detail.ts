@@ -16,6 +16,10 @@ type RoutineDayStudent = NonNullable<
 	FetchedRoutineDayDetail["trainingRoutineWeek"]["trainingRoutineMonth"]["student"]
 >;
 
+function pickFirstText( ...values: Array<string | null | undefined> ) {
+	return values.find( ( value ) => value?.trim() )?.trim() ?? null;
+}
+
 export type RoutineDayDetail = Omit<FetchedRoutineDayDetail, "trainingRoutineWeek"> & {
 	trainingRoutine: {
 		month: number;
@@ -61,6 +65,44 @@ export async function getRoutineDayDetailBase( {
 
 	return {
 		...routineDay,
+		routines: routineDay.routines.map( ( routine ) => ( {
+			...routine,
+			exercise: routine.exercise
+				? {
+					...routine.exercise,
+					imageUrl: pickFirstText(
+						routine.exercise.imageUrl,
+						routine.exercise.globalExercise?.imageUrl,
+					),
+					instructions: pickFirstText(
+						routine.exercise.instructions,
+						routine.exercise.globalExercise?.instructions,
+					),
+					videoUrl: pickFirstText(
+						routine.exercise.videoUrl,
+						routine.exercise.globalExercise?.videoUrl,
+					),
+				}
+				: routine.exercise,
+			variants: routine.variants.map( ( variant ) => ( {
+				...variant,
+				variantExercise: {
+					...variant.variantExercise,
+					imageUrl: pickFirstText(
+						variant.variantExercise.imageUrl,
+						variant.variantExercise.globalExercise?.imageUrl,
+					),
+					instructions: pickFirstText(
+						variant.variantExercise.instructions,
+						variant.variantExercise.globalExercise?.instructions,
+					),
+					videoUrl: pickFirstText(
+						variant.variantExercise.videoUrl,
+						variant.variantExercise.globalExercise?.videoUrl,
+					),
+				},
+			} ) ),
+		} ) ),
 		trainingRoutine: {
 			month: routineDay.trainingRoutineWeek.trainingRoutineMonth.month,
 			name: routineDay.trainingRoutineWeek.name,

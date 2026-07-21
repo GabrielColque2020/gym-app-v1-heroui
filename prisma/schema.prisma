@@ -28,11 +28,11 @@ enum MealTime {
   LUNCH // ALMUERZO
   SNACK // MERIENDA
   DINNER // CENA
-  OPTIONGREEN // OPCIÓN VERDE
+  OPTIONGREEN // OPCIÃ“N VERDE
   SEVERAL // VARIOS
 }
 
-// Género
+// GÃ©nero
 enum Gender {
   F
   M
@@ -74,7 +74,7 @@ model User {
   MealPlan              MealPlan[]
   trainingRoutineMonths TrainingRoutineMonth[]
   ExerciseProgress      ExerciseProgress[]
-  Exercise              Exercise[]
+  exerciseCoach         ExerciseCoach[]
   StudentExercise       StudentExercise[]
   loginHistory          UserLoginHistory[]
 
@@ -167,7 +167,7 @@ model StudentExercise {
   id         String   @id @default(uuid())
   student    User     @relation(fields: [studentId], references: [id])
   studentId  String
-  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exercise   ExerciseCoach @relation(fields: [exerciseId], references: [id])
   exerciseId String
   createdAt  DateTime @default(now())
 
@@ -184,7 +184,7 @@ model Routine {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  exercise     Exercise?                @relation(fields: [exerciseId], references: [id])
+  exercise     ExerciseCoach?                @relation(fields: [exerciseId], references: [id])
   exerciseId   String?
   variants     RoutineExerciseVariant[]
   RoutineDay   RoutineDay?              @relation(fields: [routineDayId], references: [id], onDelete: Cascade)
@@ -209,10 +209,10 @@ model ExerciseProgress {
   student   User?   @relation(fields: [studentId], references: [id])
   studentId String?
 
-  variantExercise   Exercise? @relation("ExerciseProgressVariantExercise", fields: [variantExerciseId], references: [id], onDelete: Cascade)
+  variantExercise   ExerciseCoach? @relation("ExerciseProgressVariantExercise", fields: [variantExerciseId], references: [id], onDelete: Cascade)
   variantExerciseId String?
 
-  exercise   Exercise? @relation("ExerciseProgressExercise", fields: [exerciseId], references: [id])
+  exercise   ExerciseCoach? @relation("ExerciseProgressExercise", fields: [exerciseId], references: [id])
   exerciseId String?
 
   @@index([studentId, variantExerciseId, date])
@@ -220,19 +220,28 @@ model ExerciseProgress {
   @@index([studentId, year, month, week, dayNumber, exerciseId, repsNumber])
 }
 
-model Exercise {
-  id         String   @id @default(uuid())
-  name       String
-  searchName String? // Nombre normalizado sin acentos y en minúsculas
-  tips       String?
-  bodyPart   BodyPart
-  imageUrl   String?
-  videoUrl   String?
-  active     Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model ExerciseCoach {
+  id           String   @id @default(uuid())
+  externalId   String?  @unique
+  name         String
+  searchName   String? // Nombre normalizado sin acentos y en minÃºsculas
+  tips         String?
+  category     String?
+  target       String?
+  muscleGroup  String?
+  equipment    String?
+  instructions String?
+  bodyPart     BodyPart
+  imageUrl     String?
+  videoUrl     String?
+  active       Boolean  @default(true)
+  isOverride   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
+  globalExercise   ExerciseGlobal? @relation(fields: [globalExerciseId], references: [id], onDelete: SetNull)
+  globalExerciseId String?
   routines                Routine[]
   exerciseProgress        ExerciseProgress[]       @relation("ExerciseProgressExercise")
   variantExerciseProgress ExerciseProgress[]       @relation("ExerciseProgressVariantExercise")
@@ -243,6 +252,31 @@ model Exercise {
   StudentExercise StudentExercise[]
 
   @@index([searchName])
+  @@index([coachId])
+  @@index([globalExerciseId])
+  @@unique([coachId, globalExerciseId])
+}
+
+model ExerciseGlobal {
+  id           String   @id @default(uuid())
+  externalId   String   @unique
+  name         String
+  searchName   String
+  category     String
+  target       String
+  muscleGroup  String
+  equipment    String
+  instructions String?
+  imageUrl     String?
+  videoUrl     String?
+  attribution  String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  coachOverrides ExerciseCoach[]
+
+  @@index([searchName])
 }
 
 model RoutineExerciseVariant {
@@ -251,7 +285,7 @@ model RoutineExerciseVariant {
   routine   Routine @relation(fields: [routineId], references: [id], onDelete: Cascade)
   routineId String
 
-  variantExercise   Exercise @relation("RoutineExerciseVariantVariantExercise", fields: [variantExerciseId], references: [id], onDelete: Cascade)
+  variantExercise   ExerciseCoach @relation("RoutineExerciseVariantVariantExercise", fields: [variantExerciseId], references: [id], onDelete: Cascade)
   variantExerciseId String
 
   createdAt DateTime @default(now())

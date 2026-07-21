@@ -29,6 +29,12 @@ const trainingRoutineWeekInclude = {
 						select: {
 							active: true,
 							bodyPart: true,
+							globalExercise: {
+								select: {
+									imageUrl: true,
+									videoUrl: true,
+								},
+							},
 							id: true,
 							imageUrl: true,
 							name: true,
@@ -70,6 +76,10 @@ export type TrainingRoutineMonth = Prisma.TrainingRoutineMonthGetPayload<{
 		};
 	};
 }>;
+
+function pickFirstText( ...values: Array<string | null | undefined> ) {
+	return values.find( ( value ) => value?.trim() )?.trim() ?? null;
+}
 
 function validateMonth( month: number ) {
 	if (!Number.isInteger( month ) || month < 1 || month > 12) {
@@ -122,9 +132,33 @@ export async function getTrainingRoutinesByStudentBase( {
 		},
 	} ) as TrainingRoutineMonth | null;
 
-	return {
-		month,
-		routineMonth: routineMonth ?? {
+	const resolvedRoutineMonth = routineMonth
+		? {
+			...routineMonth,
+			weeks: routineMonth.weeks.map( ( week ) => ( {
+				...week,
+				routineDays: week.routineDays.map( ( day ) => ( {
+					...day,
+					routines: day.routines.map( ( routine ) => ( {
+						...routine,
+						exercise: routine.exercise
+							? {
+								...routine.exercise,
+								imageUrl: pickFirstText(
+									routine.exercise.imageUrl,
+									routine.exercise.globalExercise?.imageUrl,
+								),
+								videoUrl: pickFirstText(
+									routine.exercise.videoUrl,
+									routine.exercise.globalExercise?.videoUrl,
+								),
+							}
+							: routine.exercise,
+					} ) ),
+				} ) ),
+			} ) ),
+		}
+		: {
 			createdAt: new Date(),
 			id: "",
 			month,
@@ -133,7 +167,11 @@ export async function getTrainingRoutinesByStudentBase( {
 			updatedAt: new Date(),
 			weeks: [],
 			year,
-		},
+		};
+
+	return {
+		month,
+		routineMonth: resolvedRoutineMonth,
 		student,
 		year,
 	};

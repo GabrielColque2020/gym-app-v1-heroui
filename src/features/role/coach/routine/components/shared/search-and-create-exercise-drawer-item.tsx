@@ -1,5 +1,6 @@
 import { Button } from "@heroui/react";
 
+import { AsyncMedia } from "@/components/common";
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 
@@ -26,9 +27,18 @@ export function SearchAndCreateExerciseDrawerItem( {
 				}`
 			}
 		>
-			<div className={ "min-w-0" }>
-				<p className={ "truncate text-sm font-medium text-foreground" }>{ exercise.name }</p>
-				<p className={ "text-xs text-muted" }>{ formatBodyPart( exercise.bodyPart ) }</p>
+			<div className={ "flex min-w-0 items-center gap-3" }>
+				<AsyncMedia
+					alt={ `Imagen de ${ exercise.name }` }
+					className={ "size-10 shrink-0 rounded-lg border border-border" }
+					emptyLabel={ "Sin imagen" }
+					spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
+					src={ exercise.imageUrl }
+				/>
+				<div className={ "min-w-0" }>
+					<p className={ "truncate text-sm font-medium text-foreground" }>{ exercise.name }</p>
+					<p className={ "truncate text-xs text-muted" }>{ formatBodyPart( exercise.bodyPart ) }</p>
+				</div>
 			</div>
 			<Button
 				ref={ ( element ) => onRegisterAddButtonRef( exercise.id, element ) }

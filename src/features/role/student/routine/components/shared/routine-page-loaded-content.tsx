@@ -29,6 +29,7 @@ export function RoutinePageLoadedContent( {
 		latestProgressDate,
 		saveRoutineSession,
 		saveSummary,
+		routineObservation,
 		setIsRefreshConfirmOpen,
 		setIsSaveDrawerOpen,
 		validationError,
@@ -53,6 +54,7 @@ export function RoutinePageLoadedContent( {
 				canSaveProgress={ canSaveProgress }
 				isPending={ saveRoutineSession.isPending }
 				latestProgressDate={ latestProgressDate }
+				routineObservation={ routineObservation }
 				onSave={ handleOpenSaveDrawer }
 				onSetUpdate={ handleSetUpdate }
 				onVariantChangeAction={ handleVariantChange }
@@ -61,6 +63,7 @@ export function RoutinePageLoadedContent( {
 			<DesktopRoutineView
 				exercises={ activeSession.exercises }
 				latestProgressDate={ latestProgressDate }
+				routineObservation={ routineObservation }
 				onVariantChangeAction={ handleVariantChange }
 				onSetUpdate={ handleSetUpdate }
 				routineStatusDescription={ state.routineStatusDescription }

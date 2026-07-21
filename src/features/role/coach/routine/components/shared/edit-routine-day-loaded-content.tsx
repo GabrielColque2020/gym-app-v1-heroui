@@ -40,7 +40,9 @@ export function EditRoutineDayLoadedContent( {
 		handleSave,
 		hasHydrated,
 		isRefreshConfirmOpen,
+		isSaveDisabled,
 		isSaving,
+		requiredFieldsMessage,
 		routineName,
 		resetRefreshConfirmOpen,
 		updateExerciseField,
@@ -64,7 +66,7 @@ export function EditRoutineDayLoadedContent( {
 				backHref={ backHref }
 				breadcrumbs={ breadcrumbs }
 				description={ description }
-				isSaveDisabled={ !draftRoutines.length || Boolean( validationError ) || isSaving }
+				isSaveDisabled={ isSaveDisabled }
 				isSaving={ isSaving }
 				title={ title }
 				onSave={ handleSave }
@@ -75,6 +77,7 @@ export function EditRoutineDayLoadedContent( {
 				draftRoutines={ draftRoutines }
 				getSuggestedOrder={ getSuggestedOrder }
 				isRefreshing={ isRefreshing }
+				requiredFieldsMessage={ requiredFieldsMessage }
 				routineSubtitle={ description }
 				routineTitle={ routineName }
 				validationError={ validationError }

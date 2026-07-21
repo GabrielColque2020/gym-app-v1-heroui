@@ -12,6 +12,7 @@ import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 type DesktopRoutineViewProps = {
 	exercises: Exercise[];
 	latestProgressDate: Date | null;
+	routineObservation: string | null;
 	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 	onSetUpdate: (
 		exerciseId: string,
@@ -24,6 +25,7 @@ type DesktopRoutineViewProps = {
 export default function DesktopRoutineView( {
 	exercises,
 	latestProgressDate,
+	routineObservation,
 	onVariantChangeAction,
 	onSetUpdate,
 	routineStatusDescription,
@@ -36,8 +38,8 @@ export default function DesktopRoutineView( {
 				<>
 					<div className={ "grid gap-4 lg:grid-cols-[1.2fr_0.9fr_0.9fr]" }>
 						<RoutineSessionOverviewCards
-							exercises={ exercises }
 							latestProgressDate={ latestProgressDate }
+							routineObservation={ routineObservation }
 							routineStatusDescription={ routineStatusDescription }
 						/>
 					</div>

@@ -44,7 +44,6 @@ export default function RoutinePageContent( {
 			/>
 		);
 	}
-
 	return <RoutinePageLoadedContent state={ state }/>;
 }
 

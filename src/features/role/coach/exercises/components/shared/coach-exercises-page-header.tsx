@@ -1,4 +1,4 @@
-import { Button, Card } from "@heroui/react";
+﻿import { Button, Card } from "@heroui/react";
 import { RotateCw } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
@@ -10,14 +10,14 @@ type CoachExercisesPageHeaderProps = {
 };
 
 export function CoachExercisesPageHeader( {
-											  isRefreshing,
-											  onRefreshAction,
-										  }: CoachExercisesPageHeaderProps ) {
+	isRefreshing,
+	onRefreshAction,
+}: CoachExercisesPageHeaderProps ) {
 	return (
 		<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between " }>
 			<PageHeader
 				title={ "Ejercicios" }
-				description={ "Listado de ejercicios con estado, grupo muscular y fecha de alta." }
+				description={ "Catalogo global compartido + ejercicios propios y overrides del coach." }
 			/>
 			<div className={ "flex w-full flex-col gap-2 md:hidden" }>
 				<Button

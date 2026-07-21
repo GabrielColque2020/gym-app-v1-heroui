@@ -58,7 +58,7 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 					role: "STUDENT",
 				},
 			} ) as unknown as Promise<DashboardStudentRecord[]>,
-			prisma.exercise.findMany( {
+			prisma.exerciseCoach.findMany( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 				select: {
 					id: true,

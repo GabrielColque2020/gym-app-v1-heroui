@@ -1,70 +1,213 @@
-import type { BodyPartValue, ExerciseFormValues } from "@/features/exercises/services/exercise-form";
-import { BODY_PART_OPTIONS } from "@/features/exercises/services/exercise-form";
+"use client";
 
-import { Checkbox, Description, Drawer, FieldError, Input, Label, ListBox, Select, TextArea, TextField, } from "@heroui/react";
+import { Checkbox, Description, Drawer, FieldError, Input, Label, ListBox, Select, TextArea, TextField } from "@heroui/react";
+
+import { AsyncMedia } from "@/components/common";
+import { BODY_PART_OPTIONS, formatBodyPart } from "@/features/exercises/services/exercise-formatters";
+import type { CoachExerciseFormValues } from "@/features/role/coach/exercises/services/coach-exercise-form";
+import {
+	COACH_EXERCISE_EQUIPMENT_OPTIONS,
+	COACH_EXERCISE_MUSCLE_GROUP_OPTIONS,
+	COACH_EXERCISE_TARGET_OPTIONS,
+} from "@/features/role/coach/exercises/services/coach-exercise-form";
 
 type ExerciseDrawerFieldsProps = {
+	isCategoryInvalid: boolean;
 	isNameInvalid: boolean;
-	updateValue: <Key extends keyof ExerciseFormValues>( key: Key, value: ExerciseFormValues[ Key ] ) => void;
-	values: ExerciseFormValues;
+	mediaImageUrl?: string | null;
+	mediaVideoUrl?: string | null;
+	showMediaPreview?: boolean;
+	updateValue: <Key extends keyof CoachExerciseFormValues>( key: Key, value: CoachExerciseFormValues[ Key ] ) => void;
+	values: CoachExerciseFormValues;
 };
 
+function getOptionsWithCurrentValue( currentValue: string, options: readonly { label: string; value: string }[] ) {
+	const normalizedCurrentValue = currentValue.trim();
+	const currentValueIsKnown = options.some( ( option ) => option.value === normalizedCurrentValue );
+
+	if (!normalizedCurrentValue || currentValueIsKnown) {
+		return options;
+	}
+
+	return [
+		{ label: normalizedCurrentValue, value: normalizedCurrentValue },
+		...options,
+	];
+}
+
 export function ExerciseDrawerFields( {
-										  isNameInvalid,
-										  updateValue,
-										  values,
-									  }: ExerciseDrawerFieldsProps ) {
+	isCategoryInvalid,
+	isNameInvalid,
+	mediaImageUrl,
+	mediaVideoUrl,
+	showMediaPreview = false,
+	updateValue,
+	values,
+}: ExerciseDrawerFieldsProps ) {
 	return (
 		<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
+			<div className={ "grid gap-2" }>
+				<TextField
+					isRequired
+					fullWidth
+					isInvalid={ isNameInvalid }
+					name={ "name" }
+					value={ values.name }
+					onChange={ ( value ) => updateValue( "name", value ) }
+				>
+					<Label>Nombre</Label>
+					<Input className={ "border border-border" } placeholder={ "Ej: Press banca" }/>
+					{ isNameInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
+				</TextField>
+			</div>
+
+			<div className={ "grid gap-2" }>
+				<Label>Categoria</Label>
+				<Select
+					fullWidth
+					isInvalid={ isCategoryInvalid }
+					name={ "bodyPart" }
+					value={ values.bodyPart }
+					onChange={ ( value ) => {
+						const nextBodyPart = value as CoachExerciseFormValues["bodyPart"];
+
+						updateValue( "bodyPart", nextBodyPart );
+						updateValue( "category", formatBodyPart( nextBodyPart ) );
+					} }
+				>
+					<Select.Trigger className={ "border border-border" }>
+						<Select.Value/>
+						<Select.Indicator/>
+					</Select.Trigger>
+					<Select.Popover>
+						<ListBox>
+							{ BODY_PART_OPTIONS.map( ( option ) => (
+								<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
+									{ option.label }
+									<ListBox.ItemIndicator/>
+								</ListBox.Item>
+							) ) }
+						</ListBox>
+					</Select.Popover>
+				</Select>
+				{ isCategoryInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
+			</div>
+
+			<div className={ "grid gap-4 md:grid-cols-2" }>
+				<div className={ "grid gap-2" }>
+					<Label>Tipo de equipamiento</Label>
+					<Select
+						fullWidth
+						name={ "equipment" }
+						value={ values.equipment }
+						onChange={ ( value ) => updateValue( "equipment", value ) }
+					>
+						<Select.Trigger className={ "border border-border" }>
+							<Select.Value/>
+							<Select.Indicator/>
+						</Select.Trigger>
+						<Select.Popover>
+							<ListBox>
+								{ getOptionsWithCurrentValue( values.equipment, COACH_EXERCISE_EQUIPMENT_OPTIONS ).map( ( option ) => (
+									<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
+										{ option.label }
+										<ListBox.ItemIndicator/>
+									</ListBox.Item>
+								) ) }
+							</ListBox>
+						</Select.Popover>
+					</Select>
+				</div>
+
+				<div className={ "grid gap-2" }>
+					<Label>Musculo principal</Label>
+					<Select
+						fullWidth
+						name={ "muscleGroup" }
+						value={ values.muscleGroup }
+						onChange={ ( value ) => updateValue( "muscleGroup", value ) }
+					>
+						<Select.Trigger className={ "border border-border" }>
+							<Select.Value/>
+							<Select.Indicator/>
+						</Select.Trigger>
+						<Select.Popover>
+							<ListBox>
+								{ getOptionsWithCurrentValue( values.muscleGroup, COACH_EXERCISE_MUSCLE_GROUP_OPTIONS ).map( ( option ) => (
+									<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
+										{ option.label }
+										<ListBox.ItemIndicator/>
+									</ListBox.Item>
+								) ) }
+							</ListBox>
+						</Select.Popover>
+					</Select>
+				</div>
+			</div>
+
+			<div className={ "grid gap-2" }>
+				<Label>Grupo muscular objetivo</Label>
+				<Select
+					fullWidth
+					name={ "target" }
+					value={ values.target }
+					onChange={ ( value ) => updateValue( "target", value ) }
+				>
+					<Select.Trigger className={ "border border-border" }>
+						<Select.Value/>
+						<Select.Indicator/>
+					</Select.Trigger>
+					<Select.Popover>
+						<ListBox>
+							{ getOptionsWithCurrentValue( values.target, COACH_EXERCISE_TARGET_OPTIONS ).map( ( option ) => (
+								<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
+									{ option.label }
+									<ListBox.ItemIndicator/>
+								</ListBox.Item>
+							) ) }
+						</ListBox>
+					</Select.Popover>
+				</Select>
+			</div>
+
 			<TextField
-				isRequired
 				fullWidth
-				isInvalid={ isNameInvalid }
-				name={ "name" }
-				value={ values.name }
-				onChange={ ( value ) => updateValue( "name", value ) }
+				name={ "instructions" }
+				value={ values.instructions }
+				onChange={ ( value ) => updateValue( "instructions", value ) }
 			>
-				<Label>Nombre</Label>
-				<Input placeholder={ "Ej: Press banca" } className={ "border border-border" }/>
-				{ isNameInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
+				<Label>Instrucciones</Label>
+				<TextArea
+					className={ "min-h-32 border border-border" }
+					placeholder={ "Indicaciones tecnicas, errores comunes o recomendaciones." }
+				/>
 			</TextField>
 
-			<Select
-				name={ "bodyPart" }
-				placeholder={ "Seleccioná una parte del cuerpo" }
-				value={ values.bodyPart }
-				onChange={ ( value ) => {
-					if (value) {
-						updateValue( "bodyPart", value as BodyPartValue );
-					}
-				} }
-			>
-				<Label>Parte del cuerpo</Label>
-				<Select.Trigger className={ "border border-border" }>
-					<Select.Value/>
-					<Select.Indicator/>
-				</Select.Trigger>
-				<Select.Popover>
-					<ListBox>
-						{ BODY_PART_OPTIONS.map( ( option ) => (
-							<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-								{ option.label }
-								<ListBox.ItemIndicator/>
-							</ListBox.Item>
-						) ) }
-					</ListBox>
-				</Select.Popover>
-			</Select>
+			{ showMediaPreview ? (
+				<div className={ "grid gap-4 md:grid-cols-2" } aria-label={ "Vista previa de medios" }>
+					<div className={ "space-y-2" }>
+						<Label>Vista previa de imagen</Label>
+						<AsyncMedia
+							alt={ `Vista previa de ${ values.name || "ejercicio" }` }
+							className={ "h-56 rounded-2xl border border-border" }
+							emptyLabel={ "No hay imagen disponible para este ejercicio global." }
+							spinnerLabel={ `Cargando imagen de ${ values.name || "ejercicio" }` }
+							src={ mediaImageUrl }
+						/>
+					</div>
 
-			<TextField
-				fullWidth
-				name={ "tips" }
-				value={ values.tips }
-				onChange={ ( value ) => updateValue( "tips", value ) }
-			>
-				<Label>Tips</Label>
-				<TextArea className={ "min-h-28 border border-border" } placeholder={ "Indicaciones técnicas, errores comunes o recomendaciones." }/>
-			</TextField>
+					<div className={ "space-y-2" }>
+						<Label>Vista previa de video / GIF</Label>
+						<AsyncMedia
+							alt={ `Vista previa de video de ${ values.name || "ejercicio" }` }
+							className={ "h-56 rounded-2xl border border-border" }
+							emptyLabel={ "No hay video o GIF disponible para este ejercicio global." }
+							spinnerLabel={ `Cargando video de ${ values.name || "ejercicio" }` }
+							src={ mediaVideoUrl }
+						/>
+					</div>
+				</div>
+			) : null }
 
 			<Checkbox
 				isSelected={ values.active }

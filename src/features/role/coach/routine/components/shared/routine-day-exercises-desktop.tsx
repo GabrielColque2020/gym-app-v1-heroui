@@ -2,6 +2,7 @@ import type { DraftRoutineDayExercise } from "@/features/routine/services/routin
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
 
+import { AsyncMedia } from "@/components/common";
 import { RoutineDayExerciseField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-field";
 import { RoutineDayExerciseOrderField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-order-field";
 import { RoutineExerciseActions } from "@/features/role/coach/routine/components/shared/routine-exercise-actions";
@@ -33,9 +34,18 @@ export function RoutineDayExercisesDesktop( {
 		{
 			allowsSorting: true,
 			cell: ( routine: DraftRoutineDayExercise ) => (
-				<div className={ "flex min-w-0 flex-col" }>
-					<span className={ "truncate font-medium text-foreground" }>{ getExerciseName( routine ) }</span>
-					<span className={ "truncate text-xs text-muted" }>{ formatBodyPartValue( routine.exercise?.bodyPart ) }</span>
+				<div className={ "flex min-w-0 items-center gap-3" }>
+					<AsyncMedia
+						alt={ `Imagen de ${ getExerciseName( routine ) }` }
+						className={ "size-10 shrink-0 rounded-lg border border-border" }
+						emptyLabel={ "Sin imagen" }
+						spinnerLabel={ `Cargando imagen de ${ getExerciseName( routine ) }` }
+						src={ routine.exercise?.imageUrl }
+					/>
+					<div className={ "min-w-0 flex flex-col" }>
+						<span className={ "truncate font-medium text-foreground" }>{ getExerciseName( routine ) }</span>
+						<span className={ "truncate text-xs text-muted" }>{ formatBodyPartValue( routine.exercise?.bodyPart ) }</span>
+					</div>
 				</div>
 			),
 			header: "Ejercicio",

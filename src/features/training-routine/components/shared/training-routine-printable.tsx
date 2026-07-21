@@ -52,7 +52,7 @@ function getDayRows( dayNumber: number, routineWeeks: TrainingRoutineWeek[] ): P
 			if (!exercise) return null;
 
 			return {
-				notes: formatNotes( exercise.observation, exercise.exercise?.tips ),
+				notes: formatNotes( exercise.observation, null),
 				reps: exercise.reps,
 				sets: exercise.sets,
 			};

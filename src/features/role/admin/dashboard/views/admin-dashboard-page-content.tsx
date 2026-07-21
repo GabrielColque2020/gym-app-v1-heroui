@@ -4,10 +4,11 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button, Card } from "@heroui/react";
-import { RotateCw, UserPlus, Users } from "lucide-react";
+import { Dumbbell, RotateCw, UserPlus, Users } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
 import { useAdminDashboardSummary } from "@/features/role/admin/dashboard/hooks/use-admin-dashboard-summary";
+import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 export default function AdminDashboardPageContent() {
 	const router = useRouter();
@@ -18,14 +19,14 @@ export default function AdminDashboardPageContent() {
 
 		void refetch();
 	}, [ isRefreshing, refetch ] );
+	const shouldShowLoading = isLoading || ( !data && ( isFetching || !isError ) );
 
-	if (isLoading) {
+	if (shouldShowLoading) {
 		return (
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Content className={ "flex min-h-72 flex-col items-center justify-center gap-3 py-10 text-center" }>
-					<p className={ "text-sm text-muted" }>Cargando resumen de administracion...</p>
-				</Card.Content>
-			</Card>
+			<AdminExercisesLoadingState
+				description={ "Consultando métricas, accesos rápidos y estado general del sistema." }
+				title={ "Cargando dashboard admin" }
+			/>
 		);
 	}
 
@@ -45,12 +46,12 @@ export default function AdminDashboardPageContent() {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Content className={ "flex flex-col gap-3 p-3 lg:flex-row lg:items-start lg:justify-between" }>
+				<Card.Content className={ "flex flex-col gap-3 p-3 md:flex-row md:items-end md:justify-between" }>
 					<PageHeader
 						description={ "Resumen global para cuentas, roles y estado general del sistema." }
 						title={ "Dashboard admin" }
 					/>
-					<Button isDisabled={ isRefreshing } variant={ "secondary" } onPress={ handleRefresh }>
+					<Button className={ "w-full md:w-auto" } isDisabled={ isRefreshing } variant={ "secondary" } onPress={ handleRefresh }>
 						<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 						{ isRefreshing ? "Actualizando..." : "Actualizar" }
 					</Button>
@@ -74,6 +75,10 @@ export default function AdminDashboardPageContent() {
 						<Button variant={ "secondary" } onPress={ () => router.push( "/admin/users" ) }>
 							<Users className={ "size-4" }/>
 							Ir a usuarios
+						</Button>
+						<Button variant={ "secondary" } onPress={ () => router.push( "/admin/exercises" ) }>
+							<Dumbbell className={ "size-4" }/>
+							Ir a ejercicios globales
 						</Button>
 						<Button onPress={ () => router.push( "/admin/users" ) }>
 							<UserPlus className={ "size-4" }/>

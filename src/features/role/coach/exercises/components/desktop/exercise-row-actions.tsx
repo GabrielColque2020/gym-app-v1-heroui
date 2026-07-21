@@ -1,20 +1,20 @@
-"use client";
+﻿"use client";
 
 import { Button, Spinner } from "@heroui/react";
 import { CheckCircle2, Trash2 } from "lucide-react";
 
 import { ExerciseDrawer } from "@/features/role/coach/exercises/components/shared/exercise-drawer";
-import { useExerciseStatusAction } from "@/features/exercises/hooks/use-exercise-status-action";
-import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
+import { useCoachExerciseStatusAction } from "@/features/role/coach/exercises/hooks/use-coach-exercise-status-action";
 
 type ExerciseRowActionsProps = {
-	exercise: ExerciseListItem;
+	exercise: CoachExerciseListItem;
 };
 
 export function ExerciseRowActions( {
 	exercise,
 }: ExerciseRowActionsProps ) {
-	const { changeStatus, isPending, statusClassName, statusLabel } = useExerciseStatusAction( { exercise } );
+	const { changeStatus, isPending, statusClassName, statusLabel } = useCoachExerciseStatusAction( { exercise } );
 
 	return (
 		<div className={ "flex items-center justify-start gap-2" }>

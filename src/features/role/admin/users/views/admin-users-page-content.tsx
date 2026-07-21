@@ -1,12 +1,13 @@
 "use client";
 
+import type { Key } from "@heroui/react";
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
-import { Button, Card, Chip, Label, ListBox, SearchField, Select } from "@heroui/react";
-import { useMemo } from "react";
-import { RotateCw } from "lucide-react";
+import { Button, Card, Chip, Dropdown, Header, Label, ListBox, SearchField, Select } from "@heroui/react";
+import { useMemo, useState } from "react";
+import { EllipsisVertical, Plus, RotateCw, UserPlus } from "lucide-react";
 
-import { PageHeader } from "@/components/common";
+import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { useAdminUsers } from "@/features/role/admin/users/hooks/use-admin-users";
 import { AdminCoachDrawer } from "@/features/role/admin/users/components/admin-coach-drawer";
 import { AdminStudentDrawer } from "@/features/role/admin/users/components/admin-student-drawer";
@@ -14,6 +15,7 @@ import { AdminUserMobileCard } from "@/features/role/admin/users/components/admi
 import { AdminUserRowActions } from "@/features/role/admin/users/components/admin-user-row-actions";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 import { useAdminUsersPageState } from "@/features/role/admin/users/hooks/use-admin-users-page-state";
+import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 function getRoleLabel( role: AdminUserListItem["role"] ) {
 	return role === "ADMIN" ? "Admin" : role === "COACH" ? "Coach" : "Student";
@@ -30,8 +32,25 @@ function getCoachLabel( user: AdminUserListItem ) {
 export default function AdminUsersPageContent() {
 	const { data = [], error, isError, isFetching, isLoading, refetch } = useAdminUsers();
 	const isRefreshing = isFetching && !isLoading;
+	const [ isCreateCoachOpen, setIsCreateCoachOpen ] = useState( false );
+	const [ isCreateStudentOpen, setIsCreateStudentOpen ] = useState( false );
 	const pageState = useAdminUsersPageState( data );
 	const filteredUsers = pageState.filteredUsers;
+	const breadcrumbs = [
+		{ href: "/admin/dashboard", label: "Inicio" },
+		{ label: "Usuarios" },
+	];
+
+	function handleCreateAction( key: Key ) {
+		if (key === "create-coach") {
+			setIsCreateCoachOpen( true );
+			return;
+		}
+
+		if (key === "create-student") {
+			setIsCreateStudentOpen( true );
+		}
+	}
 
 	const columns = useMemo<DataGridColumn<AdminUserListItem>[]>( () => [
 		{
@@ -94,29 +113,77 @@ export default function AdminUsersPageContent() {
 	], [] );
 
 	if (isLoading) {
-		return <Card className={ "border border-border bg-surface" } variant={ "default" }><Card.Content className={ "p-4 text-sm text-muted" }>Cargando usuarios...</Card.Content></Card>;
+		return (
+			<div className={ "flex flex-col gap-4" }>
+				<PageBreadcrumbs
+					backHref={ "/admin/dashboard" }
+					backLabel={ "Volver al inicio" }
+					crumbs={ breadcrumbs }
+				/>
+				<AdminExercisesLoadingState
+					description={ "Consultando usuarios, roles y asignaciones de coaches." }
+					title={ "Cargando usuarios" }
+				/>
+			</div>
+		);
 	}
 
 	if (isError) {
-		return <Card className={ "border border-danger/20 bg-surface" } variant={ "default" }><Card.Content
-			className={ "p-4 text-sm text-danger" }>{ error?.message ?? "No pudimos cargar usuarios." }</Card.Content></Card>;
+		return (
+			<div className={ "flex flex-col gap-4" }>
+				<PageBreadcrumbs
+					backHref={ "/admin/dashboard" }
+					backLabel={ "Volver al inicio" }
+					crumbs={ breadcrumbs }
+				/>
+				<Card className={ "border border-danger/20 bg-surface" } variant={ "default" }><Card.Content
+					className={ "p-4 text-sm text-danger" }>{ error?.message ?? "No pudimos cargar usuarios." }</Card.Content></Card>
+			</div>
+		);
 	}
 
 	return (
 		<div className={ "flex flex-col gap-4" }>
+			<PageBreadcrumbs
+				backHref={ "/admin/dashboard" }
+				backLabel={ "Volver al inicio" }
+				crumbs={ breadcrumbs }
+			/>
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Content className={ "flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between" }>
+				<Card.Content className={ "flex flex-col gap-3 p-3 sm:flex-row sm:items-end sm:justify-between" }>
 					<PageHeader
 						description={ "Listado global para crear coaches y revisar la asignación estudiante-coach." }
 						title={ "Usuarios admin" }
 					/>
-					<div className={ "flex flex-col gap-2 sm:flex-row" }>
-						<Button isDisabled={ isRefreshing } variant={ "secondary" } onPress={ () => void refetch() }>
+					<div className={ "flex items-center justify-end gap-2" }>
+						<Button className={ "w-full md:w-auto" } isDisabled={ isRefreshing } variant={ "secondary" } onPress={ () => void refetch() }>
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
-						<AdminCoachDrawer/>
-						<AdminStudentDrawer mode={ "create" }/>
+						<Dropdown>
+							<Button
+								isIconOnly
+								className={ "size-10 shrink-0 " }
+								variant={ "secondary" }
+							>
+								<EllipsisVertical className={ "size-5" }/>
+							</Button>
+							<Dropdown.Popover placement={ "bottom end" }>
+								<Dropdown.Menu onAction={ handleCreateAction }>
+									<Header>Crear usuario</Header>
+									<Dropdown.Item id={ "create-coach" } textValue={ "Crear coach" }>
+										<UserPlus className={ "size-4 shrink-0 text-accent" }/>
+										<Label className={ "text-accent" }>Crear coach</Label>
+									</Dropdown.Item>
+									<Dropdown.Item id={ "create-student" } textValue={ "Crear estudiante" }>
+										<Plus className={ "size-4 shrink-0 text-accent" }/>
+										<Label className={ "text-accent" }>Crear estudiante</Label>
+									</Dropdown.Item>
+								</Dropdown.Menu>
+							</Dropdown.Popover>
+						</Dropdown>
+						<AdminCoachDrawer hideTrigger isOpen={ isCreateCoachOpen } onOpenChangeAction={ setIsCreateCoachOpen }/>
+						<AdminStudentDrawer hideTrigger isOpen={ isCreateStudentOpen } mode={ "create" } onOpenChangeAction={ setIsCreateStudentOpen }/>
 					</div>
 				</Card.Content>
 			</Card>

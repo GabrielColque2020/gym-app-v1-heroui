@@ -1,19 +1,19 @@
-"use client";
+﻿"use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import type { BodyPartValue, ExerciseFormValues } from "@/features/exercises/services/exercise-form";
-import type { Exercises } from "@/features/exercises/services/exercises-query";
-import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
-
 import { Alert, Button, Description, Drawer, Spinner, toast } from "@heroui/react";
+import { CheckCircle2, PencilLine, Plus } from "lucide-react";
 
-import { useCreateExercise, useUpdateExercise } from "@/features/exercises/hooks/use-exercises";
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
+import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
+import { formatBodyPart } from "@/features/exercises/services/exercise-formatters";
+import { type CoachExerciseFormValues, createCoachExerciseDefaultValues, mapCategoryToBodyPart, } from "@/features/role/coach/exercises/services/coach-exercise-form";
+import { useSaveCoachExercise } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 
 import { ExerciseDrawerFields } from "./exercise-drawer-fields";
 import { ExerciseDrawerTrigger } from "./exercise-drawer-trigger";
-import { CheckCircle2, PencilLine, Plus } from "lucide-react";
 
 type ExerciseFormDrawerProps =
 	| {
@@ -21,73 +21,94 @@ type ExerciseFormDrawerProps =
 	hideTrigger?: boolean;
 	isOpen?: boolean;
 	mode: "create";
-	onSuccess?: ( exercise: Exercises[ number ] ) => void;
+	onSuccessAction?: ( exercise: ExerciseListItem ) => void;
 	onOpenChangeAction?: ( isOpen: boolean ) => void;
 	placement?: "bottom" | "right";
 	triggerClassName?: string;
 	triggerVariant?: "button" | "icon";
 }
 	| {
-	exercise: ExerciseListItem;
+	exercise: CoachExerciseListItem;
 	hideTrigger?: boolean;
 	isOpen?: boolean;
 	mode: "edit";
-	onSuccess?: ( exercise: Exercises[ number ] ) => void;
+	onSuccessAction?: ( exercise: ExerciseListItem ) => void;
 	onOpenChangeAction?: ( isOpen: boolean ) => void;
 	placement?: "bottom" | "right";
 	triggerClassName?: string;
 	triggerVariant?: "button" | "icon";
 };
 
-const DEFAULT_VALUES: ExerciseFormValues = {
-	active: true,
-	bodyPart: "CHEST",
-	name: "",
-	tips: "",
-};
-
-function getDefaultValues(): ExerciseFormValues {
-	return { ...DEFAULT_VALUES };
-}
-
-function getInitialValues( exercise?: ExerciseListItem ): ExerciseFormValues {
-	if (!exercise) return getDefaultValues();
+function getInitialValues( exercise?: CoachExerciseListItem ): CoachExerciseFormValues {
+	if (!exercise) {
+		return createCoachExerciseDefaultValues();
+	}
 
 	return {
 		active: exercise.active,
-		bodyPart: exercise.bodyPart as BodyPartValue,
+		bodyPart: exercise.bodyPart,
+		category: exercise.category?.trim() || formatBodyPart( exercise.bodyPart ),
+		equipment: exercise.equipment,
+		imageUrl: exercise.imageUrl ?? "",
+		instructions: exercise.instructions ?? "",
+		muscleGroup: exercise.muscleGroup,
 		name: exercise.name,
-		tips: exercise.tips ?? "",
+		target: exercise.target,
+		videoUrl: exercise.videoUrl ?? "",
+	};
+}
+
+function mapCoachExerciseToRoutineExercise( exercise: CoachExerciseListItem ): ExerciseListItem {
+	return {
+		active: exercise.active,
+		bodyPart: exercise.bodyPart,
+		createdAt: exercise.createdAt,
+		id: exercise.id,
+		imageUrl: exercise.imageUrl,
+		name: exercise.name,
+		tips: exercise.tips,
+		videoUrl: exercise.videoUrl,
 	};
 }
 
 export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
-	const [ values, setValues ] = useState<ExerciseFormValues>( () => getInitialValues( props.exercise ) );
-	const createExercise = useCreateExercise();
-	const updateExercise = useUpdateExercise();
+	const [ values, setValues ] = useState<CoachExerciseFormValues>( () => getInitialValues( props.exercise ) );
+	const saveCoachExercise = useSaveCoachExercise();
 	const wasOpenRef = useRef( false );
 
 	const isEditMode = props.mode === "edit";
-	const activeMutation = isEditMode ? updateExercise : createExercise;
+	const currentExercise = isEditMode ? props.exercise : null;
+	const activeMutation = saveCoachExercise;
 	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
-	const isSubmitDisabled = values.name.trim().length < 2 || activeMutation.isPending;
+	const isCategoryInvalid = values.category.trim().length > 0 && values.category.trim().length < 2;
+	const isSubmitDisabled = values.name.trim().length < 2 || values.category.trim().length < 2 || activeMutation.isPending;
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear ejercicio";
 	const showEditTriggerLabel = props.triggerVariant === "button";
 	const isOpen = props.isOpen ?? internalIsOpen;
 	const setIsOpen = props.onOpenChangeAction ?? setInternalIsOpen;
 	const placement = props.placement ?? "right";
+	const canShowGlobalMediaPreview =
+		isEditMode
+		&& (
+			currentExercise?.sourceType === "global"
+			|| currentExercise?.isOverride
+			|| Boolean( currentExercise?.globalExerciseId )
+		);
 
-	const title = isEditMode ? "Editar ejercicio" : "Nuevo ejercicio";
+	const title = isEditMode
+		? ( currentExercise?.sourceType === "global" ? "Editar global" : "Editar ejercicio" )
+		: "Nuevo ejercicio";
 	const description = isEditMode
-		? "Actualiza los datos del ejercicio y su estado dentro del catalogo."
-		: "Carga un ejercicio disponible para rutinas y seguimiento de alumnos.";
+		? currentExercise?.sourceType === "global"
+			? "Se guardara una version privada para tu catalogo sin modificar el ejercicio global."
+			: "Actualiza los datos del ejercicio dentro de tu catalogo propio."
+		: "Carga un ejercicio propio o una version local de un ejercicio global.";
 
 	const resetFormState = useCallback( () => {
-		setValues( getInitialValues( props.exercise ) );
-		createExercise.reset();
-		updateExercise.reset();
-	}, [ createExercise, props.exercise, updateExercise ] );
+		setValues( getInitialValues( currentExercise ?? undefined ) );
+		saveCoachExercise.reset();
+	}, [ currentExercise, saveCoachExercise ] );
 
 	useEffect( () => {
 		if (!isOpen) {
@@ -116,11 +137,21 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 		setIsOpen( nextIsOpen );
 	}
 
-	function updateValue<Key extends keyof ExerciseFormValues>( key: Key, value: ExerciseFormValues[ Key ] ) {
-		setValues( ( currentValues ) => ( {
-			...currentValues,
-			[ key ]: value,
-		} ) );
+	function updateValue<Key extends keyof CoachExerciseFormValues>( key: Key, value: CoachExerciseFormValues[ Key ] ) {
+		setValues( ( currentValues ) => {
+			const nextValues = {
+				...currentValues,
+				[ key ]: value,
+			} as CoachExerciseFormValues;
+
+			if (key === "category") {
+				nextValues.bodyPart = mapCategoryToBodyPart( value as string );
+			} else if (key === "bodyPart") {
+				nextValues.category = formatBodyPart( value as CoachExerciseFormValues["bodyPart"] );
+			}
+
+			return nextValues;
+		} );
 	}
 
 	async function handleSubmit( event: React.SubmitEvent<HTMLFormElement> ) {
@@ -129,24 +160,30 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 		if (isSubmitDisabled) return;
 
 		try {
-			if (isEditMode) {
-				const updatedExercise = await updateExercise.mutateAsync( {
-					...values,
-					id: props.exercise.id,
-				} );
-				toast.success( "Ejercicio actualizado", {
-					description: "Los cambios se guardaron correctamente.",
-				} );
-				props.onSuccess?.( updatedExercise );
-			} else {
-				const createdExercise = await createExercise.mutateAsync( values );
-				setValues( getDefaultValues() );
-				toast.success( "Ejercicio creado", {
-					description: "Se agrego al catalogo.",
-				} );
-				props.onSuccess?.( createdExercise );
-			}
+			const savedExercise = await saveCoachExercise.mutateAsync( {
+				active: values.active,
+				bodyPart: values.bodyPart,
+				category: values.category,
+				coachExerciseId: isEditMode && currentExercise?.sourceType === "coach" ? currentExercise.coachExerciseId : null,
+				equipment: values.equipment,
+				globalExerciseId: isEditMode && currentExercise?.globalExerciseId ? currentExercise.globalExerciseId : null,
+				imageUrl: values.imageUrl,
+				instructions: values.instructions,
+				muscleGroup: values.muscleGroup,
+				name: values.name,
+				sourceType: isEditMode && currentExercise ? currentExercise.sourceType : "coach",
+				target: values.target,
+				videoUrl: values.videoUrl,
+				externalId: currentExercise?.externalId ?? null,
+			} );
 
+			props.onSuccessAction?.( mapCoachExerciseToRoutineExercise( savedExercise as CoachExerciseListItem ) );
+
+			toast.success( isEditMode ? "Ejercicio actualizado" : "Ejercicio creado", {
+				description: isEditMode
+					? "Los cambios se guardaron correctamente en tu catalogo."
+					: "Se agrego al catalogo personal.",
+			} );
 			setIsOpen( false );
 		} catch {
 			toast.danger( isEditMode ? "Error al actualizar" : "Error al crear", {
@@ -159,14 +196,14 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 		<>
 			{ props.hideTrigger ? null : (
 				<ExerciseDrawerTrigger
-					ariaLabel={ isEditMode ? `Editar ${ props.exercise.name }` : "Nuevo ejercicio" }
+					ariaLabel={ isEditMode && currentExercise ? `Editar ${ currentExercise.name }` : "Nuevo ejercicio" }
 					className={ props.triggerClassName }
 					isEditMode={ isEditMode }
 					showEditTriggerLabel={ showEditTriggerLabel }
 					onPress={ openDrawer }
 				/>
 			) }
-			<FeatureDrawerLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange }>
+			<FeatureDrawerLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange } rightContentClassName={ "w-[42rem]" }>
 				<Drawer.Header className={ "border-default-100 relative border-b pb-4" }>
 					<div className={ "flex gap-3 " }>
 						<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
@@ -192,7 +229,11 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 					) : null }
 
 					<ExerciseDrawerFields
+						isCategoryInvalid={ isCategoryInvalid }
 						isNameInvalid={ isNameInvalid }
+						mediaImageUrl={ canShowGlobalMediaPreview ? values.imageUrl : null }
+						mediaVideoUrl={ canShowGlobalMediaPreview ? values.videoUrl : null }
+						showMediaPreview={ canShowGlobalMediaPreview }
 						updateValue={ updateValue }
 						values={ values }
 					/>

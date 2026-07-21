@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { Alert, Card, Spinner } from "@heroui/react";
+import { Alert } from "@heroui/react";
 
 import { StudentDashboardActivityCard } from "@/features/role/student/dashboard/components/student-dashboard-activity-card";
 import { StudentDashboardHero } from "@/features/role/student/dashboard/components/student-dashboard-hero";
@@ -10,6 +10,7 @@ import { StudentDashboardQuickStats } from "@/features/role/student/dashboard/co
 import { StudentDashboardTodayCard } from "@/features/role/student/dashboard/components/student-dashboard-today-card";
 import { useStudentDashboardSummary } from "@/features/role/student/dashboard/hooks/use-student-dashboard-summary";
 import { formatLastProgressLabel } from "@/features/role/student/dashboard/services/student-dashboard-mappers";
+import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 export default function StudentDashboardPageContent() {
 	const { data, error, isError, isFetching, isLoading, refetch } = useStudentDashboardSummary();
@@ -41,18 +42,14 @@ export default function StudentDashboardPageContent() {
 			value: formatLastProgressLabel( data.history.lastProgressAt ),
 		},
 	] : [], [ data ] );
+	const shouldShowLoading = isLoading || ( !data && ( isFetching || !isError ) );
 
-	if (isLoading) {
+	if (shouldShowLoading) {
 		return (
-			<Card className={ "border border-border bg-surface" } variant={ "default" }>
-				<Card.Content className={ "flex min-h-72 flex-col items-center justify-center gap-3 py-10 text-center" }>
-					<Spinner size={ "lg" }/>
-					<div className={ "space-y-1" }>
-						<p className={ "text-base font-semibold text-foreground" }>Cargando tu dashboard</p>
-						<p className={ "text-sm text-muted" }>Consultando rutina, planes alimenticios y actividad reciente.</p>
-					</div>
-				</Card.Content>
-			</Card>
+			<AdminExercisesLoadingState
+				description={ "Consultando rutina, planes alimenticios y actividad reciente." }
+				title={ "Cargando tu dashboard" }
+			/>
 		);
 	}
 

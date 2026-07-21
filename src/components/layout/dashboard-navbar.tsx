@@ -4,14 +4,17 @@ import type { Key } from "@heroui/react";
 import { Button, Dropdown, Header, Label } from "@heroui/react";
 import { Navbar, Sidebar } from "@heroui-pro/react";
 import { useTheme } from "next-themes";
-import { ChevronDown, Laptop, Moon, Sun } from "lucide-react";
+import { ChevronDown, Laptop, LogOut, Moon, Sun } from "lucide-react";
+import { useState } from "react";
 
 import { useIsMounted } from "@/components/layout/use-is-mounted";
+import { LogoutConfirmModal } from "@/features/auth/components/logout-confirm-modal";
 import { updateThemePreferenceAction } from "@/features/theme/actions/update-theme-preference";
 import type { UiThemePreference } from "@/features/theme/theme-preference";
 
 export function DashboardNavbar() {
 	const isMounted = useIsMounted();
+	const [ isLogoutOpen, setIsLogoutOpen ] = useState( false );
 	const { resolvedTheme, setTheme, theme } = useTheme();
 
 	const currentTheme = ( theme === "system" ? "system" : theme ?? "system" ) as UiThemePreference;
@@ -76,7 +79,16 @@ export function DashboardNavbar() {
 							</Dropdown.Menu>
 						</Dropdown.Popover>
 					</Dropdown>
+					<Button
+						aria-label={ "Cerrar sesión" }
+						size={ "sm" }
+						variant={ "danger-soft" }
+						onPress={ () => setIsLogoutOpen( true ) }
+					>
+						<LogOut className={ "size-4" }/> Cerrar sesión
+					</Button>
 				</div>
+				<LogoutConfirmModal isOpen={ isLogoutOpen } onOpenChangeAction={ setIsLogoutOpen }/>
 			</Navbar.Header>
 		</Navbar>
 	);

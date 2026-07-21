@@ -1,19 +1,19 @@
-"use client";
-
-import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+﻿"use client";
 
 import { ListPagination } from "@/components/common";
-import { ExerciseMobileCard } from "@/features/role/coach/exercises/components/mobile/exercise-mobile-card";
 import { CoachExercisesEmptyState } from "@/features/role/coach/exercises/components/shared/coach-exercises-empty-state";
 import { ExerciseFilters } from "@/features/role/coach/exercises/components/shared/exercise-filters";
-import { useExerciseList } from "@/features/exercises/hooks/use-exercise-list";
+import { useCoachExerciseList } from "@/features/role/coach/exercises/hooks/use-coach-exercise-list";
+import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
+import { ExerciseMobileCard } from "@/features/role/coach/exercises/components/mobile/exercise-mobile-card";
 
-type ExercisesTableMobileProps = {
-	exercises: ExerciseListItem[];
+type ExercisesContentMobileProps = {
+	exercises: CoachExerciseListItem[];
 };
 
-export function ExercisesContentMobile( { exercises }: ExercisesTableMobileProps ) {
+export function ExercisesContentMobile( { exercises }: ExercisesContentMobileProps ) {
 	const {
+		bodyParts,
 		bodyPartFilter,
 		changePage,
 		clearFilters,
@@ -21,9 +21,11 @@ export function ExercisesContentMobile( { exercises }: ExercisesTableMobileProps
 		hasFilters,
 		nameFilter,
 		pagination,
+		sourceFilter,
 		updateBodyPartFilter,
 		updateNameFilter,
-	} = useExerciseList( { exercises } );
+		updateSourceFilter,
+	} = useCoachExerciseList( { exercises } );
 	const {
 		currentPage,
 		paginatedItems: paginatedExercises,
@@ -40,6 +42,7 @@ export function ExercisesContentMobile( { exercises }: ExercisesTableMobileProps
 	return (
 		<div className={ "flex w-full flex-col gap-4" }>
 			<ExerciseFilters
+				bodyParts={ bodyParts }
 				bodyPartFilter={ bodyPartFilter }
 				hasFilters={ hasFilters }
 				layout={ "mobile" }
@@ -47,6 +50,8 @@ export function ExercisesContentMobile( { exercises }: ExercisesTableMobileProps
 				onBodyPartFilterChangeAction={ updateBodyPartFilter }
 				onClearFiltersAction={ clearFilters }
 				onNameFilterChangeAction={ updateNameFilter }
+				onSourceFilterChangeAction={ updateSourceFilter }
+				sourceFilter={ sourceFilter }
 			/>
 
 			{ filteredExercises.length === 0 ? (

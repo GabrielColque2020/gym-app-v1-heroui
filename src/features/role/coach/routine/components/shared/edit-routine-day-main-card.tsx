@@ -10,6 +10,7 @@ type EditRoutineDayMainCardProps = {
 	draftRoutines: DraftRoutineDayExercise[];
 	getSuggestedOrder: () => number;
 	isRefreshing: boolean;
+	requiredFieldsMessage: string | null;
 	routineSubtitle: string;
 	routineTitle: string;
 	validationError: string | null;
@@ -24,6 +25,7 @@ export function EditRoutineDayMainCard( {
 											draftRoutines,
 											getSuggestedOrder,
 											isRefreshing,
+											requiredFieldsMessage,
 											routineSubtitle,
 											routineTitle,
 											validationError,
@@ -49,6 +51,7 @@ export function EditRoutineDayMainCard( {
 				draftRoutines={ draftRoutines }
 				onDeleteExercise={ onDeleteExerciseAction }
 				onUpdateExerciseField={ onUpdateExerciseField }
+				requiredFieldsMessage={ requiredFieldsMessage }
 				validationError={ validationError }
 			/>
 		</Card>

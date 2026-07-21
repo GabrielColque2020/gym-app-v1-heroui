@@ -4,12 +4,12 @@ import { useCallback } from "react";
 
 import { CoachDashboardErrorState } from "@/features/role/coach/dashboard/components/coach-dashboard-error-state";
 import { CoachDashboardHero } from "@/features/role/coach/dashboard/components/coach-dashboard-hero";
-import { CoachDashboardLoadingState } from "@/features/role/coach/dashboard/components/coach-dashboard-loading-state";
 import { CoachDashboardQuickActions } from "@/features/role/coach/dashboard/components/coach-dashboard-quick-actions";
 import { CoachDashboardQuickStats } from "@/features/role/coach/dashboard/components/coach-dashboard-quick-stats";
 import { CoachDashboardStudentsTable } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table";
 import { useCoachDashboardSummary } from "@/features/role/coach/dashboard/hooks/use-coach-dashboard-summary";
 import { buildCoachDashboardQuickStats } from "@/features/role/coach/dashboard/services/coach-dashboard-summary-cards";
+import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 export default function CoachDashboardPageContent() {
 	const { data, error, isError, isFetching, isLoading, refetch } = useCoachDashboardSummary();
@@ -19,9 +19,15 @@ export default function CoachDashboardPageContent() {
 
 		void refetch();
 	}, [ isRefreshing, refetch ] );
+	const shouldShowLoading = isLoading || ( !data && ( isFetching || !isError ) );
 
-	if (isLoading) {
-		return <CoachDashboardLoadingState/>;
+	if (shouldShowLoading) {
+		return (
+			<AdminExercisesLoadingState
+				description={ "Consultando estudiantes, rutinas, planes y actividad reciente." }
+				title={ "Cargando dashboard coach" }
+			/>
+		);
 	}
 
 	if (isError || !data) {

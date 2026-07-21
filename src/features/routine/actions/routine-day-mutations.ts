@@ -1,5 +1,6 @@
 "use server";
 
+import { requireCoachSession } from "@/features/auth/coach-session";
 import { getRoutineDayAction } from "@/features/routine/actions/get-routine-day";
 import {
 	assertRoutineCatalogExercisesAvailable,
@@ -19,12 +20,14 @@ export type SaveRoutineDayExercisesActionInput = {
 
 export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExercisesActionInput ) {
 	try {
+		const session = await requireCoachSession( "guardar el dia de rutina" );
 		const {
 			coachId,
 			exercises,
 			routineDayId,
 			studentId,
 		} = normalizeRoutineDayMutationInput( input );
+		const resolvedCoachId = coachId || session.sub;
 
 		if (!routineDayId) {
 			throw new Error( "Seleccioná un dia valido antes de guardar cambios." );
@@ -33,16 +36,16 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 		validateNormalizedRoutineDayExercises( exercises );
 
 		const routineDay = await getRoutineDayDetailBase( {
-			coachId,
+			coachId: resolvedCoachId,
 			routineDayId,
 			studentId,
 		} );
 
-		await assertRoutineCatalogExercisesAvailable( exercises );
-		await persistRoutineDayExercises( routineDay, exercises );
+		const resolvedExercises = await assertRoutineCatalogExercisesAvailable( resolvedCoachId, exercises );
+		await persistRoutineDayExercises( routineDay, resolvedExercises );
 
 		return await getRoutineDayAction( {
-			coachId,
+			coachId: resolvedCoachId,
 			routineDayId: routineDay.id,
 			studentId,
 		} );

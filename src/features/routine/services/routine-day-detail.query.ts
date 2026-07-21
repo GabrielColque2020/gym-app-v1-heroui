@@ -15,8 +15,19 @@ export const routineDayDetailInclude = {
 						select: {
 							active: true,
 							bodyPart: true,
+							externalId: true,
 							id: true,
+							imageUrl: true,
+							instructions: true,
 							name: true,
+							videoUrl: true,
+							globalExercise: {
+								select: {
+									imageUrl: true,
+									instructions: true,
+									videoUrl: true,
+								},
+							},
 						},
 					},
 				},
@@ -28,11 +39,20 @@ export const routineDayDetailInclude = {
 				select: {
 					active: true,
 					bodyPart: true,
+					externalId: true,
 					id: true,
 					imageUrl: true,
+					instructions: true,
 					name: true,
 					tips: true,
 					videoUrl: true,
+					globalExercise: {
+						select: {
+							imageUrl: true,
+							instructions: true,
+							videoUrl: true,
+						},
+					},
 				},
 			},
 		},

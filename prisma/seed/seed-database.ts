@@ -18,10 +18,11 @@ async function deleteAll() {
 	await prisma.routineExerciseVariant.deleteMany();
 	await prisma.routine.deleteMany();
 	await prisma.routineDay.deleteMany();
-	await prisma.trainingRoutine.deleteMany();
+	await prisma.trainingRoutineWeek.deleteMany();
+	await prisma.trainingRoutineMonth.deleteMany();
 	await prisma.studentExercise.deleteMany();
 	await prisma.exerciseProgress.deleteMany();
-	await prisma.exercise.deleteMany();
+	await prisma.exerciseCoach.deleteMany();
 	await prisma.descriptionStudent.deleteMany();
 	await prisma.user.deleteMany();
 }
@@ -54,7 +55,7 @@ async function main(): Promise<void> {
 	// const firstStudent = await prisma.user.findFirst( { where: { email: "gabriel@gmail.com" } } );
 
 	// Create the exercises
-	// await prisma.exercise.createMany( { data: exercises.map( exercise => ( { ...exercise, coachId: createdCoach.id } ) ) } )
+	// await prisma.exerciseCoach.createMany( { data: exercises.map( exercise => ( { ...exercise, coachId: createdCoach.id } ) ) } )
 	//
 	// Create the Training Routine
 	// await prisma.trainingRoutine.createMany( {
@@ -78,7 +79,7 @@ async function main(): Promise<void> {
 	// const firstRoutineDay = await prisma.routineDay.findFirst();
 
 	// Get the created exercises
-	// const exercisesDB = await prisma.exercise.findMany();
+	// const exercisesDB = await prisma.exerciseCoach.findMany();
 	//
 	// routines[ 0 ].exerciseId = exercisesDB[ 0 ].id;
 	// routines[ 1 ].exerciseId = exercisesDB[ 1 ].id;

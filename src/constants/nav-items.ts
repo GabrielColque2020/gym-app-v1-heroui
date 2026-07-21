@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-import { CalendarClock, Dumbbell, House, LogOut, Settings2, UtensilsCrossed, Users } from "lucide-react";
+import { CalendarClock, Dumbbell, House, Settings2, UtensilsCrossed, Users } from "lucide-react";
 
 import type { Role } from "@/generated/prisma/client";
 
@@ -49,13 +49,10 @@ export const NAV_ITEMS: readonly NavItem[] = [
 	{
 		children: [
 			{ href: "/admin/users", icon: Users, label: "Usuarios", roles: [ "ADMIN" ] },
+			{ href: "/admin/exercises", icon: Dumbbell, label: "Ejercicios globales", roles: [ "ADMIN" ] },
 		],
 		icon: Settings2,
 		label: "Sistema",
 		roles: [ "ADMIN" ],
 	},
-] as const;
-
-export const FOOTER_ITEMS: readonly NavItem[] = [
-	{ href: "/logout", icon: LogOut, label: "Cerrar Sesion" },
 ] as const;

@@ -1,48 +1,67 @@
-"use client";
+﻿"use client";
 
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
-import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import { Chip } from "@heroui/react";
 import { useMemo } from "react";
 
-import { ListPagination } from "@/components/common";
-import { ExerciseRowActions } from "@/features/role/coach/exercises/components/desktop/exercise-row-actions";
+import { AsyncMedia, ListPagination } from "@/components/common";
 import { CoachExercisesEmptyState } from "@/features/role/coach/exercises/components/shared/coach-exercises-empty-state";
 import { ExerciseFilters } from "@/features/role/coach/exercises/components/shared/exercise-filters";
-import { useExerciseList } from "@/features/exercises/hooks/use-exercise-list";
-import { formatBodyPart } from "@/features/exercises/services/exercise-form";
+import { ExerciseRowActions } from "@/features/role/coach/exercises/components/desktop/exercise-row-actions";
+import { useCoachExerciseList } from "@/features/role/coach/exercises/hooks/use-coach-exercise-list";
+import { formatCoachExerciseSource, formatCoachExerciseSummary } from "@/features/role/coach/exercises/services/coach-exercise-formatters";
+import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
 
 type ExercisesContentDesktopProps = {
-	exercises: ExerciseListItem[];
+	exercises: CoachExerciseListItem[];
 };
 
 export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopProps ) {
-	const columns = useMemo<DataGridColumn<ExerciseListItem>[]>(
+	const columns = useMemo<DataGridColumn<CoachExerciseListItem>[]>(
 		() => [
 			{
 				accessorKey: "name",
 				allowsSorting: true,
 				cell: ( exercise ) => (
-					<div className={ "flex min-w-0 flex-col" }>
-						<span className={ "truncate font-medium text-foreground" }>{ exercise.name }</span>
-						<span className={ "truncate text-xs text-muted" }>
-							{ exercise.tips?.trim() || "Sin recomendaciones cargadas" }
-						</span>
+					<div className={ "flex min-w-0 items-center gap-3" }>
+						<AsyncMedia
+							alt={ `Imagen de ${ exercise.name }` }
+							className={ "size-12 shrink-0 rounded-xl border border-border" }
+							emptyLabel={ "Sin imagen" }
+							spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
+							src={ exercise.imageUrl }
+						/>
+						<div className={ "flex min-w-0 flex-col" }>
+							<span className={ "truncate font-medium text-foreground" }>{ exercise.name }</span>
+							<span className={ "truncate text-xs text-muted" }>{ formatCoachExerciseSummary( exercise ) || "Sin datos adicionales" }</span>
+						</div>
 					</div>
 				),
 				header: "Nombre",
 				id: "name",
 				isRowHeader: true,
-				minWidth: 260,
+				minWidth: 280,
 			},
 			{
-				accessorKey: "bodyPart",
+				accessorKey: "category",
 				allowsSorting: true,
-				cell: ( exercise ) => <span>{ formatBodyPart( exercise.bodyPart ) }</span>,
-				header: "Parte del cuerpo",
-				id: "bodyPart",
+				cell: ( exercise ) => <span>{ exercise.category }</span>,
+				header: "Categoria",
+				id: "category",
 				minWidth: 180,
+			},
+			{
+				accessorKey: "sourceType",
+				allowsSorting: true,
+				cell: ( exercise ) => (
+					<Chip color={ exercise.sourceType === "global" ? "primary" : exercise.isOverride ? "warning" : "secondary" } size={ "sm" } variant={ "soft" }>
+						{ formatCoachExerciseSource( exercise ) }
+					</Chip>
+				),
+				header: "Origen",
+				id: "sourceType",
+				minWidth: 150,
 			},
 			{
 				accessorKey: "active",
@@ -66,6 +85,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 		[],
 	);
 	const {
+		bodyParts,
 		bodyPartFilter,
 		changePage,
 		clearFilters,
@@ -73,9 +93,11 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 		hasFilters,
 		nameFilter,
 		pagination,
+		sourceFilter,
 		updateBodyPartFilter,
 		updateNameFilter,
-	} = useExerciseList( { exercises } );
+		updateSourceFilter,
+	} = useCoachExerciseList( { exercises } );
 	const {
 		currentPage,
 		paginatedItems: paginatedExercises,
@@ -92,6 +114,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 	return (
 		<div className={ "flex w-full flex-col gap-4" }>
 			<ExerciseFilters
+				bodyParts={ bodyParts }
 				bodyPartFilter={ bodyPartFilter }
 				hasFilters={ hasFilters }
 				layout={ "desktop" }
@@ -99,6 +122,8 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 				onBodyPartFilterChangeAction={ updateBodyPartFilter }
 				onClearFiltersAction={ clearFilters }
 				onNameFilterChangeAction={ updateNameFilter }
+				onSourceFilterChangeAction={ updateSourceFilter }
+				sourceFilter={ sourceFilter }
 			/>
 
 			{ filteredExercises.length === 0 ? (
@@ -108,7 +133,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 					<DataGrid
 						aria-label={ "Listado de ejercicios" }
 						columns={ columns }
-						contentClassName={ "min-w-full sm:min-w-[760px]" }
+						contentClassName={ "min-w-full sm:min-w-[960px]" }
 						data={ paginatedExercises }
 						getRowId={ ( exercise ) => exercise.id }
 					/>

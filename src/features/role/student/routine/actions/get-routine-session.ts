@@ -40,7 +40,93 @@ export async function getStudentRoutineSessionAction( {
 			routineDayId,
 			studentId: activeStudentId,
 		} );
-		const { exerciseIds, variantExerciseIds } = collectStudentRoutineProgressIds( routineDay );
+		const externalIds = Array.from(
+			new Set(
+				routineDay.routines.flatMap( ( routine ) => [
+					routine.exercise?.externalId,
+					...routine.variants.map( ( variant ) => variant.variantExercise.externalId ),
+				] ).filter( ( externalId ): externalId is string => Boolean( externalId ) ),
+			),
+		);
+		const globalExercises = externalIds.length > 0
+			? await prisma.exerciseGlobal.findMany( {
+				select: {
+					externalId: true,
+					imageUrl: true,
+					instructions: true,
+					videoUrl: true,
+				},
+				where: {
+					externalId: {
+						in: externalIds,
+					},
+				},
+			} )
+			: [];
+		const globalImageByExternalId = new Map(
+			globalExercises.map( ( exercise ) => [ exercise.externalId, exercise.imageUrl ] ),
+		);
+		const globalInstructionsByExternalId = new Map(
+			globalExercises.map( ( exercise ) => [ exercise.externalId, exercise.instructions ] ),
+		);
+		const globalVideoByExternalId = new Map(
+			globalExercises.map( ( exercise ) => [ exercise.externalId, exercise.videoUrl ] ),
+		);
+		const enrichedRoutineDay = {
+			...routineDay,
+			routines: routineDay.routines.map( ( routine ) => {
+				const exerciseImageUrl = routine.exercise?.imageUrl?.trim()
+					|| (routine.exercise?.externalId ? globalImageByExternalId.get( routine.exercise.externalId ) : null)
+					|| null;
+				const exerciseInstructions = routine.exercise?.instructions?.trim()
+					|| routine.exercise?.tips?.trim()
+					|| routine.exercise?.globalExercise?.instructions?.trim()
+					|| (routine.exercise?.externalId ? globalInstructionsByExternalId.get( routine.exercise.externalId ) : null)
+					|| null;
+				const exerciseVideoUrl = routine.exercise?.videoUrl?.trim()
+					|| routine.exercise?.globalExercise?.videoUrl?.trim()
+					|| (routine.exercise?.externalId ? globalVideoByExternalId.get( routine.exercise.externalId ) : null)
+					|| null;
+
+				return {
+					...routine,
+					exercise: routine.exercise
+						? {
+							...routine.exercise,
+							imageUrl: exerciseImageUrl,
+							instructions: exerciseInstructions,
+							videoUrl: exerciseVideoUrl,
+						}
+						: routine.exercise,
+					variants: routine.variants.map( ( variant ) => {
+						const variantImageUrl = variant.variantExercise.imageUrl?.trim()
+							|| variant.variantExercise.globalExercise?.imageUrl?.trim()
+							|| (variant.variantExercise.externalId ? globalImageByExternalId.get( variant.variantExercise.externalId ) : null)
+							|| null;
+						const variantInstructions = variant.variantExercise.instructions?.trim()
+							|| variant.variantExercise.tips?.trim()
+							|| variant.variantExercise.globalExercise?.instructions?.trim()
+							|| (variant.variantExercise.externalId ? globalInstructionsByExternalId.get( variant.variantExercise.externalId ) : null)
+							|| null;
+						const variantVideoUrl = variant.variantExercise.videoUrl?.trim()
+							|| variant.variantExercise.globalExercise?.videoUrl?.trim()
+							|| (variant.variantExercise.externalId ? globalVideoByExternalId.get( variant.variantExercise.externalId ) : null)
+							|| null;
+
+						return {
+							...variant,
+							variantExercise: {
+								...variant.variantExercise,
+								imageUrl: variantImageUrl,
+								instructions: variantInstructions,
+								videoUrl: variantVideoUrl,
+							},
+						};
+					} ),
+				};
+			} ),
+		};
+		const { exerciseIds, variantExerciseIds } = collectStudentRoutineProgressIds( enrichedRoutineDay );
 		const progressEntries = ( await prisma.exerciseProgress.findMany( {
 			orderBy: [
 				{
@@ -54,7 +140,7 @@ export async function getStudentRoutineSessionAction( {
 		} ) ) as unknown as StudentRoutineProgressEntry[];
 
 		return {
-			...routineDay,
+			...enrichedRoutineDay,
 			progressEntries,
 		};
 	} catch (error) {
