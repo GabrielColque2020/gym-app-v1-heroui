@@ -1,5 +1,6 @@
 "use server";
 
+import { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 import { normalizeSearchName } from "@/features/exercises/services/exercise-form";
@@ -22,6 +23,20 @@ const exerciseVariantSelect = {
 	tips: true,
 	videoUrl: true,
 } as const;
+
+const routineExerciseVariantSelect = {
+	createdAt: true,
+	id: true,
+	routineId: true,
+	variantExercise: {
+		select: exerciseVariantSelect,
+	},
+	variantExerciseId: true,
+} satisfies Prisma.RoutineExerciseVariantSelect;
+
+type RoutineExerciseVariantWithExercise = Prisma.RoutineExerciseVariantGetPayload<{
+	select: typeof routineExerciseVariantSelect;
+}>;
 
 type ExerciseVariantQueryInput = {
 	routineId: string;
@@ -130,6 +145,13 @@ function mapExerciseWithGlobalMedia<T extends {
 	};
 }
 
+function mapRoutineExerciseVariant( variant: RoutineExerciseVariantWithExercise ): ExerciseVariantListItem {
+	return {
+		...variant,
+		variantExercise: mapExerciseWithGlobalMedia( variant.variantExercise ),
+	};
+}
+
 export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQueryInput ): Promise<ExerciseVariantListItem[]> {
 	try {
 		const normalizedRoutineId = normalizeId( routineId );
@@ -141,23 +163,16 @@ export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQ
 		await assertRoutineExists( normalizedRoutineId );
 
 		const variants = await prisma.routineExerciseVariant.findMany( {
-			include: {
-				variantExercise: {
-					select: exerciseVariantSelect,
-				},
-			},
 			orderBy: {
 				createdAt: "desc",
 			},
+			select: routineExerciseVariantSelect,
 			where: {
 				routineId: normalizedRoutineId,
 			},
 		} );
 
-		return variants.map( ( variant ) => ( {
-			...variant,
-			variantExercise: mapExerciseWithGlobalMedia( variant.variantExercise ),
-		} ) ) as ExerciseVariantListItem[];
+		return variants.map( mapRoutineExerciseVariant );
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
 
@@ -239,17 +254,10 @@ export async function createExerciseVariantAction( input: ExerciseVariantCreateI
 				routineId,
 				variantExerciseId,
 			},
-			include: {
-				variantExercise: {
-					select: exerciseVariantSelect,
-				},
-			},
+			select: routineExerciseVariantSelect,
 		} );
 
-		return {
-			...createdVariant,
-			variantExercise: mapExerciseWithGlobalMedia( createdVariant.variantExercise ),
-		} as ExerciseVariantListItem;
+		return mapRoutineExerciseVariant( createdVariant );
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al crear la variante.";
 
@@ -296,23 +304,16 @@ export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput
 		} );
 
 		const variants = await prisma.routineExerciseVariant.findMany( {
-			include: {
-				variantExercise: {
-					select: exerciseVariantSelect,
-				},
-			},
 			orderBy: {
 				createdAt: "desc",
 			},
+			select: routineExerciseVariantSelect,
 			where: {
 				routineId,
 			},
 		} );
 
-		return variants.map( ( variant ) => ( {
-			...variant,
-			variantExercise: mapExerciseWithGlobalMedia( variant.variantExercise ),
-		} ) ) as ExerciseVariantListItem[];
+		return variants.map( mapRoutineExerciseVariant );
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al guardar las variantes.";
 
