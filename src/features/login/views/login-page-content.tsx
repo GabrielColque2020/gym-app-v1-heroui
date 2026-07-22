@@ -115,7 +115,7 @@ export default function LoginPageContent() {
 								className={ "size-12" }
 								height={ 48 }
 								priority
-								src={ "/icon.svg" }
+								src={ "/app-icon.svg" }
 								width={ 48 }
 							/>
 						</div>

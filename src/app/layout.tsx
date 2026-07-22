@@ -13,11 +13,11 @@ export const metadata: Metadata = {
   title: "Gym App",
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/app-icon.svg", type: "image/svg+xml" },
       { url: "/logo.png", type: "image/png" },
     ],
     apple: "/apple-icon",
-    shortcut: "/icon.svg",
+    shortcut: "/app-icon.svg",
   },
 };
 
