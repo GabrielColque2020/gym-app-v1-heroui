@@ -1,5 +1,6 @@
 "use client";
 
+import type { Key } from "react";
 import { Checkbox, Description, Drawer, FieldError, Input, Label, ListBox, Select, TextArea, TextField } from "@heroui/react";
 
 import { AsyncMedia } from "@/components/common";
@@ -20,6 +21,10 @@ type AdminExerciseGlobalDrawerFieldsProps = {
 	updateValue: <Key extends keyof AdminExerciseGlobalFormValues>( key: Key, value: AdminExerciseGlobalFormValues[ Key ] ) => void;
 	values: AdminExerciseGlobalFormValues;
 };
+
+function normalizeSelectValue( value: Key | null ) {
+	return value === null ? "" : String( value );
+}
 
 function getTargetOptions( currentValue: string ) {
 	const normalizedCurrentValue = currentValue.trim();
@@ -99,7 +104,7 @@ export function AdminExerciseGlobalDrawerFields( {
 					isInvalid={ isCategoryInvalid }
 					name={ "category" }
 					value={ values.category }
-					onChange={ ( value ) => updateValue( "category", value ) }
+					onChange={ ( value ) => updateValue( "category", normalizeSelectValue( value ) ) }
 				>
 					<Select.Trigger className={ "border border-border" }>
 						<Select.Value/>
@@ -127,7 +132,7 @@ export function AdminExerciseGlobalDrawerFields( {
 						isInvalid={ isTargetInvalid }
 						name={ "target" }
 						value={ values.target }
-						onChange={ ( value ) => updateValue( "target", value ) }
+						onChange={ ( value ) => updateValue( "target", normalizeSelectValue( value ) ) }
 					>
 						<Select.Trigger className={ "border border-border" }>
 							<Select.Value/>
@@ -153,7 +158,7 @@ export function AdminExerciseGlobalDrawerFields( {
 						isInvalid={ isMuscleGroupInvalid }
 						name={ "muscleGroup" }
 						value={ values.muscleGroup }
-						onChange={ ( value ) => updateValue( "muscleGroup", value ) }
+						onChange={ ( value ) => updateValue( "muscleGroup", normalizeSelectValue( value ) ) }
 					>
 						<Select.Trigger className={ "border border-border" }>
 							<Select.Value/>
@@ -181,7 +186,7 @@ export function AdminExerciseGlobalDrawerFields( {
 					isInvalid={ isEquipmentInvalid }
 					name={ "equipment" }
 					value={ values.equipment }
-					onChange={ ( value ) => updateValue( "equipment", value ) }
+					onChange={ ( value ) => updateValue( "equipment", normalizeSelectValue( value ) ) }
 				>
 					<Select.Trigger className={ "border border-border" }>
 						<Select.Value/>

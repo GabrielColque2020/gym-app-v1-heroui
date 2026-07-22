@@ -1,8 +1,9 @@
+import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { RoutineDayExerciseBase } from "@/features/routine/actions/get-routine-day";
 
 export type DraftRoutineDayExercise = {
 	clientId: string;
-	exercise: RoutineDayExerciseBase["exercise"];
+	exercise: RoutineDayExerciseBase["exercise"] | ExerciseListItem;
 	exerciseId: string;
 	id: string | null;
 	observation: string;

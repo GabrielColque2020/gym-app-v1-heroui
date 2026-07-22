@@ -104,7 +104,6 @@ export async function getStudentRoutineSessionAction( {
 							|| (variant.variantExercise.externalId ? globalImageByExternalId.get( variant.variantExercise.externalId ) : null)
 							|| null;
 						const variantInstructions = variant.variantExercise.instructions?.trim()
-							|| variant.variantExercise.tips?.trim()
 							|| variant.variantExercise.globalExercise?.instructions?.trim()
 							|| (variant.variantExercise.externalId ? globalInstructionsByExternalId.get( variant.variantExercise.externalId ) : null)
 							|| null;

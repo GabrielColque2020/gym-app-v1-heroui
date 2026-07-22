@@ -48,7 +48,7 @@ export function ExerciseMobileCard( {
 						<h3 className={ "truncate text-lg font-semibold leading-6 text-foreground" }>{ exercise.name }</h3>
 						<p className={ "mt-1 truncate text-sm font-medium text-muted" }>{ formatCoachExerciseSummary( exercise ) || "Sin datos adicionales" }</p>
 						<div className={ "mt-2 flex flex-wrap gap-2" }>
-							<Chip color={ exercise.sourceType === "global" ? "primary" : exercise.isOverride ? "warning" : "secondary" } size={ "sm" } variant={ "soft" }>
+							<Chip color={ exercise.sourceType === "global" ? "accent" : exercise.isOverride ? "warning" : "default" } size={ "sm" } variant={ "soft" }>
 								{ formatCoachExerciseSource( exercise ) }
 							</Chip>
 							<Chip

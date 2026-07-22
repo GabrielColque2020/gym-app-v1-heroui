@@ -4,6 +4,7 @@ import { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 import { normalizeSearchName } from "@/features/exercises/services/exercise-form";
+import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { ExerciseVariantListItem, ExerciseVariantSearchItem } from "@/features/exercises/types/exercise-variants-types";
 
 const exerciseVariantSelect = {
@@ -36,6 +37,10 @@ const routineExerciseVariantSelect = {
 
 type RoutineExerciseVariantWithExercise = Prisma.RoutineExerciseVariantGetPayload<{
 	select: typeof routineExerciseVariantSelect;
+}>;
+
+type ExerciseVariantSearchResult = Prisma.ExerciseCoachGetPayload<{
+	select: typeof exerciseVariantSelect;
 }>;
 
 type ExerciseVariantQueryInput = {
@@ -120,7 +125,7 @@ function normalizeVariantIds( variantExerciseIds: string[] ) {
 
 function mapExerciseWithGlobalMedia<T extends {
 	active: boolean;
-	bodyPart: unknown;
+	bodyPart: ExerciseListItem[ "bodyPart" ];
 	createdAt: Date;
 	globalExercise?: {
 		imageUrl: string | null;
@@ -170,7 +175,7 @@ export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQ
 			where: {
 				routineId: normalizedRoutineId,
 			},
-		} );
+		} ) as RoutineExerciseVariantWithExercise[];
 
 		return variants.map( mapRoutineExerciseVariant );
 	} catch (error) {
@@ -188,7 +193,7 @@ export async function searchExerciseVariantCandidatesAction( input: ExerciseVari
 			throw new Error( "Seleccioná un ejercicio valido." );
 		}
 
-		const exercises = await prisma.exerciseCoach.findMany( {
+		const exercises = ( await prisma.exerciseCoach.findMany( {
 			orderBy: {
 				name: "asc",
 			},
@@ -197,7 +202,7 @@ export async function searchExerciseVariantCandidatesAction( input: ExerciseVari
 				...input,
 				excludedIds: [ normalizedExerciseId ],
 			} ),
-		} );
+		} ) ) as ExerciseVariantSearchResult[];
 
 		return exercises.map( ( exercise ) => mapExerciseWithGlobalMedia( exercise ) );
 	} catch (error) {
@@ -249,13 +254,13 @@ export async function createExerciseVariantAction( input: ExerciseVariantCreateI
 			throw new Error( "Ese ejercicio ya esta agregado como variante." );
 		}
 
-		const createdVariant = await prisma.routineExerciseVariant.create( {
+		const createdVariant = ( await prisma.routineExerciseVariant.create( {
 			data: {
 				routineId,
 				variantExerciseId,
 			},
 			select: routineExerciseVariantSelect,
-		} );
+		} ) ) as RoutineExerciseVariantWithExercise;
 
 		return mapRoutineExerciseVariant( createdVariant );
 	} catch (error) {
@@ -311,7 +316,7 @@ export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput
 			where: {
 				routineId,
 			},
-		} );
+		} ) as RoutineExerciseVariantWithExercise[];
 
 		return variants.map( mapRoutineExerciseVariant );
 	} catch (error) {

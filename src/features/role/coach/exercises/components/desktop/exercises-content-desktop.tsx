@@ -55,7 +55,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 				accessorKey: "sourceType",
 				allowsSorting: true,
 				cell: ( exercise ) => (
-					<Chip color={ exercise.sourceType === "global" ? "primary" : exercise.isOverride ? "warning" : "secondary" } size={ "sm" } variant={ "soft" }>
+					<Chip color={ exercise.sourceType === "global" ? "accent" : exercise.isOverride ? "warning" : "default" } size={ "sm" } variant={ "soft" }>
 						{ formatCoachExerciseSource( exercise ) }
 					</Chip>
 				),
@@ -141,7 +141,6 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 					<ListPagination
 						currentPage={ currentPage }
 						itemLabel={ "ejercicios" }
-						mode={ "full" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }

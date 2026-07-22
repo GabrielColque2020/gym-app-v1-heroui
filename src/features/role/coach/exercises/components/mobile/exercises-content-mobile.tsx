@@ -66,7 +66,6 @@ export function ExercisesContentMobile( { exercises }: ExercisesContentMobilePro
 
 					<ListPagination
 						currentPage={ currentPage }
-						mode={ "compact" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }

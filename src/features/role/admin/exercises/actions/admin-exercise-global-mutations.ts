@@ -65,7 +65,7 @@ function validateAdminExerciseGlobalInput( input: AdminExerciseGlobalMutationInp
 		muscleGroup,
 		name,
 		searchName: buildAdminExerciseGlobalSearchName( {
-			attribution,
+			attribution: attribution ?? undefined,
 			category,
 			equipment,
 			instructions,

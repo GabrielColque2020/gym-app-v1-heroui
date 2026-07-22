@@ -7,7 +7,7 @@ import type { CoachExerciseSourceFilter } from "@/features/role/coach/exercises/
 import { ALL_COACH_EXERCISE_SOURCES } from "@/features/role/coach/exercises/hooks/use-coach-exercise-list";
 
 type ExerciseFiltersProps = {
-	bodyParts: typeof BODY_PART_OPTIONS;
+	bodyParts: readonly ( typeof BODY_PART_OPTIONS )[ number ][];
 	bodyPartFilter: BodyPartFilter;
 	hasFilters: boolean;
 	layout: "desktop" | "mobile";

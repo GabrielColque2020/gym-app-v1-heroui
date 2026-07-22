@@ -1,6 +1,6 @@
-import type { Exercise } from "@/generated/prisma/client";
+import type { ExerciseCoach } from "@/generated/prisma/client";
 
 export type ExerciseListItem = Pick<
-	Exercise,
+	ExerciseCoach,
 	"active" | "bodyPart" | "createdAt" | "id" | "imageUrl" | "name" | "tips" | "videoUrl"
 >;

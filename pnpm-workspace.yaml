@@ -2,3 +2,7 @@ allowBuilds:
   '@heroui-pro/react': true
   heroui-native-pro: true
   heroui-pro: true
+
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - prisma

@@ -1,5 +1,6 @@
 ﻿"use server";
 
+import { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
@@ -25,6 +26,51 @@ type CoachExerciseMutationInput = {
 	videoUrl: string;
 	externalId?: string | null;
 };
+
+const globalExerciseSelect = {
+	active: true,
+	category: true,
+	createdAt: true,
+	equipment: true,
+	externalId: true,
+	id: true,
+	imageUrl: true,
+	instructions: true,
+	muscleGroup: true,
+	name: true,
+	searchName: true,
+	target: true,
+	updatedAt: true,
+	videoUrl: true,
+} satisfies Prisma.ExerciseGlobalSelect;
+
+const coachExerciseInclude = {
+	globalExercise: {
+		select: {
+			active: true,
+			category: true,
+			equipment: true,
+			externalId: true,
+			id: true,
+			imageUrl: true,
+			instructions: true,
+			muscleGroup: true,
+			name: true,
+			searchName: true,
+			target: true,
+			updatedAt: true,
+			videoUrl: true,
+		},
+	},
+} satisfies Prisma.ExerciseCoachInclude;
+
+type GlobalExerciseListResult = Prisma.ExerciseGlobalGetPayload<{
+	select: typeof globalExerciseSelect;
+}>;
+
+type CoachExerciseListResult = Prisma.ExerciseCoachGetPayload<{
+	include: typeof coachExerciseInclude;
+}>;
 
 function normalizeId( value: string | null | undefined ) {
 	return value?.trim() ?? "";
@@ -80,7 +126,7 @@ function mapCoachExerciseToListItem( exercise: {
 	active: boolean;
 	bodyPart: BodyPartValue;
 	category: string | null;
-	coachId: string;
+	coachId: string | null;
 	createdAt: Date;
 	equipment: string | null;
 	externalId: string | null;
@@ -242,50 +288,17 @@ export async function getCoachExercisesAction(): Promise<CoachExerciseListItem[]
 				orderBy: {
 					name: "asc",
 				},
-				select: {
-					active: true,
-					category: true,
-					createdAt: true,
-					equipment: true,
-					externalId: true,
-					id: true,
-					imageUrl: true,
-					instructions: true,
-					muscleGroup: true,
-					name: true,
-					searchName: true,
-					target: true,
-					updatedAt: true,
-					videoUrl: true,
-				},
-			} ),
+				select: globalExerciseSelect,
+			} ) as Promise<GlobalExerciseListResult[]>,
 			prisma.exerciseCoach.findMany( {
 				orderBy: {
 					name: "asc",
 				},
-				include: {
-					globalExercise: {
-						select: {
-							active: true,
-							category: true,
-							equipment: true,
-							externalId: true,
-							id: true,
-							imageUrl: true,
-							instructions: true,
-							muscleGroup: true,
-							name: true,
-							searchName: true,
-							target: true,
-							updatedAt: true,
-							videoUrl: true,
-						},
-					},
-				},
+				include: coachExerciseInclude,
 				where: {
 					coachId: session.sub,
 				},
-			} ),
+			} ) as Promise<CoachExerciseListResult[]>,
 		] );
 
 		const overridesByGlobalId = new Map(

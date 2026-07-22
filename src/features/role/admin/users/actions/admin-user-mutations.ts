@@ -278,7 +278,7 @@ export async function deleteAdminUserAction( input: DeleteAdminUserInput ) {
 					},
 				} );
 
-				await tx.exercise.updateMany( {
+				await tx.exerciseCoach.updateMany( {
 					data: {
 						coachId: null,
 					},

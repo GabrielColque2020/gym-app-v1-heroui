@@ -1,5 +1,6 @@
 "use client";
 
+import type { Key } from "react";
 import { Checkbox, Description, Drawer, FieldError, Input, Label, ListBox, Select, TextArea, TextField } from "@heroui/react";
 
 import { AsyncMedia } from "@/components/common";
@@ -33,6 +34,10 @@ function getOptionsWithCurrentValue( currentValue: string, options: readonly { l
 		{ label: normalizedCurrentValue, value: normalizedCurrentValue },
 		...options,
 	];
+}
+
+function normalizeSelectValue( value: Key | null ) {
+	return value === null ? "" : String( value );
 }
 
 export function ExerciseDrawerFields( {
@@ -69,7 +74,7 @@ export function ExerciseDrawerFields( {
 					name={ "bodyPart" }
 					value={ values.bodyPart }
 					onChange={ ( value ) => {
-						const nextBodyPart = value as CoachExerciseFormValues["bodyPart"];
+						const nextBodyPart = normalizeSelectValue( value ) as CoachExerciseFormValues["bodyPart"];
 
 						updateValue( "bodyPart", nextBodyPart );
 						updateValue( "category", formatBodyPart( nextBodyPart ) );
@@ -100,7 +105,7 @@ export function ExerciseDrawerFields( {
 						fullWidth
 						name={ "equipment" }
 						value={ values.equipment }
-						onChange={ ( value ) => updateValue( "equipment", value ) }
+						onChange={ ( value ) => updateValue( "equipment", normalizeSelectValue( value ) ) }
 					>
 						<Select.Trigger className={ "border border-border" }>
 							<Select.Value/>
@@ -125,7 +130,7 @@ export function ExerciseDrawerFields( {
 						fullWidth
 						name={ "muscleGroup" }
 						value={ values.muscleGroup }
-						onChange={ ( value ) => updateValue( "muscleGroup", value ) }
+						onChange={ ( value ) => updateValue( "muscleGroup", normalizeSelectValue( value ) ) }
 					>
 						<Select.Trigger className={ "border border-border" }>
 							<Select.Value/>
@@ -151,7 +156,7 @@ export function ExerciseDrawerFields( {
 					fullWidth
 					name={ "target" }
 					value={ values.target }
-					onChange={ ( value ) => updateValue( "target", value ) }
+					onChange={ ( value ) => updateValue( "target", normalizeSelectValue( value ) ) }
 				>
 					<Select.Trigger className={ "border border-border" }>
 						<Select.Value/>

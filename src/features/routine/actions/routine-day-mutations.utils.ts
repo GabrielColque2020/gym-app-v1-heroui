@@ -8,7 +8,7 @@ import { validateRoutineDayDraft, type SaveRoutineDayExerciseInput } from "@/fea
 
 type NormalizedRoutineDayExerciseInput = SaveRoutineDayExerciseInput;
 
-export function normalizeRoutineDayExercises( exercises: SaveRoutineDayExerciseInput[] ) {
+export function normalizeRoutineDayExercises( exercises: SaveRoutineDayExerciseInput[] ): NormalizedRoutineDayExerciseInput[] {
 	return exercises.map( ( exercise ) => ( {
 		exerciseId: exercise.exerciseId.trim(),
 		observation: exercise.observation,
@@ -44,7 +44,7 @@ async function resolveCoachExerciseIds(
 	}
 
 	const requestedIds = exercises.map( ( exercise ) => exercise.exerciseId );
-	const existingExercises = await prisma.exerciseCoach.findMany( {
+	const existingExercises = ( await prisma.exerciseCoach.findMany( {
 		select: {
 			id: true,
 		},
@@ -54,7 +54,7 @@ async function resolveCoachExerciseIds(
 				in: requestedIds,
 			},
 		},
-	} );
+	} ) ) as Array<{ id: string }>;
 	const existingExerciseIds = new Set( existingExercises.map( ( exercise ) => exercise.id ) );
 	const missingIds = requestedIds.filter( ( exerciseId ) => !existingExerciseIds.has( exerciseId ) );
 
@@ -83,7 +83,7 @@ async function resolveCoachExerciseIds(
 			},
 		},
 	} );
-	const existingOverrides = await prisma.exerciseCoach.findMany( {
+	const existingOverrides = ( await prisma.exerciseCoach.findMany( {
 		select: {
 			globalExerciseId: true,
 			id: true,
@@ -95,7 +95,7 @@ async function resolveCoachExerciseIds(
 				in: globalExercises.map( ( exercise ) => exercise.id ),
 			},
 		},
-	} );
+	} ) ) as Array<{ globalExerciseId: string | null; id: string }>;
 	const overrideIdByGlobalExerciseId = new Map(
 		existingOverrides
 			.filter( ( exercise ) => Boolean( exercise.globalExerciseId ) )
@@ -147,7 +147,7 @@ async function resolveCoachExerciseIds(
 		overrideIdByGlobalExerciseId.set( globalExercise.id, override.id );
 	}
 
-	const resolvedExercises = exercises.map( ( exercise ) => {
+	const resolvedExercises: NormalizedRoutineDayExerciseInput[] = exercises.map( ( exercise ) => {
 		if (existingExerciseIds.has( exercise.exerciseId )) {
 			return exercise;
 		}
