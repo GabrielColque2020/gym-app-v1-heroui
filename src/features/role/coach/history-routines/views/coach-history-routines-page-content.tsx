@@ -1,42 +1,101 @@
 "use client";
 
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { PageBreadcrumbs } from "@/components/common";
-import { HistoryRoutineMonthFilters } from "@/features/role/coach/history-routines/components/shared/history-routine-month-filters";
-import { CoachHistoryRoutinesEmptyState } from "@/features/role/coach/history-routines/components/shared/coach-history-routines-empty-state";
+import { useReactToPrint } from "react-to-print";
+
+import { HistoryRoutinesPrintable } from "@/features/history-routines/components/shared/history-routines-printable";
+import { HistoryRoutinesReportsIndex } from "@/features/history-routines/components/shared/history-routines-reports-index";
+import { buildHistoryRoutineMonthSummary, groupHistoryRoutinesByWeek } from "@/features/history-routines/services/history-routines-view";
 import { CoachHistoryRoutinesErrorState } from "@/features/role/coach/history-routines/components/shared/coach-history-routines-error-state";
 import { CoachHistoryRoutinesLoadingState } from "@/features/role/coach/history-routines/components/shared/coach-history-routines-loading-state";
 import { CoachHistoryRoutinesMissingStudentState } from "@/features/role/coach/history-routines/components/shared/coach-history-routines-missing-student-state";
-import { CoachHistoryRoutinesDesktopContent } from "@/features/role/coach/history-routines/components/desktop/coach-history-routines-desktop-content";
-import { CoachHistoryRoutinesMobileContent } from "@/features/role/coach/history-routines/components/mobile/coach-history-routines-mobile-content";
-import { useCoachHistoryRoutinesPageState } from "@/features/role/coach/history-routines/hooks/use-coach-history-routines-page-state";
+import { useHistoryRoutinesReports } from "@/features/role/coach/history-routines/hooks/use-history-routines-reports";
+import { historyRoutinesQueryOptions, type HistoryRoutinesByStudent } from "@/features/role/coach/history-routines/services/history-routines-query";
+import type { HistoryRoutineReportRow } from "@/features/history-routines/services/history-routines-reports";
+import { Alert } from "@heroui/react";
 
 type CoachHistoryRoutinesPageContentProps = {
 	studentId: string | null;
 };
 
 function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: string } ) {
-	const {
-		breadcrumbs,
-		data,
-		desktopSummary,
-		error,
-		handleRefresh,
-		handleWeekToggle,
-		isError,
-		isLoading,
-		isRefreshing,
-		monthLabel,
-		mobileSummary,
-		onMonthChange,
-		onYearChange,
-		selectedMonth,
-		selectedWeeks,
-		selectedWeekGroups,
-		selectedYear,
-		weekGroups,
-		yearOptions,
-		monthOptions,
-	} = useCoachHistoryRoutinesPageState( studentId );
+	const queryClient = useQueryClient();
+	const printRef = useRef<HTMLDivElement | null>( null );
+	const [ downloadError, setDownloadError ] = useState<string | null>( null );
+	const [ printableReport, setPrintableReport ] = useState<HistoryRoutinesByStudent | null>( null );
+	const [ pendingPeriodKey, setPendingPeriodKey ] = useState<string | null>( null );
+	const { data, error, isError, isLoading, isFetching, refetch } = useHistoryRoutinesReports( studentId );
+	const printableWeekGroups = useMemo(
+		() => groupHistoryRoutinesByWeek( printableReport?.historyRoutines ?? [] ),
+		[ printableReport?.historyRoutines ],
+	);
+	const printableSummary = useMemo(
+		() => buildHistoryRoutineMonthSummary( printableWeekGroups ),
+		[ printableWeekGroups ],
+	);
+	const printableMonthLabel = printableReport
+		? `${ String( printableReport.month ).padStart( 2, "0" ) }/${ printableReport.year }`
+		: "";
+	const breadcrumbs = [
+		{ href: "/", label: "Inicio" },
+		{ href: "/coach/history-routines-students", label: "Historial de rutinas por estudiante" },
+		{ label: data?.student.name ?? "Reportes mensuales" },
+	];
+	const handlePrint = useReactToPrint( {
+		contentRef: printRef,
+		documentTitle: printableReport
+			? `historial-rutinas-${ studentId }-${ printableReport.year }-${ String( printableReport.month ).padStart( 2, "0" ) }`
+			: "historial-rutinas",
+		pageStyle: `
+			@page {
+				size: A4 portrait;
+				margin: 6mm;
+			}
+			body {
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+		`,
+		onAfterPrint: () => {
+			setPendingPeriodKey( null );
+		},
+	} );
+
+	useEffect( () => {
+		if (!printableReport || !pendingPeriodKey) {
+			return;
+		}
+
+		const frameId = window.requestAnimationFrame( () => {
+			void handlePrint();
+		} );
+
+		return () => {
+			window.cancelAnimationFrame( frameId );
+		};
+	}, [ handlePrint, pendingPeriodKey, printableReport ] );
+
+	async function handleDownloadReport( report: HistoryRoutineReportRow ) {
+		setDownloadError( null );
+		setPendingPeriodKey( report.periodKey );
+
+		try {
+			const nextReport = await queryClient.fetchQuery(
+				historyRoutinesQueryOptions( studentId, report.month, report.year ),
+			);
+
+			setPrintableReport( nextReport );
+		} catch ( downloadReportError ) {
+			setPendingPeriodKey( null );
+			setDownloadError(
+				downloadReportError instanceof Error
+					? downloadReportError.message
+					: "No se pudo generar el reporte del periodo seleccionado.",
+			);
+		}
+	}
 
 	return (
 		<div className={ "mx-auto flex w-full max-w-350 flex-col gap-4" }>
@@ -44,18 +103,6 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 				backHref={ "/coach/history-routines-students" }
 				backLabel={ "Volver a estudiantes" }
 				crumbs={ breadcrumbs }
-			/>
-
-			<HistoryRoutineMonthFilters
-				isRefreshing={ isRefreshing }
-				monthOptions={ monthOptions }
-				onMonthChangeAction={ onMonthChange }
-				onRefreshAction={ handleRefresh }
-				onYearChangeAction={ onYearChange }
-				selectedMonth={ selectedMonth }
-				selectedYear={ selectedYear }
-				yearOptions={ yearOptions }
-				userName={ data?.student.name }
 			/>
 
 			{ isLoading ? (
@@ -66,33 +113,39 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 				<CoachHistoryRoutinesErrorState message={ error?.message ?? "Error al cargar historial" }/>
 			) : null }
 
+			{ downloadError ? (
+				<Alert className={ "border border-danger/20" } status={ "danger" }>
+					<Alert.Content>
+						<Alert.Title>Error al generar el reporte</Alert.Title>
+						<Alert.Description>{ downloadError }</Alert.Description>
+					</Alert.Content>
+				</Alert>
+			) : null }
+
 			{ !isLoading && !isError && data ? (
-				data.historyRoutines.length === 0 ? (
-					<CoachHistoryRoutinesEmptyState monthLabel={ monthLabel }/>
-				) : (
-					<>
-						<div className={ "hidden md:block" }>
-							<CoachHistoryRoutinesDesktopContent
-								monthLabel={ monthLabel }
-								selectedWeekGroups={ selectedWeekGroups }
-								selectedWeeks={ selectedWeeks }
-								summary={ desktopSummary }
-								weekGroups={ weekGroups }
-								onWeekToggleAction={ handleWeekToggle }
-							/>
-						</div>
-						<div className={ "md:hidden" }>
-							<CoachHistoryRoutinesMobileContent
-								monthLabel={ monthLabel }
-								selectedWeekGroups={ selectedWeekGroups }
-								selectedWeeks={ selectedWeeks }
-								summary={ mobileSummary }
-								weekGroups={ weekGroups }
-								onWeekToggleAction={ handleWeekToggle }
-							/>
-						</div>
-					</>
-				)
+				<HistoryRoutinesReportsIndex
+					description={ `Revisa los periodos con registro de ${ data.student.name } y descarga cada reporte mensual en PDF.` }
+					emptyMessage={ "Este estudiante todavia no tiene meses con historial de rutinas disponible." }
+					isDownloadingPeriodKey={ pendingPeriodKey }
+					isRefreshing={ isFetching && !isLoading }
+					reports={ data.reports }
+					title={ "Reportes mensuales" }
+					onDownloadAction={ handleDownloadReport }
+					onRefreshAction={ () => {
+						void refetch();
+					} }
+				/>
+			) : null }
+
+			{ printableReport ? (
+				<HistoryRoutinesPrintable
+					contentRef={ printRef }
+					monthLabel={ printableMonthLabel }
+					objective={ printableReport.student.DescriptionStudent?.objective }
+					summary={ printableSummary }
+					studentName={ printableReport.student.name }
+					weekGroups={ printableWeekGroups }
+				/>
 			) : null }
 		</div>
 	);

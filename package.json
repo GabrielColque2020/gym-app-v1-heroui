@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@gravity-ui/icons": "2.18.0",
-    "@heroui-pro/react": "1.0.0-beta.4",
+    "@heroui-pro/react": "1.0.0-beta.7",
     "@heroui/react": "^3.2.2",
     "@heroui/styles": "^3.2.2",
     "@internationalized/date": "^3.12.2",

@@ -4,9 +4,15 @@ import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 
 import MobileExerciseCard from "@/features/role/student/routine/components/mobile/mobile-exercise-card";
 import { MobileExerciseSetCard } from "@/features/role/student/routine/components/mobile/mobile-exercise-set-card";
-import { RoutineExerciseEmptyState } from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
-import { RoutineSessionOverviewCards } from "@/features/role/student/routine/components/shared/routine-session-overview-cards";
-import { useExerciseCarouselState } from "@/features/role/student/routine/components/shared/use-exercise-carousel-state";
+import {
+	RoutineExerciseEmptyState
+} from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
+import {
+	RoutineSessionOverviewCards
+} from "@/features/role/student/routine/components/shared/routine-session-overview-cards";
+import {
+	useExerciseCarouselState
+} from "@/features/role/student/routine/components/shared/use-exercise-carousel-state";
 import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 
 interface MobileRoutineViewProps {
@@ -49,7 +55,7 @@ export default function MobileRoutineView( {
 					<Carousel opts={ { loop: true } } setApi={ setApi }>
 						<Carousel.Content>
 							{ exercises.map( ( exercise ) => (
-								<Carousel.Item key={ exercise.id } className={ "flex self-stretch px-2" }>
+								<Carousel.Item key={ exercise.id } className={ "flex self-stretch" }>
 									<MobileExerciseCard exercise={ exercise } onVariantChangeAction={ onVariantChangeAction }>
 										{ /*<ScrollShadow className={ "h-75 pr-1" } size={ 80 } visibility={ "none" }>*/ }
 											<MobileExerciseSetCard

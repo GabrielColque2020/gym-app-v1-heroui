@@ -9,8 +9,16 @@ import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  description: "A multi-page dashboard starter built with HeroUI Pro.",
-  title: "HeroUI Pro - Dashboard Template",
+  description: "Gym App dashboard for coaches and students.",
+  title: "Gym App",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/logo.png", type: "image/png" },
+    ],
+    apple: "/apple-icon",
+    shortcut: "/icon.svg",
+  },
 };
 
 export default async function RootLayout( { children }: { children: ReactNode } ) {

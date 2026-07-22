@@ -2,10 +2,11 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { Alert, Button, Card, FieldError, Input, Label, Spinner, TextField, Typography, } from "@heroui/react";
-import { Dumbbell, Eye, EyeOff, LogIn } from "lucide-react";
+import { Eye, EyeOff, LogIn } from "lucide-react";
 
 import { useLogin } from "@/features/login/hooks/use-login";
 import { persistThemePreference, themePreferenceToUiThemePreference, } from "@/features/theme/theme-preference";
@@ -108,8 +109,15 @@ export default function LoginPageContent() {
 			<Card className={ "relative z-10 w-full max-w-md rounded-2xl border border-border bg-surface shadow-sm" } variant={ "default" }>
 				<Card.Content className={ "space-y-6 px-5 py-6 sm:px-8 sm:py-8" }>
 					<div className={ "space-y-2 text-center" }>
-						<div className={ "mx-auto flex size-12 items-center justify-center rounded-xl border border-border bg-surface-secondary" }>
-							<Dumbbell className={ "size-6 text-accent" }/>
+						<div className={ "mx-auto flex size-16 items-center justify-center rounded-2xl border border-border bg-surface-secondary p-2 shadow-sm" }>
+							<Image
+								alt={ "Gym App icon" }
+								className={ "size-12" }
+								height={ 48 }
+								priority
+								src={ "/icon.svg" }
+								width={ 48 }
+							/>
 						</div>
 						<div className={ "space-y-1" }>
 							<Typography className={ "font-semibold tracking-normal" } type={ "h4" }>

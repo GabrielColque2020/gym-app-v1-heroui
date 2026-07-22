@@ -12,8 +12,8 @@ importers:
         specifier: 2.18.0
         version: 2.18.0(react@19.2.5)
       '@heroui-pro/react':
-        specifier: 1.0.0-beta.4
-        version: 1.0.0-beta.4
+        specifier: 1.0.0-beta.7
+        version: 1.0.0-beta.7
       '@heroui/react':
         specifier: ^3.2.2
         version: 3.2.2(@react-spectrum/provider@3.11.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(tailwindcss@4.2.2)
@@ -604,8 +604,8 @@ packages:
       react:
         optional: true
 
-  '@heroui-pro/react@1.0.0-beta.4':
-    resolution: {integrity: sha512-q7K12hh4kDRD1+hdyRS1GesQ7cRGtMtDcY9nNMwiYwPh/ROprBwVTg6rlFM2kegBzcehw7VRy5OU9TiJEfnAVQ==}
+  '@heroui-pro/react@1.0.0-beta.7':
+    resolution: {integrity: sha512-8OPimF2ZwbX89wxpYlYRDFTCCVKQn1eRPtvymwLcjCTt2PWfYmYvqT/Yvn+VAgfr7QYCxmmxlAmLy29hwfyYcA==}
 
   '@heroui/react@3.2.2':
     resolution: {integrity: sha512-TN8ccfHCRIxa9dGhWMaVSl5sGCKWH2E13z2NJ5QBZTFQCow8GogQzW3cn/dRz3YEdYt4B9zfH2N0oKEazVoKRA==}
@@ -4480,7 +4480,7 @@ snapshots:
     optionalDependencies:
       react: 19.2.5
 
-  '@heroui-pro/react@1.0.0-beta.4':
+  '@heroui-pro/react@1.0.0-beta.7':
     dependencies:
       chalk: 5.6.2
       heroui-pro: 1.0.0-beta.12
