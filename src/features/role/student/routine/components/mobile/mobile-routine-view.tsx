@@ -145,12 +145,12 @@ export default function MobileRoutineView( {
 					</div>
 
 					<div className={ "flex items-center justify-between gap-3 px-2 pt-4" }>
-						<Button className={ "bg-primary text-primary-foreground" } onPress={ () => api?.scrollPrev() } variant={ "secondary" }>
+						<Button onPress={ () => api?.scrollPrev() } variant={ "secondary" }>
 							<ArrowLeft className={ "size-4" }/>
 							Anterior
 						</Button>
-						<p className={ "min-w-20 text-center text-sm font-semibold text-muted" }>{ `${ activeExerciseIndex } / ${ exercises.length }` }</p>
-						<Button className={ "bg-primary text-primary-foreground" } onPress={ () => api?.scrollNext() } variant={ "secondary" }>
+						<p className={ "min-w-20 text-center text-sm font-semibold text-muted" }>{ `Ejercicio ${activeExerciseIndex} de ${exercises.length}` }</p>
+						<Button onPress={ () => api?.scrollNext() } variant={ "secondary" }>
 							Siguiente
 							<ArrowRight className={ "size-4" }/>
 						</Button>

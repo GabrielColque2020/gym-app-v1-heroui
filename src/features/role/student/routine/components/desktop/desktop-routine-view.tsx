@@ -72,12 +72,12 @@ export default function DesktopRoutineView( {
 							) ) }
 							</Carousel.Content>
 						</Carousel>
-						<div className={ "flex items-center justify-between gap-3 px-4" }>
+						<div className={ "flex items-center justify-between gap-3 px-4 mt-2" }>
 							<Button variant={ "secondary" } onPress={ () => api?.scrollPrev() }>
 								<ArrowLeft className={ "size-4" }/>
 								Anterior
 							</Button>
-							<p className={ "min-w-20 text-center text-sm " }>{ `Ejercicio ${activeExerciseIndex} de ${exercises.length}` }</p>
+							<p className={ "min-w-20 text-center text-sm font-medium text-muted" }>{ `Ejercicio ${activeExerciseIndex} de ${exercises.length}` }</p>
 							<Button variant={ "secondary" } onPress={ () => api?.scrollNext() }>
 								Siguiente
 								<ArrowRight className={ "size-4" }/>
