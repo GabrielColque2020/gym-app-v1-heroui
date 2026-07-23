@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-import { CalendarClock, CircleHelp, Dumbbell, House, Settings2, UtensilsCrossed, Users } from "lucide-react";
+import { CalendarClock, CircleHelp, Dumbbell, House, Settings2, Users, UtensilsCrossed } from "lucide-react";
 
 import type { Role } from "@/generated/prisma/client";
 
@@ -16,7 +16,6 @@ export const NAV_ITEMS: readonly NavItem[] = [
 	{ href: "/admin/dashboard", icon: House, label: "Inicio", roles: [ "ADMIN" ] },
 	{ href: "/coach/dashboard", icon: House, label: "Inicio", roles: [ "COACH" ] },
 	{ href: "/student/dashboard", icon: House, label: "Inicio", roles: [ "STUDENT" ] },
-	{ href: "/faq", icon: CircleHelp, label: "Preguntas frecuentes", roles: [ "ADMIN", "COACH", "STUDENT" ] },
 	{ href: "/student/training-routine", icon: Dumbbell, label: "Rutina de Entrenamiento", roles: [ "STUDENT" ] },
 	{ href: "/student/meal-plans", icon: UtensilsCrossed, label: "Planes Alimenticios por Estudiantes", roles: [ "STUDENT" ] },
 	{ href: "/student/history-routines", icon: CalendarClock, label: "Historial de Rutina", roles: [ "STUDENT" ] },
@@ -56,4 +55,5 @@ export const NAV_ITEMS: readonly NavItem[] = [
 		label: "Sistema",
 		roles: [ "ADMIN" ],
 	},
+	{ href: "/faq", icon: CircleHelp, label: "Preguntas frecuentes", roles: [ "ADMIN", "COACH", "STUDENT" ] },
 ] as const;
