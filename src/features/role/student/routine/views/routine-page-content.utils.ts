@@ -56,3 +56,29 @@ export function updateSessionSet(
 	};
 }
 
+export function updateSessionExerciseSets(
+	session: StudentRoutineSession,
+	exerciseId: string,
+	updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }>,
+) {
+	return {
+		...session,
+		exercises: session.exercises.map( ( exercise ) => (
+			exercise.id === exerciseId
+				? {
+					...exercise,
+					sets: exercise.sets.map( ( set ) => ( {
+						...set,
+						...( updates.reps !== undefined ? { currentReps: updates.reps } : {} ),
+						...( updates.weight !== undefined ? { currentWeight: updates.weight } : {} ),
+						...( updates.notes !== undefined ? { notes: updates.notes } : {} ),
+						completed:
+							( updates.reps !== undefined ? updates.reps : set.currentReps ) !== null
+							&& ( updates.weight !== undefined ? updates.weight : set.currentWeight ) !== null,
+					} ) ),
+				}
+				: exercise
+		) ),
+	};
+}
+

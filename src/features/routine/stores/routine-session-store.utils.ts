@@ -73,6 +73,7 @@ export function serializeSession( session: StudentRoutineSession ): PersistedDra
 			instructions: exercise.instructions ?? null,
 			muscleGroup: exercise.muscleGroup,
 			name: exercise.name,
+			originalVariantExerciseId: exercise.originalVariantExerciseId ?? null,
 			variantExerciseId: exercise.variantExerciseId,
 			variantSelectionExplicit: exercise.variantSelectionExplicit,
 			notes: exercise.notes,
@@ -113,6 +114,7 @@ export function hydrateSession( session: PersistedDraftSession ): StudentRoutine
 			...exercise,
 			baseName: exercise.baseName ?? exercise.name,
 			lastSession: exercise.lastSession ?? null,
+			originalVariantExerciseId: exercise.originalVariantExerciseId ?? null,
 			variantExerciseId: exercise.variantExerciseId ?? null,
 			variantSelectionExplicit: exercise.variantSelectionExplicit ?? false,
 			variantOptions: exercise.variantOptions?.map( ( variant ) => ( {

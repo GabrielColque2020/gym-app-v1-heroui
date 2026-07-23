@@ -7,12 +7,14 @@ import type { ExerciseVariantOption } from "@/features/routine/types/routine-exe
 type UseExerciseChangeDrawerStateOptions = {
 	exerciseId: string;
 	hasVariants: boolean;
+	originalVariantExerciseId: string | null;
 	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 };
 
 export function useExerciseChangeDrawerState( {
 	exerciseId,
 	hasVariants,
+	originalVariantExerciseId,
 	onVariantChangeAction,
 }: UseExerciseChangeDrawerStateOptions ) {
 	const [ isOpen, setIsOpen ] = useState( false );
@@ -28,9 +30,9 @@ export function useExerciseChangeDrawerState( {
 	}, [ exerciseId, onVariantChangeAction ] );
 
 	const handleResetVariant = useCallback( () => {
-		onVariantChangeAction( exerciseId, null );
+		onVariantChangeAction( exerciseId, originalVariantExerciseId );
 		setIsOpen( false );
-	}, [ exerciseId, onVariantChangeAction ] );
+	}, [ exerciseId, onVariantChangeAction, originalVariantExerciseId ] );
 
 	return {
 		handleOpenVariantDrawer,

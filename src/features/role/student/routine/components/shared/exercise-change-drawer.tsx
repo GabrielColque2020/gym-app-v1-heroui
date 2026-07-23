@@ -13,6 +13,8 @@ import type { Exercise, ExerciseVariantOption } from "@/features/routine/types/r
 type ExerciseChangeDrawerProps = {
 	exercise: Exercise;
 	hasVariants: boolean;
+	isVariantOverridden: boolean;
+	originalVariant: ExerciseVariantOption | null;
 	selectedVariant: ExerciseVariantOption | null;
 	variantOptions: ExerciseVariantOption[];
 	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
@@ -21,6 +23,8 @@ type ExerciseChangeDrawerProps = {
 export default function ExerciseChangeDrawer( {
 	exercise,
 	hasVariants,
+	isVariantOverridden,
+	originalVariant,
 	selectedVariant,
 	variantOptions,
 	onVariantChangeAction,
@@ -34,6 +38,7 @@ export default function ExerciseChangeDrawer( {
 	} = useExerciseChangeDrawerState( {
 		exerciseId: exercise.id,
 		hasVariants,
+		originalVariantExerciseId: exercise.originalVariantExerciseId,
 		onVariantChangeAction,
 	} );
 	const [ isExecutionOpen, setIsExecutionOpen ] = useState( false );
@@ -63,7 +68,8 @@ export default function ExerciseChangeDrawer( {
 				<ExerciseChangeDrawerContent
 					exercise={ exercise }
 					hasVariants={ hasVariants }
-					selectedVariant={ selectedVariant }
+					isVariantOverridden={ isVariantOverridden }
+					originalVariant={ originalVariant }
 					variantOptions={ variantOptions }
 					onResetVariant={ handleResetVariant }
 					onSelectVariant={ handleSelectVariant }

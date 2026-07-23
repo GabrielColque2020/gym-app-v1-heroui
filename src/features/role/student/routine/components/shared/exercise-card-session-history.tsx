@@ -4,6 +4,7 @@ import type { ExerciseSessionHistory } from "@/features/routine/types/routine-ex
 
 type ExerciseCardSessionHistoryProps = {
 	history: ExerciseSessionHistory | null;
+	isHighlighted?: boolean;
 	isCompact?: boolean;
 };
 
@@ -17,6 +18,7 @@ function formatSessionDateLabel( date: Date ) {
 
 export function ExerciseCardSessionHistory( {
 												history,
+												isHighlighted = false,
 												isCompact = false,
 											}: ExerciseCardSessionHistoryProps ) {
 	if (!history?.sets.length) {
@@ -31,20 +33,22 @@ export function ExerciseCardSessionHistory( {
 		? "flex flex-wrap items-center gap-2"
 		: "flex flex-wrap items-center gap-2";
 	const chipClassName = isCompact ? undefined : "max-w-full";
+	const chipColor = isHighlighted ? "warning" : "default";
 
 	return (
 		<div className={ containerClassName }>
-			<Chip className={ chipClassName } size={ "sm" } variant={ "soft" }>
+			<Chip className={ chipClassName } color={ chipColor } size={ "sm" } variant={ "soft" }>
 				<Chip.Label>{ formatSessionDateLabel( history.date ) }</Chip.Label>
 			</Chip>
 			{ history.sets.map( ( set, index ) => (
 				<Chip
 					key={ `${ history.date.toISOString() }-${ set.setNumber }-${ index }` }
 					className={ chipClassName }
+					color={ chipColor }
 					size={ "sm" }
 					variant={ "soft" }
 				>
-					<Chip.Label>{ `${ String( set.setNumber ).padStart( 2, "0" ) } x ${ set.repsCompleted ?? 0 } reps · ${ set.weightUsed ?? 0 } kg` }</Chip.Label>
+					<Chip.Label>{ `Serie ${ set.setNumber }: ${ set.repsCompleted ?? 0 } reps · ${ set.weightUsed ?? 0 } kg` }</Chip.Label>
 				</Chip>
 			) ) }
 		</div>

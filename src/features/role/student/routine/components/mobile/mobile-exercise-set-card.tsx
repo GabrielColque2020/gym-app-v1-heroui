@@ -6,7 +6,7 @@ import { Button, Card, Checkbox, Drawer, Input, Label, TextArea } from "@heroui/
 import { MessageSquarePlus } from "lucide-react";
 
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
-import type { ExerciseSet } from "@/features/routine/types/routine-exercise.types";
+import type { ExerciseSessionHistory, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
 
 type MobileExerciseSetCardProps = {
 	exerciseId: string;
@@ -15,7 +15,9 @@ type MobileExerciseSetCardProps = {
 		setId: string,
 		updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }>,
 	) => void;
+	previousSessionHistory: ExerciseSessionHistory | null;
 	sets: ExerciseSet[];
+	useSessionHistoryAsPrevious?: boolean;
 };
 
 function parseNumericInput( value: string ) {
@@ -24,9 +26,17 @@ function parseNumericInput( value: string ) {
 	return Number.isNaN( nextValue ) ? null : nextValue;
 }
 
-export function MobileExerciseSetCard( { exerciseId, onSetUpdate, sets }: MobileExerciseSetCardProps ) {
+export function MobileExerciseSetCard( {
+	exerciseId,
+	onSetUpdate,
+	previousSessionHistory,
+	sets,
+}: MobileExerciseSetCardProps ) {
 	const [ noteSetId, setNoteSetId ] = useState<string | null>( null );
 	const selectedNoteSet = sets.find( ( set ) => set.id === noteSetId ) ?? null;
+	const previousSessionSetsByNumber = new Map(
+		(previousSessionHistory?.sets ?? []).map( ( set ) => [ set.setNumber, set ] ),
+	);
 
 	return (
 		<>
@@ -34,6 +44,13 @@ export function MobileExerciseSetCard( { exerciseId, onSetUpdate, sets }: Mobile
 				<Card.Content className={ "min-h-0 flex-1 divide-y divide-border px-1" }>
 					{ sets.map( ( set ) => (
 						<div key={ set.id } className={ "space-y-3 py-4 first:pt-2 last:pb-2" }>
+							{ (() => {
+								const previousSessionSet = previousSessionSetsByNumber.get( set.setNumber );
+								const previousReps = previousSessionSet?.repsCompleted ?? set.previousReps;
+								const previousWeight = previousSessionSet?.weightUsed ?? set.previousWeight;
+
+								return (
+									<>
 							<div className={ "flex items-center gap-3" }>
 								<Checkbox isReadOnly isSelected={ set.completed }>
 									<Checkbox.Control className={ "size-5 rounded-md border border-border shadow-sm" }>
@@ -55,7 +72,7 @@ export function MobileExerciseSetCard( { exerciseId, onSetUpdate, sets }: Mobile
 										onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { reps: parseNumericInput( e.target.value ) } ) }
 									/>
 									<span className={ "block text-xs text-muted" }>
-										{ set.previousReps === null ? "Sin registro anterior" : `${ set.previousReps } reps Anterior` }
+										{ previousReps === null ? "Sin registro anterior" : `${ previousReps } reps Anterior` }
 									</span>
 								</div>
 
@@ -70,7 +87,7 @@ export function MobileExerciseSetCard( { exerciseId, onSetUpdate, sets }: Mobile
 										onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { weight: parseNumericInput( e.target.value ) } ) }
 									/>
 									<span className={ "block text-xs text-muted" }>
-										{ set.previousWeight === null ? "Sin registro anterior" : `${ set.previousWeight } Kg Anterior` }
+										{ previousWeight === null ? "Sin registro anterior" : `${ previousWeight } Kg Anterior` }
 									</span>
 								</div>
 							</div>
@@ -83,6 +100,9 @@ export function MobileExerciseSetCard( { exerciseId, onSetUpdate, sets }: Mobile
 								<MessageSquarePlus className={ "size-4" }/>
 								{ set.notes?.trim() ? "Editar nota" : "Agregar nota" }
 							</Button>
+									</>
+								);
+							} )() }
 						</div>
 					) ) }
 				</Card.Content>

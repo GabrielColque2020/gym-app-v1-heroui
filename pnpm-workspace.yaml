@@ -3,6 +3,9 @@ allowBuilds:
   heroui-native-pro: true
   heroui-pro: true
 
+minimumReleaseAgeExclude:
+  - lucide-react@1.26.0
+
 onlyBuiltDependencies:
   - '@prisma/engines'
   - prisma

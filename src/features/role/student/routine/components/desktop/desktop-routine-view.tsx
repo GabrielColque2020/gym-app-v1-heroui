@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import DesktopExerciseCard from "@/features/role/student/routine/components/desktop/desktop-exercise-card";
 import { DesktopExerciseSetsGrid } from "@/features/role/student/routine/components/desktop/desktop-exercise-sets-grid";
+import { ExerciseSetsEditor } from "@/features/role/student/routine/components/shared/exercise-sets-editor";
 import { RoutineExerciseEmptyState } from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
 import { RoutineSessionOverviewCards } from "@/features/role/student/routine/components/shared/routine-session-overview-cards";
 import { useExerciseCarouselState } from "@/features/role/student/routine/components/shared/use-exercise-carousel-state";
@@ -14,6 +15,10 @@ type DesktopRoutineViewProps = {
 	latestProgressDate: Date | null;
 	routineObservation: string | null;
 	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
+	onExerciseUpdate: (
+		exerciseId: string,
+		updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }>,
+	) => void;
 	onSetUpdate: (
 		exerciseId: string,
 		setId: string,
@@ -26,6 +31,7 @@ export default function DesktopRoutineView( {
 	exercises,
 	latestProgressDate,
 	routineObservation,
+	onExerciseUpdate,
 	onVariantChangeAction,
 	onSetUpdate,
 	routineStatusDescription,
@@ -49,7 +55,12 @@ export default function DesktopRoutineView( {
 							{ exercises.map( ( exercise ) => (
 								<Carousel.Item key={ exercise.id }>
 									<DesktopExerciseCard exercise={ exercise } onVariantChangeAction={ onVariantChangeAction }>
-										<DesktopExerciseSetsGrid exercise={ exercise } onSetUpdate={ onSetUpdate }/>
+										<ExerciseSetsEditor
+											exercise={ exercise }
+											isActive={ activeExerciseIndex === exercises.findIndex( ( currentExercise ) => currentExercise.id === exercise.id ) + 1 }
+											onExerciseUpdate={ onExerciseUpdate }
+											detailContent={ <DesktopExerciseSetsGrid exercise={ exercise } onSetUpdate={ onSetUpdate }/> }
+										/>
 									</DesktopExerciseCard>
 								</Carousel.Item>
 							) ) }

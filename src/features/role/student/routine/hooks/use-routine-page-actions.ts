@@ -5,7 +5,10 @@ import { useCallback, useState } from "react";
 import { toast } from "@heroui/react";
 
 import type { useSaveStudentRoutineSession } from "@/features/role/student/routine/hooks/use-routine-session-mutations";
-import { updateSessionSet } from "@/features/role/student/routine/views/routine-page-content.utils";
+import {
+	updateSessionExerciseSets,
+	updateSessionSet,
+} from "@/features/role/student/routine/views/routine-page-content.utils";
 import {
 	mapStudentRoutineSessionToSaveInput,
 	type StudentRoutineSession,
@@ -75,6 +78,10 @@ export function useRoutinePageActions( {
 	) => {
 		if (!activeSession) return;
 
+		const targetExercise = activeSession.exercises.find( ( exercise ) => exercise.id === exerciseId );
+		const originalVariantExerciseId = targetExercise?.originalVariantExerciseId ?? null;
+		const isOriginalVariant = variantExerciseId === originalVariantExerciseId;
+
 		replaceDraftAction( {
 			...activeSession,
 			exercises: activeSession.exercises.map( ( exercise ) => (
@@ -82,12 +89,21 @@ export function useRoutinePageActions( {
 					? {
 						...exercise,
 						variantExerciseId,
-						variantSelectionExplicit: true,
+						variantSelectionExplicit: !isOriginalVariant,
 					}
 					: exercise
 			) ),
 		} );
 	}, [ activeSession, replaceDraftAction ] );
+
+	const handleExerciseUpdate = useCallback( (
+		exerciseId: string,
+		updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }>,
+	) => {
+		if (!routineDayId || !activeSession) return;
+
+		replaceDraftAction( updateSessionExerciseSets( activeSession, exerciseId, updates ) );
+	}, [ activeSession, replaceDraftAction, routineDayId ] );
 
 	const handleOpenSaveDrawer = useCallback( () => {
 		if (!canSaveProgress) {
@@ -128,6 +144,7 @@ export function useRoutinePageActions( {
 	return {
 		handleConfirmRefresh,
 		handleConfirmSave,
+		handleExerciseUpdate,
 		handleOpenSaveDrawer,
 		handleRefresh,
 		handleSetUpdate,

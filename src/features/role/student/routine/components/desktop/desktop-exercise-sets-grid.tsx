@@ -1,7 +1,7 @@
 ﻿import { Checkbox, Chip, Input, Label } from "@heroui/react";
 import { DataGrid, type DataGridColumn } from "@heroui-pro/react";
 
-import type { Exercise, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
+import type { Exercise, ExerciseSessionHistorySet, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
 
 type DesktopExerciseSetsGridProps = {
 	exercise: Exercise;
@@ -24,6 +24,12 @@ export function DesktopExerciseSetsGrid( {
 											 exercise,
 											 onSetUpdate,
 										 }: DesktopExerciseSetsGridProps ) {
+	const selectedVariant = exercise.variantOptions.find( ( variant ) => variant.id === exercise.variantExerciseId ) ?? null;
+	const displayedSessionHistory = selectedVariant?.lastSession ?? exercise.lastSession;
+	const displayedHistorySetsByNumber = new Map<number, ExerciseSessionHistorySet>(
+		(displayedSessionHistory?.sets ?? []).map( ( set ) => [ set.setNumber, set ] ),
+	);
+
 	const columns: DataGridColumn<ExerciseSet>[] = [
 		{
 			id: "completado",
@@ -62,6 +68,12 @@ export function DesktopExerciseSetsGrid( {
 			cell: ( item ) => (
 				<div className={ "flex items-center justify-center" }>
 					<div className={ "flex w-50 flex-col items-start gap-2" }>
+						{ (() => {
+							const historySet = displayedHistorySetsByNumber.get( item.setNumber );
+							const previousReps = historySet?.repsCompleted ?? item.previousReps;
+
+							return (
+								<>
 						<Label className={ "text-xs font-medium text-muted" }>{ `Meta ${ item.targetReps } reps` }</Label>
 						<Input
 							fullWidth
@@ -74,7 +86,10 @@ export function DesktopExerciseSetsGrid( {
 								onSetUpdate( exercise.id, item.id, { reps: Number.isNaN( nextValue ) ? null : nextValue } );
 							} }
 						/>
-						{ renderPreviousRecord( item.previousReps, "reps" ) }
+									{ renderPreviousRecord( previousReps, "reps" ) }
+								</>
+							);
+						} )() }
 					</div>
 				</div>
 			),
@@ -87,6 +102,12 @@ export function DesktopExerciseSetsGrid( {
 			cell: ( item ) => (
 				<div className={ "flex items-center justify-center" }>
 					<div className={ "flex w-50 flex-col items-start gap-2" }>
+						{ (() => {
+							const historySet = displayedHistorySetsByNumber.get( item.setNumber );
+							const previousWeight = historySet?.weightUsed ?? item.previousWeight;
+
+							return (
+								<>
 						<Label className={ "text-xs font-medium text-muted" }>Peso (kg)</Label>
 						<Input
 							fullWidth
@@ -99,7 +120,10 @@ export function DesktopExerciseSetsGrid( {
 								onSetUpdate( exercise.id, item.id, { weight: Number.isNaN( nextValue ) ? null : nextValue } );
 							} }
 						/>
-						{ renderPreviousRecord( item.previousWeight, "kg" ) }
+									{ renderPreviousRecord( previousWeight, "kg" ) }
+								</>
+							);
+						} )() }
 					</div>
 				</div>
 			),

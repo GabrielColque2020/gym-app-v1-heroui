@@ -134,7 +134,7 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 			const currentSets = Array.from( { length: setCount }, ( _, index ) => {
 				const setNumber = index + 1;
 				const savedSet = getLatestProgressEntryBySetNumber( currentExerciseEntries, setNumber );
-				const previousSavedSet = getPreviousProgressEntryBySetNumber( progressEntries, savedSet, setNumber );
+				const previousSavedSet = getPreviousProgressEntryBySetNumber( historyExerciseEntries, savedSet, setNumber );
 				const savedSetNotes = parseProgressNotes( savedSet?.notes ?? null ).notes;
 				const currentReps = parseInteger( savedSet?.repsCompleted );
 				const currentWeight = parseDecimal( savedSet?.weightUsed );
@@ -171,6 +171,7 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				name: selectedVariant?.name ?? exercise?.name ?? "Ejercicio",
 				notes: exercise?.tips ?? routine.observation ?? undefined,
 				lastSession,
+				originalVariantExerciseId: variantExerciseId,
 				variantExerciseId,
 				variantSelectionExplicit: false,
 				restTime: Math.max( setCount * 30, 0 ),
@@ -273,6 +274,7 @@ export function mergeStudentRoutineSessionDraft(
 				lastSession: sourceExercise.lastSession ?? draftExercise.lastSession ?? null,
 				name: resolvedVariant?.name ?? sourceExercise.name,
 				notes: draftExercise.notes ?? sourceExercise.notes,
+				originalVariantExerciseId: sourceExercise.originalVariantExerciseId ?? null,
 				restTime: draftExercise.restTime ?? sourceExercise.restTime,
 				sets: mergeStudentRoutineSessionSets( sourceExercise.sets, draftExercise.sets ),
 				variantExerciseId: resolvedVariantId,
@@ -330,6 +332,7 @@ export function serializeStudentRoutineSession( session: StudentRoutineSession )
 				id: exercise.id,
 				baseName: exercise.baseName,
 				name: exercise.name,
+				originalVariantExerciseId: exercise.originalVariantExerciseId ?? null,
 				variantExerciseId: exercise.variantExerciseId,
 				notes: exercise.notes ?? "",
 				lastSession: serializeSessionHistory( exercise.lastSession ),

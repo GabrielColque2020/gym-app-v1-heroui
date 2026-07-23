@@ -1,15 +1,11 @@
 "use client";
 
-import { Accordion, Card, Chip } from "@heroui/react";
-import { CircleHelp, LifeBuoy } from "lucide-react";
+import { Accordion, Card } from "@heroui/react";
+import { CircleHelp } from "lucide-react";
 
-import { PageBreadcrumbs } from "@/components/common";
+import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import type { Role } from "@/generated/prisma/client";
-import {
-	getDashboardHrefByRole,
-	getFaqSectionsByRole,
-	getRoleAudienceLabel,
-} from "@/features/faq/services/faq-content";
+import { getDashboardHrefByRole, getFaqSectionsByRole, } from "@/features/faq/services/faq-content";
 
 type FaqPageContentProps = {
 	role: Role;
@@ -18,7 +14,6 @@ type FaqPageContentProps = {
 export default function FaqPageContent( { role }: FaqPageContentProps ) {
 	const sections = getFaqSectionsByRole( role );
 	const dashboardHref = getDashboardHrefByRole( role );
-	const audienceLabel = getRoleAudienceLabel( role );
 
 	return (
 		<div className={ "flex flex-col gap-4" }>
@@ -31,33 +26,19 @@ export default function FaqPageContent( { role }: FaqPageContentProps ) {
 				] }
 			/>
 
-			<Card className={ "border border-border bg-surface shadow-sm" } variant={ "default" }>
-				<Card.Content className={ "flex flex-col gap-4 p-4 sm:p-5" }>
-					<div className={ "flex items-start gap-3" }>
-						<div className={ "flex size-11 shrink-0 items-center justify-center rounded-2xl border border-accent-soft bg-accent-soft/60 text-accent" }>
-							<LifeBuoy className={ "size-5" }/>
-						</div>
-						<div className={ "min-w-0 space-y-2" }>
-							<div className={ "flex flex-wrap items-center gap-2" }>
-								<h1 className={ "text-2xl font-black leading-tight text-foreground sm:text-3xl" }>
-									Preguntas frecuentes
-								</h1>
-								<Chip color={ "accent" } size={ "sm" } variant={ "soft" }>
-									<Chip.Label>{ audienceLabel }</Chip.Label>
-								</Chip>
-							</div>
-							<p className={ "max-w-3xl text-sm text-muted sm:text-base" }>
-								Aqui encontraras respuestas rapidas sobre los flujos mas comunes del sistema para tu rol.
-							</p>
-						</div>
-					</div>
+			<Card className={ "border border-border bg-surface shadow-sm py-2" } variant={ "default" }>
+				<Card.Content className={ "flex flex-col gap-4 p-3" }>
+					<PageHeader
+						title={ "Preguntas frecuentes" }
+						description={ "Aquí encontraras respuestas rápidas sobre los flujos mas comunes." }
+					/>
 				</Card.Content>
 			</Card>
 
 			<div className={ "grid gap-4" }>
 				{ sections.map( ( section ) => (
-					<Card key={ section.id } className={ "border border-border shadow-sm" } variant={ "default" }>
-						<Card.Content className={ "p-4 sm:p-5" }>
+					<Card key={ section.id } className={ "border border-border shadow-sm py-2" } variant={ "default" }>
+						<Card.Content className={ "p-3" }>
 							<div className={ "mb-4 flex items-start gap-3" }>
 								<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-surface-secondary text-accent" }>
 									<CircleHelp className={ "size-4.5" }/>

@@ -45,6 +45,7 @@ export function useRoutinePageState( {
 	const {
 		handleConfirmRefresh,
 		handleConfirmSave,
+		handleExerciseUpdate,
 		handleOpenSaveDrawer,
 		handleRefresh,
 		handleSetUpdate,
@@ -75,6 +76,7 @@ export function useRoutinePageState( {
 		error,
 		handleConfirmRefresh,
 		handleConfirmSave,
+		handleExerciseUpdate,
 		handleOpenSaveDrawer,
 		handleRefresh,
 		handleSetUpdate,

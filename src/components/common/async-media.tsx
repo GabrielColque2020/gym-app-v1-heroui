@@ -16,6 +16,7 @@ type AsyncMediaProps = {
 	emptyLabel?: string;
 	errorLabel?: string;
 	kind?: AsyncMediaKind;
+	mediaClassName?: string;
 	src?: string | null;
 	spinnerLabel?: string;
 };
@@ -35,6 +36,7 @@ export function AsyncMedia( {
 	emptyLabel,
 	errorLabel,
 	kind = "auto",
+	mediaClassName = "",
 	src,
 	spinnerLabel = "Cargando media",
 }: AsyncMediaProps ) {
@@ -66,7 +68,7 @@ export function AsyncMedia( {
 		<div className={ `relative overflow-hidden bg-muted/30 ${ className }` }>
 			{ deliverySrc ? deliveryKind === "video" ? (
 				<video
-					className={ `h-full w-full bg-content2 object-contain ${ loadState === "loaded" ? "opacity-100" : "opacity-0" }` }
+					className={ `h-full w-full bg-content2 object-contain ${ loadState === "loaded" ? "opacity-100" : "opacity-0" } ${ mediaClassName }` }
 					controls={ controls }
 					src={ deliverySrc }
 					onError={ () => setLoadState( "error" ) }
@@ -75,7 +77,7 @@ export function AsyncMedia( {
 			) : (
 				<img
 					alt={ alt }
-					className={ `h-full w-full bg-content2 object-contain ${ loadState === "loaded" ? "opacity-100" : "opacity-0" }` }
+					className={ `h-full w-full bg-content2 object-contain ${ loadState === "loaded" ? "opacity-100" : "opacity-0" } ${ mediaClassName }` }
 					src={ deliverySrc }
 					onError={ () => setLoadState( "error" ) }
 					onLoad={ () => setLoadState( "loaded" ) }

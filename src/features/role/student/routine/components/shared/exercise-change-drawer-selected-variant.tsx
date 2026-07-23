@@ -30,6 +30,8 @@ export function ExerciseChangeDrawerSelectedVariant( {
 							<p className={ "text-sm leading-snug text-muted" }>{ exerciseBaseName }</p>
 						</div>
 					</div>
+				</div>
+				<div className={ "flex items-center justify-end" }>
 					<Button className={ "shrink-0" } size={ "sm" } variant={ "secondary" } onPress={ onResetVariant }>
 						Restablecer al original
 					</Button>

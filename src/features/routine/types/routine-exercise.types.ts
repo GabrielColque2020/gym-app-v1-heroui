@@ -36,6 +36,7 @@ export interface Exercise {
 	imageUrl?: string | null;
 	instructions?: string | null;
 	muscleGroup: string;
+	originalVariantExerciseId: string | null;
 	variantExerciseId: string | null;
 	variantSelectionExplicit: boolean;
 	restTime: number;

@@ -9,7 +9,8 @@ import { Link2 } from "lucide-react";
 type ExerciseChangeDrawerContentProps = {
 	exercise: Exercise;
 	hasVariants: boolean;
-	selectedVariant: ExerciseVariantOption | null;
+	isVariantOverridden: boolean;
+	originalVariant: ExerciseVariantOption | null;
 	variantOptions: ExerciseVariantOption[];
 	onResetVariant: () => void;
 	onSelectVariant: ( variant: ExerciseVariantOption ) => void;
@@ -18,7 +19,8 @@ type ExerciseChangeDrawerContentProps = {
 export default function ExerciseChangeDrawerContent( {
 	exercise,
 	hasVariants,
-	selectedVariant,
+	isVariantOverridden,
+	originalVariant,
 	variantOptions,
 	onResetVariant,
 	onSelectVariant,
@@ -40,10 +42,10 @@ export default function ExerciseChangeDrawerContent( {
 			</Drawer.Header>
 
 			<Drawer.Body className={ "min-h-0 flex flex-1 flex-col space-y-6 overflow-y-auto py-3" }>
-				{ selectedVariant ? (
+				{ isVariantOverridden ? (
 					<ExerciseChangeDrawerSelectedVariant
-						exerciseBaseName={ exercise.baseName }
-						imageUrl={ exercise.imageUrl }
+						exerciseBaseName={ originalVariant?.name ?? exercise.baseName }
+						imageUrl={ originalVariant?.imageUrl ?? exercise.imageUrl }
 						onResetVariant={ onResetVariant }
 					/>
 				) : null }

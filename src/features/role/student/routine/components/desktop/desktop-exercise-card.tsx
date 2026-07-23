@@ -22,9 +22,12 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 		hasCompletedSets,
 		hasSessionHistory,
 		hasVariants,
+		isVariantOverridden,
+		originalVariant,
 		selectedVariant,
 		variantOptions,
 	} = useExerciseCardState( exercise );
+	const displayedImageUrl = selectedVariant?.imageUrl ?? exercise.imageUrl;
 
 	return (
 		<Card className={ "border border-border py-2 shadow-sm" }>
@@ -36,7 +39,7 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 							className={ "h-36 w-36 shrink-0 rounded-2xl border border-border object-cover" }
 							emptyLabel={ "Sin imagen" }
 							spinnerLabel={ `Cargando imagen de ${ displayedExerciseName }` }
-							src={ exercise.imageUrl }
+							src={ displayedImageUrl }
 						/>
 
 						<div className={ "flex min-w-0 flex-1 items-start justify-between gap-4" }>
@@ -60,13 +63,18 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 									<p className={ "shrink-0 text-sm font-semibold tracking-wide text-foreground" }>
 										Ultima sesion
 									</p>
-									<ExerciseCardSessionHistory history={ hasSessionHistory ? displayedSessionHistory : null }/>
+									<ExerciseCardSessionHistory
+										history={ hasSessionHistory ? displayedSessionHistory : null }
+										isHighlighted={ isVariantOverridden }
+									/>
 								</div>
 							</div>
 
 							<ExerciseChangeDrawer
 								exercise={ exercise }
 								hasVariants={ hasVariants }
+								isVariantOverridden={ isVariantOverridden }
+								originalVariant={ originalVariant }
 								selectedVariant={ selectedVariant }
 								variantOptions={ variantOptions }
 								onVariantChangeAction={ onVariantChangeAction }
