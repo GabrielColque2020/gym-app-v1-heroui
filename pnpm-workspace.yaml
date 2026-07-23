@@ -8,4 +8,10 @@ minimumReleaseAgeExclude:
 
 onlyBuiltDependencies:
   - '@prisma/engines'
+  - esbuild
   - prisma
+  - sharp
+
+ignoredBuiltDependencies:
+  - '@zowe/secrets-for-zowe-sdk'
+  - unrs-resolver
