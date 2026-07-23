@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Button, Chip, Description, Drawer, Label, ListBox, Select, Spinner, toast } from "@heroui/react";
-import { CheckCircle2, PencilLine, Plus, Users } from "lucide-react";
+import { CheckCircle2, Plus, UserPlus, Users } from "lucide-react";
 
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 import { useAdminCoaches } from "@/features/role/admin/users/hooks/use-admin-coaches";
@@ -174,7 +174,7 @@ export function AdminStudentDrawer( {
 		<>
 			{ hideTrigger ? null : (
 				<Button variant={ "secondary" } onPress={ openDrawer }>
-					{ isEditMode ? <PencilLine className={ "size-4" }/> : <Plus className={ "size-4" }/> }
+					{ isEditMode ? <UserPlus className={ "size-4" }/> : <Plus className={ "size-4" }/> }
 					{ showTriggerLabel ? ( isEditMode ? "Editar estudiante" : "Crear estudiante" ) : null }
 				</Button>
 			) }

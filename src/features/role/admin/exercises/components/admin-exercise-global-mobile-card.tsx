@@ -1,14 +1,9 @@
 "use client";
 
-import type { Key } from "@heroui/react";
-
-import { useState } from "react";
-
-import { Button, Card, Chip, Dropdown, Header, Label } from "@heroui/react";
-import { EllipsisVertical, PencilLine } from "lucide-react";
+import { Card, Chip } from "@heroui/react";
 
 import { AsyncMedia } from "@/components/common";
-import { AdminExerciseGlobalDrawer } from "@/features/role/admin/exercises/components/shared/admin-exercise-global-drawer";
+import { AdminExerciseGlobalActionMenu } from "@/features/role/admin/exercises/components/admin-exercise-global-action-menu";
 import type { AdminExerciseGlobalListItem } from "@/features/role/admin/exercises/types/admin-exercise-global-list-item";
 
 type AdminExerciseGlobalMobileCardProps = {
@@ -22,14 +17,6 @@ function getStatusLabel( exercise: AdminExerciseGlobalListItem ) {
 export function AdminExerciseGlobalMobileCard( {
 	exercise,
 }: AdminExerciseGlobalMobileCardProps ) {
-	const [ isEditOpen, setIsEditOpen ] = useState( false );
-
-	function handleAction( key: Key ) {
-		if (key === "edit") {
-			setIsEditOpen( true );
-		}
-	}
-
 	return (
 		<Card className={ "border border-border" } variant={ "default" }>
 			<Card.Content className={ "space-y-3 py-2 pl-2" }>
@@ -46,26 +33,7 @@ export function AdminExerciseGlobalMobileCard( {
 							<p className={ "truncate font-semibold text-foreground" }>{ exercise.name }</p>
 						</div>
 					</div>
-					<Dropdown>
-						<Button
-							isIconOnly
-							aria-label={ `Opciones de ${ exercise.name }` }
-							className={ "size-8 shrink-0 text-foreground" }
-							size={ "sm" }
-							variant={ "ghost" }
-						>
-							<EllipsisVertical className={ "size-4" }/>
-						</Button>
-						<Dropdown.Popover placement={ "bottom end" }>
-							<Dropdown.Menu onAction={ handleAction }>
-								<Header>Opciones</Header>
-								<Dropdown.Item id={ "edit" } textValue={ "Editar ejercicio global" }>
-									<PencilLine className={ "size-4 shrink-0 text-warning" }/>
-									<Label className={ "text-warning" }>Editar</Label>
-								</Dropdown.Item>
-							</Dropdown.Menu>
-						</Dropdown.Popover>
-					</Dropdown>
+					<AdminExerciseGlobalActionMenu exercise={ exercise }/>
 				</div>
 
 				<div className={ "flex flex-wrap gap-2" }>
@@ -83,12 +51,6 @@ export function AdminExerciseGlobalMobileCard( {
 					</div>
 				</div>
 			</Card.Content>
-			<AdminExerciseGlobalDrawer
-				hideTrigger
-				exercise={ exercise }
-				isOpen={ isEditOpen }
-				onOpenChangeAction={ setIsEditOpen }
-			/>
 		</Card>
 	);
 }

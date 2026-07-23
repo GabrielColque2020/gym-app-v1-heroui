@@ -1,6 +1,6 @@
 "use client";
 
-import { AdminExerciseGlobalDrawer } from "@/features/role/admin/exercises/components/shared/admin-exercise-global-drawer";
+import { AdminExerciseGlobalActionMenu } from "@/features/role/admin/exercises/components/admin-exercise-global-action-menu";
 import type { AdminExerciseGlobalListItem } from "@/features/role/admin/exercises/types/admin-exercise-global-list-item";
 
 type AdminExerciseGlobalRowActionsProps = {
@@ -10,5 +10,5 @@ type AdminExerciseGlobalRowActionsProps = {
 export function AdminExerciseGlobalRowActions( {
 	exercise,
 }: AdminExerciseGlobalRowActionsProps ) {
-	return <AdminExerciseGlobalDrawer exercise={ exercise }/>;
+	return <AdminExerciseGlobalActionMenu exercise={ exercise }/>;
 }

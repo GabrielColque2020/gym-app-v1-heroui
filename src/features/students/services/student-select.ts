@@ -3,7 +3,6 @@ import type { Prisma } from "@/generated/prisma/client";
 export const studentListSelect = {
 	DescriptionStudent: {
 		select: {
-			birthDate: true,
 			height: true,
 			id: true,
 			objective: true,
@@ -12,6 +11,7 @@ export const studentListSelect = {
 		},
 	},
 	active: true,
+	birthDate: true,
 	createdAt: true,
 	dni: true,
 	email: true,

@@ -1,10 +1,23 @@
 "use client";
 
 import type { Key } from "react";
-import { Checkbox, Description, Drawer, FieldError, Input, Label, ListBox, Select, TextArea, TextField } from "@heroui/react";
+import {
+	Checkbox,
+	Description,
+	Drawer,
+	FieldError,
+	Input,
+	Label,
+	ListBox,
+	Select,
+	TextArea,
+	TextField
+} from "@heroui/react";
 
 import { AsyncMedia } from "@/components/common";
-import type { AdminExerciseGlobalFormValues } from "@/features/role/admin/exercises/services/admin-exercise-global-form";
+import type {
+	AdminExerciseGlobalFormValues
+} from "@/features/role/admin/exercises/services/admin-exercise-global-form";
 import {
 	ADMIN_EXERCISE_GLOBAL_CATEGORY_OPTIONS,
 	ADMIN_EXERCISE_GLOBAL_EQUIPMENT_OPTIONS,
@@ -243,20 +256,23 @@ export function AdminExerciseGlobalDrawerFields( {
 				</div>
 			</div>
 
-			<Checkbox
-				isSelected={ values.active }
-				onChange={ ( isSelected ) => updateValue( "active", isSelected ) }
-			>
-				<Checkbox.Control>
-					<Checkbox.Indicator/>
-				</Checkbox.Control>
-				<Checkbox.Content>
-					<Label>Ejercicio activo</Label>
-					<Description className={ "text-sm" }>
-						Si se desactiva, el ejercicio queda oculto para nuevas rutinas pero se conserva en el catalogo.
-					</Description>
-				</Checkbox.Content>
-			</Checkbox>
+			<div>
+				<Checkbox
+					className={ "flex-1 flex-row" }
+					isSelected={ values.active }
+					onChange={ (isSelected) => updateValue("active", isSelected) }
+				>
+					<Checkbox.Control>
+						<Checkbox.Indicator/>
+					</Checkbox.Control>
+					<Checkbox.Content>
+						<Label>Ejercicio activo</Label>
+					</Checkbox.Content>
+				</Checkbox>
+				<Description className={ "text-sm" }>
+					Si se desactiva, el ejercicio queda oculto para nuevas rutinas pero se conserva en el catalogo.
+				</Description>
+			</div>
 		</Drawer.Body>
 	);
 }

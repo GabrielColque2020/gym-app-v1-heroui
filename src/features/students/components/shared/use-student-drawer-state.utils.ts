@@ -30,7 +30,7 @@ export function getInitialStudentFormValues( student?: StudentListItem ): Studen
 
 	return {
 		active: student.active,
-		birthDate: formatDateInputValue( student.DescriptionStudent?.birthDate ),
+		birthDate: formatDateInputValue( student.birthDate ),
 		dni: String( student.dni ),
 		email: student.email,
 		gender: student.gender ?? NO_GENDER,

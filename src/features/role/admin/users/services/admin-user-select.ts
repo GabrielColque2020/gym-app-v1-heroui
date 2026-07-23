@@ -3,7 +3,6 @@ import type { Prisma } from "@/generated/prisma/client";
 export const adminUserSelect = {
 	DescriptionStudent: {
 		select: {
-			birthDate: true,
 			height: true,
 			id: true,
 			objective: true,
@@ -12,6 +11,7 @@ export const adminUserSelect = {
 		},
 	},
 	active: true,
+	birthDate: true,
 	coach: {
 		select: {
 			active: true,

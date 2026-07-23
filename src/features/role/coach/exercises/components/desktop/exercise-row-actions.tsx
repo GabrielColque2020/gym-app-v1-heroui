@@ -1,16 +1,18 @@
 "use client";
 
 import type { Key } from "@heroui/react";
-
 import { Button, Dropdown, Header, Label, Spinner, toast } from "@heroui/react";
 import { CheckCircle2, EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-import { CoachDeleteExerciseDrawer } from "@/features/role/coach/exercises/components/shared/coach-delete-exercise-drawer";
+import {
+	CoachDeleteExerciseDrawer
+} from "@/features/role/coach/exercises/components/shared/coach-delete-exercise-drawer";
 import { ExerciseDrawer } from "@/features/role/coach/exercises/components/shared/exercise-drawer";
 import { useDeleteCoachExercise } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 import { useCoachExerciseStatusAction } from "@/features/role/coach/exercises/hooks/use-coach-exercise-status-action";
 import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
+import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 
 type ExerciseRowActionsProps = {
 	exercise: CoachExerciseListItem;
@@ -23,6 +25,7 @@ export function ExerciseRowActions( {
 	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
 	const { changeStatus, isPending, statusClassName, statusLabel } = useCoachExerciseStatusAction( { exercise } );
 	const deleteCoachExercise = useDeleteCoachExercise();
+	const placement = useResponsiveDrawerPlacement();
 	const canDeleteExercise = exercise.sourceType === "coach" && Boolean( exercise.coachExerciseId );
 
 	function handleAction( key: Key ) {
@@ -108,7 +111,7 @@ export function ExerciseRowActions( {
 				exercise={ exercise }
 				isOpen={ isEditOpen }
 				mode={ "edit" }
-				placement={ "bottom" }
+				placement={ placement }
 				onOpenChangeAction={ setIsEditOpen }
 			/>
 			{ canDeleteExercise ? (

@@ -21,13 +21,15 @@ import type { CreateStudentInput, UpdateStudentInput } from "@/features/students
 export async function createCoachAction( input: CreateCoachInput ) {
 	try {
 		await requireAdminSession( "crear coaches" );
-		const { email, name, password, userData } = validateCreateCoachInput( input );
+		const { birthDate, email, gender, name, password, userData } = validateCreateCoachInput( input );
 
 		return await prisma.user.create( {
 			data: {
 				active: userData.active,
+				birthDate,
 				dni: userData.dni,
 				email,
+				gender,
 				name,
 				password: bcrypt.hashSync( password ),
 				role: "COACH",
@@ -86,13 +88,14 @@ export async function toggleUserStatusAction( input: ToggleUserStatusInput ) {
 export async function updateAdminUserAction( input: UpdateAdminUserInput ) {
 	try {
 		await requireAdminSession( "editar usuarios" );
-		const { id, password, userData } = validateUpdateAdminUserInput( input );
+		const { birthDate, id, password, userData } = validateUpdateAdminUserInput( input );
 		const passwordData = password.length > 0 ? { password: bcrypt.hashSync( password ) } : {};
 
 		return await prisma.user.update( {
 			data: {
 				...userData,
 				...passwordData,
+				birthDate,
 			},
 			select: adminUserSelect,
 			where: {

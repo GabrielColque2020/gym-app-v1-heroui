@@ -1,7 +1,18 @@
 "use client";
 
 import type { Key } from "react";
-import { Checkbox, Description, Drawer, FieldError, Input, Label, ListBox, Select, TextArea, TextField } from "@heroui/react";
+import {
+	Checkbox,
+	Description,
+	Drawer,
+	FieldError,
+	Input,
+	Label,
+	ListBox,
+	Select,
+	TextArea,
+	TextField
+} from "@heroui/react";
 
 import { AsyncMedia } from "@/components/common";
 import { BODY_PART_OPTIONS, formatBodyPart } from "@/features/exercises/services/exercise-formatters";
@@ -214,20 +225,24 @@ export function ExerciseDrawerFields( {
 				</div>
 			) : null }
 
-			<Checkbox
-				isSelected={ values.active }
-				onChange={ ( isSelected ) => updateValue( "active", isSelected ) }
-			>
-				<Checkbox.Control>
-					<Checkbox.Indicator/>
-				</Checkbox.Control>
-				<Checkbox.Content>
-					<Label>Ejercicio activo</Label>
-					<Description className={ "text-sm" }>
-						Los ejercicios inactivos quedan ocultos para nuevas rutinas, pero se conservan en el historial.
-					</Description>
-				</Checkbox.Content>
-			</Checkbox>
+			<div>
+				<Checkbox
+					className={ "flex-1 flex-row" }
+					isSelected={ values.active }
+					onChange={ (isSelected) => updateValue("active", isSelected) }
+				>
+					<Checkbox.Control>
+						<Checkbox.Indicator/>
+					</Checkbox.Control>
+					<Checkbox.Content>
+						<Label>Ejercicio activo</Label>
+					</Checkbox.Content>
+				</Checkbox>
+				<Description className={ "text-sm" }>
+					Los ejercicios inactivos quedan ocultos para nuevas rutinas, pero se conservan en el historial.
+				</Description>
+
+			</div>
 		</Drawer.Body>
 	);
 }

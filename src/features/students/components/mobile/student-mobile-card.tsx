@@ -1,33 +1,16 @@
 "use client";
 
 import type { StudentListItem } from "@/features/students/actions/get-students";
-import type { Key } from "@heroui/react";
-import { Button, Card, Chip, Dropdown, Header, Label, Spinner, } from "@heroui/react";
-import { useState } from "react";
-import { CheckCircle2, EllipsisVertical, PencilLine, Trash2, UserRound } from "lucide-react";
+import { Card, Chip } from "@heroui/react";
+import { UserRound } from "lucide-react";
 
-import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
-import { useStudentStatusAction } from "@/features/students/hooks/use-student-status-action";
+import { StudentActionMenu } from "@/features/students/components/shared/student-action-menu";
 
 type StudentMobileCardProps = {
 	student: StudentListItem;
 };
 
 export function StudentMobileCard( { student }: StudentMobileCardProps ) {
-	const [ isEditOpen, setIsEditOpen ] = useState( false );
-	const { changeStatus, isPending, statusLabel } = useStudentStatusAction( { student } );
-
-	function handleAction( key: Key ) {
-		if (key === "edit") {
-			setIsEditOpen( true );
-			return;
-		}
-
-		if (key === "status") {
-			void changeStatus();
-		}
-	}
-
 	return (
 		<Card className={ "overflow-hidden rounded-2xl border border-border/70 shadow-sm" } variant={ "default" }>
 			<Card.Content className={ "py-1" }>
@@ -50,53 +33,9 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 						</Chip>
 					</div>
 
-					<Dropdown>
-						<Button
-							isIconOnly
-							aria-label={ `Opciones de ${ student.name }` }
-							className={ "size-8 shrink-0 text-foreground" }
-							isDisabled={ isPending }
-							variant={ "ghost" }
-						>
-							{ isPending ? (
-								<Spinner color={ "current" } size={ "sm" }/>
-							) : (
-								<EllipsisVertical className={ "size-5" }/>
-							) }
-						</Button>
-						<Dropdown.Popover placement={ "bottom end" }>
-							<Dropdown.Menu onAction={ handleAction }>
-								<Header>Opciones</Header>
-								<Dropdown.Item id={ "edit" } textValue={ "Editar" }>
-									<PencilLine className={ "size-4 shrink-0 text-warning" }/>
-									<Label className={ "text-warning" }>Editar</Label>
-								</Dropdown.Item>
-								<Dropdown.Item
-									id={ "status" }
-									textValue={ statusLabel }
-									variant={ student.active ? "danger" : "default" }
-								>
-									{ student.active ? (
-										<Trash2 className={ "size-4 shrink-0 text-danger" }/>
-									) : (
-										<CheckCircle2 className={ "size-4 shrink-0 text-success" }/>
-									) }
-									<Label className={ student.active ? "text-danger" : "text-success" }>{ statusLabel }</Label>
-								</Dropdown.Item>
-							</Dropdown.Menu>
-						</Dropdown.Popover>
-					</Dropdown>
+					<StudentActionMenu student={ student }/>
 				</div>
 			</Card.Content>
-
-			<StudentDrawer
-				hideTrigger
-				isOpen={ isEditOpen }
-				mode={ "edit" }
-				placement={ "bottom" }
-				student={ student }
-				onOpenChangeAction={ setIsEditOpen }
-			/>
 		</Card>
 	);
 }

@@ -1,11 +1,11 @@
 "use client";
 
 import type { Key } from "@heroui/react";
+import { Button, Card, Chip, Dropdown, Header, Label, ListBox, SearchField, Select } from "@heroui/react";
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
-import { Button, Card, Chip, Dropdown, Header, Label, ListBox, SearchField, Select } from "@heroui/react";
 import { useMemo, useState } from "react";
-import { EllipsisVertical, Plus, RotateCw, UserPlus } from "lucide-react";
+import { EllipsisVertical, RotateCw, UserPlus } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { useAdminUsers } from "@/features/role/admin/users/hooks/use-admin-users";
@@ -15,7 +15,9 @@ import { AdminUserMobileCard } from "@/features/role/admin/users/components/admi
 import { AdminUserRowActions } from "@/features/role/admin/users/components/admin-user-row-actions";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 import { useAdminUsersPageState } from "@/features/role/admin/users/hooks/use-admin-users-page-state";
-import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
+import {
+	AdminExercisesLoadingState
+} from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 function getRoleLabel( role: AdminUserListItem["role"] ) {
 	return role === "ADMIN" ? "Admin" : role === "COACH" ? "Coach" : "Student";
@@ -176,7 +178,7 @@ export default function AdminUsersPageContent() {
 										<Label className={ "text-accent" }>Crear coach</Label>
 									</Dropdown.Item>
 									<Dropdown.Item id={ "create-student" } textValue={ "Crear estudiante" }>
-										<Plus className={ "size-4 shrink-0 text-accent" }/>
+										<UserPlus className={ "size-4 shrink-0 text-accent" }/>
 										<Label className={ "text-accent" }>Crear estudiante</Label>
 									</Dropdown.Item>
 								</Dropdown.Menu>

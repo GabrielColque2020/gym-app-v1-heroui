@@ -1,7 +1,18 @@
+import type { GenderFormValue, GenderValue } from "@/features/students/services/student-form";
+import {
+	formatDateInputValue,
+	isGenderValue,
+	isValidEmail as isValidStudentEmail,
+	NO_GENDER,
+	parseBirthDate,
+} from "@/features/students/services/student-form";
+
 export type AdminUserFormValues = {
 	active: boolean;
+	birthDate: string;
 	dni: string;
 	email: string;
+	gender: GenderFormValue;
 	name: string;
 	password: string;
 };
@@ -19,8 +30,10 @@ export type AssignCoachInput = {
 
 export type AdminUserInitialValues = {
 	active: boolean;
+	birthDate?: Date | string | null;
 	dni: number | string;
 	email: string;
+	gender?: GenderValue | null;
 	name: string;
 };
 
@@ -34,7 +47,11 @@ export type DeleteAdminUserInput = {
 };
 
 export function isValidEmail( value: string ) {
-	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test( value.trim() );
+	return isValidStudentEmail( value );
+}
+
+function normalizeGender( value: GenderFormValue ) {
+	return isGenderValue( value ) ? value : null;
 }
 
 export function parsePositiveInteger( value: string, fieldLabel: string ) {
@@ -56,19 +73,23 @@ export function parsePositiveInteger( value: string, fieldLabel: string ) {
 export function getDefaultAdminUserFormValues(): AdminUserFormValues {
 	return {
 		active: true,
+		birthDate: "",
 		dni: "",
 		email: "",
+		gender: NO_GENDER,
 		name: "",
 		password: "",
 	};
 }
 
-export function getInitialAdminUserFormValues( user?: AdminUserInitialValues ) {
+export function getInitialAdminUserFormValues( user?: AdminUserInitialValues ): AdminUserFormValues {
 	return {
 		...getDefaultAdminUserFormValues(),
 		active: user?.active ?? true,
+		birthDate: formatDateInputValue( user?.birthDate ),
 		dni: user?.dni === undefined || user?.dni === null ? "" : String( user.dni ),
 		email: user?.email ?? "",
+		gender: user?.gender ?? NO_GENDER,
 		name: user?.name ?? "",
 		password: "",
 	};
@@ -92,7 +113,9 @@ export function validateCreateCoachInput( input: CreateCoachInput ) {
 	}
 
 	return {
+		birthDate: parseBirthDate( input.birthDate ),
 		email,
+		gender: normalizeGender( input.gender ),
 		name,
 		password,
 		userData: {
@@ -117,10 +140,12 @@ export function validateUpdateAdminUserInput( input: UpdateAdminUserInput ) {
 	}
 
 	return {
+		birthDate: parseBirthDate( input.birthDate ),
 		id: input.id,
 		password,
 		userData: {
 			active: input.active,
+			gender: normalizeGender( input.gender ),
 			dni: parsePositiveInteger( input.dni, "El DNI" ),
 			email,
 			name,

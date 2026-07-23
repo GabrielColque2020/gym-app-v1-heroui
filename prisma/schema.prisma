@@ -58,6 +58,7 @@ model User {
   dni             Int             @unique
   password        String
   gender          Gender?
+  birthDate DateTime?
   themePreference ThemePreference @default(SYSTEM)
 
   role      Role
@@ -97,7 +98,6 @@ model DescriptionStudent {
   id           String    @id @default(uuid())
   height       Float     @default(0) // in centimeters
   weight       Float     @default(0) // in kilograms
-  birthDate    DateTime?
   objective    String?
   observations String?
   createdAt    DateTime  @default(now())

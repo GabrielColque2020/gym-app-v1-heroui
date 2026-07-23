@@ -39,7 +39,6 @@ export function validateStudentInput( input: CreateStudentInput | UpdateStudentI
 
 	return {
 		descriptionData: {
-			birthDate,
 			height,
 			objective: emptyToNull( input.objective ),
 			observations: emptyToNull( input.observations ),
@@ -48,6 +47,7 @@ export function validateStudentInput( input: CreateStudentInput | UpdateStudentI
 		password,
 		userData: {
 			active: input.active,
+			birthDate,
 			dni,
 			email,
 			gender,

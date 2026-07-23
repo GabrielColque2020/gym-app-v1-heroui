@@ -8,7 +8,6 @@ import prisma from "@/lib/prisma";
 const studentListSelect = {
 	DescriptionStudent: {
 		select: {
-			birthDate: true,
 			height: true,
 			id: true,
 			objective: true,
@@ -17,6 +16,7 @@ const studentListSelect = {
 		},
 	},
 	active: true,
+	birthDate: true,
 	createdAt: true,
 	dni: true,
 	email: true,

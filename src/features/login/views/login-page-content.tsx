@@ -173,7 +173,7 @@ export default function LoginPageContent() {
 								/>
 								<Button
 									aria-label={ isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña" }
-									className={ "absolute inset-y-1.5 right-1.5 z-10 size-8 min-w-8 text-muted" }
+									className={ "absolute inset-y-1 right-1 z-10 size-8 min-w-8 text-muted" }
 									isIconOnly
 									size={ "sm" }
 									type={ "button" }

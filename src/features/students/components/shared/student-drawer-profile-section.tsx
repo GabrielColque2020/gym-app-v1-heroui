@@ -1,10 +1,27 @@
+"use client";
+
 import type { GenderFormValue, StudentFormValues } from "@/features/students/services/student-form";
 import { GENDER_OPTIONS, NO_GENDER } from "@/features/students/services/student-form";
 
 import type { DateValue } from "@internationalized/date";
 import { parseDate } from "@internationalized/date";
+import { useState } from "react";
 
-import { Calendar, Checkbox, DateField, DatePicker, Description, FieldError, Input, Label, ListBox, Select, TextField, } from "@heroui/react";
+import {
+	Button,
+	Calendar,
+	Checkbox,
+	DateField,
+	DatePicker,
+	Description,
+	FieldError,
+	Input,
+	Label,
+	ListBox,
+	Select,
+	TextField,
+} from "@heroui/react";
+import { Eye, EyeOff } from "lucide-react";
 
 function getBirthDateValue( value: string ): DateValue | null {
 	const trimmedValue = value.trim();
@@ -36,7 +53,8 @@ export function StudentDrawerProfileSection( {
 												 isPasswordInvalid,
 												 updateValue,
 												 values,
-											 }: StudentDrawerProfileSectionProps ) {
+											 }: StudentDrawerProfileSectionProps) {
+	const [ isPasswordVisible, setIsPasswordVisible ] = useState(false);
 	const birthDateValue = getBirthDateValue( values.birthDate );
 
 	return (
@@ -47,69 +65,84 @@ export function StudentDrawerProfileSection( {
 			</div>
 
 			<TextField
-				isRequired
 				fullWidth
 				isInvalid={ isNameInvalid }
+				isRequired
 				name={ "name" }
 				value={ values.name }
 				onChange={ ( value ) => updateValue( "name", value ) }
 			>
 				<Label>Nombre</Label>
-				<Input autoComplete={ "off" } placeholder={ "Ej: Nombre Completo" } className={ "border border-border" }/>
+				<Input autoComplete={ "off" } className={ "border border-border" } placeholder={ "Ej: Nombre Completo" }/>
 				{ isNameInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
 			</TextField>
 
 			<div className={ "grid gap-4 sm:grid-cols-2" }>
 				<TextField
-					isRequired
 					fullWidth
 					isInvalid={ isEmailInvalid }
+					isRequired
 					name={ "email" }
 					value={ values.email }
 					onChange={ ( value ) => updateValue( "email", value ) }
 				>
 					<Label>Email</Label>
-					<Input autoComplete={ "off" } placeholder={ "estudiante@email.com" } type={ "email" } className={ "border border-border" }/>
+					<Input autoComplete={ "off" } className={ "border border-border" } placeholder={ "estudiante@email.com" }
+					       type={ "email" }/>
 					{ isEmailInvalid ? <FieldError>Ingresa un email valido.</FieldError> : null }
 				</TextField>
 
 				<TextField
-					isRequired
 					fullWidth
 					isInvalid={ isDniInvalid }
+					isRequired
 					name={ "dni" }
 					value={ values.dni }
 					onChange={ ( value ) => updateValue( "dni", value ) }
 				>
 					<Label>DNI</Label>
-					<Input autoComplete={ "off" } inputMode={ "numeric" } placeholder={ "22222222" } className={ "border border-border" }/>
+					<Input autoComplete={ "off" } className={ "border border-border" } inputMode={ "numeric" }
+					       placeholder={ "22222222" }/>
 					{ isDniInvalid ? <FieldError>Debe ser numerico.</FieldError> : null }
 				</TextField>
 			</div>
 
 			<TextField
-				isRequired={ !isEditMode }
 				fullWidth
 				isInvalid={ isPasswordInvalid }
+				isRequired={ !isEditMode }
 				name={ "password" }
 				value={ values.password }
 				onChange={ ( value ) => updateValue( "password", value ) }
 			>
 				<Label>Contraseña</Label>
-				<Input
-					autoComplete={ "new-password" }
-					placeholder={ isEditMode ? "Dejar vacía para mantener la actual" : "Contraseña inicial" }
-					type={ "password" }
-					className={ "border border-border" }
-				/>
+				<div className={ "relative" }>
+					<Input
+						autoComplete={ "new-password" }
+						className={ "border border-border pr-11" }
+						placeholder={ isEditMode ? "Dejar vacía para mantener la actual" : "Contraseña inicial" }
+						type={ isPasswordVisible ? "text" : "password" }
+					/>
+					<Button
+						aria-label={ isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña" }
+						className={ "absolute inset-y-1 right-1 z-10 size-8 min-w-8 text-muted" }
+						isIconOnly
+						size={ "sm" }
+						type={ "button" }
+						variant={ "ghost" }
+						onPress={ () => setIsPasswordVisible((current) => !current) }
+					>
+						{ isPasswordVisible ? <EyeOff className={ "size-4" }/> : <Eye className={ "size-4" }/> }
+					</Button>
+				</div>
 				{ isPasswordInvalid ? <FieldError>La contraseña debe tener al menos 6 caracteres.</FieldError> : null }
 			</TextField>
 
 			<div className={ "grid gap-4 sm:grid-cols-2" }>
 				<Select
+					autoComplete={ "off" }
 					className={ "w-full" }
 					fullWidth
-					autoComplete={ "off" }
 					name={ "gender" }
 					placeholder={ "Seleccione genero" }
 					value={ values.gender }
@@ -137,16 +170,29 @@ export function StudentDrawerProfileSection( {
 				</Select>
 
 				<DatePicker
-					className={ "w-full" }
 					autoComplete={ "off" }
+					className={ "w-full" }
+					granularity={ "day" }
 					name={ "birthDate" }
+					shouldForceLeadingZeros
 					value={ birthDateValue }
 					onChange={ ( value ) => updateValue( "birthDate", value ? value.toString() : "" ) }
 				>
 					<Label>Fecha de nacimiento</Label>
 					<DateField.Group fullWidth className={ "border border-border" }>
 						<DateField.Input>
-							{ ( segment ) => <DateField.Segment segment={ segment }/> }
+							{ (segment) => (
+								<DateField.Segment
+									className={
+										segment.type === "day" || segment.type === "month"
+											? "min-w-[2ch] text-center"
+											: segment.type === "year"
+												? "min-w-[4ch] text-center"
+												: undefined
+									}
+									segment={ segment }
+								/>
+							) }
 						</DateField.Input>
 						<DateField.Suffix>
 							<DatePicker.Trigger type={ "button" }>
@@ -182,17 +228,23 @@ export function StudentDrawerProfileSection( {
 				</DatePicker>
 			</div>
 
-			<Checkbox isSelected={ values.active } onChange={ ( isSelected ) => updateValue( "active", isSelected ) }>
-				<Checkbox.Control>
-					<Checkbox.Indicator/>
-				</Checkbox.Control>
-				<Checkbox.Content>
-					<Label>Estudiante activo</Label>
-					<Description className={ "text-sm" }>
-						Los estudiantes inactivos se conservan para el historial.
-					</Description>
-				</Checkbox.Content>
-			</Checkbox>
+			<div>
+				<Checkbox
+					className={ "flex-1 flex-row" }
+					isSelected={ values.active }
+					onChange={ (isSelected) => updateValue("active", isSelected) }
+				>
+					<Checkbox.Control>
+						<Checkbox.Indicator/>
+					</Checkbox.Control>
+					<Checkbox.Content>
+						<Label>Estudiante activo</Label>
+					</Checkbox.Content>
+				</Checkbox>
+				<Description className={ "text-sm" }>
+					Los estudiantes inactivos se conservan para el historial.
+				</Description>
+			</div>
 		</section>
 	);
 }
