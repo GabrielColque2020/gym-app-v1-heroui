@@ -3,10 +3,10 @@
 import type {
     CoachTrainingRoutine
 } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
-import {Card, Chip, Description, Label, ScrollShadow} from "@heroui/react";
-import {RadioButtonGroup} from "@heroui-pro/react";
+import { Card, Chip, Description, Label, ScrollShadow } from "@heroui/react";
+import { RadioButtonGroup } from "@heroui-pro/react";
 
-import {useTrainingRoutineSelection} from "@/features/training-routine/hooks/use-training-routine-selection";
+import { useTrainingRoutineSelection } from "@/features/training-routine/hooks/use-training-routine-selection";
 import {
     CoachTrainingRoutineDaysAccordion
 } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-days-accordion";
@@ -102,7 +102,7 @@ export function CoachTrainingRoutineCardDesktop({
                     <CoachTrainingRoutineDaysAccordion
                         days={ selectedRoutine?.routineDays ?? [] }
                         exerciseGridClassName={
-                            "grid grid-cols-2 gap-x-8 gap-y-2 p-3"
+                            "grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-2 p-3"
                         }
                         month={ month }
                         studentId={ studentId }

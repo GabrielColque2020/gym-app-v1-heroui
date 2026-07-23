@@ -2,7 +2,12 @@
 
 import { Button, Card, Label, ListBox, SearchField, Select } from "@heroui/react";
 
-import { ALL_BODY_PARTS, type BodyPartFilter, BODY_PART_OPTIONS, formatBodyPart } from "@/features/exercises/services/exercise-form";
+import {
+	ALL_BODY_PARTS,
+	BODY_PART_OPTIONS,
+	type BodyPartFilter,
+	formatBodyPart
+} from "@/features/exercises/services/exercise-form";
 import type { CoachExerciseSourceFilter } from "@/features/role/coach/exercises/hooks/use-coach-exercise-list";
 import { ALL_COACH_EXERCISE_SOURCES } from "@/features/role/coach/exercises/hooks/use-coach-exercise-list";
 
@@ -77,16 +82,16 @@ export function ExerciseFilters( {
 							Todos
 							<ListBox.ItemIndicator/>
 						</ListBox.Item>
-						<ListBox.Item id={ "GLOBAL" } textValue={ "Globales" }>
-							Globales
+						<ListBox.Item id={ "GLOBAL" } textValue={ "Global" }>
+							Global
 							<ListBox.ItemIndicator/>
 						</ListBox.Item>
-						<ListBox.Item id={ "COACH" } textValue={ "Propios" }>
-							Propios
+						<ListBox.Item id={ "OVERRIDE" } textValue={ "Global personalizado" }>
+							Global personalizado
 							<ListBox.ItemIndicator/>
 						</ListBox.Item>
-						<ListBox.Item id={ "OVERRIDE" } textValue={ "Editados" }>
-							Editados
+						<ListBox.Item id={ "COACH" } textValue={ "Propio" }>
+							Propio
 							<ListBox.ItemIndicator/>
 						</ListBox.Item>
 					</ListBox>

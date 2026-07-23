@@ -83,6 +83,7 @@ export async function updateAdminExerciseGlobalAction( input: AdminExerciseGloba
 		await requireAdminSession( "actualizar ejercicios globales" );
 		const currentExercise = await prisma.exerciseGlobal.findUnique( {
 			select: {
+				active: true,
 				attribution: true,
 			},
 			where: {
@@ -92,11 +93,26 @@ export async function updateAdminExerciseGlobalAction( input: AdminExerciseGloba
 
 		const data = validateAdminExerciseGlobalInput( input, currentExercise?.attribution ?? null );
 
-		return await prisma.exerciseGlobal.update( {
-			data,
-			where: {
-				id: input.id,
-			},
+		return await prisma.$transaction( async ( tx ) => {
+			const updatedExercise = await tx.exerciseGlobal.update( {
+				data,
+				where: {
+					id: input.id,
+				},
+			} );
+
+			if (currentExercise?.active && !input.active) {
+				await tx.exerciseCoach.updateMany( {
+					data: {
+						active: false,
+					},
+					where: {
+						globalExerciseId: input.id,
+					},
+				} );
+			}
+
+			return updatedExercise;
 		} );
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al actualizar el ejercicio global.";

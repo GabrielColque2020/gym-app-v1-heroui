@@ -30,7 +30,7 @@ export function SearchAndCreateExerciseDrawerItem( {
 			<div className={ "flex min-w-0 items-center gap-3" }>
 				<AsyncMedia
 					alt={ `Imagen de ${ exercise.name }` }
-					className={ "size-10 shrink-0 rounded-lg border border-border" }
+					className={ "h-14 w-14 shrink-0 rounded-xl border border-border object-cover" }
 					emptyLabel={ "Sin imagen" }
 					spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
 					src={ exercise.imageUrl }

@@ -24,7 +24,7 @@ export function ExerciseCandidateRow( {
 					<div className={ "flex min-w-0 flex-1 items-center gap-3" }>
 						<AsyncMedia
 							alt={ `Imagen de ${ candidate.name }` }
-							className={ "size-10 shrink-0 rounded-lg border border-border" }
+							className={ "h-14 w-14 shrink-0 rounded-xl border border-border object-cover" }
 							emptyLabel={ "Sin imagen" }
 							spinnerLabel={ `Cargando imagen de ${ candidate.name }` }
 							src={ candidate.imageUrl }

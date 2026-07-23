@@ -6,11 +6,16 @@ import { Chip } from "@heroui/react";
 import { useMemo } from "react";
 
 import { AsyncMedia, ListPagination } from "@/components/common";
-import { CoachExercisesEmptyState } from "@/features/role/coach/exercises/components/shared/coach-exercises-empty-state";
+import {
+	CoachExercisesEmptyState
+} from "@/features/role/coach/exercises/components/shared/coach-exercises-empty-state";
 import { ExerciseFilters } from "@/features/role/coach/exercises/components/shared/exercise-filters";
 import { ExerciseRowActions } from "@/features/role/coach/exercises/components/desktop/exercise-row-actions";
 import { useCoachExerciseList } from "@/features/role/coach/exercises/hooks/use-coach-exercise-list";
-import { formatCoachExerciseSource, formatCoachExerciseSummary } from "@/features/role/coach/exercises/services/coach-exercise-formatters";
+import {
+	formatCoachExerciseSource,
+	formatCoachExerciseSummary
+} from "@/features/role/coach/exercises/services/coach-exercise-formatters";
 import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
 
 type ExercisesContentDesktopProps = {
@@ -27,7 +32,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 					<div className={ "flex min-w-0 items-center gap-3" }>
 						<AsyncMedia
 							alt={ `Imagen de ${ exercise.name }` }
-							className={ "size-12 shrink-0 rounded-xl border border-border" }
+							className={ "size-18 shrink-0 rounded-xl border border-border" }
 							emptyLabel={ "Sin imagen" }
 							spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
 							src={ exercise.imageUrl }

@@ -378,5 +378,70 @@ export async function toggleCoachExerciseStatusAction( input: CoachExerciseMutat
 	return saveCoachExerciseAction( input );
 }
 
+export async function deleteCoachExerciseAction( exerciseId: string ) {
+	try {
+		const session = await requireCoachSession( "eliminar ejercicios del coach" );
+		const normalizedExerciseId = normalizeId( exerciseId );
+
+		if (!normalizedExerciseId) {
+			throw new Error( "Debes seleccionar un ejercicio valido antes de eliminar." );
+		}
+
+		const exercise = await prisma.exerciseCoach.findFirst( {
+			select: {
+				coachId: true,
+				id: true,
+				name: true,
+			},
+			where: {
+				coachId: session.sub,
+				id: normalizedExerciseId,
+			},
+		} );
+
+		if (!exercise) {
+			throw new Error( "No se encontro el ejercicio del coach solicitado." );
+		}
+
+		await prisma.$transaction( async ( tx ) => {
+			await tx.studentExercise.deleteMany( {
+				where: {
+					exerciseId: normalizedExerciseId,
+				},
+			} );
+
+			await tx.exerciseProgress.deleteMany( {
+				where: {
+					exerciseId: normalizedExerciseId,
+				},
+			} );
+
+			await tx.routine.updateMany( {
+				data: {
+					exerciseId: null,
+				},
+				where: {
+					exerciseId: normalizedExerciseId,
+				},
+			} );
+
+			await tx.exerciseCoach.delete( {
+				where: {
+					id: normalizedExerciseId,
+				},
+			} );
+		}, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable } );
+
+		return {
+			exerciseId: exercise.id,
+			name: exercise.name,
+		};
+	} catch (error) {
+		const message = error instanceof Error ? error.message : "Error desconocido al eliminar el ejercicio.";
+
+		throw new Error( `No se pudo eliminar el ejercicio. ${ message }` );
+	}
+}
+
 
 

@@ -3,7 +3,9 @@
 import { Alert } from "@heroui/react";
 
 import { RoutinePageErrorState } from "@/features/role/student/routine/components/shared/routine-page-error-state";
-import { RoutinePageLoadedContent } from "@/features/role/student/routine/components/shared/routine-page-loaded-content";
+import {
+	RoutinePageLoadedContent
+} from "@/features/role/student/routine/components/shared/routine-page-loaded-content";
 import { RoutinePageLoadingState } from "@/features/role/student/routine/components/shared/routine-page-loading-state";
 import { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
 
@@ -39,7 +41,7 @@ export default function RoutinePageContent( {
 	if (state.isError) {
 		return (
 			<RoutinePageErrorState
-				errorMessage={ state.error instanceof Error ? state.error.message : "Ocurrio un error inesperado." }
+				errorMessage={ state.error instanceof Error ? state.error.message : "Ocurrió un error inesperado." }
 				onRetry={ () => state.handleRefresh() }
 			/>
 		);

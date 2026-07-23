@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { saveStudentRoutineSessionAction } from "@/features/role/student/routine/actions/save-routine-session";
 import { studentRoutineSessionQueryKey } from "@/features/role/student/routine/hooks/use-student-routine-session";
 import { useRoutineSessionStore } from "@/features/routine/stores/use-routine-session-store";
+import { studentTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
 import type { StudentRoutineSessionSaveInput } from "@/features/routine/services/routine-session";
 
 type SaveStudentRoutineSessionMutationInput = StudentRoutineSessionSaveInput & {
@@ -27,6 +28,12 @@ export function useSaveStudentRoutineSession() {
 			try {
 				await queryClient.invalidateQueries( {
 					queryKey: studentRoutineSessionQueryKey( input.routineDayId, studentId ),
+				} );
+				await queryClient.invalidateQueries( {
+					queryKey: studentTrainingRoutinesQueryKey(
+						savedSession.trainingRoutine.month,
+						savedSession.trainingRoutine.year,
+					),
 				} );
 			} finally {
 				useRoutineSessionStore.getState().clearDraft( input.routineDayId );

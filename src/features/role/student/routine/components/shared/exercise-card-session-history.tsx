@@ -29,8 +29,8 @@ export function ExerciseCardSessionHistory( {
 
 	const containerClassName = isCompact
 		? "flex flex-wrap items-center gap-2"
-		: "flex items-center gap-3 whitespace-nowrap overflow-x-auto pb-1";
-	const chipClassName = isCompact ? undefined : "shrink-0";
+		: "flex flex-wrap items-center gap-2";
+	const chipClassName = isCompact ? undefined : "max-w-full";
 
 	return (
 		<div className={ containerClassName }>
@@ -50,4 +50,3 @@ export function ExerciseCardSessionHistory( {
 		</div>
 	);
 }
-

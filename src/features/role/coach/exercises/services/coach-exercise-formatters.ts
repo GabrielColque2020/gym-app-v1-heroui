@@ -5,7 +5,7 @@ export function formatCoachExerciseSource( exercise: CoachExerciseListItem ) {
 		return "Global";
 	}
 
-	return exercise.isOverride ? "Global editado" : "Propio";
+	return exercise.isOverride ? "Global personalizado" : "Propio";
 }
 
 export function formatCoachExerciseSummary( exercise: CoachExerciseListItem ) {
