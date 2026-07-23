@@ -5,9 +5,15 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import DesktopExerciseCard from "@/features/role/student/routine/components/desktop/desktop-exercise-card";
 import { DesktopExerciseSetsGrid } from "@/features/role/student/routine/components/desktop/desktop-exercise-sets-grid";
 import { ExerciseSetsEditor } from "@/features/role/student/routine/components/shared/exercise-sets-editor";
-import { RoutineExerciseEmptyState } from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
-import { RoutineSessionOverviewCards } from "@/features/role/student/routine/components/shared/routine-session-overview-cards";
-import { useExerciseCarouselState } from "@/features/role/student/routine/components/shared/use-exercise-carousel-state";
+import {
+	RoutineExerciseEmptyState
+} from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
+import {
+	RoutineSessionOverviewCards
+} from "@/features/role/student/routine/components/shared/routine-session-overview-cards";
+import {
+	useExerciseCarouselState
+} from "@/features/role/student/routine/components/shared/use-exercise-carousel-state";
 import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 
 type DesktopRoutineViewProps = {
@@ -66,13 +72,13 @@ export default function DesktopRoutineView( {
 							) ) }
 							</Carousel.Content>
 						</Carousel>
-						<div className={ "flex items-center justify-between gap-3 px-4 pt-3" }>
-							<Button className={ "bg-primary text-primary-foreground " } variant={ "secondary" } onPress={ () => api?.scrollPrev() }>
+						<div className={ "flex items-center justify-between gap-3 px-4" }>
+							<Button variant={ "secondary" } onPress={ () => api?.scrollPrev() }>
 								<ArrowLeft className={ "size-4" }/>
 								Anterior
 							</Button>
-							<p className={ "min-w-20 text-center text-sm" }>{ `${ activeExerciseIndex } / ${ exercises.length }` }</p>
-							<Button className={ "bg-primary text-primary-foreground" } variant={ "secondary" } onPress={ () => api?.scrollNext() }>
+							<p className={ "min-w-20 text-center text-sm " }>{ `Ejercicio ${activeExerciseIndex} de ${exercises.length}` }</p>
+							<Button variant={ "secondary" } onPress={ () => api?.scrollNext() }>
 								Siguiente
 								<ArrowRight className={ "size-4" }/>
 							</Button>

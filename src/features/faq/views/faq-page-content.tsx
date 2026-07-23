@@ -5,7 +5,7 @@ import { CircleHelp } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import type { Role } from "@/generated/prisma/client";
-import { getDashboardHrefByRole, getFaqSectionsByRole, } from "@/features/faq/services/faq-content";
+import { getFaqSectionsByRole, } from "@/features/faq/services/faq-content";
 
 type FaqPageContentProps = {
 	role: Role;
@@ -13,7 +13,7 @@ type FaqPageContentProps = {
 
 export default function FaqPageContent( { role }: FaqPageContentProps ) {
 	const sections = getFaqSectionsByRole( role );
-	const dashboardHref = getDashboardHrefByRole( role );
+	const dashboardHref = getDashboardHwrefByRole(role);
 
 	return (
 		<div className={ "flex flex-col gap-4" }>
