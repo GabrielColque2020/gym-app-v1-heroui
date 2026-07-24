@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Button, Card } from "@heroui/react";
-import { Printer, RotateCw } from "lucide-react";
+import { Download, RotateCw } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
 import { FilterSelect } from "@/components/common/filter-select";
@@ -78,8 +78,8 @@ export function TrainingRoutinesFilter( {
 							variant={ "secondary" }
 							onPress={ onPrint }
 						>
-							<Printer className={ "size-4" }/>
-							Imprimir
+							<Download className={ "size-4" }/>
+							Descargar PDF
 						</Button>
 						<Button
 							className={ "w-full shadow-sm sm:w-auto sm:flex-1" }

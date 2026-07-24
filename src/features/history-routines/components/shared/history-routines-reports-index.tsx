@@ -111,7 +111,7 @@ export function HistoryRoutinesReportsIndex( {
 					) : (
 						<Download className={ "size-4" }/>
 					) }
-					{ isDownloadingPeriodKey === report.periodKey ? "Generando..." : "Descargar reporte" }
+					{ isDownloadingPeriodKey === report.periodKey ? "Descargando..." : "Descargar PDF" }
 				</Button>
 			),
 			header: "Acciones",
@@ -200,7 +200,7 @@ export function HistoryRoutinesReportsIndex( {
 										) : (
 											<Download className={ "size-4" }/>
 										) }
-										{ isDownloadingPeriodKey === report.periodKey ? "Generando..." : "Descargar reporte" }
+										{ isDownloadingPeriodKey === report.periodKey ? "Descargando..." : "Descargar PDF" }
 									</Button>
 								</Card>
 							) ) }

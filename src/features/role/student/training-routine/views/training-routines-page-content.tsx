@@ -1,9 +1,8 @@
 "use client";
 
 import type { Key } from "react-aria-components/Breadcrumbs";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, Typography } from "@heroui/react";
-import { useReactToPrint } from "react-to-print";
 
 import { PageBreadcrumbs } from "@/components/common";
 import { TrainingRoutinesDayCard } from "@/features/role/student/training-routine/components/training-routines-day-card";
@@ -13,7 +12,8 @@ import { TrainingRoutinesFilter } from "@/features/role/student/training-routine
 import { TrainingRoutinesLoadingState } from "@/features/role/student/training-routine/components/training-routines-loading-state";
 import { TrainingRoutinesWeekSelector } from "@/features/role/student/training-routine/components/training-routines-week-selector";
 import { useTrainingRoutines } from "@/features/role/student/training-routine/hooks/use-training-routines";
-import { TrainingRoutinePrintable } from "@/features/training-routine/components/shared/training-routine-printable";
+import { downloadFileFromUrl } from "@/features/shared/services/download-file";
+import { buildTrainingRoutineReportPdfUrl } from "@/features/training-routine/services/training-routines-report-pdf-url";
 
 type TrainingRoutinesPageContentProps = {
 	initialMonth?: number;
@@ -31,30 +31,15 @@ function getCurrentYear() {
 }
 
 export default function TrainingRoutinesPageContent( {
-														 initialMonth = getCurrentMonth(),
-														 initialYear = getCurrentYear(),
-													 }: TrainingRoutinesPageContentProps ) {
+	initialMonth = getCurrentMonth(),
+	initialYear = getCurrentYear(),
+}: TrainingRoutinesPageContentProps ) {
 	const [ activeMonth, setActiveMonth ] = useState( initialMonth );
 	const [ activeYear, setActiveYear ] = useState( initialYear );
 	const [ selectedWeekId, setSelectedWeekId ] = useState<Key | null>( null );
 	const { data, error, isError, isFetching, isLoading, refetch } = useTrainingRoutines( {
 		month: activeMonth,
 		year: activeYear,
-	} );
-	const printRef = useRef<HTMLDivElement | null>( null );
-	const handlePrint = useReactToPrint( {
-		contentRef: printRef,
-		documentTitle: `rutina-${ activeYear }-${ String( activeMonth ).padStart( 2, "0" ) }`,
-		pageStyle: `
-			@page {
-				size: A4 portrait;
-				margin: 6mm;
-			}
-			body {
-				-webkit-print-color-adjust: exact;
-				print-color-adjust: exact;
-			}
-		`,
 	} );
 
 	const routineWeeks = data?.routineMonth.weeks ?? EMPTY_ROUTINE_WEEKS;
@@ -81,6 +66,15 @@ export default function TrainingRoutinesPageContent( {
 		}
 	}
 
+	function handleDownload() {
+		downloadFileFromUrl(
+			buildTrainingRoutineReportPdfUrl( {
+				month: activeMonth,
+				year: activeYear,
+			} ),
+		);
+	}
+
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
@@ -97,9 +91,7 @@ export default function TrainingRoutinesPageContent( {
 				defaultYear={ String( activeYear ) }
 				isPrintDisabled={ routineWeeks.length === 0 }
 				isRefreshing={ isFetching && !isLoading }
-				onPrint={ () => {
-					void handlePrint();
-				} }
+				onPrint={ handleDownload }
 				onRefresh={ () => {
 					void refetch();
 				} }
@@ -108,13 +100,11 @@ export default function TrainingRoutinesPageContent( {
 
 			<Card className={ "border border-border shadow-sm py-2" } variant={ "default" }>
 				<Card.Header className={ "flex flex-col border-b border-border gap-4 sm:flex-row sm:items-center sm:justify-between p-3" }>
-					<Typography type={ "h3" } className={ "font-black" }>
+					<Typography className={ "font-black" } type={ "h3" }>
 						Plan Semanal
 					</Typography>
 					{ isLoading ? (
-						<div
-							className={ "flex items-center justify-center rounded-full border border-border bg-surface px-4 py-2 text-sm text-muted" }
-						>
+						<div className={ "flex items-center justify-center rounded-full border border-border bg-surface px-4 py-2 text-sm text-muted" }>
 							Cargando semanas
 						</div>
 					) : routineWeeks.length > 0 ? (
@@ -149,16 +139,6 @@ export default function TrainingRoutinesPageContent( {
 					)
 				) : null }
 			</Card>
-			{ data ? (
-				<TrainingRoutinePrintable
-					contentRef={ printRef }
-					month={ activeMonth }
-					routineObjective={ data.routineMonth.objective }
-					routineWeeks={ routineWeeks }
-					studentName={ data.student.name }
-					year={ activeYear }
-				/>
-			) : null }
 		</div>
 	);
 }

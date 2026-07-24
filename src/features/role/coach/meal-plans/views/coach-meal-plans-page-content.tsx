@@ -1,19 +1,17 @@
 "use client";
 
-import { useRef } from "react";
-
 import { Alert, Button, Card } from "@heroui/react";
-import { Printer, RotateCw } from "lucide-react";
-import { useReactToPrint } from "react-to-print";
+import { Download, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
-import { MealPlansPrintable } from "@/features/meal-plans/components/shared/meal-plans-printable";
+import { buildMealPlansReportPdfUrl } from "@/features/meal-plans/services/meal-plans-report-pdf-url";
 import { CoachMealPlansEmptyState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-empty-state";
 import { CoachMealPlansErrorState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-error-state";
 import { CoachMealPlansLoadingState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-loading-state";
 import { MealPlanCard } from "@/features/role/coach/meal-plans/components/shared/meal-plan-card";
 import { MealPlanDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer";
 import { useCoachMealPlansPageState } from "@/features/role/coach/meal-plans/hooks/use-coach-meal-plans-page-state";
+import { downloadFileFromUrl } from "@/features/shared/services/download-file";
 
 type CoachMealPlansPageContentProps = {
 	studentId: string | null;
@@ -21,21 +19,10 @@ type CoachMealPlansPageContentProps = {
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const { breadcrumbs, data, error, handleRefresh, isError, isLoading, isRefreshing } = useCoachMealPlansPageState( studentId );
-	const printRef = useRef<HTMLDivElement | null>( null );
-	const handlePrint = useReactToPrint( {
-		contentRef: printRef,
-		documentTitle: `planes-alimenticios-${ studentId }`,
-		pageStyle: `
-			@page {
-				size: A4 portrait;
-				margin: 6mm;
-			}
-			body {
-				-webkit-print-color-adjust: exact;
-				print-color-adjust: exact;
-			}
-		`,
-	} );
+
+	function handleDownload() {
+		downloadFileFromUrl( buildMealPlansReportPdfUrl( { studentId } ) );
+	}
 
 	if (isLoading) {
 		return <CoachMealPlansLoadingState breadcrumbs={ breadcrumbs }/>;
@@ -66,10 +53,10 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							className={ "w-full" }
 							isDisabled={ data.mealPlans.length === 0 }
 							variant={ "secondary" }
-							onPress={ () => void handlePrint() }
+							onPress={ handleDownload }
 						>
-							<Printer className={ "size-4" }/>
-							Imprimir
+							<Download className={ "size-4" }/>
+							Descargar PDF
 						</Button>
 						<Button
 							className={ "w-full" }
@@ -86,10 +73,10 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 						<Button
 							isDisabled={ data.mealPlans.length === 0 }
 							variant={ "secondary" }
-							onPress={ () => void handlePrint() }
+							onPress={ handleDownload }
 						>
-							<Printer className={ "size-4" }/>
-							Imprimir
+							<Download className={ "size-4" }/>
+							Descargar PDF
 						</Button>
 						<Button
 							isDisabled={ isRefreshing }
@@ -114,14 +101,6 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 					) }
 				</Card.Content>
 			</Card>
-
-			<MealPlansPrintable
-				contentRef={ printRef }
-				mealPlans={ data.mealPlans }
-				studentName={ data.student.name }
-				studentObjective={ data.student.DescriptionStudent?.objective }
-				studentObservations={ data.student.DescriptionStudent?.observations }
-			/>
 		</div>
 	);
 }
@@ -144,7 +123,7 @@ export default function CoachMealPlansPageContent( { studentId }: CoachMealPlans
 				</div>
 				<Alert className={ "border border-warning/20" } status={ "warning" }>
 					<Alert.Content>
-						<Alert.Title>Seleccioná un estudiante</Alert.Title>
+						<Alert.Title>Selecciona un estudiante</Alert.Title>
 						<Alert.Description>
 							Para consultar planes alimenticios primero tenes que elegir un estudiante activo.
 						</Alert.Description>

@@ -1,93 +1,47 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { Alert, Card, Spinner } from "@heroui/react";
-import { useReactToPrint } from "react-to-print";
 
 import { PageBreadcrumbs } from "@/components/common";
-import { HistoryRoutinesPrintable } from "@/features/history-routines/components/shared/history-routines-printable";
-import {
-	HistoryRoutinesReportsIndex
-} from "@/features/history-routines/components/shared/history-routines-reports-index";
-import {
-	buildHistoryRoutineMonthSummary,
-	groupHistoryRoutinesByWeek
-} from "@/features/history-routines/services/history-routines-view";
+import { HistoryRoutinesReportsIndex } from "@/features/history-routines/components/shared/history-routines-reports-index";
+import { buildHistoryRoutinesReportPdfUrl } from "@/features/history-routines/services/history-routines-report-pdf-url";
 import type { HistoryRoutineReportRow } from "@/features/history-routines/services/history-routines-reports";
 import { useHistoryRoutinesReports } from "@/features/role/student/history-routines/hooks/use-history-routines-reports";
-import {
-	type HistoryRoutinesByStudent,
-	historyRoutinesQueryOptions
-} from "@/features/role/student/history-routines/services/history-routines-query";
 
 type StudentHistoryRoutinesPageContentProps = {
 	studentId: string | null;
 };
 
 function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: string } ) {
-	const queryClient = useQueryClient();
-	const printRef = useRef<HTMLDivElement | null>( null );
 	const [ downloadError, setDownloadError ] = useState<string | null>( null );
-	const [ printableReport, setPrintableReport ] = useState<HistoryRoutinesByStudent | null>( null );
 	const [ pendingPeriodKey, setPendingPeriodKey ] = useState<string | null>( null );
 
 	const { data, error, isError, isLoading, isFetching, refetch } = useHistoryRoutinesReports( studentId );
-	const printableWeekGroups = useMemo(
-		() => groupHistoryRoutinesByWeek( printableReport?.historyRoutines ?? [] ),
-		[ printableReport?.historyRoutines ],
-	);
-	const printableSummary = useMemo(
-		() => buildHistoryRoutineMonthSummary( printableWeekGroups ),
-		[ printableWeekGroups ],
-	);
-	const printableMonthLabel = printableReport
-		? `${ String( printableReport.month ).padStart( 2, "0" ) }/${ printableReport.year }`
-		: "";
-	const handlePrint = useReactToPrint( {
-		contentRef: printRef,
-		documentTitle: printableReport
-			? `historial-rutinas-${ printableReport.year }-${ String( printableReport.month ).padStart( 2, "0" ) }`
-			: "historial-rutinas",
-		pageStyle: `
-			@page {
-				size: A4 portrait;
-				margin: 6mm;
-			}
-			body {
-				-webkit-print-color-adjust: exact;
-				print-color-adjust: exact;
-			}
-		`,
-		onAfterPrint: () => {
-			setPendingPeriodKey( null );
-		},
-	} );
-
-	useEffect( () => {
-		if (!printableReport || !pendingPeriodKey) {
-			return;
-		}
-
-		const frameId = window.requestAnimationFrame( () => {
-			void handlePrint();
-		} );
-
-		return () => {
-			window.cancelAnimationFrame( frameId );
-		};
-	}, [ handlePrint, pendingPeriodKey, printableReport ] );
 
 	async function handleDownloadReport( report: HistoryRoutineReportRow ) {
 		setDownloadError( null );
 		setPendingPeriodKey( report.periodKey );
 
 		try {
-			const nextReport = await queryClient.fetchQuery(
-				historyRoutinesQueryOptions( studentId, report.month, report.year ),
-			);
+			const reportUrl = buildHistoryRoutinesReportPdfUrl( {
+				disposition: "attachment",
+				month: report.month,
+				studentId,
+				year: report.year,
+			} );
+			const downloadLink = document.createElement( "a" );
+			downloadLink.download = "";
+			downloadLink.href = reportUrl;
+			downloadLink.rel = "noopener";
+			downloadLink.style.display = "none";
+			document.body.append( downloadLink );
+			downloadLink.click();
+			downloadLink.remove();
 
-			setPrintableReport( nextReport );
+			window.setTimeout( () => {
+				setPendingPeriodKey( ( current ) => current === report.periodKey ? null : current );
+			}, 1200 );
 		} catch ( downloadReportError ) {
 			setPendingPeriodKey( null );
 			setDownloadError(
@@ -143,8 +97,8 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 
 			{ !isLoading && !isError && data ? (
 				<HistoryRoutinesReportsIndex
-					description={ "Consulta los meses con registro y descarga el reporte completo de cada periodo." }
-					emptyMessage={ "Todavía no hay meses con historial de rutinas disponible." }
+					description={ "Consulta los meses con registro y descarga el reporte PDF completo de cada periodo." }
+					emptyMessage={ "Todavia no hay meses con historial de rutinas disponible." }
 					isDownloadingPeriodKey={ pendingPeriodKey }
 					isRefreshing={ isFetching && !isLoading }
 					reports={ data.reports }
@@ -153,17 +107,6 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 					onRefreshAction={ () => {
 						void refetch();
 					} }
-				/>
-			) : null }
-
-			{ printableReport ? (
-				<HistoryRoutinesPrintable
-					contentRef={ printRef }
-					monthLabel={ printableMonthLabel }
-					objective={ printableReport.student.DescriptionStudent?.objective }
-					summary={ printableSummary }
-					studentName={ printableReport.student.name }
-					weekGroups={ printableWeekGroups }
 				/>
 			) : null }
 		</div>
@@ -175,7 +118,7 @@ export default function StudentHistoryRoutinesPageContent( { studentId }: Studen
 		return (
 			<Alert className={ "border border-warning/20" } status={ "warning" }>
 				<Alert.Content>
-					<Alert.Title>Debes iniciar sesión</Alert.Title>
+					<Alert.Title>Debes iniciar sesion</Alert.Title>
 					<Alert.Description>
 						No se pudo identificar tu cuenta para mostrar tu historial de rutinas.
 					</Alert.Description>

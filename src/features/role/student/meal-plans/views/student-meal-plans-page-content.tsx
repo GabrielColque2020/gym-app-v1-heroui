@@ -1,16 +1,14 @@
 "use client";
 
-import { useRef } from "react";
-
 import { Alert, Button, Card, Spinner } from "@heroui/react";
-import { CircleDot, Printer, RotateCw } from "lucide-react";
-import { useReactToPrint } from "react-to-print";
+import { CircleDot, Download, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
-import { MealPlansPrintable } from "@/features/meal-plans/components/shared/meal-plans-printable";
+import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
+import { buildMealPlansReportPdfUrl } from "@/features/meal-plans/services/meal-plans-report-pdf-url";
 import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
 import { useMealPlans } from "@/features/role/student/meal-plans/hooks/use-meal-plans";
-import { formatMealPlanDescriptionLines, formatMealTime, } from "@/features/meal-plans/services/meal-plan-formatters";
+import { downloadFileFromUrl } from "@/features/shared/services/download-file";
 
 type StudentMealPlansPageContentProps = { studentId: string | null };
 
@@ -42,25 +40,14 @@ function MealPlanCard( { mealPlan }: { mealPlan: MealPlan } ) {
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const { data, error, isError, isFetching, isLoading, refetch } = useMealPlans( studentId );
-	const printRef = useRef<HTMLDivElement | null>( null );
-	const handlePrint = useReactToPrint( {
-		contentRef: printRef,
-		documentTitle: `planes-alimenticios-${ studentId }`,
-		pageStyle: `
-			@page {
-				size: A4 portrait;
-				margin: 6mm;
-			}
-			body {
-				-webkit-print-color-adjust: exact;
-				print-color-adjust: exact;
-			}
-		`,
-	} );
 	const crumbs = [
 		{ href: "/student/dashboard", label: "Inicio" },
 		{ label: "Mis planes alimenticios" },
 	];
+
+	function handleDownload() {
+		downloadFileFromUrl( buildMealPlansReportPdfUrl( { studentId } ) );
+	}
 
 	if (isLoading) {
 		return (
@@ -111,10 +98,10 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 								className={ "w-full shadow-sm md:w-auto" }
 								isDisabled={ data.mealPlans.length === 0 }
 								variant={ "secondary" }
-								onPress={ () => void handlePrint() }
+								onPress={ handleDownload }
 							>
-								<Printer className={ "size-4" }/>
-								Imprimir
+								<Download className={ "size-4" }/>
+								Descargar PDF
 							</Button>
 							<Button
 								className={ "w-full shadow-sm md:w-auto" }
@@ -145,13 +132,6 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 					) }
 				</Card.Content>
 			</Card>
-			<MealPlansPrintable
-				contentRef={ printRef }
-				mealPlans={ data.mealPlans }
-				studentName={ data.student.name }
-				studentObjective={ data.student.DescriptionStudent?.objective }
-				studentObservations={ data.student.DescriptionStudent?.observations }
-			/>
 		</div>
 	);
 }

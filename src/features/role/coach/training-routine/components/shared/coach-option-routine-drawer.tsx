@@ -1,16 +1,16 @@
-﻿"use client";
+"use client";
 
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "@heroui/react";
-import { useReactToPrint } from "react-to-print";
 
 import { CoachCopyRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer";
 import { CoachOptionRoutineActionMenu } from "@/features/role/coach/training-routine/components/shared/coach-option-routine-action-menu";
 import { CoachDeleteRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-delete-routine-drawer";
 import { CoachEditRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-edit-routine-drawer";
 import { useDeleteTrainingRoutineStructure } from "@/features/role/coach/training-routine/hooks/use-training-routine-structure";
-import { TrainingRoutinePrintable } from "@/features/training-routine/components/shared/training-routine-printable";
+import { downloadFileFromUrl } from "@/features/shared/services/download-file";
+import { buildTrainingRoutineReportPdfUrl } from "@/features/training-routine/services/training-routines-report-pdf-url";
 
 type CoachDeleteRoutineActionProps = {
 	month: number;
@@ -22,32 +22,17 @@ type CoachDeleteRoutineActionProps = {
 };
 
 export function CoachOptionRoutineDrawer( {
-											  month,
-											  routineObjective,
-											  routineWeeks,
-											  studentId,
-											  studentName,
-											  year,
-										  }: CoachDeleteRoutineActionProps ) {
+	month,
+	routineObjective,
+	routineWeeks,
+	studentId,
+	studentName,
+	year,
+}: CoachDeleteRoutineActionProps ) {
 	const [ isConfirmOpen, setIsConfirmOpen ] = useState( false );
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const [ isCopyOpen, setIsCopyOpen ] = useState( false );
 	const deleteRoutine = useDeleteTrainingRoutineStructure();
-	const printRef = useRef<HTMLDivElement | null>( null );
-	const handlePrint = useReactToPrint( {
-		contentRef: printRef,
-		documentTitle: `rutina-${ year }-${ String( month ).padStart( 2, "0" ) }`,
-		pageStyle: `
-			@page {
-				size: A4 portrait;
-				margin: 6mm;
-			}
-			body {
-				-webkit-print-color-adjust: exact;
-				print-color-adjust: exact;
-			}
-		`,
-	} );
 
 	const summary = useMemo(
 		() => {
@@ -61,11 +46,11 @@ export function CoachOptionRoutineDrawer( {
 				0,
 			);
 
-				return {
-					dayCount,
-					exerciseCount,
-					weekCount: routineWeeks.length,
-				};
+			return {
+				dayCount,
+				exerciseCount,
+				weekCount: routineWeeks.length,
+			};
 		},
 		[ routineWeeks ],
 	);
@@ -93,13 +78,23 @@ export function CoachOptionRoutineDrawer( {
 		setIsConfirmOpen( true );
 	}
 
+	function handleDownloadReport() {
+		downloadFileFromUrl(
+			buildTrainingRoutineReportPdfUrl( {
+				month,
+				studentId,
+				year,
+			} ),
+		);
+	}
+
 	return (
 		<>
 			<CoachOptionRoutineActionMenu
 				onCopyAction={ () => setIsCopyOpen( true ) }
 				onDeleteAction={ handleOpenDeleteConfirm }
 				onEditAction={ () => setIsEditOpen( true ) }
-				onPrintAction={ () => void handlePrint() }
+				onPrintAction={ handleDownloadReport }
 			/>
 
 			<CoachEditRoutineDrawer
@@ -133,15 +128,6 @@ export function CoachOptionRoutineDrawer( {
 				onConfirmAction={ handleDelete }
 				studentName={ studentName }
 				summary={ summary }
-				year={ year }
-			/>
-
-			<TrainingRoutinePrintable
-				contentRef={ printRef }
-				month={ month }
-				routineObjective={ routineObjective ?? null }
-				routineWeeks={ routineWeeks }
-				studentName={ studentName }
 				year={ year }
 			/>
 		</>
