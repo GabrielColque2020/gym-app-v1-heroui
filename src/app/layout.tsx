@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
+import { Analytics } from "@vercel/analytics/next";
 import { Toast } from "@heroui/react";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import { themePreferenceToUiThemePreference } from "@/features/theme/theme-preference";
@@ -57,6 +58,7 @@ export default async function RootLayout( { children }: { children: ReactNode } 
           { children }
           <Toast.Provider placement={ "top end" } />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
