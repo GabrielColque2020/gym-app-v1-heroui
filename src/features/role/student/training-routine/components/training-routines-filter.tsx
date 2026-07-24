@@ -9,6 +9,7 @@ import { MONTH_OPTIONS_PADDED } from "@/constants/months";
 
 type TrainingRoutinesFilterProps = {
 	defaultMonth: string;
+	isDownloading?: boolean;
 	defaultYear: string;
 	isPrintDisabled?: boolean;
 	isRefreshing?: boolean;
@@ -20,6 +21,7 @@ type TrainingRoutinesFilterProps = {
 export function TrainingRoutinesFilter( {
 	defaultMonth,
 	defaultYear,
+	isDownloading = false,
 	isPrintDisabled = false,
 	isRefreshing = false,
 	onPrint,
@@ -78,8 +80,8 @@ export function TrainingRoutinesFilter( {
 							variant={ "secondary" }
 							onPress={ onPrint }
 						>
-							<Download className={ "size-4" }/>
-							Descargar PDF
+							{ isDownloading ? <RotateCw className={ "size-4 animate-spin" }/> : <Download className={ "size-4" }/> }
+							{ isDownloading ? "Descargando..." : "Descargar PDF" }
 						</Button>
 						<Button
 							className={ "w-full shadow-sm sm:w-auto sm:flex-1" }

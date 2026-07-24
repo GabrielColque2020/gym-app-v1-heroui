@@ -1,13 +1,14 @@
 "use client";
 
 import { Button, Dropdown, Header, Label } from "@heroui/react";
-import { Copy, Download, MoreVertical, PencilLine, Trash2 } from "lucide-react";
+import { Copy, Download, MoreVertical, PencilLine, RotateCw, Trash2 } from "lucide-react";
 
 type CoachDeleteRoutineActionMenuProps = {
 	onDeleteAction: () => void;
 	onCopyAction: () => void;
 	onEditAction: () => void;
 	onPrintAction: () => void;
+	isDownloading?: boolean;
 };
 
 export function CoachOptionRoutineActionMenu( {
@@ -15,6 +16,7 @@ export function CoachOptionRoutineActionMenu( {
 												  onCopyAction,
 												  onEditAction,
 												  onPrintAction,
+												  isDownloading = false,
 											  }: CoachDeleteRoutineActionMenuProps ) {
 	return (
 		<Dropdown>
@@ -41,8 +43,8 @@ export function CoachOptionRoutineActionMenu( {
 							<Label className={ "text-accent" }>Copiar</Label>
 						</Dropdown.Item>
 						<Dropdown.Item id={ "print-file" } textValue={ "Descargar rutina PDF" }>
-							<Download className={ "size-4 shrink-0 text-primary" }/>
-							<Label className={ "text-primary" }>Descargar PDF</Label>
+							{ isDownloading ? <RotateCw className={ "size-4 shrink-0 animate-spin text-primary" }/> : <Download className={ "size-4 shrink-0 text-primary" }/> }
+							<Label className={ "text-primary" }>{ isDownloading ? "Descargando..." : "Descargar PDF" }</Label>
 						</Dropdown.Item>
 						<Dropdown.Item id={ "delete-file" } textValue={ "Eliminar rutina" } variant={ "danger" }>
 							<Trash2 className={ "size-4 shrink-0 text-danger" }/>

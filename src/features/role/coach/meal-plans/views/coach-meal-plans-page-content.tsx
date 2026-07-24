@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Alert, Button, Card } from "@heroui/react";
 import { Download, RotateCw } from "lucide-react";
 
@@ -19,9 +20,14 @@ type CoachMealPlansPageContentProps = {
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const { breadcrumbs, data, error, handleRefresh, isError, isLoading, isRefreshing } = useCoachMealPlansPageState( studentId );
+	const [ isDownloading, setIsDownloading ] = useState( false );
 
 	function handleDownload() {
+		setIsDownloading( true );
 		downloadFileFromUrl( buildMealPlansReportPdfUrl( { studentId } ) );
+		window.setTimeout( () => {
+			setIsDownloading( false );
+		}, 1200 );
 	}
 
 	if (isLoading) {
@@ -51,12 +57,12 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
 						<Button
 							className={ "w-full" }
-							isDisabled={ data.mealPlans.length === 0 }
+							isDisabled={ data.mealPlans.length === 0 || isDownloading }
 							variant={ "secondary" }
 							onPress={ handleDownload }
 						>
-							<Download className={ "size-4" }/>
-							Descargar PDF
+							{ isDownloading ? <RotateCw className={ "size-4 animate-spin" }/> : <Download className={ "size-4" }/> }
+							{ isDownloading ? "Descargando..." : "Descargar PDF" }
 						</Button>
 						<Button
 							className={ "w-full" }
@@ -71,12 +77,12 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 					</div>
 					<div className={ "hidden items-center gap-2 md:flex" }>
 						<Button
-							isDisabled={ data.mealPlans.length === 0 }
+							isDisabled={ data.mealPlans.length === 0 || isDownloading }
 							variant={ "secondary" }
 							onPress={ handleDownload }
 						>
-							<Download className={ "size-4" }/>
-							Descargar PDF
+							{ isDownloading ? <RotateCw className={ "size-4 animate-spin" }/> : <Download className={ "size-4" }/> }
+							{ isDownloading ? "Descargando..." : "Descargar PDF" }
 						</Button>
 						<Button
 							isDisabled={ isRefreshing }

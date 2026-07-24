@@ -32,6 +32,7 @@ export function CoachOptionRoutineDrawer( {
 	const [ isConfirmOpen, setIsConfirmOpen ] = useState( false );
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const [ isCopyOpen, setIsCopyOpen ] = useState( false );
+	const [ isDownloading, setIsDownloading ] = useState( false );
 	const deleteRoutine = useDeleteTrainingRoutineStructure();
 
 	const summary = useMemo(
@@ -79,6 +80,7 @@ export function CoachOptionRoutineDrawer( {
 	}
 
 	function handleDownloadReport() {
+		setIsDownloading( true );
 		downloadFileFromUrl(
 			buildTrainingRoutineReportPdfUrl( {
 				month,
@@ -86,11 +88,15 @@ export function CoachOptionRoutineDrawer( {
 				year,
 			} ),
 		);
+		window.setTimeout( () => {
+			setIsDownloading( false );
+		}, 1200 );
 	}
 
 	return (
 		<>
 			<CoachOptionRoutineActionMenu
+				isDownloading={ isDownloading }
 				onCopyAction={ () => setIsCopyOpen( true ) }
 				onDeleteAction={ handleOpenDeleteConfirm }
 				onEditAction={ () => setIsEditOpen( true ) }

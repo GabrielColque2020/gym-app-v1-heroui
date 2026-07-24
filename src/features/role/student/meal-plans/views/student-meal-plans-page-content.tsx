@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Alert, Button, Card, Spinner } from "@heroui/react";
 import { CircleDot, Download, RotateCw } from "lucide-react";
 
@@ -40,13 +41,18 @@ function MealPlanCard( { mealPlan }: { mealPlan: MealPlan } ) {
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const { data, error, isError, isFetching, isLoading, refetch } = useMealPlans( studentId );
+	const [ isDownloading, setIsDownloading ] = useState( false );
 	const crumbs = [
 		{ href: "/student/dashboard", label: "Inicio" },
 		{ label: "Mis planes alimenticios" },
 	];
 
 	function handleDownload() {
+		setIsDownloading( true );
 		downloadFileFromUrl( buildMealPlansReportPdfUrl( { studentId } ) );
+		window.setTimeout( () => {
+			setIsDownloading( false );
+		}, 1200 );
 	}
 
 	if (isLoading) {
@@ -96,12 +102,12 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 						<div className={ "flex w-full flex-col gap-2 md:w-auto md:flex-row" }>
 							<Button
 								className={ "w-full shadow-sm md:w-auto" }
-								isDisabled={ data.mealPlans.length === 0 }
+								isDisabled={ data.mealPlans.length === 0 || isDownloading }
 								variant={ "secondary" }
 								onPress={ handleDownload }
 							>
-								<Download className={ "size-4" }/>
-								Descargar PDF
+								{ isDownloading ? <RotateCw className={ "size-4 animate-spin" }/> : <Download className={ "size-4" }/> }
+								{ isDownloading ? "Descargando..." : "Descargar PDF" }
 							</Button>
 							<Button
 								className={ "w-full shadow-sm md:w-auto" }

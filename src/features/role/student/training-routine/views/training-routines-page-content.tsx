@@ -36,6 +36,7 @@ export default function TrainingRoutinesPageContent( {
 }: TrainingRoutinesPageContentProps ) {
 	const [ activeMonth, setActiveMonth ] = useState( initialMonth );
 	const [ activeYear, setActiveYear ] = useState( initialYear );
+	const [ isDownloading, setIsDownloading ] = useState( false );
 	const [ selectedWeekId, setSelectedWeekId ] = useState<Key | null>( null );
 	const { data, error, isError, isFetching, isLoading, refetch } = useTrainingRoutines( {
 		month: activeMonth,
@@ -67,12 +68,16 @@ export default function TrainingRoutinesPageContent( {
 	}
 
 	function handleDownload() {
+		setIsDownloading( true );
 		downloadFileFromUrl(
 			buildTrainingRoutineReportPdfUrl( {
 				month: activeMonth,
 				year: activeYear,
 			} ),
 		);
+		window.setTimeout( () => {
+			setIsDownloading( false );
+		}, 1200 );
 	}
 
 	return (
@@ -89,8 +94,9 @@ export default function TrainingRoutinesPageContent( {
 			<TrainingRoutinesFilter
 				defaultMonth={ String( activeMonth ).padStart( 2, "0" ) }
 				defaultYear={ String( activeYear ) }
-				isPrintDisabled={ routineWeeks.length === 0 }
+				isPrintDisabled={ routineWeeks.length === 0 || isDownloading }
 				isRefreshing={ isFetching && !isLoading }
+				isDownloading={ isDownloading }
 				onPrint={ handleDownload }
 				onRefresh={ () => {
 					void refetch();
