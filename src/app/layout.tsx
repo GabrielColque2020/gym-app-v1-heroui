@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
 import { Toast } from "@heroui/react";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import { themePreferenceToUiThemePreference } from "@/features/theme/theme-preference";
 import { PwaServiceWorker } from "./pwa-service-worker";
@@ -56,6 +58,8 @@ export default async function RootLayout( { children }: { children: ReactNode } 
           <PwaServiceWorker />
           { children }
           <Toast.Provider placement={ "top end" } />
+          <Analytics />
+          <SpeedInsights />
         </Providers>
       </body>
     </html>
