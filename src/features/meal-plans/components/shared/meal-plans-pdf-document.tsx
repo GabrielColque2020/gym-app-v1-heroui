@@ -1,12 +1,6 @@
 import type { ReactElement } from "react";
 
-import {
-	Document,
-	Page,
-	StyleSheet,
-	Text,
-	View,
-} from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View, } from "@react-pdf/renderer";
 
 import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
@@ -162,10 +156,9 @@ export function MealPlansPdfDocument( {
 				</View>
 
 				<View style={ styles.grid }>
-					{ mealPlans.map( ( mealPlan, index ) => (
+					{ mealPlans.map((mealPlan) => (
 						<View key={ mealPlan.id } style={ styles.card } wrap={ false }>
 							<View style={ styles.cardHeader }>
-								<Text style={ styles.indexBubble }>{ String( index + 1 ) }</Text>
 								<View>
 									<Text style={ styles.cardTitle }>{ formatMealTime( mealPlan.title ) }</Text>
 									<Text style={ styles.cardSubtitle }>{ `Orden ${ mealPlan.order }` }</Text>

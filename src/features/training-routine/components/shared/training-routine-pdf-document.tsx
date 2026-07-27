@@ -1,12 +1,6 @@
 import type { ReactElement } from "react";
 
-import {
-	Document,
-	Page,
-	StyleSheet,
-	Text,
-	View,
-} from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View, } from "@react-pdf/renderer";
 
 import { getTrainingRoutineDayTitle } from "@/features/training-routine/services/training-routine-day-formatters";
 import type { TrainingRoutineWeek } from "@/features/training-routine/services/training-routines-by-student";
@@ -225,7 +219,6 @@ export function TrainingRoutinePdfDocument( {
 						<View key={ day.id } style={ styles.daySection } wrap={ false }>
 							<View style={ styles.dayHeader }>
 								<View style={ styles.dayInfo }>
-									<Text style={ styles.dayBubble }>{ String( day.dayNumber ) }</Text>
 									<View>
 										<Text style={ styles.dayTitle }>{ `Dia ${ day.dayNumber }` }</Text>
 										<Text style={ styles.daySubtitle }>{ getTrainingRoutineDayTitle( day ) }</Text>
