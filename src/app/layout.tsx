@@ -12,28 +12,27 @@ import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  applicationName: "Gym App",
-  description: "Gym App dashboard for coaches and students.",
-  manifest: "/manifest.webmanifest",
-  title: "Gym App",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Gym App",
-  },
-  formatDetection: {
-    address: false,
-    email: false,
-    telephone: false,
-  },
-  icons: {
-    icon: [
-      { url: "/app-icon.svg", type: "image/svg+xml" },
-      { url: "/logo.png", type: "image/png" },
-    ],
-    apple: "/apple-icon",
-    shortcut: "/app-icon.svg",
-  },
+	applicationName: "Gym App",
+	description: "Gym App dashboard for coaches and students.",
+	manifest: "/manifest.webmanifest",
+	title: "Gym App",
+	appleWebApp: {
+		capable: true,
+		statusBarStyle: "default",
+		title: "Gym App",
+	},
+	formatDetection: {
+		address: false,
+		email: false,
+		telephone: false,
+	},
+	icons: {
+		icon: [
+			{ url: "/app-icon.svg", type: "image/svg+xml" },
+		],
+		apple: "/app-icon.svg",
+		shortcut: "/app-icon.svg",
+	},
 };
 
 export const viewport: Viewport = {

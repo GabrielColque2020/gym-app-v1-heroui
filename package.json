@@ -15,6 +15,7 @@
     "lint:fix": "eslint . --fix",
     "upload:exercise-media": "tsx prisma/seed/upload-exercise-media-to-cloudinary.ts",
     "seed:exercise-dataset": "tsx prisma/seed/import-exercise-global-catalog.ts",
+    "sync:coach-exercise-names": "tsx prisma/seed/sync-coach-exercise-names-from-global.ts",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf .next node_modules .turbo dist"
   },

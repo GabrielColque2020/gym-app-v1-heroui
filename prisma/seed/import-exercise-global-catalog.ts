@@ -49,6 +49,37 @@ const DEFAULT_DATASET_DIR = "public/exercises-dataset";
 const DEFAULT_DATASET_FILE = "data/exercises.es.json";
 const DEFAULT_CLOUDINARY_UPLOAD_MAP_FILE = "data/cloudinary-upload-map.json";
 
+function renderProgress( processed: number, total: number, dryRun: boolean ) {
+	const totalSafe = Math.max( total, 1 );
+	const percentage = Math.round( (processed / totalSafe) * 100 );
+	const modeLabel = dryRun ? "dry-run" : "import";
+
+	return `[${ modeLabel }] ${ processed }/${ total } ejercicios procesados (${ percentage }%)`;
+}
+
+function reportProgress( processed: number, total: number, dryRun: boolean ) {
+	const message = renderProgress( processed, total, dryRun );
+
+	if (process.stdout.isTTY) {
+		process.stdout.write( `\r${ message }` );
+
+		if (processed === total) {
+			process.stdout.write( "\n" );
+		}
+
+		return;
+	}
+
+	const shouldLog =
+		processed === 1
+		|| processed === total
+		|| processed % 25 === 0;
+
+	if (shouldLog) {
+		console.log( message );
+	}
+}
+
 function normalizeSearchName( value: string ) {
 	return value
 		.normalize( "NFD" )
@@ -400,11 +431,17 @@ async function main(): Promise<ImportStats> {
 			processed: 0,
 			updated: 0,
 		};
+		const totalRecords = dataset.length;
+
+		console.log(
+			`Iniciando importacion de ${ totalRecords } ejercicios desde ${ path.relative( process.cwd(), datasetFile ) }${ dryRun ? " (dry-run)" : "" }`,
+		);
 
 		for (const record of dataset) {
 			const data = mapRecordToCreateInput( record, mediaPublicBasePath, cloudinaryLookup );
 
 			stats.processed += 1;
+			reportProgress( stats.processed, totalRecords, dryRun );
 
 			if (dryRun) {
 				continue;

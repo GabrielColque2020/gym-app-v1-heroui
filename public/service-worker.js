@@ -4,8 +4,6 @@ const OFFLINE_URL = "/offline";
 const STATIC_URLS = [
   OFFLINE_URL,
   "/app-icon.svg",
-  "/logo.png",
-  "/apple-icon",
 ];
 
 self.addEventListener( "install", ( event ) => {
