@@ -85,7 +85,7 @@ function SidebarContents( {
 					<Sidebar.Menu aria-label={ "Dashboard navigation" }>
 						{ visibleNavItems.map( ( item ) => (
 							<SidebarNavItem
-								key={ item.href ?? item.label }
+								key={ `${ item.href ?? item.label }-${ item.label }` }
 								basePath={ basePath }
 								disableNavigation={ disableNavigation }
 								idPrefix={ idPrefix }
@@ -142,7 +142,11 @@ function SidebarNavItem( {
 
 		return pathname === childFullHref || pathname.startsWith( `${ childFullHref }/` );
 	} ) ?? false;
-	const id = `${ idPrefix }${ item.href ?? item.label.toLowerCase().replace( /\s+/g, "-" ) }`;
+	const navKey = `${ item.label }-${ item.href ?? "group" }`
+		.toLowerCase()
+		.replace( /[^a-z0-9]+/g, "-" )
+		.replace( /^-+|-+$/g, "" );
+	const id = `${ idPrefix }${ navKey }`;
 
 	return (
 		<Sidebar.MenuItem
@@ -171,7 +175,7 @@ function SidebarNavItem( {
 				<Sidebar.Submenu>
 					{ item.children.map( ( child ) => (
 						<SidebarNavItem
-							key={ child.href ?? child.label }
+							key={ `${ child.href ?? child.label }-${ child.label }` }
 							basePath={ basePath }
 							disableNavigation={ disableNavigation }
 							idPrefix={ idPrefix }

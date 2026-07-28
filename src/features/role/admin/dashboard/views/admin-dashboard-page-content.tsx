@@ -7,11 +7,13 @@ import { Button, Card } from "@heroui/react";
 import { Dumbbell, RotateCw, UserPlus, Users } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
+import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { useAdminDashboardSummary } from "@/features/role/admin/dashboard/hooks/use-admin-dashboard-summary";
 import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 export default function AdminDashboardPageContent() {
 	const router = useRouter();
+	const isMounted = useIsMounted();
 	const { data, error, isError, isFetching, isLoading, refetch } = useAdminDashboardSummary();
 	const isRefreshing = isFetching && !isLoading;
 	const handleRefresh = useCallback( () => {
@@ -19,7 +21,7 @@ export default function AdminDashboardPageContent() {
 
 		void refetch();
 	}, [ isRefreshing, refetch ] );
-	const shouldShowLoading = isLoading || ( !data && ( isFetching || !isError ) );
+	const shouldShowLoading = !isMounted || isLoading || ( !data && ( isFetching || !isError ) );
 
 	if (shouldShowLoading) {
 		return (

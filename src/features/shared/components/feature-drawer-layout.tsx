@@ -42,9 +42,14 @@ export function FeatureDrawerLayout( {
 		: null;
 
 	return (
-		<Drawer isOpen={ isOpen } onOpenChange={ onOpenChangeAction }>
+		<>
 			{ triggerElement }
-			<Drawer.Backdrop variant={ "opaque" } isDismissable={ isDismissable }>
+			<Drawer.Backdrop
+				isDismissable={ isDismissable }
+				isOpen={ isOpen }
+				variant={ "opaque" }
+				onOpenChange={ onOpenChangeAction }
+			>
 				<Drawer.Content placement={ placement }>
 					<Drawer.Dialog
 						className={ placement === "right"
@@ -62,6 +67,6 @@ export function FeatureDrawerLayout( {
 					</Drawer.Dialog>
 				</Drawer.Content>
 			</Drawer.Backdrop>
-		</Drawer>
+		</>
 	);
 }

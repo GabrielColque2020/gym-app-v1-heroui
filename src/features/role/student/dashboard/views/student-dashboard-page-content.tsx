@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from "react";
 import { Alert } from "@heroui/react";
 
+import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { StudentDashboardActivityCard } from "@/features/role/student/dashboard/components/student-dashboard-activity-card";
 import { StudentDashboardHero } from "@/features/role/student/dashboard/components/student-dashboard-hero";
 import { StudentDashboardQuickActions } from "@/features/role/student/dashboard/components/student-dashboard-quick-actions";
@@ -13,6 +14,7 @@ import { formatLastProgressLabel } from "@/features/role/student/dashboard/servi
 import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 export default function StudentDashboardPageContent() {
+	const isMounted = useIsMounted();
 	const { data, error, isError, isFetching, isLoading, refetch } = useStudentDashboardSummary();
 	const isRefreshing = isFetching && !isLoading;
 	const handleRefresh = useCallback( () => {
@@ -42,7 +44,7 @@ export default function StudentDashboardPageContent() {
 			value: formatLastProgressLabel( data.history.lastProgressAt ),
 		},
 	] : [], [ data ] );
-	const shouldShowLoading = isLoading || ( !data && ( isFetching || !isError ) );
+	const shouldShowLoading = !isMounted || isLoading || ( !data && ( isFetching || !isError ) );
 
 	if (shouldShowLoading) {
 		return (

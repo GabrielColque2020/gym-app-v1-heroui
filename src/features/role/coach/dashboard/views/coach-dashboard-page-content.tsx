@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 
+import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { CoachDashboardErrorState } from "@/features/role/coach/dashboard/components/coach-dashboard-error-state";
 import { CoachDashboardHero } from "@/features/role/coach/dashboard/components/coach-dashboard-hero";
 import { CoachDashboardQuickActions } from "@/features/role/coach/dashboard/components/coach-dashboard-quick-actions";
@@ -12,6 +13,7 @@ import { buildCoachDashboardQuickStats } from "@/features/role/coach/dashboard/s
 import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 export default function CoachDashboardPageContent() {
+	const isMounted = useIsMounted();
 	const { data, error, isError, isFetching, isLoading, refetch } = useCoachDashboardSummary();
 	const isRefreshing = isFetching && !isLoading;
 	const handleRefresh = useCallback( () => {
@@ -19,7 +21,7 @@ export default function CoachDashboardPageContent() {
 
 		void refetch();
 	}, [ isRefreshing, refetch ] );
-	const shouldShowLoading = isLoading || ( !data && ( isFetching || !isError ) );
+	const shouldShowLoading = !isMounted || isLoading || ( !data && ( isFetching || !isError ) );
 
 	if (shouldShowLoading) {
 		return (

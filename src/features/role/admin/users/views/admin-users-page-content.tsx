@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import { EllipsisVertical, RotateCw, UserPlus } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { useAdminUsers } from "@/features/role/admin/users/hooks/use-admin-users";
 import { AdminCoachDrawer } from "@/features/role/admin/users/components/admin-coach-drawer";
 import { AdminStudentDrawer } from "@/features/role/admin/users/components/admin-student-drawer";
@@ -32,6 +33,7 @@ function getCoachLabel( user: AdminUserListItem ) {
 }
 
 export default function AdminUsersPageContent() {
+	const isMounted = useIsMounted();
 	const { data = [], error, isError, isFetching, isLoading, refetch } = useAdminUsers();
 	const isRefreshing = isFetching && !isLoading;
 	const [ isCreateCoachOpen, setIsCreateCoachOpen ] = useState( false );
@@ -114,7 +116,7 @@ export default function AdminUsersPageContent() {
 		},
 	], [] );
 
-	if (isLoading) {
+	if (!isMounted || isLoading || ( !data.length && isFetching && !isError )) {
 		return (
 			<div className={ "flex flex-col gap-4" }>
 				<PageBreadcrumbs
