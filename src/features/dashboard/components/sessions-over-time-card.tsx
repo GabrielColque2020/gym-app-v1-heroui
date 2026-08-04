@@ -1,7 +1,8 @@
 "use client";
 
 import { Card } from "@heroui/react";
-import { LineChart, NumberValue, TrendChip } from "@heroui-pro/react";
+import { NumberValue, TrendChip } from "@heroui-pro/react";
+import { LineChart } from "@heroui-pro/react/line-chart";
 
 import { SESSIONS_OVER_TIME } from "../data/analytics";
 

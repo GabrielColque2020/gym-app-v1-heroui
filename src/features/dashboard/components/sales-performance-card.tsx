@@ -1,7 +1,8 @@
 "use client";
 
 import { Card, ListBox, Select } from "@heroui/react";
-import { BarChart, NumberValue, TrendChip } from "@heroui-pro/react";
+import { NumberValue, TrendChip } from "@heroui-pro/react";
+import { BarChart } from "@heroui-pro/react/bar-chart";
 
 import { SALES_CHART_DATA, SALES_MINI_KPIS } from "../data/sales";
 

@@ -1,5 +1,5 @@
 import { Button } from "@heroui/react";
-import { Carousel } from "@heroui-pro/react";
+import { Carousel } from "@heroui-pro/react/carousel";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 

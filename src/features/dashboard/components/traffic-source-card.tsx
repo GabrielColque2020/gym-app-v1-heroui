@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@heroui/react";
-import { LineChart } from "@heroui-pro/react";
+import { LineChart } from "@heroui-pro/react/line-chart";
 import { MoreVertical } from "lucide-react";
 
 import { IconButton } from "@/components/ui/icon-button";

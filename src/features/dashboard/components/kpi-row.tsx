@@ -1,6 +1,6 @@
 "use client";
 
-import { KPI } from "@heroui-pro/react";
+import { KPI } from "@heroui-pro/react/kpi";
 
 import { STATS_CARDS } from "../data/sales";
 

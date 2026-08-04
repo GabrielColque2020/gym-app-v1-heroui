@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@heroui/react";
-import { BarChart } from "@heroui-pro/react";
+import { BarChart } from "@heroui-pro/react/bar-chart";
 
 import { CHANNEL_BREAKDOWN } from "../data/analytics";
 

@@ -4,7 +4,8 @@ import type { NavItem } from "@/constants/nav-items";
 import { NAV_ITEMS } from "@/constants/nav-items";
 
 import { Avatar } from "@heroui/react";
-import { Sidebar, useSidebar } from "@heroui-pro/react";
+import { Sidebar, useSidebar, useSidebarPages } from "@heroui-pro/react";
+import { ArrowLeft } from "lucide-react";
 
 import type { Role } from "@/generated/prisma/client";
 
@@ -68,6 +69,7 @@ function SidebarContents( {
 	const { isMobile, isOpen } = useSidebar();
 	const isCollapsed = !isMobile && !isOpen;
 	const visibleNavItems = NAV_ITEMS.filter( ( item ) => isNavItemVisible( item, userRole ) );
+	const initialPage = getInitialPage(visibleNavItems, basePath, pathname);
 
 	return (
 		<>
@@ -81,20 +83,35 @@ function SidebarContents( {
 				</div>
 			</Sidebar.Header>
 			<Sidebar.Content>
-				<Sidebar.Group>
-					<Sidebar.Menu aria-label={ "Dashboard navigation" }>
-						{ visibleNavItems.map( ( item ) => (
-							<SidebarNavItem
-								key={ `${ item.href ?? item.label }-${ item.label }` }
+				<Sidebar.Pages defaultValue={ initialPage }>
+					<Sidebar.Page value={ "main" }>
+						<Sidebar.Group>
+							<Sidebar.Menu aria-label={ "Dashboard navigation" }>
+								{ visibleNavItems.map((item) => (
+									<SidebarNavItem
+										key={ `${item.href ?? item.label}-${item.label}` }
+										basePath={ basePath }
+										disableNavigation={ disableNavigation }
+										idPrefix={ idPrefix }
+										item={ item }
+										pathname={ pathname }
+									/>
+								)) }
+							</Sidebar.Menu>
+						</Sidebar.Group>
+					</Sidebar.Page>
+					{ visibleNavItems.filter(hasChildren).map((item) => (
+						<Sidebar.Page key={ getPageValue(item) } value={ getPageValue(item) }>
+							<SidebarPageMenu
 								basePath={ basePath }
 								disableNavigation={ disableNavigation }
 								idPrefix={ idPrefix }
 								item={ item }
 								pathname={ pathname }
 							/>
-						) ) }
-					</Sidebar.Menu>
-				</Sidebar.Group>
+						</Sidebar.Page>
+					)) }
+				</Sidebar.Pages>
 			</Sidebar.Content>
 		</>
 	);
@@ -119,6 +136,66 @@ function isNavItemVisible( item: NavItem, userRole: Role ): boolean {
 	}
 
 	return item.children.some( ( child ) => isNavItemVisible( child, userRole ) );
+}
+
+function hasChildren(item: NavItem): item is NavItem & { children: readonly NavItem[] } {
+	return Boolean(item.children?.length);
+}
+
+function getPageValue(item: NavItem) {
+	return `page-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}`;
+}
+
+function getInitialPage(items: readonly NavItem[], basePath: string, pathname: string) {
+	const activeGroup = items.find((item) => item.children?.some((child) => isPathActive(basePath + (child.href ?? ""), pathname)));
+
+	return activeGroup ? getPageValue(activeGroup) : "main";
+}
+
+function isPathActive(href: string, pathname: string) {
+	return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+interface SidebarPageMenuProps {
+	basePath: string;
+	disableNavigation: boolean;
+	idPrefix: string;
+	item: NavItem & { children: readonly NavItem[] };
+	pathname: string;
+}
+
+function SidebarPageMenu({
+							 basePath,
+							 disableNavigation,
+							 idPrefix,
+							 item,
+							 pathname,
+						 }: SidebarPageMenuProps) {
+	const { setActiveValue } = useSidebarPages();
+
+	return (
+		<Sidebar.Group>
+			<Sidebar.Menu aria-label={ item.label }>
+				<Sidebar.MenuItem onAction={ () => setActiveValue("main") } textValue={ "Volver" }>
+					<Sidebar.MenuIcon>
+						<ArrowLeft className={ "size-4" }/>
+					</Sidebar.MenuIcon>
+					<Sidebar.MenuLabel>Volver</Sidebar.MenuLabel>
+				</Sidebar.MenuItem>
+				{ item.children.map((child) => (
+					<SidebarNavItem
+						key={ `${child.href ?? child.label}-${child.label}` }
+						basePath={ basePath }
+						disableNavigation={ disableNavigation }
+						idPrefix={ idPrefix }
+						item={ child }
+						pathname={ pathname }
+						isChildren={ true }
+					/>
+				)) }
+			</Sidebar.Menu>
+		</Sidebar.Group>
+	);
 }
 
 function SidebarNavItem( {
@@ -148,6 +225,10 @@ function SidebarNavItem( {
 		.replace( /^-+|-+$/g, "" );
 	const id = `${ idPrefix }${ navKey }`;
 
+	if (item.children) {
+		return <SidebarGroupLink id={ id } item={ item } isCurrent={ isCurrent }/>;
+	}
+
 	return (
 		<Sidebar.MenuItem
 			href={ disableNavigation ? undefined : fullHref }
@@ -166,26 +247,25 @@ function SidebarNavItem( {
 			>
 				{ item.label }
 			</Sidebar.MenuLabel>
-			{ item.children ? (
-				<Sidebar.MenuTrigger aria-label={ `Desplegar ${ item.label }` }>
-					<Sidebar.MenuIndicator/>
-				</Sidebar.MenuTrigger>
-			) : null }
-			{ item.children ? (
-				<Sidebar.Submenu>
-					{ item.children.map( ( child ) => (
-						<SidebarNavItem
-							key={ `${ child.href ?? child.label }-${ child.label }` }
-							basePath={ basePath }
-							disableNavigation={ disableNavigation }
-							idPrefix={ idPrefix }
-							item={ child }
-							pathname={ pathname }
-							isChildren={ true }
-						/>
-					) ) }
-				</Sidebar.Submenu>
-			) : null }
+		</Sidebar.MenuItem>
+	);
+}
+
+function SidebarGroupLink({ id, item, isCurrent }: { id: string; item: NavItem; isCurrent: boolean }) {
+	const { setActiveValue } = useSidebarPages();
+	const Icon = item.icon;
+
+	return (
+		<Sidebar.MenuItem
+			id={ id }
+			isCurrent={ isCurrent }
+			onAction={ () => setActiveValue(getPageValue(item)) }
+			textValue={ item.label }
+		>
+			<Sidebar.MenuIcon>
+				<Icon className={ "size-4" }/>
+			</Sidebar.MenuIcon>
+			<Sidebar.MenuLabel>{ item.label }</Sidebar.MenuLabel>
 		</Sidebar.MenuItem>
 	);
 }
