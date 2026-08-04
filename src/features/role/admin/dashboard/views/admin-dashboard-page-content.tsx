@@ -7,9 +7,9 @@ import { Button, Card } from "@heroui/react";
 import { Dumbbell, RotateCw, UserPlus, Users } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
+import { DashboardSkeleton } from "@/components/common/skeletons";
 import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { useAdminDashboardSummary } from "@/features/role/admin/dashboard/hooks/use-admin-dashboard-summary";
-import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 export default function AdminDashboardPageContent() {
 	const router = useRouter();
@@ -24,12 +24,7 @@ export default function AdminDashboardPageContent() {
 	const shouldShowLoading = !isMounted || isLoading || ( !data && ( isFetching || !isError ) );
 
 	if (shouldShowLoading) {
-		return (
-			<AdminExercisesLoadingState
-				description={ "Consultando métricas, accesos rápidos y estado general del sistema." }
-				title={ "Cargando dashboard admin" }
-			/>
-		);
+		return <DashboardSkeleton title={ "Cargando dashboard admin" }/>;
 	}
 
 	if (isError || !data) {

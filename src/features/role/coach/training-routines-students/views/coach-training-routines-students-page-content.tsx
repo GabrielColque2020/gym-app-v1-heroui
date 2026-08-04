@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback } from "react";
-import { Alert, Button, Card, Spinner } from "@heroui/react";
+import { Alert, Button, Card } from "@heroui/react";
 import { RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { TableSkeleton } from "@/components/common/skeletons";
 import { TrainingRoutinesStudentsContentDesktop } from "@/features/role/coach/training-routines-students/components/desktop/training-routines-students-content-desktop";
 import { TrainingRoutinesStudentsContentMobile } from "@/features/role/coach/training-routines-students/components/mobile/training-routines-students-content-mobile";
 import { useTrainingRoutinesStudents } from "@/features/role/coach/training-routines-students/hooks/use-training-routines-students";
@@ -33,15 +34,7 @@ export default function CoachTrainingRoutinesStudentsPageContent() {
 						crumbs={ breadcrumbs }
 					/>
 				</div>
-				<Card className={ "border border-border bg-surface" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 py-10 text-center" }>
-						<Spinner size={ "lg" }/>
-						<div className={ "space-y-1" }>
-							<p className={ "text-base font-semibold text-foreground" }>Cargando estudiantes activos</p>
-							<p className={ "text-sm text-muted" }>Consultando estudiantes disponibles para rutinas.</p>
-						</div>
-					</Card.Content>
-				</Card>
+				<TableSkeleton columns={ 4 } rows={ 6 } />
 			</>
 		);
 	}

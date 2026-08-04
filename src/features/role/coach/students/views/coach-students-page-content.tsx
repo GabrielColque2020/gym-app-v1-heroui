@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback } from "react";
-import { Alert, Button, Card, Spinner } from "@heroui/react";
+import { Alert, Button, Card } from "@heroui/react";
 import { RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { TableSkeleton } from "@/components/common/skeletons";
 import { StudentsContentDesktop } from "@/features/students/components/desktop/students-content-desktop";
 import { StudentsContentMobile } from "@/features/students/components/mobile/students-content-mobile";
 import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
@@ -32,15 +33,7 @@ export default function CoachStudentsPageContent() {
 					backLabel={ "Volver al inicio" }
 					crumbs={ breadcrumbs }
 				/>
-				<Card className={ "border border-border py-2" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 p-3 text-center" }>
-						<Spinner size={ "lg" }/>
-						<div className={ "space-y-1" }>
-							<p className={ "text-base font-semibold text-foreground" }>Cargando estudiantes</p>
-							<p className={ "text-sm text-muted" }>Consultando la base de datos y sincronizando la cache.</p>
-						</div>
-					</Card.Content>
-				</Card>
+				<TableSkeleton columns={ 5 } rows={ 6 } />
 			</div>
 		);
 	}

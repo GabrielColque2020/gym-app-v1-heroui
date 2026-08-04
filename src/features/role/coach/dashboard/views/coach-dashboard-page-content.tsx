@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 
 import { useIsMounted } from "@/components/layout/use-is-mounted";
+import { DashboardSkeleton } from "@/components/common/skeletons";
 import { CoachDashboardErrorState } from "@/features/role/coach/dashboard/components/coach-dashboard-error-state";
 import { CoachDashboardHero } from "@/features/role/coach/dashboard/components/coach-dashboard-hero";
 import { CoachDashboardQuickActions } from "@/features/role/coach/dashboard/components/coach-dashboard-quick-actions";
@@ -10,7 +11,6 @@ import { CoachDashboardQuickStats } from "@/features/role/coach/dashboard/compon
 import { CoachDashboardStudentsTable } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table";
 import { useCoachDashboardSummary } from "@/features/role/coach/dashboard/hooks/use-coach-dashboard-summary";
 import { buildCoachDashboardQuickStats } from "@/features/role/coach/dashboard/services/coach-dashboard-summary-cards";
-import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 export default function CoachDashboardPageContent() {
 	const isMounted = useIsMounted();
@@ -25,10 +25,7 @@ export default function CoachDashboardPageContent() {
 
 	if (shouldShowLoading) {
 		return (
-			<AdminExercisesLoadingState
-				description={ "Consultando estudiantes, rutinas, planes y actividad reciente." }
-				title={ "Cargando dashboard coach" }
-			/>
+			<DashboardSkeleton title={ "Cargando dashboard coach" } variant={ "coach" }/>
 		);
 	}
 

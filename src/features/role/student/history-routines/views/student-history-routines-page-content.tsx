@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Alert, Card, Spinner } from "@heroui/react";
+import { Alert } from "@heroui/react";
 
 import { PageBreadcrumbs } from "@/components/common";
+import { TableSkeleton } from "@/components/common/skeletons";
 import { HistoryRoutinesReportsIndex } from "@/features/history-routines/components/shared/history-routines-reports-index";
 import { buildHistoryRoutinesReportPdfUrl } from "@/features/history-routines/services/history-routines-report-pdf-url";
 import type { HistoryRoutineReportRow } from "@/features/history-routines/services/history-routines-reports";
@@ -66,15 +67,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 			/>
 
 			{ isLoading ? (
-				<Card className={ "border border-border py-2" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 p-3 text-center" }>
-						<Spinner size={ "lg" }/>
-						<div className={ "space-y-1" }>
-							<p className={ "text-base font-semibold text-foreground" }>Cargando reportes mensuales</p>
-							<p className={ "text-sm text-muted" }>Consultando los periodos disponibles.</p>
-						</div>
-					</Card.Content>
-				</Card>
+				<TableSkeleton columns={ 4 } rows={ 4 } />
 			) : null }
 
 			{ isError ? (

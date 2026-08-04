@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from "react";
 import { Alert } from "@heroui/react";
 
+import { DashboardSkeleton } from "@/components/common/skeletons";
 import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { StudentDashboardActivityCard } from "@/features/role/student/dashboard/components/student-dashboard-activity-card";
 import { StudentDashboardHero } from "@/features/role/student/dashboard/components/student-dashboard-hero";
@@ -11,7 +12,6 @@ import { StudentDashboardQuickStats } from "@/features/role/student/dashboard/co
 import { StudentDashboardTodayCard } from "@/features/role/student/dashboard/components/student-dashboard-today-card";
 import { useStudentDashboardSummary } from "@/features/role/student/dashboard/hooks/use-student-dashboard-summary";
 import { formatLastProgressLabel } from "@/features/role/student/dashboard/services/student-dashboard-mappers";
-import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 export default function StudentDashboardPageContent() {
 	const isMounted = useIsMounted();
@@ -48,10 +48,7 @@ export default function StudentDashboardPageContent() {
 
 	if (shouldShowLoading) {
 		return (
-			<AdminExercisesLoadingState
-				description={ "Consultando rutina, planes alimenticios y actividad reciente." }
-				title={ "Cargando tu dashboard" }
-			/>
+			<DashboardSkeleton title={ "Cargando tu dashboard" } variant={ "student" }/>
 		);
 	}
 

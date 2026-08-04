@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Alert, Button, Card, Spinner } from "@heroui/react";
+import { Alert, Button, Card } from "@heroui/react";
 import { CircleDot, Download, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { CardGridSkeleton } from "@/components/common/skeletons";
 import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import { buildMealPlansReportPdfUrl } from "@/features/meal-plans/services/meal-plans-report-pdf-url";
 import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
@@ -61,15 +62,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 				<div className={ "mb-0" }>
 					<PageBreadcrumbs backHref={ "/student/dashboard" } backLabel={ "Volver al inicio" } crumbs={ crumbs }/>
 				</div>
-				<Card className={ "border border-border py-2" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 p-3 text-center" }>
-						<Spinner size={ "lg" }/>
-						<div className={ "space-y-1" }>
-							<p className={ "text-base font-semibold text-foreground" }>Cargando planes alimenticios</p>
-							<p className={ "text-sm text-muted" }>Consultando tus planes alimenticios.</p>
-						</div>
-					</Card.Content>
-				</Card>
+				<CardGridSkeleton cards={ 3 } />
 			</>
 		);
 	}

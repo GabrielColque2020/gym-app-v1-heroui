@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import { EllipsisVertical, RotateCw, UserPlus } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { TableSkeleton } from "@/components/common/skeletons";
 import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { useAdminUsers } from "@/features/role/admin/users/hooks/use-admin-users";
 import { AdminCoachDrawer } from "@/features/role/admin/users/components/admin-coach-drawer";
@@ -16,9 +17,6 @@ import { AdminUserMobileCard } from "@/features/role/admin/users/components/admi
 import { AdminUserRowActions } from "@/features/role/admin/users/components/admin-user-row-actions";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 import { useAdminUsersPageState } from "@/features/role/admin/users/hooks/use-admin-users-page-state";
-import {
-	AdminExercisesLoadingState
-} from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 
 function getRoleLabel( role: AdminUserListItem["role"] ) {
 	return role === "ADMIN" ? "Admin" : role === "COACH" ? "Coach" : "Student";
@@ -124,10 +122,7 @@ export default function AdminUsersPageContent() {
 					backLabel={ "Volver al inicio" }
 					crumbs={ breadcrumbs }
 				/>
-				<AdminExercisesLoadingState
-					description={ "Consultando usuarios, roles y asignaciones de coaches." }
-					title={ "Cargando usuarios" }
-				/>
+				<TableSkeleton columns={ 6 } rows={ 6 } />
 			</div>
 		);
 	}

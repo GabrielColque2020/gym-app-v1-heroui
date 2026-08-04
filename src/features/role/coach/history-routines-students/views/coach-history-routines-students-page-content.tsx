@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback } from "react";
-import { Alert, Button, Card, Spinner } from "@heroui/react";
+import { Alert, Button, Card } from "@heroui/react";
 import { RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { TableSkeleton } from "@/components/common/skeletons";
 import { HistoryRoutinesStudentsContentDesktop } from "@/features/role/coach/history-routines-students/components/desktop/history-routines-students-content-desktop";
 import { HistoryRoutinesStudentsContentMobile } from "@/features/role/coach/history-routines-students/components/mobile/history-routines-students-content-mobile";
 import { useHistoryRoutinesStudents } from "@/features/role/coach/history-routines-students/hooks/use-history-routines-students";
@@ -32,15 +33,7 @@ export default function CoachHistoryRoutinesStudentsPageContent() {
 						crumbs={ breadcrumbs }
 					/>
 				</div>
-				<Card className={ "border border-border py-2" } variant={ "default" }>
-					<Card.Content className={ "flex min-h-56 flex-col items-center justify-center gap-3 p-3 text-center" }>
-						<Spinner size={ "lg" }/>
-						<div className={ "space-y-1" }>
-							<p className={ "text-base font-semibold text-foreground" }>Cargando estudiantes activos</p>
-							<p className={ "text-sm text-muted" }>Consultando estudiantes disponibles para historial.</p>
-						</div>
-					</Card.Content>
-				</Card>
+				<TableSkeleton columns={ 4 } rows={ 6 } />
 			</>
 		);
 	}
