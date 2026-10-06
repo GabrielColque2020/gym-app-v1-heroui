@@ -174,7 +174,7 @@ async function resolveCoachExerciseIds(
 	} );
 
 	if (resolvedExistingExercises.length !== exercises.length) {
-		throw new Error( "Uno o mas ejercicios ya no estan disponibles en el catalogo activo." );
+		throw new Error( "Uno o más ejercicios ya no están disponibles en el catálogo activo." );
 	}
 
 	return resolvedExercises;

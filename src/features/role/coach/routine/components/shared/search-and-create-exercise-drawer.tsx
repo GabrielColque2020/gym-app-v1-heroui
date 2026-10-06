@@ -2,7 +2,7 @@
 
 import type {ExerciseListItem} from "@/features/exercises/types/exercise-list-item";
 
-import {Description, Drawer, Separator} from "@heroui/react";
+import {Button, Description, Drawer, Separator} from "@heroui/react";
 
 import {ListPagination} from "@/components/common";
 import {ExerciseDrawer} from "@/features/role/coach/exercises/components/shared/exercise-drawer";
@@ -17,18 +17,24 @@ import {
     SearchAndCreateExerciseDrawerFilters
 } from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-filters";
 import {
+    SearchAndCreateExerciseDrawerPrescription
+} from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-prescription";
+import {
+    type ExercisePrescription,
     useSearchAndCreateExerciseDrawerState
 } from "@/features/role/coach/routine/components/shared/use-search-and-create-exercise-drawer-state";
 import {Plus} from "lucide-react";
 
 type AddExercisePickerDrawerContentProps = {
     addedExerciseIds: Set<string>;
-    onAddExerciseAction: (exercise: ExerciseListItem, order: number) => void;
+    lastPrescription: ExercisePrescription | null;
+    onAddExerciseAction: (exercise: ExerciseListItem, order: number, prescription: ExercisePrescription) => void;
     suggestedOrder: number;
 };
 
 export function SearchAndCreateExerciseDrawer({
                                                   addedExerciseIds,
+                                                  lastPrescription,
                                                   onAddExerciseAction,
                                                   suggestedOrder,
                                               }: AddExercisePickerDrawerContentProps) {
@@ -46,19 +52,25 @@ export function SearchAndCreateExerciseDrawer({
         updateSearchValue,
     } = useRoutineDayExerciseCatalog();
     const {
+        addedCount,
         handleAddClick,
+        handlePickerOpenChange,
         handleCreatedExercise,
         handleOpenCreateDrawer,
         isCreateDrawerOpen,
         isPickerOpen,
         orderValue,
         registerAddButtonRef,
+        repsValue,
         setIsCreateDrawerOpen,
-        setIsPickerOpen,
         setOrderValue,
+        setRepsValue,
+        setSetsValue,
+        setsValue,
     } = useSearchAndCreateExerciseDrawerState({
         addedExerciseIds,
         currentPage: pagination.currentPage,
+        lastPrescription,
         onAddExerciseAction,
         selectedExerciseId,
         suggestedOrder,
@@ -72,7 +84,7 @@ export function SearchAndCreateExerciseDrawer({
                 isOpen={isPickerOpen}
                 placement={placement}
                 trigger={<AddExercisePickerButton onPress={() => setOrderValue(String(suggestedOrder))}/>}
-                onOpenChangeAction={setIsPickerOpen}
+                onOpenChangeAction={handlePickerOpenChange}
                 rightContentClassName={"w-[38rem]"}
             >
                 <Drawer.Header className={"border-default-100 relative border-b pb-4"}>
@@ -84,13 +96,20 @@ export function SearchAndCreateExerciseDrawer({
                         <div className={"min-w-0 flex-1"}>
                             <Drawer.Heading>Agregar ejercicio</Drawer.Heading>
                             <Description className={"mt-1 text-sm"}>
-                                Busca en el catalogo activo y agregalo al borrador del dia.
+                                Buscá en tu catálogo y sumá todos los ejercicios del día sin cerrar.
                             </Description>
                         </div>
                     </div>
                 </Drawer.Header>
 
                 <Drawer.Body className={"min-h-0 flex-1 space-y-6 overflow-y-auto py-3"}>
+                    <SearchAndCreateExerciseDrawerPrescription
+                        repsValue={repsValue}
+                        setsValue={setsValue}
+                        onRepsChange={setRepsValue}
+                        onSetsChange={setSetsValue}
+                    />
+
                     <SearchAndCreateExerciseDrawerFilters
                         addedExerciseIds={addedExerciseIds}
                         bodyPartFilter={bodyPartFilter}
@@ -129,6 +148,17 @@ export function SearchAndCreateExerciseDrawer({
 
                     <SearchAndCreateExerciseDrawerEmptyCta onPress={handleOpenCreateDrawer}/>
                 </Drawer.Body>
+
+                <Drawer.Footer className={"border-default-100 flex items-center justify-between gap-3 border-t pt-4"}>
+                    <p className={"text-sm text-muted"} role={"status"}>
+                        {addedCount === 0
+                            ? "Todavía no agregaste ejercicios"
+                            : `${addedCount} ${addedCount === 1 ? "ejercicio agregado" : "ejercicios agregados"}`}
+                    </p>
+                    <Button className={"bg-accent text-accent-foreground"} onPress={() => handlePickerOpenChange(false)}>
+                        Listo
+                    </Button>
+                </Drawer.Footer>
             </FeatureDrawerLayout>
 
             <ExerciseDrawer

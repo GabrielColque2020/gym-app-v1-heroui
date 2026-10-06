@@ -53,7 +53,7 @@ export function CoachDeleteRoutineDrawer( {
 					<div className={ "min-w-0 flex-1" }>
 						<Drawer.Heading>Eliminar rutina</Drawer.Heading>
 						<Description className={ "mt-1 text-sm" }>
-							Esta accion no se puede deshacer.
+							Esta acción no se puede deshacer.
 						</Description>
 					</div>
 				</div>
@@ -62,10 +62,10 @@ export function CoachDeleteRoutineDrawer( {
 			<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 				<Alert className={ "border border-danger/20" } status={ "danger" }>
 					<Alert.Content>
-						<Alert.Title>Accion irreversible</Alert.Title>
+						<Alert.Title>Acción irreversible</Alert.Title>
 						<Alert.Description>
-							Esta accion eliminara la rutina completa del mes seleccionado, incluyendo sus semanas,
-							dias y ejercicios cargados.
+							Esta acción eliminará la rutina completa del mes seleccionado, incluyendo sus semanas,
+							días y ejercicios cargados.
 						</Alert.Description>
 					</Alert.Content>
 				</Alert>
@@ -85,7 +85,7 @@ export function CoachDeleteRoutineDrawer( {
 						<CoachDeleteRoutineSummaryRow label={ "Mes" } value={ month }/>
 						<CoachDeleteRoutineSummaryRow label={ "Año" } value={ year }/>
 						<CoachDeleteRoutineSummaryRow label={ "Semanas" } value={ summary.weekCount }/>
-						<CoachDeleteRoutineSummaryRow label={ "Dias" } value={ summary.dayCount }/>
+						<CoachDeleteRoutineSummaryRow label={ "Días" } value={ summary.dayCount }/>
 						<CoachDeleteRoutineSummaryRow label={ "Ejercicios cargados" } value={ summary.exerciseCount }/>
 					</div>
 				</Surface>

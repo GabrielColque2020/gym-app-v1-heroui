@@ -21,7 +21,7 @@ export function buildCoachDashboardRoutineStatusLabel( student: CoachDashboardSt
 	}
 
 	if (student.lastRoutineMonthLabel) {
-		return `Ultima carga ${ student.lastRoutineMonthLabel }`;
+		return `Última carga ${ student.lastRoutineMonthLabel }`;
 	}
 
 	return "Sin rutinas cargadas";
@@ -116,11 +116,11 @@ export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string )
 				<div className={ "flex min-w-0 flex-col gap-1" }>
 					<span className={ "text-sm text-foreground" }>{ formatCoachDashboardDateLabel( student.lastProgressAt ) }</span>
 					<span className={ "text-xs text-muted" }>
-						{ student.needsRecentActivityAttention ? "Requiere revision" : "Actividad al dia" }
+						{ student.needsRecentActivityAttention ? "Requiere revisión" : "Actividad al día" }
 					</span>
 				</div>
 			),
-			header: "Ultima actividad",
+			header: "Última actividad",
 			id: "last-progress",
 			minWidth: 180,
 		},

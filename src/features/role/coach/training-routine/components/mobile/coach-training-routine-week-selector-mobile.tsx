@@ -43,7 +43,7 @@ export function CoachTrainingRoutineWeekSelectorMobile( {
 										Semana { routineWeek.week }
 									</Label>
 									<Description className={ "text-xs" }>
-										{ routineWeek.routineDays.length } dias
+										{ routineWeek.routineDays.length } días
 									</Description>
 								</RadioButtonGroup.ItemContent>
 							</RadioButtonGroup.Item>

@@ -8,7 +8,7 @@ export function useCoachMealPlansPageState( studentId: string ) {
 	const { data, error, isError, isFetching, isLoading, refetch } = useMealPlans( studentId );
 	const breadcrumbs = [
 		{ href: "/coach/dashboard", label: "Inicio" },
-		{ href: "/coach/meal-plans-students", label: "Planes alimenticios por estudiante" },
+		{ href: "/coach/student", label: "Estudiantes" },
 		{ label: data?.student.name ?? "Planes alimenticios" },
 	];
 	const isRefreshing = isFetching && !isLoading;

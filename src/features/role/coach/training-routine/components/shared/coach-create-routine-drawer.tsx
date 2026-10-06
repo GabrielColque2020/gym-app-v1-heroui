@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Button } from "@heroui/react";
 import { useState } from "react";
@@ -9,34 +9,43 @@ import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 
 type CoachCreateRoutineDrawerContentProps = {
+	hideTrigger?: boolean;
+	isOpen?: boolean;
 	month: number;
+	onOpenChangeAction?: ( isOpen: boolean ) => void;
 	studentId: string;
 	year: number;
 };
 
 export function CoachCreateRoutineDrawer( {
+											  hideTrigger = false,
+											  isOpen,
 											  month,
+											  onOpenChangeAction,
 											  studentId,
 											  year,
 										  }: CoachCreateRoutineDrawerContentProps ) {
-	const [ isOpen, setIsOpen ] = useState( false );
+	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const placement = useResponsiveDrawerPlacement();
-	const isMobile = placement === "bottom";
+	const open = isOpen ?? internalIsOpen;
+	const setOpen = onOpenChangeAction ?? setInternalIsOpen;
 
 	return (
 		<>
-			<Button
-				variant={ "secondary" }
-				onPress={ () => setIsOpen( true ) }
-			>
-				<Plus className={ "size-4" }/>
-				{ !isMobile && "Crear rutina" }
-			</Button>
+			{ hideTrigger ? null : (
+				<Button
+					variant={ "secondary" }
+					onPress={ () => setOpen( true ) }
+				>
+					<Plus className={ "size-4" }/>
+					Crear rutina
+				</Button>
+			) }
 			<FeatureDrawerLayout
-				isOpen={ isOpen }
+				isOpen={ open }
 				placement={ placement }
 				rightContentClassName={ "w-[42rem]" }
-				onOpenChangeAction={ setIsOpen }
+				onOpenChangeAction={ setOpen }
 			>
 				<CoachRoutineStructure
 					mode={ "create" }
@@ -44,7 +53,7 @@ export function CoachCreateRoutineDrawer( {
 					routineObjective={ "" }
 					studentId={ studentId }
 					year={ year }
-					onSavedAction={ () => setIsOpen( false ) }
+					onSavedAction={ () => setOpen( false ) }
 				/>
 			</FeatureDrawerLayout>
 		</>

@@ -1,5 +1,4 @@
-import {PrismaClient} from "@/generated/prisma/client";
-import {withAccelerate} from "@prisma/extension-accelerate";
+import {createPrismaClient} from "./prisma-client";
 
 type PrismaClientBase = ReturnType<typeof createPrismaClient>;
 type PrismaClientInstance = PrismaClientBase & {
@@ -9,18 +8,6 @@ type PrismaClientInstance = PrismaClientBase & {
 type PrismaGlobal = typeof globalThis & {
     prisma?: PrismaClientInstance;
 };
-
-function createPrismaClient() {
-    const accelerateUrl = process.env.DATABASE_URL;
-
-    if (!accelerateUrl) {
-        throw new Error("DATABASE_URL is required to initialize Prisma Accelerate.");
-    }
-
-    return new PrismaClient({
-        accelerateUrl,
-    }).$extends(withAccelerate());
-}
 
 const globalForPrisma = globalThis as PrismaGlobal;
 const prismaClient = globalForPrisma.prisma ?? createPrismaClient();

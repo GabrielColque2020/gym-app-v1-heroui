@@ -12,6 +12,7 @@ import { CoachMealPlansLoadingState } from "@/features/role/coach/meal-plans/com
 import { MealPlanCard } from "@/features/role/coach/meal-plans/components/shared/meal-plan-card";
 import { MealPlanDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer";
 import { useCoachMealPlansPageState } from "@/features/role/coach/meal-plans/hooks/use-coach-meal-plans-page-state";
+import { CoachStudentTabs } from "@/features/role/coach/students/components/coach-student-tabs";
 import { downloadFileFromUrl } from "@/features/shared/services/download-file";
 
 type CoachMealPlansPageContentProps = {
@@ -43,17 +44,22 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
-				backHref={ "/coach/meal-plans-students" }
+				backHref={ "/coach/student" }
 				backLabel={ "Volver a estudiantes" }
 				crumbs={ breadcrumbs }
 			/>
 
+			<CoachStudentTabs active={ "meal-plan" } studentId={ studentId }/>
+
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between" }>
-					<PageHeader
-						description={ `${ data.student.name }` }
-						title={ "Planes alimenticios del estudiante" }
-					/>
+				{ /* Con `flex-wrap` los botones bajan de renglon antes de que el titulo se parta. */ }
+				<Card.Header className={ "flex flex-row flex-wrap items-center justify-between gap-3 border-b border-border p-3" }>
+					<div className={ "min-w-48 flex-1" }>
+						<PageHeader
+							description={ `${ data.student.name }` }
+							title={ "Plan alimenticio" }
+						/>
+					</div>
 					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
 						<Button
 							className={ "w-full" }
@@ -75,7 +81,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 						</Button>
 						<MealPlanDrawer mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
 					</div>
-					<div className={ "hidden items-center gap-2 md:flex" }>
+					<div className={ "hidden flex-wrap items-center gap-2 md:flex" }>
 						<Button
 							isDisabled={ data.mealPlans.length === 0 || isDownloading }
 							variant={ "secondary" }
@@ -115,14 +121,14 @@ export default function CoachMealPlansPageContent( { studentId }: CoachMealPlans
 	if (!studentId) {
 		const breadcrumbs = [
 			{ href: "/", label: "Inicio" },
-			{ href: "/coach/meal-plans-students", label: "Planes alimenticios por estudiante" },
+			{ href: "/coach/student", label: "Estudiantes" },
 		];
 
 		return (
 			<>
 				<div className={ "mb-4" }>
 					<PageBreadcrumbs
-						backHref={ "/coach/meal-plans-students" }
+						backHref={ "/coach/student" }
 						backLabel={ "Volver a estudiantes" }
 						crumbs={ breadcrumbs }
 					/>
@@ -131,7 +137,7 @@ export default function CoachMealPlansPageContent( { studentId }: CoachMealPlans
 					<Alert.Content>
 						<Alert.Title>Selecciona un estudiante</Alert.Title>
 						<Alert.Description>
-							Para consultar planes alimenticios primero tenes que elegir un estudiante activo.
+							Para consultar planes alimenticios primero tenés que elegir un estudiante activo.
 						</Alert.Description>
 					</Alert.Content>
 				</Alert>

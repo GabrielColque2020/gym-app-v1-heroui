@@ -21,15 +21,15 @@ export function normalizeSetNotes( value: string | null ) {
 
 export function validateStudentRoutineSet( set: StudentRoutineSessionSaveSet ) {
 	if (!Number.isInteger( set.setNumber ) || set.setNumber < 1) {
-		throw new Error( "Hay una serie con numero invalido." );
+		throw new Error( "Hay una serie con número inválido." );
 	}
 
 	if (set.currentReps !== null && !Number.isFinite( set.currentReps )) {
-		throw new Error( "Las repeticiones de una serie no son validas." );
+		throw new Error( "Las repeticiones de una serie no son válidas." );
 	}
 
 	if (set.currentWeight !== null && !Number.isFinite( set.currentWeight )) {
-		throw new Error( "El peso de una serie no es valido." );
+		throw new Error( "El peso de una serie no es válido." );
 	}
 }
 
@@ -58,13 +58,13 @@ export function resolveStudentRoutineExercises(
 		const routine = routineDay.routines.find( ( item ) => item.exerciseId === baseExerciseId ) ?? null;
 
 		if (!routine) {
-			throw new Error( "Uno o mas ejercicios no pertenecen al dia seleccionado." );
+			throw new Error( "Uno o más ejercicios no pertenecen al día seleccionado." );
 		}
 
 		const selectedVariantExerciseId = exercise.variantExerciseId?.trim() || null;
 
 		if (selectedVariantExerciseId && !allowedExerciseIds.has( selectedVariantExerciseId )) {
-			throw new Error( "Uno o mas ejercicios no pertenecen al dia seleccionado." );
+			throw new Error( "Uno o más ejercicios no pertenecen al día seleccionado." );
 		}
 
 		for (const set of exercise.sets) {

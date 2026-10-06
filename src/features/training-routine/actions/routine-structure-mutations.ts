@@ -23,7 +23,7 @@ async function assertStudentExists( studentId: string, coachId: string ) {
 	} );
 
 	if (!student) {
-		throw new Error( "No se encontro un estudiante activo para modificar rutinas." );
+		throw new Error( "No se encontró un estudiante activo para modificar rutinas." );
 	}
 }
 

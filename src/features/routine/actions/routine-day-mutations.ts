@@ -20,7 +20,7 @@ export type SaveRoutineDayExercisesActionInput = {
 
 export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExercisesActionInput ) {
 	try {
-		const session = await requireCoachSession( "guardar el dia de rutina" );
+		const session = await requireCoachSession( "guardar el día de rutina" );
 		const {
 			coachId,
 			exercises,
@@ -30,7 +30,7 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 		const resolvedCoachId = coachId || session.sub;
 
 		if (!routineDayId) {
-			throw new Error( "Seleccioná un dia valido antes de guardar cambios." );
+			throw new Error( "Seleccioná un día válido antes de guardar cambios." );
 		}
 
 		validateNormalizedRoutineDayExercises( exercises );
@@ -50,8 +50,8 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 			studentId,
 		} );
 	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al guardar la rutina del dia.";
+		const message = error instanceof Error ? error.message : "Error desconocido al guardar la rutina del día.";
 
-		throw new Error( `No se pudo guardar el dia de rutina. ${ message }` );
+		throw new Error( `No se pudo guardar el día de rutina. ${ message }` );
 	}
 }

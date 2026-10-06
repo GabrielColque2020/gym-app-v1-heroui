@@ -9,6 +9,7 @@ import { buildHistoryRoutinesReportPdfUrl } from "@/features/history-routines/se
 import { CoachHistoryRoutinesErrorState } from "@/features/role/coach/history-routines/components/shared/coach-history-routines-error-state";
 import { CoachHistoryRoutinesLoadingState } from "@/features/role/coach/history-routines/components/shared/coach-history-routines-loading-state";
 import { CoachHistoryRoutinesMissingStudentState } from "@/features/role/coach/history-routines/components/shared/coach-history-routines-missing-student-state";
+import { CoachStudentTabs } from "@/features/role/coach/students/components/coach-student-tabs";
 import { useHistoryRoutinesReports } from "@/features/role/coach/history-routines/hooks/use-history-routines-reports";
 import type { HistoryRoutineReportRow } from "@/features/history-routines/services/history-routines-reports";
 
@@ -22,7 +23,7 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 	const { data, error, isError, isLoading, isFetching, refetch } = useHistoryRoutinesReports( studentId );
 	const breadcrumbs = [
 		{ href: "/", label: "Inicio" },
-		{ href: "/coach/history-routines-students", label: "Historial de rutinas por estudiante" },
+		{ href: "/coach/student", label: "Estudiantes" },
 		{ label: data?.student.name ?? "Reportes mensuales" },
 	];
 
@@ -62,10 +63,12 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 	return (
 		<div className={ "mx-auto flex w-full max-w-350 flex-col gap-4" }>
 			<PageBreadcrumbs
-				backHref={ "/coach/history-routines-students" }
+				backHref={ "/coach/student" }
 				backLabel={ "Volver a estudiantes" }
 				crumbs={ breadcrumbs }
 			/>
+
+			<CoachStudentTabs active={ "history" } studentId={ studentId }/>
 
 			{ isLoading ? <CoachHistoryRoutinesLoadingState/> : null }
 
@@ -85,7 +88,7 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 			{ !isLoading && !isError && data ? (
 				<HistoryRoutinesReportsIndex
 					description={ `Revisa los periodos con registro de ${ data.student.name } y descarga cada reporte mensual en PDF.` }
-					emptyMessage={ "Este estudiante todavia no tiene meses con historial de rutinas disponible." }
+					emptyMessage={ "Este estudiante todavía no tiene meses con historial de rutinas disponible." }
 					isDownloadingPeriodKey={ pendingPeriodKey }
 					isRefreshing={ isFetching && !isLoading }
 					reports={ data.reports }
@@ -104,14 +107,14 @@ export default function CoachHistoryRoutinesPageContent( { studentId }: CoachHis
 	if (!studentId) {
 		const breadcrumbs = [
 			{ href: "/", label: "Inicio" },
-			{ href: "/coach/history-routines-students", label: "Historial de rutinas por estudiante" },
+			{ href: "/coach/student", label: "Estudiantes" },
 		];
 
 		return (
 			<>
 				<div className={ "mb-4" }>
 					<PageBreadcrumbs
-						backHref={ "/coach/history-routines-students" }
+						backHref={ "/coach/student" }
 						backLabel={ "Volver a estudiantes" }
 						crumbs={ breadcrumbs }
 					/>

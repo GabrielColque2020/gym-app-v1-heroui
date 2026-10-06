@@ -111,7 +111,7 @@ export function AdminExerciseGlobalDrawerFields( {
 			</div>
 
 			<div className={ "grid gap-2" }>
-				<Label>Categoria</Label>
+				<Label>Categoría</Label>
 				<Select
 					fullWidth
 					isInvalid={ isCategoryInvalid }
@@ -165,7 +165,7 @@ export function AdminExerciseGlobalDrawerFields( {
 					{ isTargetInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
 				</div>
 				<div className={ "grid gap-2" }>
-					<Label>Musculo principal</Label>
+					<Label>Músculo principal</Label>
 					<Select
 						fullWidth
 						isInvalid={ isMuscleGroupInvalid }
@@ -228,7 +228,7 @@ export function AdminExerciseGlobalDrawerFields( {
 				<Label>Instrucciones</Label>
 				<TextArea
 					className={ "min-h-32 border border-border" }
-					placeholder={ "Indicaciones tecnicas o notas de uso." }
+					placeholder={ "Indicaciones técnicas o notas de uso." }
 				/>
 			</TextField>
 
@@ -270,7 +270,7 @@ export function AdminExerciseGlobalDrawerFields( {
 					</Checkbox.Content>
 				</Checkbox>
 				<Description className={ "text-sm" }>
-					Si se desactiva, el ejercicio queda oculto para nuevas rutinas pero se conserva en el catalogo.
+					Si se desactiva, el ejercicio queda oculto para nuevas rutinas pero se conserva en el catálogo.
 				</Description>
 			</div>
 		</Drawer.Body>

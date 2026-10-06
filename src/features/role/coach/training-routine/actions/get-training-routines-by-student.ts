@@ -35,7 +35,7 @@ export async function getTrainingRoutinesByStudentAction( {
 		} );
 
 		if (!student) {
-			throw new Error( "No se encontro un estudiante activo para consultar rutinas." );
+			throw new Error( "No se encontró un estudiante activo para consultar rutinas." );
 		}
 
 		return await getTrainingRoutinesByStudentBase( {

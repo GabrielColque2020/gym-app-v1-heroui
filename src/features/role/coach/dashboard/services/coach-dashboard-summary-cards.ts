@@ -8,7 +8,7 @@ export function buildCoachDashboardQuickStats( summary: CoachDashboardSummary ) 
 			value: summary.totals.activeStudents,
 		},
 		{
-			description: "Catalogo disponible para armar rutinas.",
+			description: "Catálogo disponible para armar rutinas.",
 			label: "Ejercicios activos",
 			value: summary.totals.activeExercises,
 		},

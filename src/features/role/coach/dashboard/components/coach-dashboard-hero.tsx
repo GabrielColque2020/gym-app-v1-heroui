@@ -18,7 +18,7 @@ export function CoachDashboardHero( {
 		<Card className={ "border border-border py-2" } variant={ "default" }>
 			<Card.Content className={ "flex flex-col gap-3 p-3 lg:flex-row lg:items-start lg:justify-between" }>
 				<PageHeader
-					description={ `Vista operativa para revisar pendientes, entrar rapido a cada estudiante y corregir el trabajo de ${ currentPeriodLabel }.` }
+					description={ `Vista operativa para revisar pendientes, entrar rápido a cada estudiante y corregir el trabajo de ${ currentPeriodLabel }.` }
 					title={ "Dashboard coach" }
 				/>
 				<div className={ "flex w-full flex-col gap-2 sm:w-auto sm:flex-row" }>

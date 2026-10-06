@@ -1,5 +1,5 @@
 export function buildTrainingRoutineHref( studentId: string | null, month: number | null, year: number | null ) {
-	if (!studentId) return "/coach/training-routines-students";
+	if (!studentId) return "/coach/student";
 
 	const params = new URLSearchParams( { studentId } );
 
@@ -14,8 +14,19 @@ export function buildEditRoutineBreadcrumbs( studentId: string | null, month: nu
 
 	return [
 		{ href: "/coach/dashboard", label: "Inicio" },
-		{ href: "/coach/training-routines-students", label: "Rutinas por estudiante" },
+		{ href: "/coach/student", label: "Estudiantes" },
 		{ href: routineHref, label: "Rutina del estudiante" },
 		{ label: currentLabel },
 	];
+}
+
+export function buildEditRoutineDayHref( routineDayId: string, studentId: string, month: number, year: number ) {
+	const params = new URLSearchParams( {
+		month: String( month ),
+		routineDayId,
+		studentId,
+		year: String( year ),
+	} );
+
+	return `/coach/routine?${ params.toString() }`;
 }

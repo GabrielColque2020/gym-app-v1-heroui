@@ -9,7 +9,7 @@ function parsePositiveInteger( value: string | null, label: string ) {
 	const parsedValue = Number( value );
 
 	if (!Number.isInteger( parsedValue ) || parsedValue <= 0) {
-		throw new Error( `${ label } invalido.` );
+		throw new Error( `${ label } inválido.` );
 	}
 
 	return parsedValue;
@@ -20,7 +20,7 @@ export async function GET( request: Request ) {
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			return NextResponse.json( { error: "Debes iniciar sesion para generar el reporte." }, { status: 401 } );
+			return NextResponse.json( { error: "Debes iniciar sesión para generar el reporte." }, { status: 401 } );
 		}
 
 		const { searchParams } = new URL( request.url );

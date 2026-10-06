@@ -27,7 +27,7 @@ export function CoachRoutineStructureAlerts( {
 					<Alert.Content>
 						<Alert.Title>Revisar cambios</Alert.Title>
 						<Alert.Description>
-							Esta accion puede eliminar dias o ejercicios ya cargados.
+							Esta acción puede eliminar días o ejercicios ya cargados.
 						</Alert.Description>
 					</Alert.Content>
 				</Alert>

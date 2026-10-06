@@ -205,18 +205,18 @@ export function HistoryRoutinesPdfDocument( {
 				<View style={ styles.summaryBar }>
 					<Text style={ styles.summaryItem }>{ getSummaryStatusLabel( summary.status ) }</Text>
 					<Text style={ styles.summaryItem }>{ `${ summary.weeks } semanas` }</Text>
-					<Text style={ styles.summaryItem }>{ `${ summary.days } dias` }</Text>
+					<Text style={ styles.summaryItem }>{ `${ summary.days } días` }</Text>
 					<Text style={ styles.summaryItem }>{ `${ summary.exercises } ejercicios` }</Text>
 					<Text style={ styles.summaryItem }>{ `${ summary.sets } series` }</Text>
 				</View>
 
 				{ weekGroups.map( ( weekGroup ) => (
 					<View key={ weekGroup.week } style={ styles.weekSection }>
-						<Text style={ styles.weekHeader }>{ `Semana ${ weekGroup.week } (${ weekGroup.days.length } dias)` }</Text>
+						<Text style={ styles.weekHeader }>{ `Semana ${ weekGroup.week } (${ weekGroup.days.length } días)` }</Text>
 
 						{ weekGroup.days.map( ( day ) => (
 							<View key={ day.id } style={ styles.dayCard } wrap={ false }>
-								<Text style={ styles.dayHeader }>{ `Dia ${ day.dayNumber } - ${ formatHistoryDate( day.date ) }` }</Text>
+								<Text style={ styles.dayHeader }>{ `Día ${ day.dayNumber } - ${ formatHistoryDate( day.date ) }` }</Text>
 
 								<View style={ styles.tableHeader }>
 									<Text style={ styles.colExercise }>Ejercicio</Text>

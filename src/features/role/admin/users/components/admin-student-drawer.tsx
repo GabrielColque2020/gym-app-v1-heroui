@@ -150,7 +150,7 @@ export function AdminStudentDrawer( {
 				await createStudent.mutateAsync( values );
 				setValues( getDefaultAdminStudentFormValues() );
 				toast.success( "Estudiante creado", {
-					description: "Se agrego al listado de usuarios.",
+					description: "Se agregó al listado de usuarios.",
 				} );
 			}
 

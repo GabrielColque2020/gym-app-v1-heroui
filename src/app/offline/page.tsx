@@ -8,9 +8,9 @@ export default function OfflinePage() {
       actionIcon={ RefreshCw }
       actionLabel={ "Reintentar" }
       badgeIcon={ WifiOff }
-      badgeLabel={ "Sin conexion" }
-      description={ "Revisa tu conexion y vuelve a intentar. La app sigue siendo instalable y algunos recursos visuales quedan disponibles aunque no tengas internet." }
-      detail={ "Las pantallas dinamicas que dependen del servidor pueden no cargar sin red, pero la instalacion de la app y sus recursos estaticos ya quedaron preparados." }
+      badgeLabel={ "Sin conexión" }
+      description={ "Revisa tu conexión y vuelve a intentar. La app sigue siendo instalable y algunos recursos visuales quedan disponibles aunque no tengas internet." }
+      detail={ "Las pantallas dinámicas que dependen del servidor pueden no cargar sin red, pero la instalación de la app y sus recursos estaticos ya quedaron preparados." }
       detailTitle={ "Que puedes esperar" }
       title={ "No pudimos conectarnos" }
     />

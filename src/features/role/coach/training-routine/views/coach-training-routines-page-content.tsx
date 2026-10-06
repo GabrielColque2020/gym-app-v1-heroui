@@ -10,6 +10,7 @@ import { CoachTrainingRoutinesEmptyState } from "@/features/role/coach/training-
 import { CoachTrainingRoutinesErrorState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-error-state";
 import { CoachTrainingRoutinesLoadingState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-loading-state";
 import { CoachTrainingRoutinesMissingStudentState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-missing-student-state";
+import { CoachStudentTabs } from "@/features/role/coach/students/components/coach-student-tabs";
 import { useTrainingRoutines } from "@/features/role/coach/training-routine/hooks/use-training-routines";
 
 type CoachTrainingRoutinesPageContentProps = {
@@ -26,11 +27,11 @@ export default function CoachTrainingRoutinesPageContent( {
 	const { data, error, isError, isFetching, isLoading, refetch } = useTrainingRoutines( { month, studentId, year } );
 	const breadcrumbs = studentId ? [
 		{ href: "/coach/dashboard", label: "Inicio" },
-		{ href: "/coach/training-routines-students", label: "Rutinas por estudiante" },
+		{ href: "/coach/student", label: "Estudiantes" },
 		{ label: data?.student.name ?? "Rutinas del estudiante" },
 	] : [
 		{ href: "/coach/dashboard", label: "Inicio" },
-		{ href: "/coach/training-routines-students", label: "Rutinas por estudiante" },
+		{ href: "/coach/student", label: "Estudiantes" },
 	];
 	const isRefreshing = isFetching && !isLoading;
 	const handleRefresh = useCallback( () => {
@@ -44,7 +45,7 @@ export default function CoachTrainingRoutinesPageContent( {
 			<>
 				<div className={ "mb-4" }>
 					<PageBreadcrumbs
-						backHref={ "/coach/training-routines-students" }
+						backHref={ "/coach/student" }
 						backLabel={ "Volver a estudiantes" }
 						crumbs={ breadcrumbs }
 					/>
@@ -59,7 +60,7 @@ export default function CoachTrainingRoutinesPageContent( {
 			<>
 				<div className={ "mb-4" }>
 					<PageBreadcrumbs
-						backHref={ "/coach/training-routines-students" }
+						backHref={ "/coach/student" }
 						backLabel={ "Volver a estudiantes" }
 						crumbs={ breadcrumbs }
 					/>
@@ -74,7 +75,7 @@ export default function CoachTrainingRoutinesPageContent( {
 			<>
 				<div className={ "mb-4" }>
 					<PageBreadcrumbs
-						backHref={ "/coach/training-routines-students" }
+						backHref={ "/coach/student" }
 						backLabel={ "Volver a estudiantes" }
 						crumbs={ breadcrumbs }
 					/>
@@ -91,10 +92,12 @@ export default function CoachTrainingRoutinesPageContent( {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
-				backHref={ "/coach/training-routines-students" }
+				backHref={ "/coach/student" }
 				backLabel={ "Volver a estudiantes" }
 				crumbs={ breadcrumbs }
 			/>
+
+			<CoachStudentTabs active={ "routine" } studentId={ studentId }/>
 
 			<CoachTrainingRoutineFilter
 				month={ month }
@@ -109,7 +112,12 @@ export default function CoachTrainingRoutinesPageContent( {
 			/>
 
 			{ routineWeeks.length === 0 ? (
-				<CoachTrainingRoutinesEmptyState month={ month } studentName={ data.student.name } year={ year }/>
+				<CoachTrainingRoutinesEmptyState
+					month={ month }
+					studentId={ studentId }
+					studentName={ data.student.name }
+					year={ year }
+				/>
 			) : (
 				<>
 					<div className={ "hidden md:flex" }>

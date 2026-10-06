@@ -40,7 +40,7 @@ function validateAdminExerciseGlobalInput( input: AdminExerciseGlobalMutationInp
 	}
 
 	if (category.length < 2) {
-		throw new Error( "La categoria del ejercicio debe tener al menos 2 caracteres." );
+		throw new Error( "La categoría del ejercicio debe tener al menos 2 caracteres." );
 	}
 
 	if (target.length < 2) {
@@ -48,7 +48,7 @@ function validateAdminExerciseGlobalInput( input: AdminExerciseGlobalMutationInp
 	}
 
 	if (muscleGroup.length < 2) {
-		throw new Error( "El musculo principal debe tener al menos 2 caracteres." );
+		throw new Error( "El músculo principal debe tener al menos 2 caracteres." );
 	}
 
 	if (equipment.length < 2) {

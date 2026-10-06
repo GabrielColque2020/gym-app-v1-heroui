@@ -65,8 +65,8 @@ export default function AdminDashboardPageContent() {
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<Card.Content className={ "flex flex-col gap-3 p-3 md:flex-row md:items-center md:justify-between" }>
 					<div className={ "space-y-1" }>
-						<p className={ "text-base font-semibold text-foreground" }>Accesos rapidos</p>
-						<p className={ "text-sm text-muted" }>Saltos directos a las tareas mas usadas por administracion.</p>
+						<p className={ "text-base font-semibold text-foreground" }>Accesos rápidos</p>
+						<p className={ "text-sm text-muted" }>Saltos directos a las tareas más usadas por administración.</p>
 					</div>
 					<div className={ "flex flex-col gap-2 sm:flex-row" }>
 						<Button variant={ "secondary" } onPress={ () => router.push( "/admin/users" ) }>

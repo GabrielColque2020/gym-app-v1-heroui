@@ -29,9 +29,9 @@ export function ExerciseChangeDrawerTrigger( {
 						<ArrowLeftRight className={ "size-4 shrink-0 text-accent" }/>
 						<Label className={ "text-accent" }>Cambiar ejercicio</Label>
 					</Dropdown.Item>
-					<Dropdown.Item id={ "view-execution" } textValue={ "Ver ejecucion" }>
+					<Dropdown.Item id={ "view-execution" } textValue={ "Ver ejecución" }>
 						<Eye className={ "size-4 shrink-0" }/>
-						<Label>Ver ejecucion</Label>
+						<Label>Ver ejecución</Label>
 					</Dropdown.Item>
 				</Dropdown.Menu>
 			</Dropdown.Popover>

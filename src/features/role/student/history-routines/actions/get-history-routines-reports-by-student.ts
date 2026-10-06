@@ -13,7 +13,7 @@ export async function getHistoryRoutinesReportsByStudentAction( {
 	const session = await getAuthenticatedSession();
 
 	if (!session) {
-		throw new Error( "Debes iniciar sesion para ver tu historial de rutinas." );
+		throw new Error( "Debes iniciar sesión para ver tu historial de rutinas." );
 	}
 
 	if (session.role !== "STUDENT") {
@@ -28,6 +28,6 @@ export async function getHistoryRoutinesReportsByStudentAction( {
 
 	return getHistoryRoutinesReportsByStudentBase( {
 		studentId: activeStudentId,
-		studentNotFoundMessage: "No se encontro un historial activo para el estudiante autenticado.",
+		studentNotFoundMessage: "No se encontró un historial activo para el estudiante autenticado.",
 	} );
 }

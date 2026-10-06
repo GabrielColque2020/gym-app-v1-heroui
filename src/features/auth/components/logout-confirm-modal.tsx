@@ -64,14 +64,14 @@ export function LogoutConfirmModal( {
 					{ ( { close } ) => (
 						<>
 							<Modal.Header>
-								<Modal.Heading>Cerrar sesion</Modal.Heading>
+								<Modal.Heading>Cerrar sesión</Modal.Heading>
 							</Modal.Header>
 							<Modal.Body className={ "space-y-4" }>
 								<div className={ "flex items-start gap-3 rounded-xl border border-warning/20 bg-warning/10 p-4 text-warning-foreground" }>
 									<AlertTriangle className={ "mt-0.5 size-5 shrink-0 text-warning" }/>
 									<div className={ "space-y-1" }>
 										<Typography className={ "text-sm font-medium" } type={ "body-sm" }>
-											Estas por cerrar sesion.
+											Estas por cerrar sesión.
 										</Typography>
 										<Typography className={ "text-sm text-muted" } type={ "body-sm" }>
 											Los datos no guardados podrian perderse. Antes de continuar, verifica que no
@@ -103,7 +103,7 @@ export function LogoutConfirmModal( {
 									{ ( { isPending } ) => (
 										<>
 											{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <LogOut className={ "size-4" }/> }
-											{ isPending ? "Cerrando sesion..." : "Cerrar sesion" }
+											{ isPending ? "Cerrando sesión..." : "Cerrar sesión" }
 										</>
 									) }
 								</Button>

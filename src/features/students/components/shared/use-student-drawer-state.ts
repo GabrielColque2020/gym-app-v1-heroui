@@ -100,7 +100,7 @@ export function useStudentDrawerState( props: StudentFormDrawerProps ) {
 				await createStudent.mutateAsync( values );
 				setValues( getDefaultStudentFormValues() );
 				toast.success( "Estudiante creado", {
-					description: "Se agrego al listado.",
+					description: "Se agregó al listado.",
 				} );
 			}
 

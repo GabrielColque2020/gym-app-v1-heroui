@@ -1,14 +1,14 @@
-import { Button } from "@heroui/react";
+import { Button, Chip } from "@heroui/react";
 
 import { AsyncMedia } from "@/components/common";
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
-import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+import type { RoutineCatalogExercise } from "@/features/routine/hooks/use-routine-day-exercise-catalog";
 
 type SearchAndCreateExerciseDrawerItemProps = {
-	exercise: ExerciseListItem;
+	exercise: RoutineCatalogExercise;
 	alreadyAdded: boolean;
 	isSelected: boolean;
-	onAddExerciseAction: ( exercise: ExerciseListItem ) => void;
+	onAddExerciseAction: ( exercise: RoutineCatalogExercise ) => void;
 	onRegisterAddButtonRef: ( exerciseId: string, element: HTMLButtonElement | null ) => void;
 };
 
@@ -19,6 +19,9 @@ export function SearchAndCreateExerciseDrawerItem( {
 	onAddExerciseAction,
 	onRegisterAddButtonRef,
 }: SearchAndCreateExerciseDrawerItemProps ) {
+	// El equipo ayuda a distinguir ejercicios de nombre parecido.
+	const details = [ formatBodyPart( exercise.bodyPart ), exercise.equipment ].filter( Boolean ).join( " · " );
+
 	return (
 		<div
 			className={
@@ -36,8 +39,15 @@ export function SearchAndCreateExerciseDrawerItem( {
 					src={ exercise.imageUrl }
 				/>
 				<div className={ "min-w-0" }>
-					<p className={ "truncate text-sm font-medium text-foreground" }>{ exercise.name }</p>
-					<p className={ "truncate text-xs text-muted" }>{ formatBodyPart( exercise.bodyPart ) }</p>
+					<p className={ "line-clamp-2 text-sm font-medium text-foreground" }>{ exercise.name }</p>
+					<div className={ "mt-0.5 flex min-w-0 items-center gap-2" }>
+						<p className={ "truncate text-xs text-muted" }>{ details }</p>
+						{ exercise.recentRank !== null ? (
+							<Chip className={ "shrink-0" } color={ "accent" } size={ "sm" } variant={ "soft" }>
+								Reciente
+							</Chip>
+						) : null }
+					</div>
 				</div>
 			</div>
 			<Button

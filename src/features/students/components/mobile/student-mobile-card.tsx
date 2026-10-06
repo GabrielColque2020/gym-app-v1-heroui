@@ -5,6 +5,7 @@ import { Card, Chip } from "@heroui/react";
 import { UserRound } from "lucide-react";
 
 import { StudentActionMenu } from "@/features/students/components/shared/student-action-menu";
+import { StudentOpenButton } from "@/features/students/components/shared/student-open-button";
 
 type StudentMobileCardProps = {
 	student: StudentListItem;
@@ -35,6 +36,7 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 
 					<StudentActionMenu student={ student }/>
 				</div>
+				<StudentOpenButton className={ "mt-3 w-full" } student={ student }/>
 			</Card.Content>
 		</Card>
 	);

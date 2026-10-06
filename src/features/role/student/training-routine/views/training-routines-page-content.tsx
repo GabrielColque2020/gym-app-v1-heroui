@@ -126,7 +126,7 @@ export default function TrainingRoutinesPageContent( {
 
 				{ isError ? (
 					<TrainingRoutinesErrorState
-						errorMessage={ error instanceof Error ? error.message : "Ocurrio un error inesperado." }
+						errorMessage={ error instanceof Error ? error.message : "Ocurrió un error inesperado." }
 						onRetry={ () => {
 							void refetch();
 						} }

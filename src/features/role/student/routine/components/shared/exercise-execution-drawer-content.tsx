@@ -32,7 +32,7 @@ export function ExerciseExecutionDrawerContent( {
 					<div className={ "min-w-0" }>
 						<Drawer.Heading>{ name }</Drawer.Heading>
 						<Description className={ "mt-1 text-sm" }>
-							Ejecucion del ejercicio
+							Ejecución del ejercicio
 						</Description>
 					</div>
 				</div>
@@ -41,7 +41,7 @@ export function ExerciseExecutionDrawerContent( {
 			<Drawer.Body className={ "min-h-0 flex flex-1 flex-col gap-5 overflow-y-auto py-3" }>
 				{ hasMedia ? (
 					<AsyncMedia
-						alt={ `Ejecucion de ${ name }` }
+						alt={ `Ejecución de ${ name }` }
 						className={ "h-48 shrink-0 rounded-xl border border-border bg-content2 sm:h-56" }
 						spinnerLabel={ `Cargando media de ${ name }` }
 						src={ mediaUrl }

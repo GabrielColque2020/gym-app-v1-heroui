@@ -74,7 +74,7 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 						</div>
 
 						<div className={ "space-y-2" }>
-							<p className={ "text-xs font-semibold tracking-wide text-foreground" }>Ultima sesion</p>
+							<p className={ "text-xs font-semibold tracking-wide text-foreground" }>Última sesión</p>
 							<ExerciseCardSessionHistory
 								history={ hasSessionHistory ? displayedSessionHistory : null }
 								isCompact

@@ -120,7 +120,7 @@ export function AdminCoachDrawer( {
 		try {
 			await mutation.mutateAsync( values );
 			toast.success( "Coach creado", {
-				description: "La cuenta quedo disponible en el listado de usuarios.",
+				description: "La cuenta quedó disponible en el listado de usuarios.",
 			} );
 			handleOpenChange( false );
 		} catch {
@@ -153,7 +153,7 @@ export function AdminCoachDrawer( {
 						<div>
 							<Drawer.Heading>Crear coach</Drawer.Heading>
 							<Description className={ "mt-1 text-sm" }>
-								Alta de cuentas para entrenamiento y gestion operativa.
+								Alta de cuentas para entrenamiento y gestión operativa.
 							</Description>
 						</div>
 					</div>
@@ -170,7 +170,7 @@ export function AdminCoachDrawer( {
 						<section className={ "space-y-4" }>
 							<div>
 								<h3 className={ "text-sm font-semibold text-foreground" }>Perfil del coach</h3>
-								<p className={ "text-sm text-muted" }>Datos de acceso e identificacion.</p>
+								<p className={ "text-sm text-muted" }>Datos de acceso e identificación.</p>
 							</div>
 
 							<TextField
@@ -197,7 +197,7 @@ export function AdminCoachDrawer( {
 								>
 									<Label>Email</Label>
 									<Input autoComplete={ "off" } className={ "border border-border" } placeholder={ "coach@mail.com" } type={ "email" }/>
-									{ isEmailInvalid ? <FieldError>Ingresa un email valido.</FieldError> : null }
+									{ isEmailInvalid ? <FieldError>Ingresa un email válido.</FieldError> : null }
 								</TextField>
 
 								<TextField
@@ -210,7 +210,7 @@ export function AdminCoachDrawer( {
 								>
 									<Label>DNI</Label>
 									<Input autoComplete={ "off" } className={ "border border-border" } inputMode={ "numeric" } placeholder={ "12345678" }/>
-									{ isDniInvalid ? <FieldError>El DNI debe ser numerico.</FieldError> : null }
+									{ isDniInvalid ? <FieldError>El DNI debe ser numérico.</FieldError> : null }
 								</TextField>
 							</div>
 
@@ -251,11 +251,11 @@ export function AdminCoachDrawer( {
 									className={ "w-full" }
 									fullWidth
 									name={ "gender" }
-									placeholder={ "Seleccione genero" }
+									placeholder={ "Seleccione género" }
 									value={ values.gender }
 									onChange={ ( value ) => updateValue( "gender", ( value ?? NO_GENDER ) as GenderFormValue ) }
 								>
-									<Label>Genero</Label>
+									<Label>Género</Label>
 									<Select.Trigger className={ "border border-border" }>
 										<Select.Value/>
 										<Select.Indicator/>

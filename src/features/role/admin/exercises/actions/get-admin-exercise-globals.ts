@@ -20,6 +20,6 @@ export async function getAdminExerciseGlobalsAction(): Promise<AdminExerciseGlob
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
 
-		throw new Error( `No se pudo obtener el catalogo global de ejercicios. ${ message }` );
+		throw new Error( `No se pudo obtener el catálogo global de ejercicios. ${ message }` );
 	}
 }

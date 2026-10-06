@@ -84,7 +84,7 @@ export default function AdminUsersPageContent() {
 				<div className={ "flex min-w-0 flex-col" }>
 					<span className={ "text-sm text-foreground" }>{ getCoachLabel( user ) }</span>
 					{ user.role === "STUDENT" ?
-						<span className={ "text-xs text-muted" }>{ user.coach?.active ? "Coach activo" : user.coach ? "Coach inactivo" : "Sin asignacion" }</span> : null }
+						<span className={ "text-xs text-muted" }>{ user.coach?.active ? "Coach activo" : user.coach ? "Coach inactivo" : "Sin asignación" }</span> : null }
 				</div>
 			),
 		},

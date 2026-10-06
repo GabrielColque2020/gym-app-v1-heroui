@@ -111,7 +111,7 @@ export default function CoachStudentsPageContent() {
 				</Card.Content>
 				<Card.Footer className={ "border-t border-border px-3 py-2" }>
 					<div className={ "text-sm text-muted" }>
-						Desactivar conserva al estudiante y su informacion historica.
+						Desactivar conserva al estudiante y su información historica.
 					</div>
 				</Card.Footer>
 			</Card>

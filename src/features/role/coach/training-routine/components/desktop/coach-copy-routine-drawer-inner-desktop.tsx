@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { MONTH_OPTIONS_PADDED as MONTH_OPTIONS } from "@/constants/months";
 import { CheckboxButtonGroup } from "@heroui-pro/react";
@@ -25,6 +25,7 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 		destinationAffectedLabel,
 		handleCopy,
 		handleSourceMonthChange,
+		handleSourceStudentChange,
 		handleSourceYearChange,
 		isSingleWeek,
 		mode,
@@ -46,7 +47,9 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 		sourceLabel,
 		sourceMonth,
 		sourceQuery,
+		sourceStudentId,
 		sourceWeeks,
+		studentOptions,
 		sourceYear,
 		yearOptions,
 	} = useCoachCopyRoutineDrawerState( {
@@ -79,6 +82,9 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 			<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 				<CoachCopyRoutineDrawerSourceControls
 					handleSourceMonthChangeAction={ handleSourceMonthChange }
+					handleSourceStudentChangeAction={ handleSourceStudentChange }
+					sourceStudentId={ sourceStudentId }
+					studentOptions={ studentOptions }
 					handleSourceYearChangeAction={ handleSourceYearChange }
 					mode={ mode }
 					onModeChangeAction={ setMode }
@@ -90,7 +96,7 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 				/>
 
 				{ mode === "month" && sameMonth ? (
-					<CoachCopyRoutineNotice tone={ "warning" }>No podes copiar desde el mismo mes destino.</CoachCopyRoutineNotice>
+					<CoachCopyRoutineNotice tone={ "warning" }>No podés copiar desde el mismo mes destino.</CoachCopyRoutineNotice>
 				) : null }
 
 				{ hasActiveRoutine ? (
@@ -115,7 +121,7 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 				) : source && !source.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<EmptyState className={ "flex min-h-48 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-default-hover px-4 text-center" }>
 						<Typography className={ "text-sm font-medium" }>No hay rutina en este origen.</Typography>
-						<Description className={ "text-sm" }>Proba con otro mes para continuar.</Description>
+						<Description className={ "text-sm" }>Probá con otro mes u otro estudiante.</Description>
 					</EmptyState>
 				) : source?.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<div className={ "grid min-h-0 gap-3 md:flex-1 md:grid-cols-[1fr_260px] md:gap-4" }>
@@ -127,10 +133,10 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 											<div className={ "min-w-0" }>
 												<Typography className={ "text-sm font-semibold" }>Rutina completa</Typography>
 												<Description className={ "mt-1 line-clamp-1 text-xs sm:text-sm" }>
-													Se copiara la rutina completa de { sourceLabel }.
+													Se copiará la rutina completa de { sourceLabel }.
 												</Description>
 												<Description className={ "mt-1 text-xs sm:text-sm" }>
-													{ source.weekCount } semanas · { source.dayCount } dias · { source.exerciseCount } ejercicios
+													{ source.weekCount } semanas · { source.dayCount } días · { source.exerciseCount } ejercicios
 												</Description>
 											</div>
 											<Chip color={ "success" } size={ "sm" } variant={ "soft" }>
@@ -166,7 +172,7 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 														<CheckboxButtonGroup.ItemContent>
 															<Label className={ "text-sm" }>Semana { routineWeek.week }</Label>
 															<Description className={ "line-clamp-1 text-xs" }>
-																{ routineWeek.dayCount } dias / { routineWeek.exerciseCount } ejercicios
+																{ routineWeek.dayCount } días / { routineWeek.exerciseCount } ejercicios
 															</Description>
 														</CheckboxButtonGroup.ItemContent>
 													</CheckboxButtonGroup.Item>
@@ -247,7 +253,7 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 													) ) }
 												</div>
 												<CoachCopyRoutineNotice tone={ "warning" }>
-													Las semanas destino seran reemplazadas con el contenido seleccionado.
+													Las semanas destino serán reemplazadas con el contenido seleccionado.
 												</CoachCopyRoutineNotice>
 											</div>
 										) }

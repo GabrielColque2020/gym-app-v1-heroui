@@ -1,7 +1,7 @@
 import { formatBodyPart } from "@/features/exercises/services/exercise-formatters";
 
 export function getTrainingRoutineDayTitle( dayNumber: number ) {
-	return `Dia ${ dayNumber }`;
+	return `Día ${ dayNumber }`;
 }
 
 export function getTrainingRoutineDayDescription( day: {

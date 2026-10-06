@@ -14,7 +14,7 @@ export async function getRoutineDayAction( { coachId, routineDayId, studentId }:
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
 
-		throw new Error( `No se pudo obtener el dia de rutina. ${ message }` );
+		throw new Error( `No se pudo obtener el día de rutina. ${ message }` );
 	}
 }
 

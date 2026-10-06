@@ -58,17 +58,17 @@ export function validateRoutineDayDraft( routines: DraftRoutineDayExercise[] ) {
 		const normalizedExerciseId = routine.exerciseId.trim();
 
 		if (!normalizedExerciseId) {
-			return "Todos los ejercicios deben tener un identificador valido.";
+			return "Todos los ejercicios deben tener un identificador válido.";
 		}
 
 		if (exerciseIds.has( normalizedExerciseId )) {
-			return "No puede agregar el mismo ejercicio mas de una vez en el mismo dia.";
+			return "No puede agregar el mismo ejercicio más de una vez en el mismo día.";
 		}
 
 		exerciseIds.add( normalizedExerciseId );
 
 		if (!Number.isInteger( routine.order ) || routine.order < 1) {
-			return "El orden debe ser un numero entero mayor o igual a 1.";
+			return "El orden debe ser un número entero mayor o igual a 1.";
 		}
 
 		if (orders.has( routine.order )) {
@@ -91,6 +91,37 @@ export function serializeRoutineDayDraft( routines: DraftRoutineDayExercise[] ) 
 			sets: routine.sets.trim(),
 		} ) ),
 	);
+}
+
+type SavedRoutineLike = {
+	exerciseId: string | null;
+	observation: string | null;
+	order: number;
+	reps: string;
+	sets: string;
+};
+
+// Si un borrador difiere de lo guardado para ese dia. Compara con la misma firma
+// que `serializeRoutineDayDraft`, armada desde las filas guardadas.
+export function isRoutineDayDraftDirty(
+	draft: DraftRoutineDayExercise[] | undefined,
+	savedRoutines: SavedRoutineLike[],
+) {
+	if (!draft) return false;
+
+	const savedSignature = JSON.stringify(
+		[ ...savedRoutines ]
+			.sort( ( a, b ) => a.order - b.order )
+			.map( ( routine ) => ( {
+				exerciseId: routine.exerciseId ?? "",
+				observation: ( routine.observation ?? "" ).trim(),
+				order: routine.order,
+				reps: routine.reps.trim(),
+				sets: routine.sets.trim(),
+			} ) ),
+	);
+
+	return serializeRoutineDayDraft( draft ) !== savedSignature;
 }
 
 export function mapDraftToSaveInput( routines: DraftRoutineDayExercise[] ): SaveRoutineDayExerciseInput[] {

@@ -5,6 +5,8 @@ import prisma from "@/lib/prisma";
 import {
 	type CopyTrainingRoutineMonthInput,
 	type CopyTrainingRoutineWeeksInput,
+	getCopySourceStudentId,
+	type LatestTrainingRoutineMonthInput,
 	type TrainingRoutineCopySourceInput,
 	validateCopyMonthInput,
 	validateCopySourceInput,
@@ -29,7 +31,7 @@ async function assertStudentExists( studentId: string, coachId: string ) {
 	} );
 
 	if (!student) {
-		throw new Error( "No se encontro un estudiante activo para copiar rutinas." );
+		throw new Error( "No se encontró un estudiante activo para copiar rutinas." );
 	}
 }
 
@@ -41,6 +43,13 @@ async function getSourceRoutineMonth( studentId: string, month: number, year: nu
 					routineDays: {
 						include: {
 							routines: {
+								include: {
+									variants: {
+										select: {
+											variantExerciseId: true,
+										},
+									},
+								},
 								orderBy: {
 									order: "asc",
 								},
@@ -62,6 +71,36 @@ async function getSourceRoutineMonth( studentId: string, month: number, year: nu
 			year,
 		},
 	} ) as unknown as TrainingRoutineMonth | null;
+}
+
+type CopySourceRoutine = TrainingRoutineWeek[ "routineDays" ][ number ][ "routines" ][ number ] & {
+	variants?: Array<{ variantExerciseId: string }>;
+};
+
+// Los ejercicios sin variantes van juntos en un `createMany`. Los que tienen
+// variantes se crean de a uno, porque `createMany` no admite relaciones anidadas.
+function splitRoutinesForCopy( routines: CopySourceRoutine[], routineDayId: string ) {
+	const copies = routines.map( ( routine ) => ( {
+		data: {
+			exerciseId: routine.exerciseId,
+			observation: routine.observation,
+			order: routine.order,
+			reps: routine.reps,
+			routineDayId,
+			sets: routine.sets,
+		},
+		variants: routine.variants ?? [],
+	} ) );
+
+	return {
+		plainRoutines: copies.filter( ( copy ) => copy.variants.length === 0 ).map( ( copy ) => copy.data ),
+		routinesWithVariants: copies.filter( ( copy ) => copy.variants.length > 0 ).map( ( copy ) => ( {
+			...copy.data,
+			variants: {
+				create: copy.variants.map( ( variant ) => ( { variantExerciseId: variant.variantExerciseId } ) ),
+			},
+		} ) ),
+	};
 }
 
 function getSourceRoutineWeeks( routineMonth: TrainingRoutineMonth | null, weeks?: number[] ): TrainingRoutineWeek[] {
@@ -108,13 +147,46 @@ export async function getTrainingRoutineCopySourceAction( input: TrainingRoutine
 	}
 }
 
+// El ultimo mes con rutina anterior al indicado. Es el origen que casi siempre
+// se quiere copiar, y no siempre es el mes calendario anterior.
+export async function getLatestTrainingRoutineMonthAction( input: LatestTrainingRoutineMonthInput ) {
+	try {
+		validateCopySourceInput( input );
+		const session = await requireCoachSession( "consultar la última rutina" );
+		await assertStudentExists( input.studentId, session.sub );
+
+		return await prisma.trainingRoutineMonth.findFirst( {
+			orderBy: [ { year: "desc" }, { month: "desc" } ],
+			select: {
+				month: true,
+				year: true,
+			},
+			where: {
+				OR: [
+					{ year: { lt: input.year } },
+					{ month: input.inclusive ? { lte: input.month } : { lt: input.month }, year: input.year },
+				],
+				studentId: input.studentId,
+				weeks: { some: {} },
+			},
+		} );
+	} catch (error) {
+		const message = error instanceof Error ? error.message : "Error desconocido al consultar la última rutina.";
+
+		throw new Error( `No se pudo consultar la última rutina. ${ message }` );
+	}
+}
+
 export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutineMonthInput ) {
 	try {
 		validateCopyMonthInput( input );
 		const session = await requireCoachSession( "copiar la rutina" );
+		const sourceStudentId = getCopySourceStudentId( input );
 		await assertStudentExists( input.studentId, session.sub );
+		// El origen tambien tiene que ser un estudiante de este coach.
+		if (sourceStudentId !== input.studentId) await assertStudentExists( sourceStudentId, session.sub );
 
-		const sourceRoutineMonth = await getSourceRoutineMonth( input.studentId, input.sourceMonth, input.sourceYear );
+		const sourceRoutineMonth = await getSourceRoutineMonth( sourceStudentId, input.sourceMonth, input.sourceYear );
 		const sourceRoutines = getSourceRoutineWeeks( sourceRoutineMonth );
 
 		if (sourceRoutines.length === 0) {
@@ -166,17 +238,14 @@ export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutine
 						},
 					} );
 
-					if (sourceDay.routines.length > 0) {
-						await tx.routine.createMany( {
-							data: sourceDay.routines.map( ( routine ) => ( {
-								exerciseId: routine.exerciseId,
-								observation: routine.observation,
-								order: routine.order,
-								reps: routine.reps,
-								routineDayId: destinationDay.id,
-								sets: routine.sets,
-							} ) ),
-						} );
+					const { plainRoutines, routinesWithVariants } = splitRoutinesForCopy( sourceDay.routines, destinationDay.id );
+
+					if (plainRoutines.length > 0) {
+						await tx.routine.createMany( { data: plainRoutines } );
+					}
+
+					for (const routine of routinesWithVariants) {
+						await tx.routine.create( { data: routine } );
 					}
 				}
 			}
@@ -196,10 +265,12 @@ export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutine
 	try {
 		validateCopyWeeksInput( input );
 		const session = await requireCoachSession( "copiar semanas" );
+		const sourceStudentId = getCopySourceStudentId( input );
 		await assertStudentExists( input.studentId, session.sub );
+		if (sourceStudentId !== input.studentId) await assertStudentExists( sourceStudentId, session.sub );
 
 		const sourceWeeks = input.weekMappings.map( ( mapping ) => mapping.sourceWeek );
-		const sourceRoutineMonth = await getSourceRoutineMonth( input.studentId, input.sourceMonth, input.sourceYear );
+		const sourceRoutineMonth = await getSourceRoutineMonth( sourceStudentId, input.sourceMonth, input.sourceYear );
 		const sourceRoutines = getSourceRoutineWeeks( sourceRoutineMonth, sourceWeeks );
 		const sourceRoutineByWeek = new Map( sourceRoutines.map( ( routine ) => [ routine.week, routine ] ) );
 
@@ -266,17 +337,14 @@ export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutine
 						},
 					} );
 
-					if (sourceDay.routines.length > 0) {
-						await tx.routine.createMany( {
-							data: sourceDay.routines.map( ( routine ) => ( {
-								exerciseId: routine.exerciseId,
-								observation: routine.observation,
-								order: routine.order,
-								reps: routine.reps,
-								routineDayId: destinationDay.id,
-								sets: routine.sets,
-							} ) ),
-						} );
+					const { plainRoutines, routinesWithVariants } = splitRoutinesForCopy( sourceDay.routines, destinationDay.id );
+
+					if (plainRoutines.length > 0) {
+						await tx.routine.createMany( { data: plainRoutines } );
+					}
+
+					for (const routine of routinesWithVariants) {
+						await tx.routine.create( { data: routine } );
 					}
 				}
 			}

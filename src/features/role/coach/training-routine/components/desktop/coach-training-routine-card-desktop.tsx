@@ -6,6 +6,9 @@ import type {
 import { Card, Chip, Description, Label, ScrollShadow } from "@heroui/react";
 import { RadioButtonGroup } from "@heroui-pro/react";
 
+import {
+    CoachRepeatWeekAction
+} from "@/features/role/coach/training-routine/components/shared/coach-repeat-week-action";
 import { useTrainingRoutineSelection } from "@/features/training-routine/hooks/use-training-routine-selection";
 import {
     CoachTrainingRoutineDaysAccordion
@@ -36,7 +39,7 @@ export function CoachTrainingRoutineCardDesktop({
                             Rutina del mes
                         </Card.Title>
                         <Card.Description className={ "text-sm" }>
-                            Gestiona semanas y dias
+                            Gestiona semanas y días
                         </Card.Description>
                         <Chip
                             className={ "w-fit shrink-0 px-2" }
@@ -74,7 +77,7 @@ export function CoachTrainingRoutineCardDesktop({
                                             Semana { routineWeek.week }
                                         </Label>
                                         <Description className={ "text-xs" }>
-                                            { routineWeek.routineDays.length } dias
+                                            { routineWeek.routineDays.length } días
                                         </Description>
                                     </RadioButtonGroup.ItemContent>
                                 </RadioButtonGroup.Item>
@@ -85,17 +88,24 @@ export function CoachTrainingRoutineCardDesktop({
             </Card>
             <Card className={ "col-span-8 w-full overflow-hidden" }>
                 <Card.Header className={ "gap-3 pt-3 px-3" }>
-                    <div className={ "flex w-full items-center justify-between gap-3" }>
-                        <div className={ "flex min-w-0 flex-col gap-1" }>
+                    <div className={ "flex w-full flex-wrap items-center justify-between gap-3" }>
+                        <div className={ "flex min-w-32 flex-1 flex-col gap-1" }>
                             <Card.Title className={ "truncate text-base font-semibold" }>
                                 { selectedRoutine
                                     ? `Semana ${selectedRoutine.week}`
                                     : "Sin semana seleccionada" }
                             </Card.Title>
                             <Card.Description className={ "whitespace-normal wrap-break-word text-sm" }>
-                                { selectedRoutine?.name || "Dias de entrenamiento" }
+                                { selectedRoutine?.name || "Días de entrenamiento" }
                             </Card.Description>
                         </div>
+                        <CoachRepeatWeekAction
+                            month={ month }
+                            routineWeeks={ routineWeeks }
+                            selectedRoutine={ selectedRoutine }
+                            studentId={ studentId }
+                            year={ year }
+                        />
                     </div>
                 </Card.Header>
                 <Card.Content className={ "px-3 pb-3" }>

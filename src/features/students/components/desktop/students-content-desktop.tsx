@@ -5,6 +5,9 @@ import { DataGrid } from "@heroui-pro/react";
 import type { StudentListItem } from "@/features/students/actions/get-students";
 import { Chip } from "@heroui/react";
 import { useMemo } from "react";
+import Link from "next/link";
+
+import { buildStudentTrainingRoutineHref } from "@/features/role/coach/dashboard/services/coach-dashboard-links";
 
 import { ListPagination } from "@/components/common";
 import { StudentFilters } from "@/features/students/components/shared/student-filters";
@@ -31,7 +34,17 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 			allowsSorting: true,
 			cell: ( student ) => (
 				<div className={ "flex min-w-0 flex-col" }>
-					<span className={ "truncate font-medium text-foreground" }>{ student.name }</span>
+					{ /* El nombre abre la ficha: la columna de acciones puede quedar fuera de vista. */ }
+					{ student.active ? (
+						<Link
+							className={ "truncate font-medium text-foreground underline-offset-2 hover:text-accent hover:underline" }
+							href={ buildStudentTrainingRoutineHref( student.id ) }
+						>
+							{ student.name }
+						</Link>
+					) : (
+						<span className={ "truncate font-medium text-foreground" }>{ student.name }</span>
+					) }
 					<span className={ "truncate text-xs text-muted" }>
 						{ student.DescriptionStudent?.objective?.trim() || "Sin objetivo cargado" }
 					</span>
@@ -66,7 +79,7 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 			cell: ( student ) => <StudentRowActions student={ student }/>,
 			header: "Acciones",
 			id: "actions",
-			minWidth: 120,
+			minWidth: 170,
 		},
 	], [] );
 	const {

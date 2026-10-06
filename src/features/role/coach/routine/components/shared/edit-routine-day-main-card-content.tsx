@@ -7,6 +7,7 @@ import type { DraftRoutineDayExercise } from "@/features/routine/services/routin
 
 type EditRoutineDayMainCardContentProps = {
 	draftRoutines: DraftRoutineDayExercise[];
+	isDirty: boolean;
 	requiredFieldsMessage: string | null;
 	validationError: string | null;
 	onDeleteExercise: ( clientId: string ) => void;
@@ -15,6 +16,7 @@ type EditRoutineDayMainCardContentProps = {
 
 export function EditRoutineDayMainCardContent( {
 												   draftRoutines,
+												   isDirty,
 												   requiredFieldsMessage,
 												   validationError,
 												   onDeleteExercise,
@@ -31,7 +33,7 @@ export function EditRoutineDayMainCardContent( {
 				</Alert>
 			) : null }
 
-			{ !validationError && draftRoutines.length > 0 ? (
+			{ !validationError && draftRoutines.length > 0 && ( isDirty || requiredFieldsMessage ) ? (
 				<Alert
 					className={ `mb-3 border border-border ${ requiredFieldsMessage ? "bg-warning/10" : "bg-success/10" } ` }
 					status={ requiredFieldsMessage ? "warning" : "success" }

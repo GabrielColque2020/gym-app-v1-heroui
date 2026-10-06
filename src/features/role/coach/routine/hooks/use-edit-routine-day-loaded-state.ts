@@ -43,6 +43,8 @@ export function useEditRoutineDayLoadedState( {
 		getSuggestedOrder,
 		hasHydrated,
 		isDirty,
+		moveExercise,
+		replaceWithCopies,
 		resetDraft,
 		updateExerciseField,
 		validationError,
@@ -59,12 +61,16 @@ export function useEditRoutineDayLoadedState( {
 	const requiredFieldsMessage = incompleteRequiredFieldsCount > 0
 		? `Completa series y repeticiones en ${ incompleteRequiredFieldsCount } ${ incompleteRequiredFieldsCount === 1 ? "ejercicio" : "ejercicios" } para habilitar Guardar cambios.`
 		: null;
-	const isSaveDisabled = !draftRoutines.length || Boolean( validationError ) || Boolean( requiredFieldsMessage ) || saveRoutineDay.isPending;
+	const isSaveDisabled = !isDirty || !draftRoutines.length || Boolean( validationError ) || Boolean( requiredFieldsMessage ) || saveRoutineDay.isPending;
 
-	function handleAddExercise( exercise: ExerciseListItem, order: number ) {
+	function handleAddExercise(
+		exercise: ExerciseListItem,
+		order: number,
+		prescription?: { reps: string; sets: string },
+	) {
 		const result = addExercise( exercise, order );
 
-		if ("error" in result) {
+		if (result.error !== undefined) {
 			toast.danger( "No se pudo agregar el ejercicio", {
 				description: result.error,
 			} );
@@ -72,9 +78,9 @@ export function useEditRoutineDayLoadedState( {
 			return;
 		}
 
-		toast.success( "Ejercicio agregado al borrador", {
-			description: `${ exercise.name } quedo pendiente hasta guardar cambios.`,
-		} );
+		// Las series y repeticiones elegidas en el drawer ya quedan cargadas.
+		if (prescription?.sets) updateExerciseField( result.routine.clientId, "sets", prescription.sets );
+		if (prescription?.reps) updateExerciseField( result.routine.clientId, "reps", prescription.reps );
 	}
 
 	const handleConfirmRefresh = useCallback( async () => {
@@ -88,7 +94,7 @@ export function useEditRoutineDayLoadedState( {
 			}
 
 			toast.success( "Rutina actualizada", {
-				description: "Se recargaron los ejercicios del dia seleccionado.",
+				description: "Se recargaron los ejercicios del día seleccionado.",
 			} );
 		} catch (refreshError) {
 			toast.danger( "Error al actualizar", {
@@ -114,7 +120,7 @@ export function useEditRoutineDayLoadedState( {
 				description: requiredFieldsMessage,
 			} );
 
-			return;
+			return false;
 		}
 
 		if (validationError) {
@@ -122,7 +128,7 @@ export function useEditRoutineDayLoadedState( {
 				description: validationError,
 			} );
 
-			return;
+			return false;
 		}
 
 		try {
@@ -133,12 +139,16 @@ export function useEditRoutineDayLoadedState( {
 			} );
 
 			toast.success( "Rutina actualizada", {
-				description: "Los ejercicios del dia se guardaron correctamente.",
+				description: "Los ejercicios del día se guardaron correctamente.",
 			} );
+
+			return true;
 		} catch {
 			toast.danger( "Error al guardar", {
-				description: "No se pudieron guardar los cambios del dia.",
+				description: "No se pudieron guardar los cambios del día.",
 			} );
+
+			return false;
 		}
 	}, [ draftRoutines, requiredFieldsMessage, routineDayId, saveRoutineDay, studentId, validationError ] );
 
@@ -151,9 +161,12 @@ export function useEditRoutineDayLoadedState( {
 		handleRefresh,
 		handleSave,
 		hasHydrated,
+		isDirty,
 		isRefreshConfirmOpen,
 		isSaveDisabled,
 		isSaving: saveRoutineDay.isPending,
+		moveExercise,
+		replaceWithCopies,
 		resetRefreshConfirmOpen: () => setIsRefreshConfirmOpen( false ),
 		requiredFieldsMessage,
 		routineName: routine.name || `Semana ${ routine.week }`,

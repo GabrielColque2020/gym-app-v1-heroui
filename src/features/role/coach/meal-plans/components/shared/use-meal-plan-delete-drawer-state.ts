@@ -58,7 +58,7 @@ export function useMealPlanDeleteDrawerState( {
 				studentId,
 			} );
 			toast.success( "Plan alimenticio eliminado", {
-				description: "El plan se elimino correctamente.",
+				description: "El plan se eliminó correctamente.",
 			} );
 			setIsOpen( false );
 		} catch {

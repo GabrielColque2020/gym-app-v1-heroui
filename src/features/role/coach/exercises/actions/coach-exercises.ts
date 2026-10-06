@@ -210,7 +210,7 @@ function validateCoachExerciseInput( input: CoachExerciseMutationInput ) {
 	}
 
 	if (category.length < 2) {
-		throw new Error( "La categoria del ejercicio debe tener al menos 2 caracteres." );
+		throw new Error( "La categoría del ejercicio debe tener al menos 2 caracteres." );
 	}
 
 	return {
@@ -251,7 +251,7 @@ async function assertCoachExerciseExists( coachId: string, exerciseId: string ) 
 	} );
 
 	if (!exercise) {
-		throw new Error( "No se encontro el ejercicio solicitado." );
+		throw new Error( "No se encontró el ejercicio solicitado." );
 	}
 
 	return exercise;
@@ -336,7 +336,7 @@ export async function getCoachExercisesAction(): Promise<CoachExerciseListItem[]
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
 
-		throw new Error( `No se pudo obtener el catalogo de ejercicios. ${ message }` );
+		throw new Error( `No se pudo obtener el catálogo de ejercicios. ${ message }` );
 	}
 }
 
@@ -384,7 +384,7 @@ export async function deleteCoachExerciseAction( exerciseId: string ) {
 		const normalizedExerciseId = normalizeId( exerciseId );
 
 		if (!normalizedExerciseId) {
-			throw new Error( "Debes seleccionar un ejercicio valido antes de eliminar." );
+			throw new Error( "Debes seleccionar un ejercicio válido antes de eliminar." );
 		}
 
 		const exercise = await prisma.exerciseCoach.findFirst( {
@@ -400,7 +400,7 @@ export async function deleteCoachExerciseAction( exerciseId: string ) {
 		} );
 
 		if (!exercise) {
-			throw new Error( "No se encontro el ejercicio del coach solicitado." );
+			throw new Error( "No se encontró el ejercicio del coach solicitado." );
 		}
 
 		await prisma.$transaction( async ( tx ) => {

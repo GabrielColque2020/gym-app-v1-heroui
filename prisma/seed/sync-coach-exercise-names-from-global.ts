@@ -1,7 +1,6 @@
 import "dotenv/config";
 
-import { withAccelerate } from "@prisma/extension-accelerate";
-import { PrismaClient } from "../../src/generated/prisma/client";
+import { createPrismaClient } from "../../src/lib/prisma-client";
 
 type SyncStats = {
 	missingGlobal: number;
@@ -108,7 +107,7 @@ async function main(): Promise<SyncStats> {
 	const args = parseArgs( process.argv.slice( 2 ) );
 	const dryRun = args.get( "dry-run" ) === true;
 	const includeOverrides = args.get( "include-overrides" ) === true;
-	const prisma = new PrismaClient( { accelerateUrl } ).$extends( withAccelerate() );
+	const prisma = createPrismaClient( accelerateUrl );
 
 	try {
 		const skippedOverrides = includeOverrides

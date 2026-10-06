@@ -15,9 +15,11 @@ export function RoutineDayExercisesMobile( {
 										   }: RoutineDayExercisesMobileProps ) {
 	return (
 		<div className={ "grid gap-3 md:hidden" }>
-			{ routines.map( ( routine ) => (
+			{ routines.map( ( routine, index ) => (
 				<RoutineDayExerciseMobileCard
 					key={ routine.clientId }
+					isFirst={ index === 0 }
+					isLast={ index === routines.length - 1 }
 					onDeleteAction={ onDeleteAction }
 					onUpdateField={ onUpdateField }
 					routine={ routine }

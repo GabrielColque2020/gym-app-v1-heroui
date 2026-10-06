@@ -202,10 +202,10 @@ export function TrainingRoutinePdfDocument( {
 		>
 			<Page size={ "A4" } style={ styles.page }>
 				<View style={ styles.header }>
-					<Text style={ styles.title }>Planificacion de rutina</Text>
+					<Text style={ styles.title }>Planificación de rutina</Text>
 					<Text style={ styles.line }>{ `Estudiante: ${ studentName }` }</Text>
 					<Text style={ [ styles.line, styles.muted ] }>{ `Objetivo del mes: ${ objective }` }</Text>
-					<Text style={ [ styles.line, styles.muted ] }>Resumen por dia con semanas, ejercicios, series, repeticiones y observaciones.</Text>
+					<Text style={ [ styles.line, styles.muted ] }>Resumen por día con semanas, ejercicios, series, repeticiones y observaciones.</Text>
 					<View style={ styles.chips }>
 						<Text style={ styles.chip }>{ `Mes ${ month } / ${ year }` }</Text>
 						<Text style={ styles.chip }>{ `${ routineWeeks.length } semanas` }</Text>
@@ -220,7 +220,7 @@ export function TrainingRoutinePdfDocument( {
 							<View style={ styles.dayHeader }>
 								<View style={ styles.dayInfo }>
 									<View>
-										<Text style={ styles.dayTitle }>{ `Dia ${ day.dayNumber }` }</Text>
+										<Text style={ styles.dayTitle }>{ `Día ${ day.dayNumber }` }</Text>
 										<Text style={ styles.daySubtitle }>{ getTrainingRoutineDayTitle( day ) }</Text>
 									</View>
 								</View>
@@ -236,7 +236,7 @@ export function TrainingRoutinePdfDocument( {
 
 							{ rows.length === 0 ? (
 								<View style={ styles.tableRow }>
-									<Text style={ styles.colExercise }>No hay ejercicios cargados para este dia.</Text>
+									<Text style={ styles.colExercise }>No hay ejercicios cargados para este día.</Text>
 								</View>
 							) : (
 								rows.map( ( row, rowIndex ) => (

@@ -130,7 +130,7 @@ export function AdminExerciseGlobalDrawer( {
 			setIsOpen( false );
 		} catch {
 			toast.danger( "Error al actualizar", {
-				description: "No se pudieron guardar los cambios del catalogo global.",
+				description: "No se pudieron guardar los cambios del catálogo global.",
 			} );
 		}
 	}
@@ -160,7 +160,7 @@ export function AdminExerciseGlobalDrawer( {
 						<div>
 							<Drawer.Heading>Editar ejercicio global</Drawer.Heading>
 							<Description className={ "mt-1 text-sm" }>
-								Los cambios impactan a todos los coaches porque este ejercicio pertenece al catalogo global.
+								Los cambios impactan a todos los coaches porque este ejercicio pertenece al catálogo global.
 							</Description>
 						</div>
 					</div>

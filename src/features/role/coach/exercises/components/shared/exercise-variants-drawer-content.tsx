@@ -236,7 +236,7 @@ export function ExerciseVariantsDrawerContent( {
 			} );
 
 			toast.success( "Variantes guardadas", {
-				description: "La lista quedo actualizada.",
+				description: "La lista quedó actualizada.",
 			} );
 			onCloseAction();
 		} catch {
@@ -252,7 +252,7 @@ export function ExerciseVariantsDrawerContent( {
 				{ coachExercisesQuery.isError ? (
 					<Alert className={ "border border-danger/20" } status={ "danger" }>
 						<Alert.Content>
-							<Alert.Title>Error al cargar el catalogo</Alert.Title>
+							<Alert.Title>Error al cargar el catálogo</Alert.Title>
 							<Alert.Description>{ coachExercisesQuery.error.message }</Alert.Description>
 						</Alert.Content>
 					</Alert>
@@ -292,7 +292,7 @@ export function ExerciseVariantsDrawerContent( {
 
 					{ draftVariants.length === 0 ? (
 						<div className={ "rounded-xl border border-dashed border-border bg-surface-secondary px-4 py-6 text-sm text-muted" }>
-							Aun no hay variantes en el borrador.
+							Aún no hay variantes en el borrador.
 						</div>
 					) : (
 						<div className={ "space-y-2" }>

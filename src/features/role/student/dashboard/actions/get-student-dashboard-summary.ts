@@ -78,7 +78,7 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesion para ver tu dashboard." );
+			throw new Error( "Debes iniciar sesión para ver tu dashboard." );
 		}
 
 		if (session.role !== "STUDENT") {
@@ -145,7 +145,7 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 		] );
 
 		if (!student) {
-			throw new Error( "No se encontro un estudiante activo para mostrar el dashboard." );
+			throw new Error( "No se encontró un estudiante activo para mostrar el dashboard." );
 		}
 
 		const currentMonthRoutines = currentMonthRoutineMonth?.weeks ?? [];

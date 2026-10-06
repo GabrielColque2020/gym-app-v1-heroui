@@ -47,7 +47,7 @@ export function ExerciseMobileCard( {
 			await deleteCoachExercise.mutateAsync( exercise.id );
 			setIsDeleteOpen( false );
 			toast.success( "Ejercicio eliminado", {
-				description: "El ejercicio fue borrado permanentemente del catalogo del coach.",
+				description: "El ejercicio fue borrado permanentemente del catálogo del coach.",
 			} );
 		} catch (error) {
 			toast.danger( "Error al eliminar ejercicio", {

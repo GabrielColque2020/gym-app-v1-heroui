@@ -82,13 +82,13 @@ type HistoryRoutineTrainingRoutine = Prisma.TrainingRoutineWeekGetPayload<{
 
 function validateMonth( month: number ) {
 	if (!Number.isInteger( month ) || month < 1 || month > 12) {
-		throw new Error( "El mes seleccionado no es valido." );
+		throw new Error( "El mes seleccionado no es válido." );
 	}
 }
 
 function validateYear( year: number ) {
 	if (!Number.isInteger( year ) || year < 2000 || year > 2100) {
-		throw new Error( "El año seleccionado no es valido." );
+		throw new Error( "El año seleccionado no es válido." );
 	}
 }
 

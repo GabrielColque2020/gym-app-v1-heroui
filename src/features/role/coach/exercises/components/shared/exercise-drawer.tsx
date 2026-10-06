@@ -101,9 +101,9 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 		: "Nuevo ejercicio";
 	const description = isEditMode
 		? currentExercise?.sourceType === "global"
-			? "Se guardara una version privada para tu catalogo sin modificar el ejercicio global."
-			: "Actualiza los datos del ejercicio dentro de tu catalogo propio."
-		: "Carga un ejercicio propio o una version local de un ejercicio global.";
+			? "Se guardara una versión privada para tu catálogo sin modificar el ejercicio global."
+			: "Actualiza los datos del ejercicio dentro de tu catálogo propio."
+		: "Carga un ejercicio propio o una versión local de un ejercicio global.";
 
 	const resetFormState = useCallback( () => {
 		setValues( getInitialValues( currentExercise ?? undefined ) );
@@ -181,8 +181,8 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 
 			toast.success( isEditMode ? "Ejercicio actualizado" : "Ejercicio creado", {
 				description: isEditMode
-					? "Los cambios se guardaron correctamente en tu catalogo."
-					: "Se agrego al catalogo personal.",
+					? "Los cambios se guardaron correctamente en tu catálogo."
+					: "Se agregó al catálogo personal.",
 			} );
 			setIsOpen( false );
 		} catch {

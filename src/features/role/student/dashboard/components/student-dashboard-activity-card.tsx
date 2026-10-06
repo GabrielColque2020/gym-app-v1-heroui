@@ -30,12 +30,12 @@ export function StudentDashboardActivityCard( {
 			<Card.Content className={ "space-y-4 p-3" }>
 				<div className={ "space-y-1" }>
 					<p className={ "text-base font-semibold text-foreground" }>Actividad reciente</p>
-					<p className={ "text-sm text-muted" }>Una referencia rapida de tus ultimos movimientos cargados.</p>
+					<p className={ "text-sm text-muted" }>Una referencia rápida de tus últimos movimientos cargados.</p>
 				</div>
 				<div className={ "grid gap-3" }>
-					<ActivityRow label={ "Ultimo progreso guardado" } value={ formatLastProgressLabel( lastProgressAt ) }/>
-					<ActivityRow label={ "Ultimo mes con historial" } value={ formatLastRecordedMonthLabel( lastRecordedMonthValue ) }/>
-					<ActivityRow label={ "Ultima actualización del plan" } value={ formatDateLabel( lastMealPlanUpdatedAt ) }/>
+					<ActivityRow label={ "Último progreso guardado" } value={ formatLastProgressLabel( lastProgressAt ) }/>
+					<ActivityRow label={ "Último mes con historial" } value={ formatLastRecordedMonthLabel( lastRecordedMonthValue ) }/>
+					<ActivityRow label={ "Última actualización del plan" } value={ formatDateLabel( lastMealPlanUpdatedAt ) }/>
 				</div>
 			</Card.Content>
 		</Card>

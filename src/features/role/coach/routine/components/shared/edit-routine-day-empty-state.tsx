@@ -6,7 +6,7 @@ export function EditRoutineDayEmptyState() {
 			<Alert.Content>
 				<Alert.Title>Seleccioná una rutina</Alert.Title>
 				<Alert.Description>
-					Para editar ejercicios primero tenes que elegir un dia desde la rutina del estudiante.
+					Para editar ejercicios primero tenés que elegir un día desde la rutina del estudiante.
 				</Alert.Description>
 			</Alert.Content>
 		</Alert>

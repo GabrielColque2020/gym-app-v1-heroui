@@ -356,7 +356,7 @@ export function serializeStudentRoutineSession( session: StudentRoutineSession )
 
 export function validateStudentRoutineSession( session: StudentRoutineSession ) {
 	if (!session.id.trim()) {
-		return "Seleccioná un dia valido antes de guardar.";
+		return "Seleccioná un día válido antes de guardar.";
 	}
 
 	if (session.exercises.length === 0) {
@@ -365,20 +365,20 @@ export function validateStudentRoutineSession( session: StudentRoutineSession ) 
 
 	for (const exercise of session.exercises) {
 		if (!exercise.id.trim()) {
-			return "Hay un ejercicio sin identificador valido.";
+			return "Hay un ejercicio sin identificador válido.";
 		}
 
 		for (const set of exercise.sets) {
 			if (!Number.isInteger( set.setNumber ) || set.setNumber < 1) {
-				return "Hay una serie con numero invalido.";
+				return "Hay una serie con número inválido.";
 			}
 
 			if (set.currentWeight !== null && !Number.isFinite( set.currentWeight )) {
-				return "El peso de una serie no es valido.";
+				return "El peso de una serie no es válido.";
 			}
 
 			if (set.currentReps !== null && !Number.isFinite( set.currentReps )) {
-				return "Las repeticiones de una serie no son validas.";
+				return "Las repeticiones de una serie no son válidas.";
 			}
 		}
 	}

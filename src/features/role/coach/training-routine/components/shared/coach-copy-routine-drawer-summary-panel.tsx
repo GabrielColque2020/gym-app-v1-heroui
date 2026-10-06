@@ -35,7 +35,7 @@ export function CoachCopyRoutineDrawerSummaryPanel( {
 				<CoachCopyRoutineSummaryRow label={ "Modo" } value={ mode === "month" ? "Mes completo" : "Semanas" }/>
 				<CoachCopyRoutineSummaryRow label={ "Mes origen" } value={ sourceLabel }/>
 				<CoachCopyRoutineSummaryRow label={ "Semanas origen" } value={ selectedSourceWeeksLabel }/>
-				<CoachCopyRoutineSummaryRow label={ "Dias origen" } value={ selectedSourceRoutineStats.dayCount || "-" }/>
+				<CoachCopyRoutineSummaryRow label={ "Días origen" } value={ selectedSourceRoutineStats.dayCount || "-" }/>
 				<CoachCopyRoutineSummaryRow label={ "Ejercicios" } value={ selectedSourceRoutineStats.exerciseCount || "-" }/>
 				<CoachCopyRoutineSummaryRow label={ "Destinos afectados" } value={ destinationAffectedLabel }/>
 			</div>

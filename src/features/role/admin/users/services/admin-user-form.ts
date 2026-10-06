@@ -58,7 +58,7 @@ export function parsePositiveInteger( value: string, fieldLabel: string ) {
 	const normalizedValue = value.trim();
 
 	if (!/^\d+$/.test( normalizedValue )) {
-		throw new Error( `${ fieldLabel } debe ser numerico.` );
+		throw new Error( `${ fieldLabel } debe ser numérico.` );
 	}
 
 	const parsedValue = Number( normalizedValue );
@@ -105,7 +105,7 @@ export function validateCreateCoachInput( input: CreateCoachInput ) {
 	}
 
 	if (!isValidEmail( email )) {
-		throw new Error( "Ingresa un email valido." );
+		throw new Error( "Ingresa un email válido." );
 	}
 
 	if (password.length < 6) {
@@ -136,7 +136,7 @@ export function validateUpdateAdminUserInput( input: UpdateAdminUserInput ) {
 	}
 
 	if (!isValidEmail( email )) {
-		throw new Error( "Ingresa un email valido." );
+		throw new Error( "Ingresa un email válido." );
 	}
 
 	return {

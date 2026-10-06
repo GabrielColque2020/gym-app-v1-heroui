@@ -1,17 +1,8 @@
 ﻿import { InitialData } from "./seed";
-import { PrismaClient } from "../../src/generated/prisma/client";
-import { withAccelerate } from "@prisma/extension-accelerate";
+import { createPrismaClient } from "../../src/lib/prisma-client";
 import 'dotenv/config'
 
-const accelerateUrl = process.env.DATABASE_URL;
-
-if (!accelerateUrl) {
-	throw new Error( "DATABASE_URL is required to seed the database with Prisma Accelerate." );
-}
-
-const prisma = new PrismaClient( {
-	accelerateUrl,
-} ).$extends( withAccelerate() );
+const prisma = createPrismaClient();
 
 async function deleteAll() {
 	await prisma.mealPlan.deleteMany();

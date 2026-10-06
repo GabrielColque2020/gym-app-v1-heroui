@@ -6,7 +6,7 @@ export async function requireAdminSession( message: string ) {
 	const session = await getAuthenticatedSession();
 
 	if (!session) {
-		throw new Error( `Debes iniciar sesion para ${ message }.` );
+		throw new Error( `Debes iniciar sesión para ${ message }.` );
 	}
 
 	if (session.role !== "ADMIN") {

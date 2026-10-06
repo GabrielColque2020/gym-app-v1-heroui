@@ -4,6 +4,7 @@ import { DataGrid } from "@heroui-pro/react";
 
 import { AsyncMedia } from "@/components/common";
 import { RoutineDayExerciseField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-field";
+import { RoutineDayExerciseMoveButtons } from "@/features/role/coach/routine/components/shared/routine-day-exercise-move-buttons";
 import { RoutineDayExerciseOrderField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-order-field";
 import { RoutineExerciseActions } from "@/features/role/coach/routine/components/shared/routine-exercise-actions";
 import { formatBodyPartValue, getExerciseName } from "@/features/role/coach/routine/components/shared/routine-day-exercise-editor.utils";
@@ -25,11 +26,19 @@ export function RoutineDayExercisesDesktop( {
 			align: "center",
 			allowsSorting: true,
 			cell: ( routine: DraftRoutineDayExercise ) => (
-				<RoutineDayExerciseOrderField onUpdateField={ onUpdateField } routine={ routine }/>
+				<div className={ "flex items-center gap-1" }>
+					<RoutineDayExerciseOrderField onUpdateField={ onUpdateField } routine={ routine }/>
+					<RoutineDayExerciseMoveButtons
+						clientId={ routine.clientId }
+						exerciseName={ getExerciseName( routine ) }
+						isFirst={ routines[ 0 ]?.clientId === routine.clientId }
+						isLast={ routines[ routines.length - 1 ]?.clientId === routine.clientId }
+					/>
+				</div>
 			),
 			header: "Orden",
 			id: "order",
-			minWidth: 110,
+			minWidth: 180,
 		},
 		{
 			allowsSorting: true,
@@ -102,6 +111,7 @@ export function RoutineDayExercisesDesktop( {
 				<RoutineExerciseActions
 					exercise={ routine.exercise }
 					exerciseName={ getExerciseName( routine ) }
+					clientId={ routine.clientId }
 					routineId={ routine.id }
 					onDeleteAction={ () => onDeleteAction( routine.clientId ) }
 				/>
@@ -115,7 +125,7 @@ export function RoutineDayExercisesDesktop( {
 	return (
 		<div className={ "hidden md:block" }>
 			<DataGrid
-				aria-label={ "Ejercicios del dia" }
+				aria-label={ "Ejercicios del día" }
 				columns={ columns }
 				contentClassName={ "min-w-[980px]" }
 				data={ routines }

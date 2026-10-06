@@ -59,7 +59,7 @@ export default function EditRoutineDayPageContent( {
 
 	const routine = data.trainingRoutine;
 	const studentName = routine.student?.name ?? "Estudiante";
-	const title = `Editar Rutina - Dia ${ data.dayNumber }`;
+	const title = `Editar Rutina - Día ${ data.dayNumber }`;
 	const description = `Semana ${ routine.week } | ${ routine.month }/${ routine.year } | ${ studentName }`;
 
 	return (

@@ -30,15 +30,15 @@ export async function POST( request: NextRequest ) {
 	try {
 		body = await request.json() as Partial<LoginRequest>;
 	} catch {
-		return toErrorResponse( "El cuerpo de la solicitud es invalido.", 400 );
+		return toErrorResponse( "El cuerpo de la solicitud es inválido.", 400 );
 	}
 
 	if (!body || typeof body !== "object") {
-		return toErrorResponse( "Credenciales invalidas.", 400 );
+		return toErrorResponse( "Credenciales inválidas.", 400 );
 	}
 
 	if (typeof body.credential !== "string" || typeof body.password !== "string") {
-		return toErrorResponse( "Credenciales invalidas.", 400 );
+		return toErrorResponse( "Credenciales inválidas.", 400 );
 	}
 
 	try {

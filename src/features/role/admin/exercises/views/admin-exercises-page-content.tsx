@@ -59,7 +59,7 @@ export default function AdminExercisesPageContent() {
 		},
 		{
 			accessorKey: "category",
-			header: "Categoria",
+			header: "Categoría",
 			id: "category",
 			minWidth: 140,
 		},
@@ -117,7 +117,7 @@ export default function AdminExercisesPageContent() {
 					crumbs={ breadcrumbs }
 				/>
 				<Card className={ "border border-danger/20 bg-surface" } variant={ "default" }><Card.Content
-					className={ "p-4 text-sm text-danger" }>{ error?.message ?? "No pudimos cargar el catalogo global." }</Card.Content></Card>
+					className={ "p-4 text-sm text-danger" }>{ error?.message ?? "No pudimos cargar el catálogo global." }</Card.Content></Card>
 			</div>
 		);
 	}
@@ -132,7 +132,7 @@ export default function AdminExercisesPageContent() {
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<Card.Content className={ "flex flex-col gap-3 p-3 lg:flex-row  md:items-end md:justify-between" }>
 					<PageHeader
-						description={ "Catalogo global compartido por todos los coaches. Desde aquí se corrigen datos." }
+						description={ "Catálogo global compartido por todos los coaches. Desde aquí se corrigen datos." }
 						title={ "Ejercicios globales" }
 					/>
 					<div className={ "flex justify-end" }>
@@ -151,7 +151,7 @@ export default function AdminExercisesPageContent() {
 							<Label>Buscar</Label>
 							<SearchField.Group className={ "border border-border" }>
 								<SearchField.SearchIcon/>
-								<SearchField.Input placeholder={ "Nombre, id, categoria o target..." }/>
+								<SearchField.Input placeholder={ "Nombre, id, categoría o target..." }/>
 								<SearchField.ClearButton/>
 							</SearchField.Group>
 						</SearchField>
@@ -168,7 +168,7 @@ export default function AdminExercisesPageContent() {
 							</Select.Popover>
 						</Select>
 						<Select value={ pageState.categoryFilter } variant={ "primary" } onChange={ ( value ) => pageState.updateCategoryFilter( value === null ? null : String( value ) ) }>
-							<Label>Categoria</Label>
+							<Label>Categoría</Label>
 							<Select.Trigger className={ "border border-border" }><Select.Value/><Select.Indicator/></Select.Trigger>
 							<Select.Popover>
 								<ListBox>

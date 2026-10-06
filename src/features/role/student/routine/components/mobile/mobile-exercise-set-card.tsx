@@ -109,7 +109,7 @@ export function MobileExerciseSetCard( {
 			</Card>
 
 			<FeatureDrawerLayout
-				bottomContentClassName={ "mx-auto flex max-h-[82dvh] w-full max-w-105 flex-col" }
+				bottomContentClassName={ "max-h-[82dvh]" }
 				isOpen={ Boolean( selectedNoteSet ) }
 				placement={ "bottom" }
 				onOpenChangeAction={ ( isOpen ) => {
@@ -124,7 +124,7 @@ export function MobileExerciseSetCard( {
 					<TextArea
 						fullWidth
 						aria-label={ "Nota" }
-						placeholder={ "Agrega una observacion para esta serie" }
+						placeholder={ "Agrega una observación para esta serie" }
 						value={ selectedNoteSet?.notes ?? "" }
 						className={ "border border-border" }
 						onChange={ ( e ) => {

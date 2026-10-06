@@ -83,13 +83,13 @@ function pickFirstText( ...values: Array<string | null | undefined> ) {
 
 function validateMonth( month: number ) {
 	if (!Number.isInteger( month ) || month < 1 || month > 12) {
-		throw new Error( "El mes seleccionado no es valido." );
+		throw new Error( "El mes seleccionado no es válido." );
 	}
 }
 
 function validateYear( year: number ) {
 	if (!Number.isInteger( year ) || year < 2000 || year > 2100) {
-		throw new Error( "El año seleccionado no es valido." );
+		throw new Error( "El año seleccionado no es válido." );
 	}
 }
 
@@ -113,7 +113,7 @@ export async function getTrainingRoutinesByStudentBase( {
 	} ) as TrainingRoutineStudent | null;
 
 	if (!student) {
-		throw new Error( "No se encontro un estudiante activo para consultar rutinas." );
+		throw new Error( "No se encontró un estudiante activo para consultar rutinas." );
 	}
 
 	const routineMonth = await prisma.trainingRoutineMonth.findFirst( {

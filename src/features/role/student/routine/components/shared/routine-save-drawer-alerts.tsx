@@ -14,7 +14,7 @@ export function RoutineSaveDrawerAlerts( {
 			{ validationError ? (
 				<Alert className={ "border border-warning/20" } status={ "warning" }>
 					<Alert.Content>
-						<Alert.Title>No se puede guardar todavia</Alert.Title>
+						<Alert.Title>No se puede guardar todavía</Alert.Title>
 						<Alert.Description>{ validationError }</Alert.Description>
 					</Alert.Content>
 				</Alert>

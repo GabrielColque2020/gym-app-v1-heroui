@@ -68,7 +68,7 @@ export function CoachTrainingRoutineFilter( {
 		<Card className={ "border border-border py-2" } variant={ "default" }>
 			<Card.Header className={ "gap-3 border-b border-border p-3" }>
 				<PageHeader
-					description={ `Organiza las rutinas semanales y los días de entrenamiento de ${ studentName } creando, editando y copiando rutinas facilmente.` }
+					description={ `Organiza las rutinas semanales y los días de entrenamiento de ${ studentName } creando, editando y copiando rutinas fácilmente.` }
 					title={ "Rutina de Entrenamiento" }
 				/>
 			</Card.Header>

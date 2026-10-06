@@ -34,8 +34,8 @@ export function useCoachExerciseStatusAction( { exercise }: UseCoachExerciseStat
 			} );
 			toast.success( exercise.active ? "Ejercicio desactivado" : "Ejercicio restaurado", {
 				description: exercise.active
-					? "Quedo inactivo solo para tu catalogo."
-					: "Vuelve a estar disponible en tu catalogo.",
+					? "Quedó inactivo solo para tu catálogo."
+					: "Vuelve a estar disponible en tu catálogo.",
 			} );
 		} catch {
 			toast.danger( exercise.active ? "Error al desactivar" : "Error al restaurar", {

@@ -16,36 +16,13 @@ export const NAV_ITEMS: readonly NavItem[] = [
 	{ href: "/admin/dashboard", icon: House, label: "Inicio", roles: [ "ADMIN" ] },
 	{ href: "/coach/dashboard", icon: House, label: "Inicio", roles: [ "COACH" ] },
 	{ href: "/student/dashboard", icon: House, label: "Inicio", roles: [ "STUDENT" ] },
-	{ href: "/student/training-routine", icon: Dumbbell, label: "Rutina de Entrenamiento", roles: [ "STUDENT" ] },
-	{ href: "/student/meal-plans", icon: UtensilsCrossed, label: "Planes Alimenticios por Estudiantes", roles: [ "STUDENT" ] },
-	{ href: "/student/history-routines", icon: CalendarClock, label: "Historial de Rutina", roles: [ "STUDENT" ] },
-	{
-		children: [
-			{ href: "/coach/exercises", icon: Dumbbell, label: "Ejercicios", roles: [ "COACH" ] },
-			{ href: "/coach/student", icon: Users, label: "Estudiantes", roles: [ "COACH" ] },
-			{
-				href: "/coach/training-routines-students",
-				icon: CalendarClock,
-				label: "Rutinas por Estudiantes",
-				roles: [ "COACH" ],
-			},
-			{
-				href: "/coach/meal-plans-students",
-				icon: UtensilsCrossed,
-				label: "Planes Alimenticios por Estudiantes",
-				roles: [ "COACH" ],
-			},
-			{
-				href: "/coach/history-routines-students",
-				icon: CalendarClock,
-				label: "Historial de Rutina por Estudiantes",
-				roles: [ "COACH" ],
-			},
-		],
-		icon: Settings2,
-		label: "Administracion operativa",
-		roles: [ "COACH" ],
-	},
+	{ href: "/student/training-routine", icon: Dumbbell, label: "Rutina de entrenamiento", roles: [ "STUDENT" ] },
+	{ href: "/student/meal-plans", icon: UtensilsCrossed, label: "Plan alimenticio", roles: [ "STUDENT" ] },
+	{ href: "/student/history-routines", icon: CalendarClock, label: "Historial de rutina", roles: [ "STUDENT" ] },
+	// La rutina, el plan y el historial de cada estudiante se abren desde su ficha,
+	// a la que se entra por "Estudiantes".
+	{ href: "/coach/student", icon: Users, label: "Estudiantes", roles: [ "COACH" ] },
+	{ href: "/coach/exercises", icon: Dumbbell, label: "Ejercicios", roles: [ "COACH" ] },
 	{
 		children: [
 			{ href: "/admin/users", icon: Users, label: "Usuarios", roles: [ "ADMIN" ] },

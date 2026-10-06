@@ -8,7 +8,7 @@ export function CoachHistoryRoutinesMissingStudentState() {
 			<Alert.Content>
 				<Alert.Title>Seleccioná un estudiante</Alert.Title>
 				<Alert.Description>
-					Para consultar historial de rutinas primero tenes que elegir un estudiante activo.
+					Para consultar historial de rutinas primero tenés que elegir un estudiante activo.
 				</Alert.Description>
 			</Alert.Content>
 		</Alert>

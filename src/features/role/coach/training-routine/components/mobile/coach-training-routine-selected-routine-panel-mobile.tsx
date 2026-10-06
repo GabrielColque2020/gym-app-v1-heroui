@@ -2,10 +2,12 @@
 
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 import { Description, Typography } from "@heroui/react";
+import { CoachRepeatWeekAction } from "@/features/role/coach/training-routine/components/shared/coach-repeat-week-action";
 import { CoachTrainingRoutineDaysAccordion } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-days-accordion";
 
 type CoachTrainingRoutineSelectedRoutinePanelMobileProps = {
 	month: number;
+	routineWeeks: CoachTrainingRoutine[];
 	selectedRoutine: CoachTrainingRoutine | null;
 	studentId: string;
 	year: number;
@@ -13,6 +15,7 @@ type CoachTrainingRoutineSelectedRoutinePanelMobileProps = {
 
 export function CoachTrainingRoutineSelectedRoutinePanelMobile( {
 																	month,
+																	routineWeeks,
 																	selectedRoutine,
 																	studentId,
 																	year,
@@ -27,10 +30,17 @@ export function CoachTrainingRoutineSelectedRoutinePanelMobile( {
 							: "Sin semana seleccionada" }
 					</Typography>
 					<Description className={ "whitespace-normal break-words text-xs" }>
-						{ selectedRoutine?.name || "Dias de entrenamiento" }
+						{ selectedRoutine?.name || "Días de entrenamiento" }
 					</Description>
 				</div>
 			</div>
+			<CoachRepeatWeekAction
+				month={ month }
+				routineWeeks={ routineWeeks }
+				selectedRoutine={ selectedRoutine }
+				studentId={ studentId }
+				year={ year }
+			/>
 			<CoachTrainingRoutineDaysAccordion
 				days={ selectedRoutine?.routineDays ?? [] }
 				month={ month }

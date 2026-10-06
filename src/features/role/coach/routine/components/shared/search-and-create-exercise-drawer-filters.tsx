@@ -1,4 +1,5 @@
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+import type { RoutineCatalogExercise } from "@/features/routine/hooks/use-routine-day-exercise-catalog";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 
 import { SearchAndCreateExerciseDrawerControls } from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-controls";
@@ -21,7 +22,7 @@ type SearchAndCreateExerciseDrawerFiltersProps = {
 	searchValue: string;
 	selectedExerciseId: string | null;
 	onAddExerciseAction: ( exercise: ExerciseListItem ) => void;
-	exercises: ExerciseListItem[];
+	exercises: RoutineCatalogExercise[];
 };
 
 export function SearchAndCreateExerciseDrawerFilters( {

@@ -25,7 +25,7 @@ export async function saveStudentRoutineSessionAction( {
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesion para guardar tu rutina." );
+			throw new Error( "Debes iniciar sesión para guardar tu rutina." );
 		}
 
 		if (session.role !== "STUDENT") {
@@ -41,7 +41,7 @@ export async function saveStudentRoutineSessionAction( {
 		const normalizedRoutineDayId = routineDayId.trim();
 
 		if (!normalizedRoutineDayId) {
-			throw new Error( "Seleccioná un dia valido antes de guardar cambios." );
+			throw new Error( "Seleccioná un día válido antes de guardar cambios." );
 		}
 
 		const routineDay = await getRoutineDayAction( {

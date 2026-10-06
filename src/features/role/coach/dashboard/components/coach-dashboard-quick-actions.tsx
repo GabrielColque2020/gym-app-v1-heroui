@@ -2,7 +2,7 @@
 
 import { Button, Card } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { CalendarClock, Clock3, Dumbbell, Users, UtensilsCrossed } from "lucide-react";
+import { Dumbbell, Users } from "lucide-react";
 
 import { COACH_DASHBOARD_QUICK_ACTIONS } from "@/features/role/coach/dashboard/services/coach-dashboard-links";
 
@@ -10,18 +10,15 @@ export function CoachDashboardQuickActions() {
 	const router = useRouter();
 	const actionIcons = {
 		exercises: Dumbbell,
-		"history-routines": Clock3,
-		"meal-plans": UtensilsCrossed,
 		students: Users,
-		"training-routines": CalendarClock,
 	} as const;
 
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
 			<Card.Content className={ "space-y-4 p-3" }>
 				<div className={ "space-y-1" }>
-					<p className={ "text-base font-semibold text-foreground" }>Accesos rapidos</p>
-					<p className={ "text-sm text-muted" }>Entradas directas a los modulos que mas usa el coach.</p>
+					<p className={ "text-base font-semibold text-foreground" }>Accesos rápidos</p>
+					<p className={ "text-sm text-muted" }>Entradas directas a los módulos que más usa el coach.</p>
 				</div>
 				<div className={ "flex flex-wrap gap-2 xl:flex-nowrap" }>
 					{ COACH_DASHBOARD_QUICK_ACTIONS.map( ( action ) => {

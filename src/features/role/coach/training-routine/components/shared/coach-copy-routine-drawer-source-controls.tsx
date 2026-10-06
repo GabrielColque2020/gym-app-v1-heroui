@@ -11,6 +11,9 @@ type Option = {
 
 type CoachCopyRoutineDrawerSourceControlsProps = {
 	handleSourceMonthChangeAction: ( value: string ) => void;
+	handleSourceStudentChangeAction: ( value: string ) => void;
+	sourceStudentId: string;
+	studentOptions: Option[];
 	handleSourceYearChangeAction: ( value: string ) => void;
 	mode: "month" | "weeks";
 	onModeChangeAction: ( mode: "month" | "weeks" ) => void;
@@ -23,6 +26,9 @@ type CoachCopyRoutineDrawerSourceControlsProps = {
 
 export function CoachCopyRoutineDrawerSourceControls( {
 														  handleSourceMonthChangeAction,
+														  handleSourceStudentChangeAction,
+														  sourceStudentId,
+														  studentOptions,
 														  handleSourceYearChangeAction,
 														  mode,
 														  onModeChangeAction,
@@ -33,6 +39,27 @@ export function CoachCopyRoutineDrawerSourceControls( {
 														  monthOptions,
 													  }: CoachCopyRoutineDrawerSourceControlsProps ) {
 	return (
+		<div className={ "grid gap-3" }>
+		{ /* Con un solo estudiante no hay de quien mas copiar. */ }
+		{ studentOptions.length > 1 ? (
+			<Select value={ sourceStudentId } variant={ "secondary" } onChange={ ( key ) => handleSourceStudentChangeAction( key as string ) }>
+				<Label>Copiar de</Label>
+				<Select.Trigger className={ "h-10 rounded-xl shadow-sm" }>
+					<Select.Value/>
+					<Select.Indicator/>
+				</Select.Trigger>
+				<Select.Popover>
+					<ListBox>
+						{ studentOptions.map( ( student ) => (
+							<ListBox.Item key={ student.value } id={ student.value } textValue={ student.label }>
+								{ student.label }
+								<ListBox.ItemIndicator/>
+							</ListBox.Item>
+						) ) }
+					</ListBox>
+				</Select.Popover>
+			</Select>
+		) : null }
 		<div className={ "grid gap-3 md:grid-cols-[240px_1fr] md:gap-4" }>
 			<div className={ "grid w-full gap-1.5 sm:max-w-80" }>
 				<Label className={ "text-xs font-semibold uppercase text-muted" }>Modo de copia</Label>
@@ -99,6 +126,7 @@ export function CoachCopyRoutineDrawerSourceControls( {
 					</Select.Popover>
 				</Select>
 			</div>
+		</div>
 		</div>
 	);
 }

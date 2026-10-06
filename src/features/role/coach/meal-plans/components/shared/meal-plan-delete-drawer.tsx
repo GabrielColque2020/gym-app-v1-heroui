@@ -66,7 +66,7 @@ export function MealPlanDeleteDrawer( {
 						<div className={ "min-w-0 flex-1" }>
 							<Drawer.Heading>Eliminar plan alimenticio</Drawer.Heading>
 							<Description className={ "mt-1 text-sm" }>
-								Esta accion no se puede deshacer.
+								Esta acción no se puede deshacer.
 							</Description>
 						</div>
 					</div>
@@ -75,9 +75,9 @@ export function MealPlanDeleteDrawer( {
 				<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 					<Alert className={ "border border-danger/20" } status={ "danger" }>
 						<Alert.Content>
-							<Alert.Title>Accion irreversible</Alert.Title>
+							<Alert.Title>Acción irreversible</Alert.Title>
 							<Alert.Description>
-								Se eliminara el plan alimenticio seleccionado del estudiante.
+								Se eliminará el plan alimenticio seleccionado del estudiante.
 							</Alert.Description>
 						</Alert.Content>
 					</Alert>
@@ -95,7 +95,7 @@ export function MealPlanDeleteDrawer( {
 						<div className={ "grid gap-3" }>
 							<MealPlanDeleteSummaryRow label={ "Tipo" } value={ formatMealTime( mealPlan.title ) }/>
 							<div className={ "grid gap-2" }>
-								<Typography className={ "text-sm text-muted" }>Descripcion</Typography>
+								<Typography className={ "text-sm text-muted" }>Descripción</Typography>
 								<div className={ "space-y-2 text-sm leading-6 text-foreground" }>
 									{ formatMealPlanDescriptionLines( mealPlan.description ).map( ( line, index ) => (
 										<div key={ `${ mealPlan.id }-${ index }` } className={ "flex gap-2" }>

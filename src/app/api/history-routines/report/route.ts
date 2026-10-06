@@ -15,7 +15,7 @@ function parsePositiveInteger(value: string | null, label: string) {
     const parsedValue = Number(value);
 
     if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
-        throw new Error(`${label} invalido.`);
+        throw new Error(`${label} inválido.`);
     }
 
     return parsedValue;

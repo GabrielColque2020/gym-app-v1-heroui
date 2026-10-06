@@ -108,7 +108,7 @@ export function useRoutinePageActions( {
 	const handleOpenSaveDrawer = useCallback( () => {
 		if (!canSaveProgress) {
 			toast.warning( "No hay ejercicios para guardar", {
-				description: "Primero debe haber ejercicios cargados para ese dia.",
+				description: "Primero debe haber ejercicios cargados para ese día.",
 			} );
 			return;
 		}
@@ -118,7 +118,7 @@ export function useRoutinePageActions( {
 
 	const handleConfirmSave = useCallback( async () => {
 		if (!activeSession || !routineDayId || !studentId) {
-			toast.danger( "No se puede guardar", { description: "Faltan datos para persistir la sesion." } );
+			toast.danger( "No se puede guardar", { description: "Faltan datos para persistir la sesión." } );
 			return;
 		}
 

@@ -3,6 +3,9 @@
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+import { getRecentRoutineExerciseIdsAction } from "@/features/routine/actions/get-recent-routine-exercises";
 
 import { usePagination } from "@/components/common";
 import {
@@ -14,8 +17,16 @@ import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-
 import { useCoachExercises } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
 
-const ITEMS_PER_PAGE = 5;
-const SEARCH_DEBOUNCE_MS = 400;
+const ITEMS_PER_PAGE = 10;
+const SEARCH_DEBOUNCE_MS = 250;
+
+export const RECENT_ROUTINE_EXERCISES_QUERY_KEY = [ "coach-recent-routine-exercises" ] as const;
+
+export type RoutineCatalogExercise = ExerciseListItem & {
+	equipment: string;
+	// Posicion entre los usados recientemente, o `null` si no esta entre ellos.
+	recentRank: number | null;
+};
 
 type UseRoutineDayExerciseCatalogOptions = {
 	initialSelectedExerciseId?: string | null;
@@ -28,34 +39,61 @@ export function useRoutineDayExerciseCatalog( { initialSelectedExerciseId }: Use
 	const [ selectedExerciseId, setSelectedExerciseId ] = useState( initialSelectedExerciseId ?? null );
 	const debouncedSearchValue = useDebouncedValue( searchValue, SEARCH_DEBOUNCE_MS );
 	const exercisesQuery = useCoachExercises();
+	const recentExerciseIdsQuery = useQuery( {
+		queryFn: getRecentRoutineExerciseIdsAction,
+		queryKey: RECENT_ROUTINE_EXERCISES_QUERY_KEY,
+		staleTime: 60 * 1000,
+	} );
 
-	const exercises = useMemo<ExerciseListItem[]>(
-		() => ( exercisesQuery.data ?? [] )
-			.filter( ( exercise: CoachExerciseListItem ) => exercise.active )
-			.map( ( exercise: CoachExerciseListItem ) => ( {
-				active: exercise.active,
-				bodyPart: exercise.bodyPart,
-				createdAt: exercise.createdAt,
-				id: exercise.id,
-				imageUrl: exercise.imageUrl,
-				name: exercise.name,
-				tips: exercise.tips,
-				videoUrl: exercise.videoUrl,
-			} ) ),
-		[ exercisesQuery.data ],
+	const exercises = useMemo<RoutineCatalogExercise[]>(
+		() => {
+			// Posicion de cada ejercicio entre los recientes: 0 es el ultimo que se uso.
+			const recentRankById = new Map(
+				( recentExerciseIdsQuery.data ?? [] ).map( ( exerciseId, index ) => [ exerciseId, index ] ),
+			);
+
+			return ( exercisesQuery.data ?? [] )
+				.filter( ( exercise: CoachExerciseListItem ) => exercise.active )
+				.map( ( exercise: CoachExerciseListItem ) => ( {
+					active: exercise.active,
+					bodyPart: exercise.bodyPart,
+					createdAt: exercise.createdAt,
+					equipment: exercise.equipment,
+					id: exercise.id,
+					imageUrl: exercise.imageUrl,
+					name: exercise.name,
+					recentRank: recentRankById.get( exercise.coachExerciseId ?? exercise.id ) ?? null,
+					tips: exercise.tips,
+					videoUrl: exercise.videoUrl,
+				} ) );
+		},
+		[ exercisesQuery.data, recentExerciseIdsQuery.data ],
 	);
 
 	const filteredExercises = useMemo(
 		() => {
-			const normalizedNameFilter = normalizeSearchName( debouncedSearchValue );
+			// Cada palabra tiene que estar, en cualquier orden: "prensa trineo" encuentra
+			// "45° prensa de piernas con trineo".
+			const searchWords = normalizeSearchName( debouncedSearchValue ).split( " " ).filter( Boolean );
 
-			return exercises.filter( ( exercise ) => {
-				const matchesName = normalizedNameFilter.length === 0
-					|| normalizeSearchName( exercise.name ).includes( normalizedNameFilter );
+			const matches = exercises.filter( ( exercise ) => {
+				const searchableText = normalizeSearchName( `${ exercise.name } ${ exercise.equipment }` );
+				const matchesName = searchWords.every( ( word ) => searchableText.includes( word ) );
 				const matchesBodyPart = bodyPartFilter === ALL_BODY_PARTS || exercise.bodyPart === bodyPartFilter;
 
 				return matchesName && matchesBodyPart;
 			} );
+
+			// Primero los usados recientemente; el resto conserva el orden alfabetico.
+			return matches
+				.map( ( exercise, index ) => ( { exercise, index } ) )
+				.sort( ( left, right ) => {
+					const leftRank = left.exercise.recentRank ?? Number.POSITIVE_INFINITY;
+					const rightRank = right.exercise.recentRank ?? Number.POSITIVE_INFINITY;
+
+					return leftRank === rightRank ? left.index - right.index : leftRank - rightRank;
+				} )
+				.map( ( { exercise } ) => exercise );
 		},
 		[ bodyPartFilter, debouncedSearchValue, exercises ],
 	);

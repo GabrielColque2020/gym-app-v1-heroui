@@ -61,7 +61,7 @@ export function StudentDrawerProfileSection( {
 		<section className={ "space-y-4" }>
 			<div>
 				<h3 className={ "text-sm font-semibold text-foreground" }>Perfil de Estudiante</h3>
-				<p className={ "text-sm text-muted" }>Datos de acceso e identificacion.</p>
+				<p className={ "text-sm text-muted" }>Datos de acceso e identificación.</p>
 			</div>
 
 			<TextField
@@ -89,7 +89,7 @@ export function StudentDrawerProfileSection( {
 					<Label>Email</Label>
 					<Input autoComplete={ "off" } className={ "border border-border" } placeholder={ "estudiante@email.com" }
 					       type={ "email" }/>
-					{ isEmailInvalid ? <FieldError>Ingresa un email valido.</FieldError> : null }
+					{ isEmailInvalid ? <FieldError>Ingresa un email válido.</FieldError> : null }
 				</TextField>
 
 				<TextField
@@ -103,7 +103,7 @@ export function StudentDrawerProfileSection( {
 					<Label>DNI</Label>
 					<Input autoComplete={ "off" } className={ "border border-border" } inputMode={ "numeric" }
 					       placeholder={ "22222222" }/>
-					{ isDniInvalid ? <FieldError>Debe ser numerico.</FieldError> : null }
+					{ isDniInvalid ? <FieldError>Debe ser numérico.</FieldError> : null }
 				</TextField>
 			</div>
 
@@ -144,11 +144,11 @@ export function StudentDrawerProfileSection( {
 					className={ "w-full" }
 					fullWidth
 					name={ "gender" }
-					placeholder={ "Seleccione genero" }
+					placeholder={ "Seleccione género" }
 					value={ values.gender }
 					onChange={ ( value ) => updateValue( "gender", ( value ?? NO_GENDER ) as GenderFormValue ) }
 				>
-					<Label>Genero</Label>
+					<Label>Género</Label>
 					<Select.Trigger className={ "border border-border" }>
 						<Select.Value/>
 						<Select.Indicator/>

@@ -20,7 +20,7 @@ export function validateStudentInput( input: CreateStudentInput | UpdateStudentI
 	}
 
 	if (!isValidEmail( email )) {
-		throw new Error( "Ingresa un email valido." );
+		throw new Error( "Ingresa un email válido." );
 	}
 
 	if (mode === "create" && password.length < 1) {
@@ -34,7 +34,7 @@ export function validateStudentInput( input: CreateStudentInput | UpdateStudentI
 	const gender = input.gender === NO_GENDER ? null : input.gender;
 
 	if (gender !== null && !isGenderValue( gender )) {
-		throw new Error( "Seleccioná un genero valido." );
+		throw new Error( "Seleccioná un género válido." );
 	}
 
 	return {

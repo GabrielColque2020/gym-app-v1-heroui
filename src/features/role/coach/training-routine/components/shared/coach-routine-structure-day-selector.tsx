@@ -22,9 +22,9 @@ export function CoachRoutineStructureDaySelector( {
 	return (
 		<div className={ "grid gap-2" }>
 			<div>
-				<Label className={ "mr-1 text-sm font-semibold" }>Dias por semana</Label>
+				<Label className={ "mr-1 text-sm font-semibold" }>Días por semana</Label>
 				<Description className={ "text-sm" }>
-					Los dias seleccionados se aplican a todas las semanas activas.
+					Los días seleccionados se aplican a todas las semanas activas.
 				</Description>
 			</div>
 			<CheckboxButtonGroup

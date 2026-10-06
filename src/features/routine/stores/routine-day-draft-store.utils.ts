@@ -48,7 +48,7 @@ export function appendDraftExercise(
 ): AddDraftExerciseResult {
 	if (currentDraft.some( ( routine ) => routine.exerciseId === exercise.id )) {
 		return {
-			error: "No puede agregar el mismo ejercicio mas de una vez en el mismo dia.",
+			error: "No puede agregar el mismo ejercicio más de una vez en el mismo día.",
 		};
 	}
 

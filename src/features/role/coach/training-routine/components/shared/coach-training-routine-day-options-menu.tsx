@@ -37,7 +37,7 @@ export function CoachTrainingRoutineDayOptionsMenu( {
 			<Dropdown>
 				<Button
 					isIconOnly
-					aria-label={ "Menu" }
+					aria-label={ "Menú" }
 					variant={ "secondary" }
 				>
 					<MoreVertical/>
@@ -50,7 +50,7 @@ export function CoachTrainingRoutineDayOptionsMenu( {
 					} }>
 						<Dropdown.Section>
 							<Header>Opciones</Header>
-							<Dropdown.Item id={ "edit-day" } textValue={ "Editar Dia" } variant={ "default" }>
+							<Dropdown.Item id={ "edit-day" } textValue={ "Editar Día" } variant={ "default" }>
 								<PencilLine className={ "size-4 shrink-0 text-warning" }/>
 								<Label className={ "text-warning" }>Editar</Label>
 							</Dropdown.Item>

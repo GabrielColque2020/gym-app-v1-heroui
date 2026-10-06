@@ -5,10 +5,12 @@ import { useState } from "react";
 import { Link2, MoreVertical, Trash2 } from "lucide-react";
 
 import { ExerciseVariantsDrawer } from "@/features/role/coach/exercises/components/shared/exercise-variants-drawer";
+import { useRoutineDayEditorActions } from "@/features/role/coach/routine/components/shared/routine-day-editor-actions-context";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
 type RoutineExerciseActionsProps = {
 	exercise: DraftRoutineDayExercise[ "exercise" ];
+	clientId: string;
 	exerciseName: string;
 	routineId: string | null;
 	onDeleteAction: () => void;
@@ -16,15 +18,16 @@ type RoutineExerciseActionsProps = {
 
 export function RoutineExerciseActions( {
 										 exercise,
+										 clientId,
 										 exerciseName,
 										 routineId,
 										 onDeleteAction,
 									 }: RoutineExerciseActionsProps ) {
 	const [ isVariantsOpen, setIsVariantsOpen ] = useState( false );
-	const canOpenVariants = Boolean( exercise && routineId );
-	const variantsHelpMessage = !routineId
-		? "Guarda primero la rutina para poder editar variantes."
-		: "Guarda este ejercicio en la rutina para poder editar variantes.";
+	const { onRequestVariants } = useRoutineDayEditorActions();
+	// Un ejercicio recien agregado todavia no existe en la rutina: se guarda el
+	// dia y el editor abre las variantes apenas tiene la fila guardada.
+	const needsSaveFirst = Boolean( exercise ) && !routineId;
 
 	return (
 		<>
@@ -40,20 +43,21 @@ export function RoutineExerciseActions( {
 				<Dropdown.Popover placement={ "bottom end" }>
 					<Dropdown.Menu
 						onAction={ ( key ) => {
-							if (key === "variants" && canOpenVariants) setIsVariantsOpen( true );
+							if (key === "variants" && needsSaveFirst) onRequestVariants( clientId );
+							if (key === "variants" && !needsSaveFirst) setIsVariantsOpen( true );
 							if (key === "delete") onDeleteAction();
 						} }
 					>
 						<Header>Opciones</Header>
-						<Dropdown.Item id={ "variants" } textValue={ "Variantes" } isDisabled={ !canOpenVariants }>
+						<Dropdown.Item id={ "variants" } textValue={ "Variantes" } isDisabled={ !exercise }>
 							<div className={ "flex min-w-0 flex-col" }>
 								<div className={ "flex items-center gap-2" }>
 									<Link2 className={ "size-4 shrink-0 text-accent" }/>
 									<Label className={ "text-accent" }>Variantes</Label>
 								</div>
-								{ !canOpenVariants ? (
+								{ needsSaveFirst ? (
 									<Description className={ "text-xs text-muted" }>
-										{ variantsHelpMessage }
+										Guarda el día y abre las variantes.
 									</Description>
 								) : null }
 							</div>

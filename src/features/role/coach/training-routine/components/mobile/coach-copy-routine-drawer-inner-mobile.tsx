@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { MONTH_OPTIONS_PADDED as MONTH_OPTIONS } from "@/constants/months";
 import { CheckboxButtonGroup } from "@heroui-pro/react";
@@ -22,6 +22,7 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 		destinationAffectedLabel,
 		handleCopy,
 		handleSourceMonthChange,
+		handleSourceStudentChange,
 		handleSourceYearChange,
 		isSingleWeek,
 		mode,
@@ -43,7 +44,9 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 		sourceLabel,
 		sourceMonth,
 		sourceQuery,
+		sourceStudentId,
 		sourceWeeks,
+		studentOptions,
 		sourceYear,
 		yearOptions,
 	} = useCoachCopyRoutineDrawerState( props );
@@ -74,6 +77,9 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 				<div className={ "grid gap-3" }>
 					<CoachCopyRoutineDrawerSourceControls
 						handleSourceMonthChangeAction={ handleSourceMonthChange }
+						handleSourceStudentChangeAction={ handleSourceStudentChange }
+						sourceStudentId={ sourceStudentId }
+						studentOptions={ studentOptions }
 						handleSourceYearChangeAction={ handleSourceYearChange }
 						mode={ mode }
 						onModeChangeAction={ setMode }
@@ -85,7 +91,7 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 					/>
 				</div>
 
-				{ mode === "month" && sameMonth ? <CoachCopyRoutineNotice>No podes copiar desde el mismo mes destino.</CoachCopyRoutineNotice> : null }
+				{ mode === "month" && sameMonth ? <CoachCopyRoutineNotice>No podés copiar desde el mismo mes destino.</CoachCopyRoutineNotice> : null }
 				{ props.hasActiveRoutine ? (
 					<CoachCopyRoutineNotice>
 						{ destLabel } ya tiene una rutina configurada. La copia puede reemplazar contenido existente.
@@ -108,7 +114,7 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 				) : source && !source.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<EmptyState className={ "flex min-h-36 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-default-hover px-4 text-center" }>
 						<Typography className={ "text-sm font-medium" }>No hay rutina en este origen.</Typography>
-						<Description className={ "text-sm" }>Proba con otro mes para continuar.</Description>
+						<Description className={ "text-sm" }>Probá con otro mes u otro estudiante.</Description>
 					</EmptyState>
 				) : source?.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<div className={ "grid gap-3" }>
@@ -118,10 +124,10 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 									<div className={ "min-w-0" }>
 										<Typography className={ "text-sm font-semibold" }>Rutina completa</Typography>
 										<Description className={ "mt-1 line-clamp-1 text-xs" }>
-											Se copiara la rutina completa de { sourceLabel }.
+											Se copiará la rutina completa de { sourceLabel }.
 										</Description>
 										<Description className={ "mt-1 text-xs" }>
-											{ source.weekCount } semanas · { source.dayCount } dias · { source.exerciseCount } ejercicios
+											{ source.weekCount } semanas · { source.dayCount } días · { source.exerciseCount } ejercicios
 										</Description>
 									</div>
 									<Chip color={ "success" } size={ "sm" } variant={ "soft" }>
@@ -153,7 +159,7 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 												<CheckboxButtonGroup.ItemContent>
 													<Label className={ "text-sm" }>Semana { routineWeek.week }</Label>
 													<Description className={ "line-clamp-1 text-xs" }>
-														{ routineWeek.dayCount } dias / { routineWeek.exerciseCount } ejercicios
+														{ routineWeek.dayCount } días / { routineWeek.exerciseCount } ejercicios
 													</Description>
 												</CheckboxButtonGroup.ItemContent>
 											</CheckboxButtonGroup.Item>
@@ -228,7 +234,7 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 											) ) }
 										</div>
 										<CoachCopyRoutineNotice>
-											Las semanas destino seran reemplazadas con el contenido seleccionado.
+											Las semanas destino serán reemplazadas con el contenido seleccionado.
 										</CoachCopyRoutineNotice>
 									</div>
 								) }

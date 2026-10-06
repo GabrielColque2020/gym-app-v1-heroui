@@ -42,7 +42,7 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 	const isSubmitDisabled = values.description.trim().length < 2 || activeMutation.isPending;
 	const title = isEditMode ? "Editar plan alimenticio" : "Nuevo plan alimenticio";
 	const description = isEditMode
-		? "Actualiza el tipo de comida y la descripcion del plan."
+		? "Actualiza el tipo de comida y la descripción del plan."
 		: "Carga un nuevo plan alimenticio para el estudiante.";
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear plan";
 	const showEditTriggerLabel = props.triggerVariant === "button";
@@ -111,7 +111,7 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 				} );
 				setValues( getDefaultValues() );
 				toast.success( "Plan alimenticio creado", {
-					description: "Se agrego al listado del estudiante.",
+					description: "Se agregó al listado del estudiante.",
 				} );
 			}
 

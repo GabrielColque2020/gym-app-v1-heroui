@@ -42,7 +42,7 @@ export function CoachDeleteExerciseDrawer( {
 					<div className={ "min-w-0 flex-1" }>
 						<Drawer.Heading>Eliminar ejercicio</Drawer.Heading>
 						<Description className={ "mt-1 text-sm" }>
-							Esta accion es permanente y no se puede deshacer.
+							Esta acción es permanente y no se puede deshacer.
 						</Description>
 					</div>
 				</div>
@@ -53,9 +53,9 @@ export function CoachDeleteExerciseDrawer( {
 					<Alert.Content>
 						<Alert.Title>Impacto sobre estudiantes y seguimiento</Alert.Title>
 						<Alert.Description>
-							Si eliminas este ejercicio, dejara de estar disponible para tus rutinas y puede afectar
-							lo que los estudiantes ven en sus rutinas e historial. Usa esta opcion solo si estas
-							seguro de removerlo permanentemente de tu operacion.
+							Si eliminas este ejercicio, dejará de estar disponible para tus rutinas y puede afectar
+							lo que los estudiantes ven en sus rutinas e historial. Usa esta opción solo si estas
+							seguro de removerlo permanentemente de tu operación.
 						</Alert.Description>
 					</Alert.Content>
 				</Alert>
@@ -76,8 +76,8 @@ export function CoachDeleteExerciseDrawer( {
 							<span className={ "font-semibold text-foreground" }>{ exercise.name }</span>
 						</div>
 						<div className={ "grid gap-1" }>
-							<span className={ "font-medium text-muted" }>Categoria</span>
-							<span className={ "text-foreground" }>{ exercise.category || "Sin categoria" }</span>
+							<span className={ "font-medium text-muted" }>Categoría</span>
+							<span className={ "text-foreground" }>{ exercise.category || "Sin categoría" }</span>
 						</div>
 						<div className={ "grid gap-1" }>
 							<span className={ "font-medium text-muted" }>Origen</span>

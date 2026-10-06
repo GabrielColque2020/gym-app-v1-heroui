@@ -10,7 +10,7 @@ export function CoachMealPlansLoadingState( { breadcrumbs }: CoachMealPlansLoadi
 		<>
 			<div className={ "mb-0" }>
 				<PageBreadcrumbs
-					backHref={ "/coach/meal-plans-students" }
+					backHref={ "/coach/student" }
 					backLabel={ "Volver a estudiantes" }
 					crumbs={ breadcrumbs }
 				/>

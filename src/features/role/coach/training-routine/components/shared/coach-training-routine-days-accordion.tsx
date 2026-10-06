@@ -7,9 +7,11 @@ import type {
 import { AsyncMedia } from "@/components/common";
 import { Accordion, Card, Chip, Description, Typography } from "@heroui/react";
 import { CalendarDays, StickyNote } from "lucide-react";
+import { isRoutineDayDraftDirty } from "@/features/routine/services/routine-day-editor";
+import { useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
 import {
-    CoachTrainingRoutineDayOptionsMenu
-} from "@/features/role/coach/training-routine/components/shared/coach-training-routine-day-options-menu";
+    CoachTrainingRoutineDayEditButton
+} from "@/features/role/coach/training-routine/components/shared/coach-training-routine-day-edit-button";
 import {
     formatExerciseMeta,
     getDayTitle
@@ -30,10 +32,13 @@ export function CoachTrainingRoutineDaysAccordion( {
                                                        studentId,
                                                        year
                                                    }: CoachTrainingRoutineDaysAccordionProps ) {
+    // Los borradores viven en este navegador: un dia editado y no guardado se avisa aca.
+    const drafts = useRoutineDayDraftStore((state) => state.drafts);
+
     if (days.length === 0) {
         return (
             <Card className={ "border border-border px-4 py-8 text-center text-sm text-muted" }>
-                No hay dias de entrenamiento cargados para esta semana.
+                No hay días de entrenamiento cargados para esta semana.
             </Card>
         );
     }
@@ -43,8 +48,10 @@ export function CoachTrainingRoutineDaysAccordion( {
             { days.map((day) => (
                 <Accordion.Item key={ day.id }>
                     <div className={ "overflow-hidden rounded-2xl border border-border bg-surface shadow-sm" }>
+                        { /* El boton va al lado del trigger y no adentro: un boton no puede contener otro. */ }
+                        <div className={ "flex items-start gap-2 pe-3" }>
                         <Accordion.Trigger
-                            className={ "group flex w-full items-start justify-between gap-3 px-3 py-3 text-left" }
+                            className={ "group flex min-w-0 flex-1 items-start justify-between gap-3 px-3 py-3 text-left" }
                         >
                             <div className={ "flex min-w-0 items-start gap-3" }>
                                 <div
@@ -55,18 +62,23 @@ export function CoachTrainingRoutineDaysAccordion( {
 
                                     <Typography
                                         className={ "truncate text-base font-semibold text-foreground" }
-                                    >Dia { day.dayNumber }</Typography>
+                                    >Día { day.dayNumber }</Typography>
                                     <Description className={ "truncate text-xs" }>{ getDayTitle(day) }</Description>
                                     <div className={ "flex flex-wrap gap-2" }>
                                         <Chip size={ "sm" } variant={ "soft" }>
                                             <CalendarDays className={ "size-3.5" }/>
-                                            { day.routines.length } ejercicios
+                                            { day.routines.length } { day.routines.length === 1 ? "ejercicio" : "ejercicios" }
                                         </Chip>
                                         <Chip color={ day.isFinalized ? "success" : "accent" } size={ "sm" }
                                               variant={ "soft" }
                                         >
                                             { day.isFinalized ? "Finalizado" : "En edición" }
                                         </Chip>
+                                        { isRoutineDayDraftDirty(drafts[ day.id ], day.routines) ? (
+                                            <Chip color={ "warning" } size={ "sm" } variant={ "soft" }>
+                                                Cambios sin guardar
+                                            </Chip>
+                                        ) : null }
                                     </div>
                                 </div>
                             </div>
@@ -74,6 +86,17 @@ export function CoachTrainingRoutineDaysAccordion( {
                                 <Accordion.Indicator/>
                             </div>
                         </Accordion.Trigger>
+                            <div className={ "pt-3" }>
+                                <CoachTrainingRoutineDayEditButton
+                                    dayNumber={ day.dayNumber }
+                                    hasExercises={ day.routines.length > 0 }
+                                    month={ month }
+                                    routineDayId={ day.id }
+                                    studentId={ studentId }
+                                    year={ year }
+                                />
+                            </div>
+                        </div>
                         <Accordion.Panel>
                             <Accordion.Body className={ "px-3 pb-3 pt-1" }>
                                 <div className={ "grid gap-3" }>
@@ -82,7 +105,7 @@ export function CoachTrainingRoutineDaysAccordion( {
                                             className={ "rounded-xl border border-dashed border-border p-4 text-center text-sm text-muted" }
                                             variant={ "secondary" }
                                         >
-                                            Este dia no tiene ejercicios cargados.
+                                            Este día no tiene ejercicios cargados.
                                         </Card>
                                     ) : (
                                         <Card
@@ -132,14 +155,6 @@ export function CoachTrainingRoutineDaysAccordion( {
                                             )) }
                                         </Card>
                                     ) }
-                                    <div className={ "flex justify-end" }>
-                                        <CoachTrainingRoutineDayOptionsMenu
-                                            month={ month }
-                                            routineDayId={ day.id }
-                                            studentId={ studentId }
-                                            year={ year }
-                                        />
-                                    </div>
                                 </div>
                             </Accordion.Body>
                         </Accordion.Panel>

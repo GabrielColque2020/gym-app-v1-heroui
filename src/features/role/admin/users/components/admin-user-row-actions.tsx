@@ -54,7 +54,7 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 				id: user.id,
 			} );
 			toast.success( user.active ? "Usuario desactivado" : "Usuario activado", {
-				description: `${ user.name } quedo actualizado.`,
+				description: `${ user.name } quedó actualizado.`,
 			} );
 		} catch {
 			toast.danger( "Error al actualizar usuario", {

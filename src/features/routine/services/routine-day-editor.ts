@@ -6,6 +6,7 @@ export type {
 export {
 	createDraftRoutineExercise,
 	getNextRoutineExerciseOrder,
+	isRoutineDayDraftDirty,
 	mapDraftToSaveInput,
 	mapRoutineExerciseToDraft,
 	mapRoutineExercisesToDraft,

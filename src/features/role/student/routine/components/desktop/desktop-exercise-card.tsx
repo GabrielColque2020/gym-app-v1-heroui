@@ -61,7 +61,7 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 
 								<div className={ "flex flex-col gap-2 rounded-2xl bg-surface/50 px-3 py-3 sm:flex-row sm:items-start" }>
 									<p className={ "shrink-0 text-sm font-semibold tracking-wide text-foreground" }>
-										Ultima sesion
+										Última sesión
 									</p>
 									<ExerciseCardSessionHistory
 										history={ hasSessionHistory ? displayedSessionHistory : null }

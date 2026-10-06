@@ -34,6 +34,7 @@ export function CoachTrainingRoutineCardMobile( {
 				/>
 				<CoachTrainingRoutineSelectedRoutinePanelMobile
 					month={ month }
+					routineWeeks={ routineWeeks }
 					selectedRoutine={ selectedRoutine }
 					studentId={ studentId }
 					year={ year }

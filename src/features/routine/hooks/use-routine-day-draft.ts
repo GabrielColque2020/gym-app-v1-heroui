@@ -12,11 +12,19 @@ import {
 	getSuggestedRoutineExerciseOrder,
 } from "@/features/routine/hooks/use-routine-day-draft.utils";
 import { useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
-import { serializeRoutineDayDraft } from "@/features/routine/services/routine-day-editor";
+import { createDraftRoutineExercise, serializeRoutineDayDraft } from "@/features/routine/services/routine-day-editor";
 
 type UseRoutineDayDraftOptions = {
 	routineDayId: string;
 	sourceRoutines: RoutineDayExerciseBase[];
+};
+
+export type RoutineDayCopySource = {
+	exercise: Omit<ExerciseListItem, "createdAt"> | null;
+	exerciseId: string | null;
+	observation: string | null;
+	reps: string;
+	sets: string;
 };
 
 type DraftMutationResult =
@@ -105,6 +113,40 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 		} );
 	}
 
+	// Sube o baja un ejercicio intercambiando su orden con el vecino. Va en un solo
+	// `setDraft`: cambiar los dos ordenes por separado deja un instante con el
+	// orden repetido, y el borrador rechaza ese estado.
+	function moveExercise( clientId: string, direction: -1 | 1 ) {
+		const index = sortedDraftRoutines.findIndex( ( routine ) => routine.clientId === clientId );
+		const current = sortedDraftRoutines[ index ];
+		const neighbor = sortedDraftRoutines[ index + direction ];
+
+		if (!current || !neighbor) return;
+
+		setDraft( routineDayId, sortedDraftRoutines.map( ( routine ) => {
+			if (routine.clientId === current.clientId) return { ...routine, order: neighbor.order };
+			if (routine.clientId === neighbor.clientId) return { ...routine, order: current.order };
+
+			return routine;
+		} ) );
+	}
+
+	// Reemplaza el borrador por copias de los ejercicios de otro dia. Son filas
+	// nuevas (sin id): quedan pendientes hasta guardar.
+	function replaceWithCopies( routines: RoutineDayCopySource[] ) {
+		setDraft( routineDayId, routines.flatMap( ( routine, index ) => {
+			if (!routine.exercise || !routine.exerciseId) return [];
+
+			return [ {
+				...createDraftRoutineExercise( { ...routine.exercise, createdAt: new Date() }, index + 1 ),
+				exerciseId: routine.exerciseId,
+				observation: routine.observation ?? "",
+				reps: routine.reps,
+				sets: routine.sets,
+			} ];
+		} ) );
+	}
+
 	function getSuggestedOrder() {
 		return getSuggestedRoutineExerciseOrder( sortedDraftRoutines );
 	}
@@ -130,6 +172,8 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 		getSuggestedOrder,
 		hasHydrated,
 		isDirty,
+		moveExercise,
+		replaceWithCopies,
 		resetDraft,
 		updateExerciseField,
 		validationError,

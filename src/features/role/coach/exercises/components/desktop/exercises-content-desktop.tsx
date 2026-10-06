@@ -52,7 +52,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 				accessorKey: "category",
 				allowsSorting: true,
 				cell: ( exercise ) => <span>{ exercise.category }</span>,
-				header: "Categoria",
+				header: "Categoría",
 				id: "category",
 				minWidth: 180,
 			},

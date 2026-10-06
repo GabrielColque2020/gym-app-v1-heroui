@@ -178,7 +178,7 @@ export function AdminUserDrawer( {
 						<section className={ "space-y-4" }>
 							<div>
 								<h3 className={ "text-sm font-semibold text-foreground" }>{ `Perfil del ${ roleLabel }` }</h3>
-								<p className={ "text-sm text-muted" }>Datos de acceso e identificacion.</p>
+								<p className={ "text-sm text-muted" }>Datos de acceso e identificación.</p>
 							</div>
 
 							<TextField
@@ -205,7 +205,7 @@ export function AdminUserDrawer( {
 								>
 									<Label>Email</Label>
 									<Input autoComplete={ "off" } className={ "border border-border" } placeholder={ "usuario@mail.com" } type={ "email" }/>
-									{ isEmailInvalid ? <FieldError>Ingresa un email valido.</FieldError> : null }
+									{ isEmailInvalid ? <FieldError>Ingresa un email válido.</FieldError> : null }
 								</TextField>
 
 								<TextField
@@ -218,7 +218,7 @@ export function AdminUserDrawer( {
 								>
 									<Label>DNI</Label>
 									<Input autoComplete={ "off" } className={ "border border-border" } inputMode={ "numeric" } placeholder={ "12345678" }/>
-									{ isDniInvalid ? <FieldError>El DNI debe ser numerico.</FieldError> : null }
+									{ isDniInvalid ? <FieldError>El DNI debe ser numérico.</FieldError> : null }
 								</TextField>
 							</div>
 
@@ -234,7 +234,7 @@ export function AdminUserDrawer( {
 									<Input
 										autoComplete={ "new-password" }
 										className={ "border border-border pr-11" }
-										placeholder={ "Dejar vacia para conservar la actual" }
+										placeholder={ "Dejar vacía para conservar la actual" }
 										type={ isPasswordVisible ? "text" : "password" }
 									/>
 									<Button
@@ -258,11 +258,11 @@ export function AdminUserDrawer( {
 									className={ "w-full" }
 									fullWidth
 									name={ "gender" }
-									placeholder={ "Seleccione genero" }
+									placeholder={ "Seleccione género" }
 									value={ values.gender }
 									onChange={ ( value ) => updateValue( "gender", ( value ?? NO_GENDER ) as GenderFormValue ) }
 								>
-									<Label>Genero</Label>
+									<Label>Género</Label>
 									<Select.Trigger className={ "border border-border" }>
 										<Select.Value/>
 										<Select.Indicator/>

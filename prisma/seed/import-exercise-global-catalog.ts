@@ -3,8 +3,7 @@ import "dotenv/config";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import { withAccelerate } from "@prisma/extension-accelerate";
-import { PrismaClient } from "../../src/generated/prisma/client";
+import { createPrismaClient } from "../../src/lib/prisma-client";
 
 type DatasetInstructions = string | string[] | Record<string, unknown> | null | undefined;
 
@@ -423,7 +422,7 @@ async function main(): Promise<ImportStats> {
 	const dataset = await loadDataset( datasetFile );
 	const cloudinaryUploadMap = await loadCloudinaryUploadMap( cloudinaryUploadMapFile );
 	const cloudinaryLookup = buildCloudinaryLookup( cloudinaryUploadMap );
-	const prisma = new PrismaClient( { accelerateUrl } ).$extends( withAccelerate() );
+	const prisma = createPrismaClient( accelerateUrl );
 
 	try {
 		const stats: ImportStats = {

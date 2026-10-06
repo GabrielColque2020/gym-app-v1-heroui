@@ -7,7 +7,11 @@ import {
 	useCopyTrainingRoutineMonth,
 	useCopyTrainingRoutineWeeks,
 } from "@/features/training-routine/hooks/use-training-routine-copy";
-import { useTrainingRoutineCopySource } from "@/features/training-routine/hooks/use-training-routine-copy-source";
+import {
+	useLatestTrainingRoutineMonth,
+	useTrainingRoutineCopySource,
+} from "@/features/training-routine/hooks/use-training-routine-copy-source";
+import { useTrainingRoutinesStudents } from "@/features/role/coach/training-routines-students/hooks/use-training-routines-students";
 import { buildYearOptions, monthYearLabel, padMonth, weekListLabel } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer-utils";
 
 export type CoachCopyRoutineDrawerProps = {
@@ -31,31 +35,64 @@ export function useCoachCopyRoutineDrawerState( {
 	const destinationYearNumber = Number( destinationYear );
 	const destLabel = monthYearLabel( destinationMonth, destinationYear );
 	const [ mode, setMode ] = useState<CopyRoutineMode>( "month" );
-	const [ sourceYear, setSourceYear ] = useState(
-		destinationYear || String( new Date().getFullYear() ),
-	);
-	const [ sourceMonth, setSourceMonth ] = useState( () =>
-		padMonth( destinationMonth ) === "01"
-			? "12"
-			: String( Math.max( 1, Number( destinationMonth ) - 1 ) ),
-	);
+	// Lo que eligio el coach a mano. Mientras no elija, el origen es el ultimo mes
+	// con rutina, y si no hay ninguno, el mes calendario anterior.
+	const [ selectedSource, setSelectedSource ] = useState<{ month: string; year: string } | null>( null );
+	// De quien se copia: por defecto el mismo estudiante, o cualquier otro del coach.
+	const [ sourceStudentId, setSourceStudentId ] = useState( studentId );
+	const isOtherStudent = sourceStudentId !== studentId;
+	const studentsQuery = useTrainingRoutinesStudents();
+	const studentOptions = useMemo( () => {
+		const students = studentsQuery.data ?? [];
+
+		return [
+			...students.filter( ( student ) => student.id === studentId ),
+			...students.filter( ( student ) => student.id !== studentId ),
+		].map( ( student ) => ( {
+			label: student.id === studentId ? `${ student.name } (este estudiante)` : student.name,
+			value: student.id,
+		} ) );
+	}, [ studentId, studentsQuery.data ] );
+	const sourceStudentName = studentsQuery.data?.find( ( student ) => student.id === sourceStudentId )?.name;
+	// De otro estudiante sirve tambien su rutina del mismo mes destino.
+	const latestRoutineMonthQuery = useLatestTrainingRoutineMonth( {
+		inclusive: isOtherStudent,
+		month: destinationMonthNumber,
+		studentId: sourceStudentId,
+		year: destinationYearNumber,
+	} );
+	const defaultSource = latestRoutineMonthQuery.data
+		? {
+			month: String( latestRoutineMonthQuery.data.month ),
+			year: String( latestRoutineMonthQuery.data.year ),
+		}
+		: isOtherStudent
+			? { month: String( destinationMonthNumber ), year: String( destinationYearNumber ) }
+			: destinationMonthNumber === 1
+				? { month: "12", year: String( destinationYearNumber - 1 ) }
+				: { month: String( destinationMonthNumber - 1 ), year: String( destinationYearNumber ) };
+	const sourceMonth = selectedSource?.month ?? defaultSource.month;
+	const sourceYear = selectedSource?.year ?? defaultSource.year;
 	const [ selectedSourceWeeks, setSelectedSourceWeeks ] = useState<string[]>( [] );
 	const [ singleDestWeeks, setSingleDestWeeks ] = useState<string[]>( [] );
 	const [ multiDestByOrigin, setMultiDestByOrigin ] = useState<Record<string, string>>( {} );
 	const sourceMonthNumber = Number( sourceMonth );
 	const sourceYearNumber = Number( sourceYear );
 	const sameMonth =
+		!isOtherStudent &&
 		sourceMonthNumber === destinationMonthNumber &&
 		sourceYearNumber === destinationYearNumber;
 	const sourceQuery = useTrainingRoutineCopySource( {
 		month: sourceMonthNumber,
-		studentId,
+		studentId: sourceStudentId,
 		year: sourceYearNumber,
 	} );
 	const copyMonth = useCopyTrainingRoutineMonth();
 	const copyWeeks = useCopyTrainingRoutineWeeks();
 	const source = sourceQuery.data;
-	const sourceLabel = monthYearLabel( sourceMonth, sourceYear );
+	const sourceLabel = isOtherStudent && sourceStudentName
+		? `${ monthYearLabel( sourceMonth, sourceYear ) } de ${ sourceStudentName }`
+		: monthYearLabel( sourceMonth, sourceYear );
 	const sourceWeeks = source?.routineWeeks ?? [];
 	const selectedSorted = useMemo(
 		() => [ ...selectedSourceWeeks ].sort( ( a, b ) => Number( a ) - Number( b ) ),
@@ -143,8 +180,8 @@ export function useCoachCopyRoutineDrawerState( {
 			: weekListLabel( selectedSorted );
 	const singleWeekPreview =
 		singleDestWeeks.length > 0
-			? `Semana ${ selectedSorted[ 0 ] } de ${ sourceLabel } sera copiada en ${ weekListLabel( singleDestWeeks ) }.`
-			: "Seleccioná una o mas semanas destino.";
+			? `Semana ${ selectedSorted[ 0 ] } de ${ sourceLabel } será copiada en ${ weekListLabel( singleDestWeeks ) }.`
+			: "Seleccioná una o más semanas destino.";
 	const monthPrimaryDisabled =
 		sameMonth ||
 		sourceQuery.isLoading ||
@@ -165,13 +202,20 @@ export function useCoachCopyRoutineDrawerState( {
 		setMultiDestByOrigin( {} );
 	}
 
+	function handleSourceStudentChange( value: string ) {
+		setSourceStudentId( value );
+		// El mes elegido era del estudiante anterior: vuelve al ultimo con rutina del nuevo.
+		setSelectedSource( null );
+		clearWeekSelection();
+	}
+
 	function handleSourceYearChange( value: string ) {
-		setSourceYear( value );
+		setSelectedSource( { month: sourceMonth, year: value } );
 		clearWeekSelection();
 	}
 
 	function handleSourceMonthChange( value: string ) {
-		setSourceMonth( value );
+		setSelectedSource( { month: value, year: sourceYear } );
 		clearWeekSelection();
 	}
 
@@ -194,6 +238,7 @@ export function useCoachCopyRoutineDrawerState( {
 					destinationMonth: destinationMonthNumber,
 					destinationYear: destinationYearNumber,
 					sourceMonth: sourceMonthNumber,
+					sourceStudentId,
 					sourceYear: sourceYearNumber,
 					studentId,
 				} );
@@ -202,6 +247,7 @@ export function useCoachCopyRoutineDrawerState( {
 					destinationMonth: destinationMonthNumber,
 					destinationYear: destinationYearNumber,
 					sourceMonth: sourceMonthNumber,
+					sourceStudentId,
 					sourceYear: sourceYearNumber,
 					studentId,
 					weekMappings,
@@ -209,7 +255,7 @@ export function useCoachCopyRoutineDrawerState( {
 			}
 
 			toast.success( "Rutina copiada", {
-				description: "La rutina destino se actualizo correctamente.",
+				description: "La rutina destino se actualizó correctamente.",
 			} );
 		} catch {
 			toast.danger( "Error al copiar rutina", {
@@ -227,6 +273,7 @@ export function useCoachCopyRoutineDrawerState( {
 		destinationAffectedLabel,
 		handleCopy,
 		handleSourceMonthChange,
+		handleSourceStudentChange,
 		handleSourceYearChange,
 		isSingleWeek,
 		mode,
@@ -248,7 +295,9 @@ export function useCoachCopyRoutineDrawerState( {
 		sourceLabel,
 		sourceMonth,
 		sourceQuery,
+		sourceStudentId,
 		sourceWeeks,
+		studentOptions,
 		sourceYear,
 		weekMappings,
 		yearOptions,

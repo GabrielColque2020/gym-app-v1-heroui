@@ -3,18 +3,20 @@ import { Card } from "@heroui/react";
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import { EditRoutineDayMainCardContent } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card-content";
 import { EditRoutineDayMainCardHeader } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card-header";
+import type { ExercisePrescription } from "@/features/role/coach/routine/components/shared/use-search-and-create-exercise-drawer-state";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
 type EditRoutineDayMainCardProps = {
 	addedExerciseIds: Set<string>;
 	draftRoutines: DraftRoutineDayExercise[];
 	getSuggestedOrder: () => number;
+	isDirty: boolean;
 	isRefreshing: boolean;
 	requiredFieldsMessage: string | null;
 	routineSubtitle: string;
 	routineTitle: string;
 	validationError: string | null;
-	onAddExerciseAction: ( exercise: ExerciseListItem, order: number ) => void;
+	onAddExerciseAction: ( exercise: ExerciseListItem, order: number, prescription: ExercisePrescription ) => void;
 	onDeleteExerciseAction: ( clientId: string ) => void;
 	onRefreshAction: () => void;
 	onUpdateExerciseField: ( clientId: string, field: "observation" | "order" | "reps" | "sets", value: number | string ) => void;
@@ -24,6 +26,7 @@ export function EditRoutineDayMainCard( {
 											addedExerciseIds,
 											draftRoutines,
 											getSuggestedOrder,
+											isDirty,
 											isRefreshing,
 											requiredFieldsMessage,
 											routineSubtitle,
@@ -34,6 +37,12 @@ export function EditRoutineDayMainCard( {
 											onRefreshAction,
 											onUpdateExerciseField,
 										}: EditRoutineDayMainCardProps ) {
+	// El ultimo ejercicio con series y repeticiones completas: lo nuevo arranca igual.
+	const lastCompleteRoutine = [ ...draftRoutines ].reverse().find( ( routine ) => routine.sets.trim() && routine.reps.trim() );
+	const lastPrescription: ExercisePrescription | null = lastCompleteRoutine
+		? { reps: lastCompleteRoutine.reps, sets: lastCompleteRoutine.sets }
+		: null;
+
 	return (
 		<Card className={ "border border-border bg-surface" } variant={ "default" }>
 			<EditRoutineDayMainCardHeader
@@ -41,6 +50,7 @@ export function EditRoutineDayMainCard( {
 				draftCount={ draftRoutines.length }
 				getSuggestedOrder={ getSuggestedOrder }
 				isRefreshing={ isRefreshing }
+				lastPrescription={ lastPrescription }
 				routineSubtitle={ routineSubtitle }
 				routineTitle={ routineTitle }
 				onAddExerciseAction={ onAddExerciseAction }
@@ -49,6 +59,7 @@ export function EditRoutineDayMainCard( {
 
 			<EditRoutineDayMainCardContent
 				draftRoutines={ draftRoutines }
+				isDirty={ isDirty }
 				onDeleteExercise={ onDeleteExerciseAction }
 				onUpdateExerciseField={ onUpdateExerciseField }
 				requiredFieldsMessage={ requiredFieldsMessage }

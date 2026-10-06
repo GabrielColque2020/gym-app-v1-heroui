@@ -113,8 +113,8 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 							value={ values.description }
 							onChange={ ( value ) => updateValue( "description", value ) }
 						>
-							<Label>Descripcion</Label>
-							<TextArea className={ "min-h-32 border border-border" } placeholder={ "Escribe aqui la descripcion del plan alimenticio." }/>
+							<Label>Descripción</Label>
+							<TextArea className={ "min-h-32 border border-border" } placeholder={ "Escribe aquí la descripción del plan alimenticio." }/>
 							{ isDescriptionInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
 						</TextField>
 					</Drawer.Body>

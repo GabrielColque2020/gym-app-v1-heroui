@@ -45,7 +45,7 @@ export async function getRoutineDayDetailBase( {
 	} );
 
 	if (!normalizedInput.routineDayId) {
-		throw new Error( "Seleccioná un dia de rutina valido." );
+		throw new Error( "Seleccioná un día de rutina válido." );
 	}
 
 	const routineDay = await prisma.routineDay.findFirst( {
@@ -54,7 +54,7 @@ export async function getRoutineDayDetailBase( {
 	} ) as FetchedRoutineDayDetail | null;
 
 	if (!routineDay) {
-		throw new Error( "No se encontró el dia de rutina seleccionado." );
+		throw new Error( "No se encontró el día de rutina seleccionado." );
 	}
 
 	const student = routineDay.trainingRoutineWeek.trainingRoutineMonth.student;

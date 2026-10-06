@@ -23,7 +23,7 @@ export async function getStudentRoutineSessionAction( {
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesion para ver tu rutina." );
+			throw new Error( "Debes iniciar sesión para ver tu rutina." );
 		}
 
 		if (session.role !== "STUDENT") {

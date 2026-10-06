@@ -6,10 +6,17 @@ import { toast } from "@heroui/react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 
+export type ExercisePrescription = {
+	reps: string;
+	sets: string;
+};
+
 type UseSearchAndCreateExerciseDrawerStateParams = {
 	addedExerciseIds: Set<string>;
 	suggestedOrder: number;
-	onAddExerciseAction: ( exercise: ExerciseListItem, order: number ) => void;
+	// Series y repeticiones del ultimo ejercicio del dia, para arrancar igual.
+	lastPrescription: ExercisePrescription | null;
+	onAddExerciseAction: ( exercise: ExerciseListItem, order: number, prescription: ExercisePrescription ) => void;
 	selectedExerciseId: string | null;
 	currentPage: number;
 	syncCreatedExerciseAction: ( exercise: ExerciseListItem ) => void;
@@ -18,6 +25,7 @@ type UseSearchAndCreateExerciseDrawerStateParams = {
 export function useSearchAndCreateExerciseDrawerState( {
 	addedExerciseIds,
 	suggestedOrder,
+	lastPrescription,
 	onAddExerciseAction,
 	selectedExerciseId,
 	currentPage,
@@ -26,6 +34,9 @@ export function useSearchAndCreateExerciseDrawerState( {
 	const [ isPickerOpen, setIsPickerOpen ] = useState( false );
 	const [ isCreateDrawerOpen, setIsCreateDrawerOpen ] = useState( false );
 	const [ orderValue, setOrderValue ] = useState( String( suggestedOrder ) );
+	const [ addedCount, setAddedCount ] = useState( 0 );
+	const [ setsValue, setSetsValue ] = useState( lastPrescription?.sets ?? "" );
+	const [ repsValue, setRepsValue ] = useState( lastPrescription?.reps ?? "" );
 	const addButtonRefs = useRef( new Map<string, HTMLButtonElement>() );
 
 	useEffect( () => {
@@ -60,7 +71,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 		const parsedOrder = Number( orderValue );
 
 		if (!Number.isInteger( parsedOrder ) || parsedOrder < 1) {
-			toast.danger( "Orden invalido", {
+			toast.danger( "Orden inválido", {
 				description: "Ingresa un orden entero mayor o igual a 1.",
 			} );
 			return;
@@ -68,25 +79,47 @@ export function useSearchAndCreateExerciseDrawerState( {
 
 		if (addedExerciseIds.has( exercise.id )) {
 			toast.danger( "Ejercicio duplicado", {
-				description: "Ese ejercicio ya esta cargado en el borrador del dia.",
+				description: "Ese ejercicio ya está cargado en el borrador del día.",
 			} );
 			return;
 		}
 
-		onAddExerciseAction( exercise, parsedOrder );
-		setIsPickerOpen( false );
-	}, [ addedExerciseIds, orderValue, onAddExerciseAction ] );
+		onAddExerciseAction( exercise, parsedOrder, { reps: repsValue.trim(), sets: setsValue.trim() } );
+		// El drawer queda abierto para seguir sumando: un dia son varios ejercicios.
+		setAddedCount( ( count ) => count + 1 );
+		setOrderValue( String( Math.max( parsedOrder + 1, suggestedOrder ) ) );
+	}, [ addedExerciseIds, orderValue, onAddExerciseAction, repsValue, setsValue, suggestedOrder ] );
+
+	const handlePickerOpenChange = useCallback( ( isOpen: boolean ) => {
+		if (isOpen) {
+			setAddedCount( 0 );
+
+			// Si no se eligio nada todavia, arranca con lo del ultimo ejercicio cargado.
+			if (!setsValue && !repsValue && lastPrescription) {
+				setSetsValue( lastPrescription.sets );
+				setRepsValue( lastPrescription.reps );
+			}
+		}
+
+		setIsPickerOpen( isOpen );
+	}, [ lastPrescription, repsValue, setsValue ] );
 
 	return {
+		addedCount,
 		handleAddClick,
+		handlePickerOpenChange,
 		handleCreatedExercise,
 		handleOpenCreateDrawer,
 		isCreateDrawerOpen,
 		isPickerOpen,
 		orderValue,
 		registerAddButtonRef,
+		repsValue,
 		setIsCreateDrawerOpen,
 		setIsPickerOpen,
 		setOrderValue,
+		setRepsValue,
+		setSetsValue,
+		setsValue,
 	};
 }

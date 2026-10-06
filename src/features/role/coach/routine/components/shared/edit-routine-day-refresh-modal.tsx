@@ -28,8 +28,8 @@ export function EditRoutineDayRefreshModal( {
 							</Modal.Header>
 							<Modal.Body>
 								<p className={ "text-sm leading-6 text-muted" }>
-									Vas a volver a cargar la version mas reciente del dia. Si tenes cambios sin guardar,
-									se reemplazaran por lo que trae el servidor.
+									Vas a volver a cargar la versión más reciente del día. Si tenés cambios sin guardar,
+									se reemplazarán por lo que trae el servidor.
 								</p>
 							</Modal.Body>
 							<Modal.Footer className={ "gap-2" }>

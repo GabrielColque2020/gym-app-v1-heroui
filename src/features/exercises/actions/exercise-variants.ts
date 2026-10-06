@@ -190,7 +190,7 @@ export async function searchExerciseVariantCandidatesAction( input: ExerciseVari
 		const normalizedExerciseId = normalizeId( input.exerciseId );
 
 		if (!normalizedExerciseId) {
-			throw new Error( "Seleccioná un ejercicio valido." );
+			throw new Error( "Seleccioná un ejercicio válido." );
 		}
 
 		const exercises = ( await prisma.exerciseCoach.findMany( {
@@ -218,7 +218,7 @@ export async function createExerciseVariantAction( input: ExerciseVariantCreateI
 		const variantExerciseId = normalizeId( input.variantExerciseId );
 
 		if (!routineId || !variantExerciseId) {
-			throw new Error( "Seleccioná una rutina y un ejercicio validos." );
+			throw new Error( "Seleccioná una rutina y un ejercicio válidos." );
 		}
 
 		const routine = await assertRoutineExists( routineId );

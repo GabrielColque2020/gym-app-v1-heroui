@@ -81,7 +81,7 @@ export function ExerciseVariantsDrawerSearch( {
 			<div className={ "space-y-3" }>
 				<div className={ "flex items-center justify-between gap-3" }>
 					<p className={ "text-sm font-medium text-foreground" }>Resultados</p>
-					<p className={ "text-xs text-muted" }>Mostrando el catalogo completo de ejercicios.</p>
+					<p className={ "text-xs text-muted" }>Mostrando el catálogo completo de ejercicios.</p>
 					{ isSearching ? (
 						<div className={ "flex items-center gap-2 text-xs text-muted" } role={ "status" }>
 							<Spinner size={ "sm" }/>
@@ -93,7 +93,7 @@ export function ExerciseVariantsDrawerSearch( {
 				{ isLoading ? (
 					<Card className={ "flex items-center justify-center gap-2 border border-border p-8 text-sm text-muted" }>
 						<Spinner size={ "sm" }/>
-						Cargando catalogo
+						Cargando catálogo
 					</Card>
 				) : candidateExercises.length === 0 ? (
 					<Card className={ "border border-border p-8 text-sm text-muted" }>

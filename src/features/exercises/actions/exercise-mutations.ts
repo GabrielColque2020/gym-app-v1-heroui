@@ -61,7 +61,7 @@ export async function updateExerciseAction( input: UpdateExerciseInput ) {
 		} );
 
 		if (!exercise) {
-			throw new Error( "No se encontro el ejercicio solicitado." );
+			throw new Error( "No se encontró el ejercicio solicitado." );
 		}
 
 		return await prisma.exerciseCoach.update( {
@@ -91,7 +91,7 @@ export async function deactivateExerciseAction( id: string ) {
 		} );
 
 		if (!exercise) {
-			throw new Error( "No se encontro el ejercicio solicitado." );
+			throw new Error( "No se encontró el ejercicio solicitado." );
 		}
 
 		return await prisma.exerciseCoach.update( {
@@ -123,7 +123,7 @@ export async function restoreExerciseAction( id: string ) {
 		} );
 
 		if (!exercise) {
-			throw new Error( "No se encontro el ejercicio solicitado." );
+			throw new Error( "No se encontró el ejercicio solicitado." );
 		}
 
 		return await prisma.exerciseCoach.update( {

@@ -25,7 +25,7 @@ export function useStudentStatusAction( { student }: UseStudentStatusActionOptio
 			await statusMutation.mutateAsync( student.id );
 			toast.success( student.active ? "Estudiante desactivado" : "Estudiante restaurado", {
 				description: student.active
-					? "Quedo inactivo para nuevas operaciones."
+					? "Quedó inactivo para nuevas operaciones."
 					: "Vuelve a estar disponible.",
 			} );
 		} catch {

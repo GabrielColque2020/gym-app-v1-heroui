@@ -16,19 +16,21 @@ export function StudentDashboardHero( {
 									  }: StudentDashboardHeroProps ) {
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
-			<Card.Content className={ "flex flex-col gap-3 p-3 lg:flex-row lg:items-start lg:justify-between" }>
+			<Card.Content className={ "flex flex-row items-start justify-between gap-3 p-3" }>
 				<PageHeader
-					description={ "Revisa tu rutina actual, tus accesos principales y el estado de tu progreso reciente." }
+					description={ "Tu rutina y tu progreso, de un vistazo." }
 					title={ `Hola, ${ studentName }` }
 				/>
+				{ /* En el telefono queda solo el icono: no le saca un renglon a la proxima sesion. */ }
 				<Button
-					className={ "w-full sm:w-auto" }
+					aria-label={ "Actualizar" }
+					className={ "shrink-0" }
 					isDisabled={ isRefreshing }
 					variant={ "secondary" }
 					onPress={ onRefresh }
 				>
 					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-					{ isRefreshing ? "Actualizando..." : "Actualizar" }
+					<span className={ "hidden sm:inline" }>{ isRefreshing ? "Actualizando..." : "Actualizar" }</span>
 				</Button>
 			</Card.Content>
 		</Card>

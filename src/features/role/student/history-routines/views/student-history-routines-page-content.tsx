@@ -91,7 +91,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 			{ !isLoading && !isError && data ? (
 				<HistoryRoutinesReportsIndex
 					description={ "Consulta los meses con registro y descarga el reporte PDF completo de cada periodo." }
-					emptyMessage={ "Todavia no hay meses con historial de rutinas disponible." }
+					emptyMessage={ "Todavía no hay meses con historial de rutinas disponible." }
 					isDownloadingPeriodKey={ pendingPeriodKey }
 					isRefreshing={ isFetching && !isLoading }
 					reports={ data.reports }
@@ -111,7 +111,7 @@ export default function StudentHistoryRoutinesPageContent( { studentId }: Studen
 		return (
 			<Alert className={ "border border-warning/20" } status={ "warning" }>
 				<Alert.Content>
-					<Alert.Title>Debes iniciar sesion</Alert.Title>
+					<Alert.Title>Debes iniciar sesión</Alert.Title>
 					<Alert.Description>
 						No se pudo identificar tu cuenta para mostrar tu historial de rutinas.
 					</Alert.Description>

@@ -45,7 +45,7 @@ export function isGenderValue( value: string ): value is GenderValue {
 }
 
 export function formatGender( gender: GenderValue | null ) {
-	if (!gender) return "Sin genero";
+	if (!gender) return "Sin género";
 
 	return GENDER_OPTIONS.find( ( option ) => option.value === gender )?.label ?? gender;
 }
@@ -69,7 +69,7 @@ export function parsePositiveInteger( value: string, fieldLabel: string ) {
 	const normalizedValue = value.trim();
 
 	if (!/^\d+$/.test( normalizedValue )) {
-		throw new Error( `${ fieldLabel } debe ser numerico.` );
+		throw new Error( `${ fieldLabel } debe ser numérico.` );
 	}
 
 	const parsedValue = Number( normalizedValue );
@@ -89,7 +89,7 @@ export function parseNonNegativeNumber( value: string, fieldLabel: string ) {
 	const parsedValue = Number( normalizedValue );
 
 	if (!Number.isFinite( parsedValue ) || parsedValue < 0) {
-		throw new Error( `${ fieldLabel } debe ser un numero mayor o igual a 0.` );
+		throw new Error( `${ fieldLabel } debe ser un número mayor o igual a 0.` );
 	}
 
 	return parsedValue;

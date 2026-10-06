@@ -52,13 +52,13 @@ export function parseDecimal( value: string | null ) {
 }
 
 export function formatDefaultTitle( week: number, dayNumber: number ) {
-	return `Semana ${ week } - Dia ${ dayNumber }`;
+	return `Semana ${ week } - Día ${ dayNumber }`;
 }
 
 export function formatDefaultDescription( objective?: string | null, name?: string | null ) {
 	return [ objective?.trim(), name?.trim() ]
 		.filter( Boolean )
-		.join( " - " ) || "Sin descripcion cargada";
+		.join( " - " ) || "Sin descripción cargada";
 }
 
 export function buildHistoryRoutineExercise(

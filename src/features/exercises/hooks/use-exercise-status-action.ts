@@ -21,7 +21,7 @@ export function useExerciseStatusAction( { exercise }: UseExerciseStatusActionOp
 			await statusMutation.mutateAsync( exercise.id );
 			toast.success( exercise.active ? "Ejercicio desactivado" : "Ejercicio restaurado", {
 				description: exercise.active
-					? "Quedo inactivo en el catalogo."
+					? "Quedó inactivo en el catálogo."
 					: "Vuelve a estar disponible.",
 			} );
 		} catch {

@@ -76,7 +76,7 @@ export default function ExerciseChangeDrawer( {
 				/>
 			</FeatureDrawerLayout>
 			<FeatureDrawerLayout
-				bottomContentClassName={ "mx-auto flex max-h-[88dvh] w-full max-w-105 flex-col" }
+				bottomContentClassName={ "max-h-[88dvh]" }
 				isOpen={ isExecutionOpen }
 				placement={ placement }
 				rightContentClassName={ "flex h-full max-h-dvh w-[42rem] flex-col" }

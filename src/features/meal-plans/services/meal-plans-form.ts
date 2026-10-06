@@ -3,7 +3,7 @@ export const MEAL_TIME_OPTIONS = [
 	{ label: "Almuerzo", value: "LUNCH" },
 	{ label: "Merienda", value: "SNACK" },
 	{ label: "Cena", value: "DINNER" },
-	{ label: "Opcion verde", value: "OPTIONGREEN" },
+	{ label: "Opción verde", value: "OPTIONGREEN" },
 	{ label: "Varios", value: "SEVERAL" },
 ] as const;
 

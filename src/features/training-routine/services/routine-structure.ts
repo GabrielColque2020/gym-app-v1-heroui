@@ -18,7 +18,7 @@ export const DAY_OPTIONS = Array.from( { length: MAX_ROUTINE_DAYS }, ( _, index 
 
 	return {
 		day,
-		label: `Dia ${ day }`,
+		label: `Día ${ day }`,
 		value: String( day ),
 	};
 } );
@@ -44,15 +44,15 @@ export type RoutineStructureScopeInput = {
 
 export function validateRoutineStructureScopeInput( input: RoutineStructureScopeInput ) {
 	if (!input.studentId.trim()) {
-		throw new Error( "Seleccioná un estudiante valido." );
+		throw new Error( "Seleccioná un estudiante válido." );
 	}
 
 	if (!Number.isInteger( input.month ) || input.month < 1 || input.month > 12) {
-		throw new Error( "El mes seleccionado no es valido." );
+		throw new Error( "El mes seleccionado no es válido." );
 	}
 
 	if (!Number.isInteger( input.year ) || input.year < 2000 || input.year > 2100) {
-		throw new Error( "El año seleccionado no es valido." );
+		throw new Error( "El año seleccionado no es válido." );
 	}
 }
 
@@ -80,18 +80,18 @@ export function validateRoutineStructureInput( input: RoutineStructureInput ) {
 		weekSet.add( week.week );
 
 		if (week.days.length === 0 || week.days.length > MAX_ROUTINE_DAYS) {
-			throw new Error( `Cada semana debe tener entre 1 y ${ MAX_ROUTINE_DAYS } dias.` );
+			throw new Error( `Cada semana debe tener entre 1 y ${ MAX_ROUTINE_DAYS } días.` );
 		}
 
 		const daySet = new Set<number>();
 
 		for (const day of week.days) {
 			if (!Number.isInteger( day ) || day < 1 || day > MAX_ROUTINE_DAYS) {
-				throw new Error( "Los dias deben estar entre 1 y 6." );
+				throw new Error( "Los días deben estar entre 1 y 6." );
 			}
 
 			if (daySet.has( day )) {
-				throw new Error( "No puede haber dias duplicados en una semana." );
+				throw new Error( "No puede haber días duplicados en una semana." );
 			}
 
 			daySet.add( day );

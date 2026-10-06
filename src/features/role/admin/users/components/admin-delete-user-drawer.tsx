@@ -30,7 +30,7 @@ export function AdminDeleteUserDrawer( {
 	const roleLabel = user.role === "COACH" ? "Coach" : "Estudiante";
 	const impactLabel = user.role === "COACH"
 		? "Se desacoplaran sus estudiantes y sus ejercicios quedaran sin coach asignado."
-		: "Se eliminaran sus rutinas, planes alimenticios, progreso, relacion con coach y demas datos asociados.";
+		: "Se eliminarán sus rutinas, planes alimenticios, progreso, relación con coach y demás datos asociados.";
 
 	return (
 		<FeatureDrawerLayout
@@ -48,7 +48,7 @@ export function AdminDeleteUserDrawer( {
 					<div className={ "min-w-0 flex-1" }>
 						<Drawer.Heading>Eliminar { roleLabel.toLowerCase() }</Drawer.Heading>
 						<Description className={ "mt-1 text-sm" }>
-							Esta accion no se puede deshacer.
+							Esta acción no se puede deshacer.
 						</Description>
 					</div>
 				</div>
@@ -57,7 +57,7 @@ export function AdminDeleteUserDrawer( {
 			<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 				<Alert className={ "border border-danger/20" } status={ "danger" }>
 					<Alert.Content>
-						<Alert.Title>Accion irreversible</Alert.Title>
+						<Alert.Title>Acción irreversible</Alert.Title>
 						<Alert.Description>{ impactLabel }</Alert.Description>
 					</Alert.Content>
 				</Alert>

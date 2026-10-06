@@ -41,7 +41,7 @@ export function CoachDashboardStudentMobileCard( {
 						</p>
 					</div>
 					<div className={ "rounded-lg border border-border bg-surface px-3 py-2 sm:col-span-2" }>
-						<p className={ "text-xs font-medium text-muted" }>Ultima actividad</p>
+						<p className={ "text-xs font-medium text-muted" }>Última actividad</p>
 						<p className={ "text-sm text-foreground" }>{ formatCoachDashboardDateLabel( student.lastProgressAt ) }</p>
 					</div>
 				</div>

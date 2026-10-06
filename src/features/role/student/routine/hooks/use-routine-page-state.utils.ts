@@ -24,7 +24,7 @@ export function buildRoutinePageDerivedState( {
 	const routineStatusDescription = activeSession
 		? hasExercises
 			? `${ completedExercises } de ${ exerciseCount } ejercicios completos`
-			: "No hay ejercicios cargados para este dia"
+			: "No hay ejercicios cargados para este día"
 		: "Sin ejercicios cargados";
 
 	return {

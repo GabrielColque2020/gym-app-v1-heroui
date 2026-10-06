@@ -2,7 +2,7 @@
 import type { StudentRoutineSession } from "@/features/routine/services/routine-session";
 
 export function formatDateLabel( date: Date | null ) {
-	if (!date) return "Sin sesion registrada";
+	if (!date) return "Sin sesión registrada";
 
 	return new Intl.DateTimeFormat( "es-AR", {
 		day: "numeric",

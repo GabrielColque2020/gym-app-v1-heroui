@@ -16,7 +16,7 @@ export function CoachTrainingRoutineCardMobileHeader( {
 					Rutina del mes
 				</Card.Title>
 				<Card.Description className={ "text-sm" }>
-					Gestiona semanas y dias
+					Gestiona semanas y días
 				</Card.Description>
 			</Card.Content>
 			<Chip

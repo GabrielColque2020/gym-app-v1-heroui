@@ -28,7 +28,7 @@ export default function RoutinePageContent( {
 			<Alert className={ "border border-warning/20" } status={ "warning" }>
 				<Alert.Content>
 					<Alert.Title>Seleccioná una rutina</Alert.Title>
-					<Alert.Description>Para ver tu rutina primero debes elegir un dia desde la lista de rutinas.</Alert.Description>
+					<Alert.Description>Para ver tu rutina primero debes elegir un día desde la lista de rutinas.</Alert.Description>
 				</Alert.Content>
 			</Alert>
 		);

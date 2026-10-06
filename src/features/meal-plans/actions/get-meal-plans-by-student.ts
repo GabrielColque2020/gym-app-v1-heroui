@@ -57,8 +57,8 @@ async function assertStudentForSession( studentId: string, coachId: string, role
 	if (!student) {
 		throw new Error(
 			role === "COACH"
-				? "No se encontro un estudiante activo para consultar sus planes alimenticios."
-				: "No se encontro un estudiante activo para consultar tus planes alimenticios.",
+				? "No se encontró un estudiante activo para consultar sus planes alimenticios."
+				: "No se encontró un estudiante activo para consultar tus planes alimenticios.",
 		);
 	}
 
@@ -77,7 +77,7 @@ export async function getMealPlansByStudentAction( { studentId }: GetMealPlansBy
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesion para ver los planes alimenticios." );
+			throw new Error( "Debes iniciar sesión para ver los planes alimenticios." );
 		}
 
 		if (session.role !== "COACH" && session.role !== "STUDENT") {

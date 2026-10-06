@@ -18,7 +18,7 @@ export function SearchAndCreateExerciseDrawerEmptyCta( {
 				</Alert.Title>
 				<Alert.Description>
 					<p className={ "mt-1 text-sm text-muted" }>
-						Crea una nueva entrada en el catalogo y vuelve a sumarla al borrador.
+						Crea una nueva entrada en el catálogo y vuelve a sumarla al borrador.
 					</p>
 					<div className={ "pt-3" }>
 						<Button

@@ -78,7 +78,7 @@ export function ExerciseDrawerFields( {
 			</div>
 
 			<div className={ "grid gap-2" }>
-				<Label>Categoria</Label>
+				<Label>Categoría</Label>
 				<Select
 					fullWidth
 					isInvalid={ isCategoryInvalid }
@@ -136,7 +136,7 @@ export function ExerciseDrawerFields( {
 				</div>
 
 				<div className={ "grid gap-2" }>
-					<Label>Musculo principal</Label>
+					<Label>Músculo principal</Label>
 					<Select
 						fullWidth
 						name={ "muscleGroup" }
@@ -195,7 +195,7 @@ export function ExerciseDrawerFields( {
 				<Label>Instrucciones</Label>
 				<TextArea
 					className={ "min-h-32 border border-border" }
-					placeholder={ "Indicaciones tecnicas, errores comunes o recomendaciones." }
+					placeholder={ "Indicaciones técnicas, errores comunes o recomendaciones." }
 				/>
 			</TextField>
 

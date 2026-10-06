@@ -17,7 +17,7 @@ export function CoachExercisesPageHeader( {
 		<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between " }>
 			<PageHeader
 				title={ "Ejercicios" }
-				description={ "Catalogo global compartido + ejercicios propios y overrides del coach." }
+				description={ "Catálogo global compartido + ejercicios propios y overrides del coach." }
 			/>
 			<div className={ "flex w-full flex-col gap-2 md:hidden" }>
 				<Button

@@ -19,6 +19,11 @@ import { CoachRoutineStructureDaySelector } from "@/features/role/coach/training
 import { CoachRoutineStructureSummary } from "@/features/role/coach/training-routine/components/shared/coach-routine-structure-summary";
 import { CoachRoutineStructureWeekSelector } from "@/features/role/coach/training-routine/components/shared/coach-routine-structure-week-selector";
 import { CheckCircle2, PencilLine, Plus } from "lucide-react";
+import { monthYearLabel } from "@/constants/months";
+import {
+	useLatestTrainingRoutineMonth,
+	useTrainingRoutineCopySource,
+} from "@/features/training-routine/hooks/use-training-routine-copy-source";
 
 type CoachRoutineStructureProps = {
 	mode: "create" | "edit";
@@ -39,12 +44,37 @@ export default function CoachRoutineStructure( {
 												   studentId,
 												   year,
 											   }: CoachRoutineStructureProps ) {
-	const [ selectedWeeks, setSelectedWeeks ] = useState<string[]>( () =>
-		mode === "edit" ? buildSelectedWeeks( routineWeeks ) : [],
+	// Al crear, la estructura arranca con la de la ultima rutina del estudiante: casi
+	// siempre se repite. Sin rutina previa quedan las 4 semanas y los dias a elegir.
+	// Es solo el punto de partida: en cuanto el coach toca algo, manda lo que eligio.
+	const previousStudentId = mode === "create" ? studentId : "";
+	const latestRoutineMonth = useLatestTrainingRoutineMonth( { month, studentId: previousStudentId, year } ).data;
+	const previousRoutine = useTrainingRoutineCopySource( {
+		month: latestRoutineMonth?.month ?? 0,
+		studentId: previousStudentId,
+		year: latestRoutineMonth?.year ?? 0,
+	} ).data;
+	const previousLabel = latestRoutineMonth && previousRoutine?.hasRoutine
+		? monthYearLabel( String( latestRoutineMonth.month ), String( latestRoutineMonth.year ) )
+		: null;
+	const defaultWeeks = mode !== "create"
+		? []
+		: previousRoutine?.hasRoutine
+			? previousRoutine.routineWeeks.map( ( routineWeek ) => String( routineWeek.week ) )
+			: WEEK_OPTIONS.map( ( option ) => option.value );
+	const defaultDays = mode === "create" && previousRoutine?.hasRoutine
+		? DAY_OPTIONS
+			.slice( 0, Math.max( ...previousRoutine.routineWeeks.map( ( routineWeek ) => routineWeek.dayCount ) ) )
+			.map( ( option ) => option.value )
+		: [];
+	const [ chosenWeeks, setSelectedWeeks ] = useState<string[] | null>( () =>
+		mode === "edit" ? buildSelectedWeeks( routineWeeks ) : null,
 	);
-	const [ selectedDays, setSelectedDays ] = useState<string[]>( () =>
-		mode === "edit" ? buildSelectedDays( routineWeeks ) : [],
+	const [ chosenDays, setSelectedDays ] = useState<string[] | null>( () =>
+		mode === "edit" ? buildSelectedDays( routineWeeks ) : null,
 	);
+	const selectedWeeks = chosenWeeks ?? defaultWeeks;
+	const selectedDays = chosenDays ?? defaultDays;
 	const [ objective, setObjective ] = useState( () => routineObjective ?? "" );
 
 	const Icon = mode === "create" ? Plus : PencilLine;
@@ -71,8 +101,10 @@ export default function CoachRoutineStructure( {
 
 	const description =
 		mode === "create"
-			? "Configura semanas y dias de entrenamiento para crear la base de la rutina."
-			: "Activa o desactiva semanas y dias sin modificar ejercicios desde la pantalla principal.";
+			? previousLabel
+				? `Arranca con la estructura de ${ previousLabel }. Ajustá semanas y días si este mes cambia.`
+				: "Configura semanas y días de entrenamiento para crear la base de la rutina."
+			: "Activa o desactiva semanas y días sin modificar ejercicios desde la pantalla principal.";
 
 	function handleWeeksChange( value: string[] ) {
 		setSelectedWeeks( [ ...value ].sort( ( a, b ) => Number( a ) - Number( b ) ) );
@@ -91,12 +123,12 @@ export default function CoachRoutineStructure( {
 			if (mode === "create") {
 				await createStructure.mutateAsync( input );
 				toast.success( "Rutina creada", {
-					description: "La estructura inicial se guardo correctamente.",
+					description: "La estructura inicial se guardó correctamente.",
 				} );
 			} else {
 				await updateStructure.mutateAsync( input );
 				toast.success( "Estructura actualizada", {
-					description: "Las semanas y dias se guardaron correctamente.",
+					description: "Las semanas y días se guardaron correctamente.",
 				} );
 			}
 

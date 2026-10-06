@@ -4,7 +4,7 @@ import EditRoutineDayPageContent from "@/features/role/coach/routine/views/edit-
 
 export const metadata: Metadata = {
 	title: "Editar Rutina",
-	description: "Editor del dia de entrenamiento",
+	description: "Editor del día de entrenamiento",
 };
 
 type Props = {

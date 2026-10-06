@@ -33,7 +33,10 @@ export function SearchAndCreateExerciseDrawerControls( {
 				/>
 			</TextField>
 
+			{ /* Grupo y orden comparten fila: en el telefono dejan mas lugar a la lista. */ }
+			<div className={ "flex items-end gap-3" }>
 			<Select
+				className={ "min-w-0 flex-1" }
 				name={ "body-part-filter" }
 				placeholder={ "Todos los grupos musculares" }
 				value={ bodyPartFilter }
@@ -60,7 +63,7 @@ export function SearchAndCreateExerciseDrawerControls( {
 				</Select.Popover>
 			</Select>
 
-			<TextField name={ "exercise-order" } value={ orderValue } onChange={ onOrderChange }>
+			<TextField className={ "w-24 shrink-0" } name={ "exercise-order" } value={ orderValue } onChange={ onOrderChange }>
 				<Label>Orden</Label>
 				<Input
 					aria-label={ "Orden del ejercicio en la rutina" }
@@ -69,6 +72,7 @@ export function SearchAndCreateExerciseDrawerControls( {
 					className={ "border border-border" }
 				/>
 			</TextField>
+			</div>
 		</>
 	);
 }

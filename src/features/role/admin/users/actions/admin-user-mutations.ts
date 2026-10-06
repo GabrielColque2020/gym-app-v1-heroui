@@ -48,7 +48,7 @@ export async function toggleUserStatusAction( input: ToggleUserStatusInput ) {
 		const session = await requireAdminSession( "actualizar usuarios" );
 
 		if (session.sub === input.id) {
-			throw new Error( "No podes cambiar el estado de tu propia cuenta desde esta pantalla." );
+			throw new Error( "No podés cambiar el estado de tu propia cuenta desde esta pantalla." );
 		}
 
 		const currentUser = await prisma.user.findUnique( {
@@ -128,7 +128,7 @@ export async function assignCoachToStudentAction( input: AssignCoachInput ) {
 		}
 
 		if (currentUser.role !== "STUDENT") {
-			throw new Error( "La asignacion de coach solo aplica a estudiantes." );
+			throw new Error( "La asignación de coach solo aplica a estudiantes." );
 		}
 
 		if (input.coachId) {
@@ -143,7 +143,7 @@ export async function assignCoachToStudentAction( input: AssignCoachInput ) {
 			} );
 
 			if (!coach || coach.role !== "COACH") {
-				throw new Error( "El coach seleccionado no es valido." );
+				throw new Error( "El coach seleccionado no es válido." );
 			}
 		}
 
@@ -176,7 +176,7 @@ async function assertCoachExists( coachId: string ) {
 	} );
 
 	if (!coach) {
-		throw new Error( "El coach seleccionado no es valido." );
+		throw new Error( "El coach seleccionado no es válido." );
 	}
 }
 
@@ -249,7 +249,7 @@ export async function deleteAdminUserAction( input: DeleteAdminUserInput ) {
 		const session = await requireAdminSession( "eliminar usuarios" );
 
 		if (session.sub === input.id) {
-			throw new Error( "No podes eliminar tu propia cuenta desde esta pantalla." );
+			throw new Error( "No podés eliminar tu propia cuenta desde esta pantalla." );
 		}
 
 		const currentUser = await prisma.user.findUnique( {

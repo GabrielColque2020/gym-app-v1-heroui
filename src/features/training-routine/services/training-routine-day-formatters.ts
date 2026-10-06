@@ -1,3 +1,5 @@
+import { formatBodyPart, isBodyPartValue } from "@/features/exercises/services/exercise-formatters";
+
 type RoutineDayTitleInput = {
 	routines: Array<{
 		exercise?: {
@@ -17,5 +19,7 @@ export function getTrainingRoutineDayTitle( day: RoutineDayTitleInput ) {
 
 	if (bodyParts.length === 0) return "Sin ejercicios cargados";
 
-	return bodyParts.join( " + " );
+	return bodyParts
+		.map( ( bodyPart ) => ( bodyPart && isBodyPartValue( bodyPart ) ? formatBodyPart( bodyPart ) : bodyPart ) )
+		.join( " + " );
 }

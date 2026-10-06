@@ -1,4 +1,5 @@
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+import type { RoutineCatalogExercise } from "@/features/routine/hooks/use-routine-day-exercise-catalog";
 
 import { Alert, Spinner } from "@heroui/react";
 
@@ -6,7 +7,7 @@ import { SearchAndCreateExerciseDrawerItem } from "@/features/role/coach/routine
 
 type SearchAndCreateExerciseDrawerResultsProps = {
 	addedExerciseIds: Set<string>;
-	exercises: ExerciseListItem[];
+	exercises: RoutineCatalogExercise[];
 	exercisesQuery: {
 		error: { message: string } | null;
 		isError: boolean;
@@ -30,7 +31,7 @@ export function SearchAndCreateExerciseDrawerResults( {
 	return (
 		<div className={ "space-y-3" }>
 			<div className={ "flex items-center justify-between gap-3" }>
-				<p className={ "text-sm font-medium text-foreground" }>Catalogo activo</p>
+				<p className={ "text-sm font-medium text-foreground" }>Catálogo activo</p>
 				{ isSearching ? (
 					<div className={ "flex items-center gap-2 text-xs text-muted" } role={ "status" }>
 						<Spinner size={ "sm" }/>
@@ -68,7 +69,7 @@ export function SearchAndCreateExerciseDrawerResults( {
 			) : null }
 
 			{ !exercisesQuery.isLoading && !exercisesQuery.isError && exercises.length > 0 ? (
-				<div className={ "max-h-96 space-y-2 overflow-y-auto pr-1" }>
+				<div className={ "space-y-2" }>
 					{ exercises.map( ( exercise ) => (
 						<SearchAndCreateExerciseDrawerItem
 							key={ exercise.id }

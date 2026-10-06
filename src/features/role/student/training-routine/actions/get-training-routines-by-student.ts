@@ -13,7 +13,7 @@ export async function getTrainingRoutinesByStudentAction( { month, year }: GetTr
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesion para ver tus rutinas." );
+			throw new Error( "Debes iniciar sesión para ver tus rutinas." );
 		}
 
 		if (session.role !== "STUDENT") {

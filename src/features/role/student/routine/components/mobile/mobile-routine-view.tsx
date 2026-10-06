@@ -1,6 +1,6 @@
 import { Button } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react/carousel";
-import { ArrowLeft, ArrowRight, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, ChartLine, Lightbulb, Save } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import MobileExerciseCard from "@/features/role/student/routine/components/mobile/mobile-exercise-card";
@@ -10,8 +10,9 @@ import {
 	RoutineExerciseEmptyState
 } from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
 import {
-	RoutineSessionOverviewCards
-} from "@/features/role/student/routine/components/shared/routine-session-overview-cards";
+	RoutineSessionOverviewCard
+} from "@/features/role/student/routine/components/shared/routine-session-overview-card";
+import { formatDateLabel } from "@/features/role/student/routine/views/routine-page-content.utils";
 import {
 	useExerciseCarouselState
 } from "@/features/role/student/routine/components/shared/use-exercise-carousel-state";
@@ -97,13 +98,17 @@ export default function MobileRoutineView( {
 		<div className={ "flex flex-col sm:hidden" }>
 			{ exercises.length > 0 ? (
 				<>
-					<div className={ "mb-4 grid gap-3" }>
-						<RoutineSessionOverviewCards
-							latestProgressDate={ latestProgressDate }
-							routineObservation={ routineObservation }
-							routineStatusDescription={ routineStatusDescription }
-						/>
-					</div>
+					{ /* Antes del ejercicio solo va la nota del entrenador, y solo si escribio
+					     una: el resto del resumen queda al final para llegar rapido a entrenar. */ }
+					{ routineObservation ? (
+						<div className={ "mb-4 flex gap-3 rounded-2xl border border-border bg-surface px-3 py-3" }>
+							<Lightbulb className={ "mt-0.5 size-5 shrink-0 text-warning" }/>
+							<div className={ "min-w-0" }>
+								<p className={ "text-sm font-semibold text-foreground" }>Nota del entrenador</p>
+								<p className={ "text-sm text-muted" }>{ routineObservation }</p>
+							</div>
+						</div>
+					) : null }
 
 					<div
 						className={ "transition-[height] duration-200 ease-out" }
@@ -144,22 +149,48 @@ export default function MobileRoutineView( {
 						</Carousel>
 					</div>
 
-					<div className={ "flex items-center justify-between gap-3 px-2 pt-4" }>
-						<Button onPress={ () => api?.scrollPrev() } variant={ "secondary" }>
-							<ArrowLeft className={ "size-4" }/>
-							Anterior
-						</Button>
-						<p className={ "min-w-20 text-center text-sm font-semibold text-muted" }>{ `Ejercicio ${activeExerciseIndex} de ${exercises.length}` }</p>
-						<Button onPress={ () => api?.scrollNext() } variant={ "secondary" }>
-							Siguiente
-							<ArrowRight className={ "size-4" }/>
+					{ /* Barra fija abajo: pasar de ejercicio y guardar quedan a mano del pulgar
+					     sin tener que llegar al final de una tarjeta larga. */ }
+					<div className={ "sticky bottom-0 z-10 -mx-1 mt-4 space-y-2 border-t border-border bg-background/95 px-1 pb-2 pt-3 backdrop-blur" }>
+						<div className={ "flex items-center justify-between gap-2" }>
+							<Button
+								isIconOnly
+								aria-label={ "Ejercicio anterior" }
+								variant={ "secondary" }
+								onPress={ () => api?.scrollPrev() }
+							>
+								<ArrowLeft className={ "size-4" }/>
+							</Button>
+							<p className={ "min-w-0 flex-1 text-center text-sm font-semibold text-muted" }>{ `Ejercicio ${activeExerciseIndex} de ${exercises.length}` }</p>
+							<Button
+								isIconOnly
+								aria-label={ "Ejercicio siguiente" }
+								variant={ "secondary" }
+								onPress={ () => api?.scrollNext() }
+							>
+								<ArrowRight className={ "size-4" }/>
+							</Button>
+						</div>
+						<Button className={ "flex w-full font-semibold" } fullWidth isDisabled={ !canSaveProgress } isPending={ isPending } onPress={ onSave }>
+							<Save/>
+							Guardar progreso
 						</Button>
 					</div>
 
-					<Button className={ "mt-4 flex w-full font-semibold sm:hidden" } fullWidth isDisabled={ !canSaveProgress } isPending={ isPending } size={ "lg" } onPress={ onSave }>
-						<Save/>
-						Guardar progreso
-					</Button>
+					<div className={ "mt-4 grid gap-3" }>
+						<RoutineSessionOverviewCard
+							description={ routineStatusDescription }
+							icon={ <ChartLine className={ "size-5" }/> }
+							iconClassName={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }
+							title={ "Resumen de la sesión" }
+						/>
+						<RoutineSessionOverviewCard
+							description={ formatDateLabel( latestProgressDate ) }
+							icon={ <Calendar className={ "size-5" }/> }
+							iconClassName={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }
+							title={ "Última sesión completa" }
+						/>
+					</div>
 				</>
 			) : (
 				<RoutineExerciseEmptyState/>

@@ -29,8 +29,8 @@ export default function StudentDashboardPageContent() {
 			value: data.routine.totalWeeks,
 		},
 		{
-			description: "Cantidad de ejercicios del proximo dia.",
-			label: "Ejercicios del dia",
+			description: "Cantidad de ejercicios del próximo día.",
+			label: "Ejercicios del día",
 			value: data.routine.exercisesInNextDay,
 		},
 		{
@@ -39,8 +39,8 @@ export default function StudentDashboardPageContent() {
 			value: data.mealPlans.total,
 		},
 		{
-			description: "Ultimo guardado registrado en tu historial.",
-			label: "Ultimo progreso",
+			description: "Último guardado registrado en tu historial.",
+			label: "Último progreso",
 			value: formatLastProgressLabel( data.history.lastProgressAt ),
 		},
 	] : [], [ data ] );
@@ -70,7 +70,8 @@ export default function StudentDashboardPageContent() {
 				studentName={ data.student.name }
 				onRefresh={ handleRefresh }
 			/>
-			<StudentDashboardQuickStats items={ quickStats }/>
+			{ /* La proxima sesion va primero: es a lo que el estudiante entra, y en el
+			     telefono quedaba debajo de cuatro tarjetas de numeros. */ }
 			<StudentDashboardTodayCard
 				currentMonth={ data.routine.currentMonth }
 				currentYear={ data.routine.currentYear }
@@ -79,6 +80,7 @@ export default function StudentDashboardPageContent() {
 				nextRoutineDay={ data.routine.nextRoutineDay }
 				totalWeeks={ data.routine.totalWeeks }
 			/>
+			<StudentDashboardQuickStats items={ quickStats }/>
 			<StudentDashboardQuickActions/>
 			<StudentDashboardActivityCard
 				lastMealPlanUpdatedAt={ data.mealPlans.lastUpdatedAt }

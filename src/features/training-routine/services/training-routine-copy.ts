@@ -8,9 +8,20 @@ export type CopyTrainingRoutineMonthInput = {
 	destinationMonth: number;
 	destinationYear: number;
 	sourceMonth: number;
+	// De quien se copia. Sin indicar, el origen es el mismo estudiante destino.
+	sourceStudentId?: string;
 	sourceYear: number;
 	studentId: string;
 };
+
+export type LatestTrainingRoutineMonthInput = TrainingRoutineCopySourceInput & {
+	// Incluye el propio mes indicado, no solo los anteriores.
+	inclusive?: boolean;
+};
+
+export function getCopySourceStudentId( input: CopyTrainingRoutineMonthInput ) {
+	return input.sourceStudentId?.trim() || input.studentId;
+}
 
 export type WeekMapping = {
 	destinationWeek: number;
@@ -23,15 +34,15 @@ export type CopyTrainingRoutineWeeksInput = CopyTrainingRoutineMonthInput & {
 
 export function validateCopySourceInput( input: TrainingRoutineCopySourceInput ) {
 	if (!input.studentId.trim()) {
-		throw new Error( "Seleccioná un estudiante valido." );
+		throw new Error( "Seleccioná un estudiante válido." );
 	}
 
 	if (!Number.isInteger( input.month ) || input.month < 1 || input.month > 12) {
-		throw new Error( "El mes seleccionado no es valido." );
+		throw new Error( "El mes seleccionado no es válido." );
 	}
 
 	if (!Number.isInteger( input.year ) || input.year < 2000 || input.year > 2100) {
-		throw new Error( "El año seleccionado no es valido." );
+		throw new Error( "El año seleccionado no es válido." );
 	}
 }
 
@@ -47,8 +58,11 @@ export function validateCopyMonthInput( input: CopyTrainingRoutineMonthInput ) {
 		year: input.destinationYear,
 	} );
 
-	if (input.sourceMonth === input.destinationMonth && input.sourceYear === input.destinationYear) {
-		throw new Error( "No podes copiar desde el mismo mes destino." );
+	// Entre estudiantes distintos el mismo mes es un origen valido.
+	const isSameStudent = getCopySourceStudentId( input ) === input.studentId;
+
+	if (isSameStudent && input.sourceMonth === input.destinationMonth && input.sourceYear === input.destinationYear) {
+		throw new Error( "No podés copiar desde el mismo mes destino." );
 	}
 }
 

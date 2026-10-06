@@ -9,7 +9,7 @@ function assertDescription( description: string ) {
 	const trimmedDescription = description.trim();
 
 	if (trimmedDescription.length < 2) {
-		throw new Error( "La descripcion debe tener al menos 2 caracteres." );
+		throw new Error( "La descripción debe tener al menos 2 caracteres." );
 	}
 
 	return trimmedDescription;
@@ -27,7 +27,7 @@ function assertStudentId( studentId: string ) {
 
 function assertMealTime( title: string ): MealTimeValue {
 	if (!isMealTimeValue( title )) {
-		throw new Error( "El tipo de comida seleccionado no es valido." );
+		throw new Error( "El tipo de comida seleccionado no es válido." );
 	}
 
 	return title as MealTimeValue;
@@ -37,7 +37,7 @@ async function assertCoachSession() {
 	const session = await getAuthenticatedSession();
 
 	if (!session) {
-		throw new Error( "Debes iniciar sesion para gestionar planes alimenticios." );
+		throw new Error( "Debes iniciar sesión para gestionar planes alimenticios." );
 	}
 
 	if (session.role !== "COACH") {
@@ -61,7 +61,7 @@ async function assertCoachStudent( studentId: string, coachId: string ) {
 	} );
 
 	if (!student) {
-		throw new Error( "No se encontro un estudiante valido para gestionar sus planes alimenticios." );
+		throw new Error( "No se encontró un estudiante válido para gestionar sus planes alimenticios." );
 	}
 
 	return student;
@@ -76,7 +76,7 @@ async function assertMealPlanForStudent( id: string, studentId: string ) {
 	} );
 
 	if (!mealPlan) {
-		throw new Error( "No se encontro el plan alimenticio seleccionado." );
+		throw new Error( "No se encontró el plan alimenticio seleccionado." );
 	}
 
 	return mealPlan;

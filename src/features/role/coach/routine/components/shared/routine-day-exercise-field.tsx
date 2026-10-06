@@ -4,6 +4,7 @@ type EditableExerciseFieldProps = {
 	ariaLabel: string;
 	className?: string;
 	inputClassName?: string;
+	inputMode?: "numeric" | "text";
 	isMultiline?: boolean;
 	label?: string;
 	name: string;
@@ -15,6 +16,7 @@ export function RoutineDayExerciseField( {
 											 ariaLabel,
 											 className,
 											 inputClassName,
+											 inputMode,
 											 isMultiline = false,
 											 label,
 											 name,
@@ -33,7 +35,7 @@ export function RoutineDayExerciseField( {
 			{ isMultiline ? (
 				<TextArea className={ `${ inputClassName } border border-border` } rows={ 2 }/>
 			) : (
-				<Input className={ `${ inputClassName } border border-border` }/>
+				<Input className={ `${ inputClassName } border border-border` } inputMode={ inputMode }/>
 			) }
 		</TextField>
 	);

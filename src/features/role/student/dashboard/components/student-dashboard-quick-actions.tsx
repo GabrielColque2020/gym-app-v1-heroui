@@ -18,8 +18,8 @@ export function StudentDashboardQuickActions() {
 		<Card className={ "border border-border py-2" } variant={ "default" }>
 			<Card.Content className={ "space-y-4 p-3" }>
 				<div className={ "space-y-1" }>
-					<p className={ "text-base font-semibold text-foreground" }>Accesos rapidos</p>
-					<p className={ "text-sm text-muted" }>Entradas directas a tus modulos principales.</p>
+					<p className={ "text-base font-semibold text-foreground" }>Accesos rápidos</p>
+					<p className={ "text-sm text-muted" }>Entradas directas a tus módulos principales.</p>
 				</div>
 				<div className={ "flex flex-wrap gap-2 xl:flex-nowrap" }>
 					{ STUDENT_DASHBOARD_QUICK_ACTIONS.map( ( action ) => {

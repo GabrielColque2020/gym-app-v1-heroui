@@ -7,7 +7,6 @@ import {
 	COACH_EXERCISES_QUERY_KEY,
 	coachExercisesQueryOptions,
 } from "@/features/role/coach/exercises/services/coach-exercises-query";
-import { HISTORY_ROUTINES_STUDENTS_QUERY_KEY } from "@/features/role/coach/history-routines-students/services/history-routines-students-query";
 import { TRAINING_ROUTINES_STUDENTS_QUERY_KEY } from "@/features/role/coach/training-routines-students/services/training-routines-students-query";
 import {
 	deleteCoachExerciseAction,
@@ -25,7 +24,6 @@ function invalidateCoachExerciseRelatedQueries( queryClient: ReturnType<typeof u
 	void queryClient.invalidateQueries( { queryKey: [ "coach-history-routines-reports" ] } );
 	void queryClient.invalidateQueries( { queryKey: [ "routine-day" ] } );
 	void queryClient.invalidateQueries( { queryKey: TRAINING_ROUTINES_STUDENTS_QUERY_KEY } );
-	void queryClient.invalidateQueries( { queryKey: HISTORY_ROUTINES_STUDENTS_QUERY_KEY } );
 }
 
 export function useCoachExercises() {

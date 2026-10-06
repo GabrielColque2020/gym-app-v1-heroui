@@ -45,8 +45,8 @@ export function StudentDashboardTodayCard( {
 	if (!nextRoutineDay) {
 		return (
 			<StudentDashboardEmptyState
-				description={ "Puedes revisar todas tus semanas y días desde tu modulo de rutina." }
-				title={ "No hay un dia disponible para mostrar ahora mismo" }
+				description={ "Puedes revisar todas tus semanas y días desde tu módulo de rutina." }
+				title={ "No hay un día disponible para mostrar ahora mismo" }
 			/>
 		);
 	}
@@ -57,7 +57,7 @@ export function StudentDashboardTodayCard( {
 				<div className={ "flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between" }>
 					<div className={ "space-y-2" }>
 						<div className={ "flex flex-wrap items-center gap-2" }>
-							<p className={ "text-base font-semibold text-foreground" }>Tu proxima sesion</p>
+							<p className={ "text-base font-semibold text-foreground" }>Tu próxima sesión</p>
 							<Chip
 								color={ nextRoutineDay.isFinalized ? "success" : "warning" }
 								size={ "sm" }
@@ -67,18 +67,30 @@ export function StudentDashboardTodayCard( {
 							</Chip>
 						</div>
 						<div className={ "space-y-1" }>
-							<p className={ "text-2xl font-black text-foreground" }>{ `Dia ${ nextRoutineDay.dayNumber }` }</p>
-							<p className={ "text-sm text-muted" }>{ `${ nextRoutineDay.title } · Semana ${ nextRoutineDay.week }` }</p>
+							<p className={ "text-2xl font-black text-foreground" }>{ `Día ${ nextRoutineDay.dayNumber }` }</p>
+							<p className={ "text-sm text-muted" }>
+								{ /* El titulo suele ser el nombre de la semana: no se repite si ya lo dice. */ }
+								{ [
+									nextRoutineDay.title === `Semana ${ nextRoutineDay.week }` ? null : nextRoutineDay.title,
+									`Semana ${ nextRoutineDay.week }`,
+									`${ exercisesInNextDay } ${ exercisesInNextDay === 1 ? "ejercicio" : "ejercicios" }`,
+								].filter( Boolean ).join( " · " ) }
+							</p>
 						</div>
 					</div>
-					<Button onPress={ () => router.push( buildRoutineDayHref( nextRoutineDay.id ) ) }>
-						<ArrowRight className={ "size-4" }/>
+					<Button
+						className={ "w-full bg-accent text-accent-foreground lg:w-auto" }
+						size={ "lg" }
+						onPress={ () => router.push( buildRoutineDayHref( nextRoutineDay.id ) ) }
+					>
 						{ nextRoutineDay.isFinalized ? "Volver a la rutina" : "Continuar rutina" }
+						<ArrowRight className={ "size-4" }/>
 					</Button>
 				</div>
-				<div className={ "grid gap-3 sm:grid-cols-3" }>
+				{ /* En el telefono el detalle del dia se omite: ya esta en las tarjetas de abajo. */ }
+				<div className={ "hidden gap-3 sm:grid sm:grid-cols-3" }>
 					<div className={ "rounded-lg border border-border bg-surface-secondary px-4 py-3" }>
-						<p className={ "text-xs font-medium text-muted" }>Ejercicios del dia</p>
+						<p className={ "text-xs font-medium text-muted" }>Ejercicios del día</p>
 						<p className={ "mt-1 text-lg font-semibold text-foreground" }>{ exercisesInNextDay }</p>
 					</div>
 					<div className={ "rounded-lg border border-border bg-surface-secondary px-4 py-3" }>
@@ -86,7 +98,7 @@ export function StudentDashboardTodayCard( {
 						<p className={ "mt-1 text-lg font-semibold text-foreground" }>{ totalWeeks }</p>
 					</div>
 					<div className={ "rounded-lg border border-border bg-surface-secondary px-4 py-3" }>
-						<p className={ "text-xs font-medium text-muted" }>Estado del dia</p>
+						<p className={ "text-xs font-medium text-muted" }>Estado del día</p>
 						<p className={ "mt-1 text-lg font-semibold text-foreground" }>
 							{ nextRoutineDay.isFinalized ? "Completado" : "En curso" }
 						</p>
