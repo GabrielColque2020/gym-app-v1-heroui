@@ -56,7 +56,6 @@ export function EditRoutineDayLoadedContent( {
 		moveExercise,
 		replaceWithCopies,
 		requiredFieldsMessage,
-		routineName,
 		resetRefreshConfirmOpen,
 		updateExerciseField,
 		deleteExercise,
@@ -74,16 +73,28 @@ export function EditRoutineDayLoadedContent( {
 	const router = useRouter();
 	const { month, student, year } = data.trainingRoutine;
 	const monthWeeks = useTrainingRoutines( { month, studentId: student.id, year } ).data?.routineMonth.weeks;
-	const weekDays = monthWeeks
-		?.find( ( week ) => week.routineDays.some( ( day ) => day.id === routineDayId ) )?.routineDays ?? [];
-	const nextDay = weekDays[ weekDays.findIndex( ( day ) => day.id === routineDayId ) + 1 ] ?? null;
+	// Lo que sigue: el proximo dia de la semana y, en el ultimo, el primero de la
+	// semana siguiente, para recorrer el mes entero guardando.
+	const currentWeekIndex = ( monthWeeks ?? [] ).findIndex(
+		( week ) => week.routineDays.some( ( day ) => day.id === routineDayId ),
+	);
+	const weekDays = monthWeeks?.[ currentWeekIndex ]?.routineDays ?? [];
+	const nextDayInWeek = weekDays[ weekDays.findIndex( ( day ) => day.id === routineDayId ) + 1 ] ?? null;
+	const nextWeek = nextDayInWeek ? null : monthWeeks?.[ currentWeekIndex + 1 ] ?? null;
+	const nextDay = nextDayInWeek ?? nextWeek?.routineDays[ 0 ] ?? null;
+	const nextStepLabel = nextDayInWeek
+		? `pasar al Día ${ nextDayInWeek.dayNumber }`
+		: nextWeek && nextDay
+			? `pasar a la Semana ${ nextWeek.week }`
+			: null;
 
 	async function handleSaveAndNext() {
 		if (!nextDay) return;
 
-		const saved = await handleSave();
+		// Sin cambios pendientes no hay nada que guardar: solo avanza.
+		const canAdvance = isDirty ? await handleSave() : true;
 
-		if (saved) router.push( buildEditRoutineDayHref( nextDay.id, student.id, month, year ) );
+		if (canAdvance) router.push( buildEditRoutineDayHref( nextDay.id, student.id, month, year ) );
 	}
 
 	// Las variantes cuelgan del ejercicio ya guardado en la rutina. Para uno recien
@@ -133,7 +144,7 @@ export function EditRoutineDayLoadedContent( {
 				isDirty={ isDirty }
 				isSaveDisabled={ isSaveDisabled }
 				isSaving={ isSaving }
-				nextDayNumber={ nextDay?.dayNumber ?? null }
+				nextStepLabel={ nextStepLabel }
 				title={ title }
 				onSave={ handleSave }
 				onSaveAndNext={ handleSaveAndNext }
@@ -152,11 +163,8 @@ export function EditRoutineDayLoadedContent( {
 				addedExerciseIds={ addedExerciseIds }
 				draftRoutines={ draftRoutines }
 				getSuggestedOrder={ getSuggestedOrder }
-				isDirty={ isDirty }
 				isRefreshing={ isRefreshing }
 				requiredFieldsMessage={ requiredFieldsMessage }
-				routineSubtitle={ description }
-				routineTitle={ routineName }
 				validationError={ validationError }
 				onAddExerciseAction={ handleAddExercise }
 				onDeleteExerciseAction={ deleteExercise }

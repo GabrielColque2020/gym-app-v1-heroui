@@ -76,15 +76,17 @@ export function CoachRepeatWeekAction( {
 
 	return (
 		<>
+			{ /* Aparece en cada semana de la grilla: va discreto y con texto corto. */ }
 			<Button
+				aria-label={ `Repetir la semana ${ sourceWeek } en las demás semanas` }
 				className={ "shrink-0" }
 				isDisabled={ sourceExerciseCount === 0 }
 				size={ "sm" }
-				variant={ "secondary" }
+				variant={ "ghost" }
 				onPress={ () => setIsConfirmOpen( true ) }
 			>
 				<CopyPlus className={ "size-4" }/>
-				Repetir en las demás semanas
+				Repetir en las demás
 			</Button>
 
 			<Modal.Backdrop

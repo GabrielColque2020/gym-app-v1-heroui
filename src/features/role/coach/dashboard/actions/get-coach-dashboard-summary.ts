@@ -85,6 +85,19 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 							role: "STUDENT",
 						},
 					},
+					// Cuenta como rutina del mes solo si tiene algun ejercicio: una
+					// estructura de semanas y dias vacia todavia esta pendiente.
+					weeks: {
+						some: {
+							routineDays: {
+								some: {
+									routines: {
+										some: {},
+									},
+								},
+							},
+						},
+					},
 					year: currentPeriod.year,
 				},
 			} ),

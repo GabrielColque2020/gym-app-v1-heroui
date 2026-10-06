@@ -8,6 +8,8 @@ import { EditRoutineDayStateBlock } from "@/features/role/coach/routine/componen
 import { useEditRoutineDayPageState } from "@/features/role/coach/routine/hooks/use-edit-routine-day-page-state";
 import React from "react";
 
+import { monthYearLabel } from "@/constants/months";
+
 type EditRoutineDayPageContentProps = {
 	month: number | null;
 	routineDayId: string | null;
@@ -59,8 +61,8 @@ export default function EditRoutineDayPageContent( {
 
 	const routine = data.trainingRoutine;
 	const studentName = routine.student?.name ?? "Estudiante";
-	const title = `Editar Rutina - Día ${ data.dayNumber }`;
-	const description = `Semana ${ routine.week } | ${ routine.month }/${ routine.year } | ${ studentName }`;
+	const title = `Día ${ data.dayNumber }`;
+	const description = `Semana ${ routine.week } · ${ monthYearLabel( String( routine.month ), String( routine.year ) ) } · ${ studentName }`;
 
 	return (
 		<EditRoutineDayLoadedContent

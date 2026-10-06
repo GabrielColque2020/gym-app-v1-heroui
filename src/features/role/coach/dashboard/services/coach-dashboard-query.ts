@@ -15,7 +15,9 @@ export const coachDashboardSummaryQueryOptions = () => queryOptions( {
 	queryFn: fetchCoachDashboardSummary,
 	queryKey: COACH_DASHBOARD_SUMMARY_QUERY_KEY,
 	refetchInterval: false,
-	refetchOnMount: false,
+	// Muestra lo guardado y refresca al entrar: si el coach viene de cargar una
+	// rutina, el aviso de "sin rutina" no puede quedar con datos viejos.
+	refetchOnMount: "always",
 	refetchOnReconnect: false,
 	refetchOnWindowFocus: false,
 	retry: 2,

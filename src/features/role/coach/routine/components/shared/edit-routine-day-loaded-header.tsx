@@ -11,11 +11,15 @@ type EditRoutineDayLoadedHeaderProps = {
 	isDirty: boolean;
 	isSaveDisabled: boolean;
 	isSaving: boolean;
-	nextDayNumber: number | null;
+	nextStepLabel: string | null;
 	onSave: () => void;
 	onSaveAndNext: () => void;
 	title: string;
 };
+
+function capitalize( text: string ) {
+	return text.charAt( 0 ).toUpperCase() + text.slice( 1 );
+}
 
 export function EditRoutineDayLoadedHeader( {
 												backHref,
@@ -25,7 +29,7 @@ export function EditRoutineDayLoadedHeader( {
 												isDirty,
 												isSaveDisabled,
 												isSaving,
-												nextDayNumber,
+												nextStepLabel,
 												onSave,
 												onSaveAndNext,
 												title,
@@ -47,22 +51,23 @@ export function EditRoutineDayLoadedHeader( {
 					{ /* Con un dia siguiente, lo principal es guardar y seguir cargando la semana. */ }
 					<div className={ "flex w-full flex-col gap-2 sm:w-auto sm:flex-row" }>
 						<Button
-							className={ nextDayNumber ? undefined : "bg-accent text-accent-foreground" }
+							className={ nextStepLabel ? undefined : "bg-accent text-accent-foreground" }
 							isDisabled={ isSaveDisabled }
 							isPending={ isSaving }
-							variant={ nextDayNumber ? "secondary" : undefined }
+							variant={ nextStepLabel ? "secondary" : undefined }
 							onPress={ onSave }
 						>
 							{ isSaving ? <Spinner color={ "current" } size={ "sm" }/> : <Save className={ "size-4" }/> }
-							{ isSaving ? "Guardando..." : nextDayNumber ? "Guardar" : "Guardar cambios" }
+							{ isSaving ? "Guardando..." : nextStepLabel ? "Guardar" : "Guardar cambios" }
 						</Button>
-						{ nextDayNumber ? (
+						{ nextStepLabel ? (
 							<Button
 								className={ "bg-accent text-accent-foreground" }
-								isDisabled={ isSaveDisabled }
+								// Sin cambios pendientes no hay nada que guardar: solo avanza.
+								isDisabled={ isDirty && isSaveDisabled }
 								onPress={ onSaveAndNext }
 							>
-								Guardar y pasar al Día { nextDayNumber }
+								{ isDirty ? `Guardar y ${ nextStepLabel }` : capitalize( nextStepLabel ) }
 								<ArrowRight className={ "size-4" }/>
 							</Button>
 						) : null }

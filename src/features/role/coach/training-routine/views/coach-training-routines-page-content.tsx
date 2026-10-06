@@ -4,8 +4,7 @@ import { useCallback } from "react";
 
 import { PageBreadcrumbs } from "@/components/common";
 import { CoachTrainingRoutineFilter } from "@/features/role/coach/training-routine/components/shared";
-import { CoachTrainingRoutineCardDesktop } from "@/features/role/coach/training-routine/components/desktop";
-import { CoachTrainingRoutineCardMobile } from "@/features/role/coach/training-routine/components/mobile";
+import { CoachTrainingRoutineMonthGrid } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-month-grid";
 import { CoachTrainingRoutinesEmptyState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-empty-state";
 import { CoachTrainingRoutinesErrorState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-error-state";
 import { CoachTrainingRoutinesLoadingState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-loading-state";
@@ -119,25 +118,12 @@ export default function CoachTrainingRoutinesPageContent( {
 					year={ year }
 				/>
 			) : (
-				<>
-					<div className={ "hidden md:flex" }>
-						<CoachTrainingRoutineCardDesktop
-							month={ month }
-							routineWeeks={ routineWeeks }
-							studentId={ studentId }
-							year={ year }
-						/>
-					</div>
-
- 					<div className={ "flex md:hidden" }>
- 						<CoachTrainingRoutineCardMobile
- 							month={ month }
- 							routineWeeks={ routineWeeks }
- 							studentId={ studentId }
- 							year={ year }
- 						/>
- 					</div>
-				</>
+				<CoachTrainingRoutineMonthGrid
+					month={ month }
+					routineWeeks={ routineWeeks }
+					studentId={ studentId }
+					year={ year }
+				/>
 			) }
 		</div>
 	);

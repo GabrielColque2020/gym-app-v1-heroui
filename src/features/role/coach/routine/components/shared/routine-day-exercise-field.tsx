@@ -1,4 +1,5 @@
 import { Input, Label, TextArea, TextField } from "@heroui/react";
+import { twMerge } from "tailwind-merge";
 
 type EditableExerciseFieldProps = {
 	ariaLabel: string;
@@ -9,6 +10,7 @@ type EditableExerciseFieldProps = {
 	label?: string;
 	name: string;
 	onChange: ( value: string ) => void;
+	placeholder?: string;
 	value: string;
 };
 
@@ -21,6 +23,7 @@ export function RoutineDayExerciseField( {
 											 label,
 											 name,
 											 onChange,
+											 placeholder,
 											 value,
 										 }: EditableExerciseFieldProps ) {
 	return (
@@ -33,9 +36,9 @@ export function RoutineDayExerciseField( {
 		>
 			{ label ? <Label className={ "text-xs text-muted" }>{ label }</Label> : null }
 			{ isMultiline ? (
-				<TextArea className={ `${ inputClassName } border border-border` } rows={ 2 }/>
+				<TextArea className={ twMerge( "border border-border", inputClassName ) } placeholder={ placeholder } rows={ 2 }/>
 			) : (
-				<Input className={ `${ inputClassName } border border-border` } inputMode={ inputMode }/>
+				<Input className={ twMerge( "border border-border", inputClassName ) } inputMode={ inputMode } placeholder={ placeholder }/>
 			) }
 		</TextField>
 	);

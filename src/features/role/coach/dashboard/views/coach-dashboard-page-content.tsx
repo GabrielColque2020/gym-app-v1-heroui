@@ -6,7 +6,8 @@ import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { DashboardSkeleton } from "@/components/common/skeletons";
 import { CoachDashboardErrorState } from "@/features/role/coach/dashboard/components/coach-dashboard-error-state";
 import { CoachDashboardHero } from "@/features/role/coach/dashboard/components/coach-dashboard-hero";
-import { CoachDashboardQuickActions } from "@/features/role/coach/dashboard/components/coach-dashboard-quick-actions";
+import { CoachDashboardPendingRoutines } from "@/features/role/coach/dashboard/components/coach-dashboard-pending-routines";
+import { buildMonthYearLabel } from "@/features/role/coach/dashboard/services/coach-dashboard-mappers";
 import { CoachDashboardQuickStats } from "@/features/role/coach/dashboard/components/coach-dashboard-quick-stats";
 import { CoachDashboardStudentsTable } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table";
 import { useCoachDashboardSummary } from "@/features/role/coach/dashboard/hooks/use-coach-dashboard-summary";
@@ -36,16 +37,19 @@ export default function CoachDashboardPageContent() {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<CoachDashboardHero
-				currentPeriodLabel={ data.currentPeriod.label }
 				isRefreshing={ isRefreshing }
 				onRefresh={ handleRefresh }
 			/>
-			<CoachDashboardQuickStats items={ buildCoachDashboardQuickStats( data ) }/>
-			<CoachDashboardQuickActions/>
+			{ /* Primero lo pendiente, despues el detalle por estudiante y al final los numeros. */ }
+			<CoachDashboardPendingRoutines
+				periodLabel={ buildMonthYearLabel( data.currentPeriod.month, data.currentPeriod.year ) }
+				students={ data.students }
+			/>
 			<CoachDashboardStudentsTable
 				currentPeriodLabel={ data.currentPeriod.label }
 				students={ data.students }
 			/>
+			<CoachDashboardQuickStats items={ buildCoachDashboardQuickStats( data ) }/>
 		</div>
 	);
 }

@@ -4,34 +4,31 @@ import { RotateCw } from "lucide-react";
 import { PageHeader } from "@/components/common";
 
 type CoachDashboardHeroProps = {
-	currentPeriodLabel: string;
 	isRefreshing: boolean;
 	onRefresh: () => void;
 };
 
 export function CoachDashboardHero( {
-										currentPeriodLabel,
 										isRefreshing,
 										onRefresh,
 									}: CoachDashboardHeroProps ) {
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
-			<Card.Content className={ "flex flex-col gap-3 p-3 lg:flex-row lg:items-start lg:justify-between" }>
+			<Card.Content className={ "flex flex-row items-start justify-between gap-3 p-3" }>
 				<PageHeader
-					description={ `Vista operativa para revisar pendientes, entrar rápido a cada estudiante y corregir el trabajo de ${ currentPeriodLabel }.` }
-					title={ "Dashboard coach" }
+					description={ "Lo pendiente de tus estudiantes y el acceso a cada uno." }
+					title={ "Inicio" }
 				/>
-				<div className={ "flex w-full flex-col gap-2 sm:w-auto sm:flex-row" }>
-					<Button
-						className={ "w-full sm:w-auto" }
-						isDisabled={ isRefreshing }
-						variant={ "secondary" }
-						onPress={ onRefresh }
-					>
-						<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-						{ isRefreshing ? "Actualizando..." : "Actualizar" }
-					</Button>
-				</div>
+				<Button
+					aria-label={ "Actualizar" }
+					className={ "shrink-0" }
+					isDisabled={ isRefreshing }
+					variant={ "secondary" }
+					onPress={ onRefresh }
+				>
+					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+					<span className={ "hidden sm:inline" }>{ isRefreshing ? "Actualizando..." : "Actualizar" }</span>
+				</Button>
 			</Card.Content>
 		</Card>
 	);

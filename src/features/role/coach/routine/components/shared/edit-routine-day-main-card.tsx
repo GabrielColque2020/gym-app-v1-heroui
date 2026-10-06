@@ -10,11 +10,8 @@ type EditRoutineDayMainCardProps = {
 	addedExerciseIds: Set<string>;
 	draftRoutines: DraftRoutineDayExercise[];
 	getSuggestedOrder: () => number;
-	isDirty: boolean;
 	isRefreshing: boolean;
 	requiredFieldsMessage: string | null;
-	routineSubtitle: string;
-	routineTitle: string;
 	validationError: string | null;
 	onAddExerciseAction: ( exercise: ExerciseListItem, order: number, prescription: ExercisePrescription ) => void;
 	onDeleteExerciseAction: ( clientId: string ) => void;
@@ -26,11 +23,8 @@ export function EditRoutineDayMainCard( {
 											addedExerciseIds,
 											draftRoutines,
 											getSuggestedOrder,
-											isDirty,
 											isRefreshing,
 											requiredFieldsMessage,
-											routineSubtitle,
-											routineTitle,
 											validationError,
 											onAddExerciseAction,
 											onDeleteExerciseAction,
@@ -51,15 +45,12 @@ export function EditRoutineDayMainCard( {
 				getSuggestedOrder={ getSuggestedOrder }
 				isRefreshing={ isRefreshing }
 				lastPrescription={ lastPrescription }
-				routineSubtitle={ routineSubtitle }
-				routineTitle={ routineTitle }
 				onAddExerciseAction={ onAddExerciseAction }
 				onRefreshAction={ onRefreshAction }
 			/>
 
 			<EditRoutineDayMainCardContent
 				draftRoutines={ draftRoutines }
-				isDirty={ isDirty }
 				onDeleteExercise={ onDeleteExerciseAction }
 				onUpdateExerciseField={ onUpdateExerciseField }
 				requiredFieldsMessage={ requiredFieldsMessage }
