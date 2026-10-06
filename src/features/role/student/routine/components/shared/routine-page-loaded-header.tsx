@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button, Card, Chip, Spinner } from "@heroui/react";
-import { ArrowLeft, CheckCircle2, Flag, RotateCw, Save } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Flag, Pencil, RotateCw, Save } from "lucide-react";
 
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
 import { PageHeader } from "@/components/common";
@@ -29,12 +29,15 @@ export function RoutinePageLoadedHeader( {
 		activeSession,
 		backHref,
 		canFinishDay,
+		dayDoneDate,
 		halfLoadedSetCount,
 		handleOpenFinishDrawer,
 		handleRefresh,
 		handleSaveNow,
+		handleUnlockSession,
 		isDayFinished,
 		isRefreshing,
+		isSessionLocked,
 		routineStatusDescription,
 		saveStatus,
 	} = state;
@@ -63,7 +66,10 @@ export function RoutinePageLoadedHeader( {
 			{ isDayFinished ? (
 				<Chip color={ "success" } size={ "sm" } variant={ "soft" }>
 					<CheckCircle2 className={ "size-3" }/>
-					Día terminado
+					{ /* Con la fecha, un dia viejo se reconoce como registro y no como el de hoy. */ }
+					{ dayDoneDate
+						? `Terminado el ${ new Intl.DateTimeFormat( "es-AR", { day: "numeric", month: "long", year: "numeric" } ).format( dayDoneDate ) }`
+						: "Día terminado" }
 				</Chip>
 			) : null }
 			{ saveStatus === "error" ? (
@@ -129,7 +135,14 @@ export function RoutinePageLoadedHeader( {
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
-						{ isDayFinished ? null : (
+						{ isDayFinished ? (
+							isSessionLocked ? (
+								<Button variant={ "secondary" } onPress={ handleUnlockSession }>
+									<Pencil className={ "size-4" }/>
+									Corregir series
+								</Button>
+							) : null
+						) : (
 							<Button isDisabled={ !canFinishDay } onPress={ handleOpenFinishDrawer }>
 								<Flag className={ "size-4" }/>
 								Terminar día

@@ -80,7 +80,7 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 						<ExerciseCoachNote note={ exercise.coachNote }/>
 
 						<div className={ "space-y-1" }>
-							<p className={ "text-xs font-semibold tracking-wide text-foreground" }>Última sesión</p>
+							<p className={ "text-xs font-semibold tracking-wide text-foreground" }>Sesión anterior</p>
 							<ExerciseCardSessionHistory
 								history={ hasSessionHistory ? displayedSessionHistory : null }
 								isCompact

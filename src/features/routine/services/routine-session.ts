@@ -7,6 +7,7 @@ import {
 	getProgressEntriesByExercise,
 	getProgressEntriesBySlot,
 	getProgressEntriesByVariant,
+	getSessionKey,
 	getVariantExerciseId,
 	parseDecimal,
 	parseInteger,
@@ -109,7 +110,32 @@ export function mapStudentRoutineSessionDetailToRoutinePages( detail: StudentRou
 	} );
 }
 
+// Cuando empezo a cargarse este dia: la fecha de su registro mas viejo.
+function getOwnSessionStart( detail: StudentRoutineSessionDetail ) {
+	const ownSessionKey = getSessionKey( {
+		dayNumber: detail.dayNumber,
+		month: detail.trainingRoutine.month,
+		week: detail.trainingRoutine.week,
+		year: detail.trainingRoutine.year,
+	} );
+	const ownDates = detail.progressEntries
+		.filter( ( entry ) => getSessionKey( entry ) === ownSessionKey )
+		.map( ( entry ) => new Date( entry.date ).getTime() );
+
+	return {
+		ownSessionKey,
+		ownSessionStart: ownDates.length > 0 ? Math.min( ...ownDates ) : null,
+	};
+}
+
 export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineSessionDetail ): StudentRoutineSession {
+	// La "sesion anterior" de un ejercicio es la ultima que se hizo antes de este
+	// dia. Sin este filtro incluia al propio dia (mostraba como anterior lo que se
+	// acababa de cargar) y, en un dia viejo, sesiones hechas despues.
+	const { ownSessionKey, ownSessionStart } = getOwnSessionStart( detail );
+	const isEarlierSession = ( entry: StudentRoutineSessionDetail["progressEntries"][ number ] ) =>
+		getSessionKey( entry ) !== ownSessionKey
+		&& ( ownSessionStart === null || new Date( entry.date ).getTime() < ownSessionStart );
 	const exercises = [ ...detail.routines ]
 		.sort( ( left, right ) => left.order - right.order )
 		.map( ( routine ) => {
@@ -121,9 +147,11 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				? routine.variants.find( ( variant ) => variant.variantExercise.id === variantExerciseId )?.variantExercise ?? null
 				: null;
 			const currentExerciseEntries = getCurrentProgressEntriesByExercise( detail, exerciseId, selectedVariant?.id ?? null );
-			const historyExerciseEntries = selectedVariant
-				? getProgressEntriesByVariant( detail, selectedVariant.id )
-				: getProgressEntriesByExercise( detail, exerciseId );
+			const historyExerciseEntries = (
+				selectedVariant
+					? getProgressEntriesByVariant( detail, selectedVariant.id )
+					: getProgressEntriesByExercise( detail, exerciseId )
+			).filter( isEarlierSession );
 			const lastSession = buildSessionHistory(
 				historyExerciseEntries,
 			);
@@ -134,7 +162,8 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 			const currentSets = Array.from( { length: setCount }, ( _, index ) => {
 				const setNumber = index + 1;
 				const savedSet = getLatestProgressEntryBySetNumber( currentExerciseEntries, setNumber );
-				const previousSavedSet = getPreviousProgressEntryBySetNumber( historyExerciseEntries, savedSet, setNumber );
+				// El historial ya no incluye este dia: la anterior es la primera que aparece.
+				const previousSavedSet = getPreviousProgressEntryBySetNumber( historyExerciseEntries, null, setNumber );
 				const savedSetNotes = parseProgressNotes( savedSet?.notes ?? null ).notes;
 				const currentReps = parseInteger( savedSet?.repsCompleted );
 				const currentWeight = parseDecimal( savedSet?.weightUsed );
@@ -142,8 +171,10 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				const previousSeriesWeight = parseDecimal( previousSavedSet?.weightUsed );
 
 				return {
-					// Repeticiones y peso son requeridos los dos.
-					completed: currentReps !== null && currentWeight !== null,
+					// Una serie ya guardada cuenta como hecha tal como quedo, aunque sea un
+					// registro viejo sin peso: si no, al corregir otra serie del dia esa se
+					// descartaria. Lo requerido (repeticiones y peso) se exige al cargar.
+					completed: currentReps !== null || currentWeight !== null,
 					currentReps,
 					currentWeight,
 					// Id fijo por ejercicio y numero de serie, y no el del registro guardado:
@@ -196,7 +227,9 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 						variant.variantExercise.instructions,
 						variant.variantExercise.globalExercise?.instructions,
 					),
-					lastSession: buildSessionHistory( getProgressEntriesByVariant( detail, variant.variantExercise.id ) ),
+					lastSession: buildSessionHistory(
+						getProgressEntriesByVariant( detail, variant.variantExercise.id ).filter( isEarlierSession ),
+					),
 					name: variant.variantExercise.name,
 					videoUrl: pickFirstText(
 						variant.variantExercise.videoUrl,

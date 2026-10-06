@@ -1,6 +1,8 @@
 import { Button, Dropdown, Header, Label } from "@heroui/react";
 import { ArrowLeftRight, EllipsisVertical, Eye } from "lucide-react";
 
+import { useIsRoutineSessionLocked } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
+
 type ExerciseChangeDrawerTriggerProps = {
 	hasVariants: boolean;
 	onOpen: () => void;
@@ -12,6 +14,8 @@ export function ExerciseChangeDrawerTrigger( {
 	onOpen,
 	onViewExecution,
 }: ExerciseChangeDrawerTriggerProps ) {
+	const isLocked = useIsRoutineSessionLocked();
+
 	return (
 		<Dropdown>
 			<Button isIconOnly aria-label={ "Opciones del ejercicio" } variant={ "ghost" }>
@@ -25,7 +29,7 @@ export function ExerciseChangeDrawerTrigger( {
 					} }
 				>
 					<Header>Opciones</Header>
-					<Dropdown.Item id={ "change-exercise" } textValue={ "Cambiar ejercicio" } isDisabled={ !hasVariants }>
+					<Dropdown.Item id={ "change-exercise" } textValue={ "Cambiar ejercicio" } isDisabled={ !hasVariants || isLocked }>
 						<ArrowLeftRight className={ "size-4 shrink-0 text-accent" }/>
 						<Label className={ "text-accent" }>Cambiar ejercicio</Label>
 					</Dropdown.Item>

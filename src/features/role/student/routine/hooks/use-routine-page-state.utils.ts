@@ -1,4 +1,5 @@
 ﻿import type { StudentRoutineSessionDetail, StudentRoutineSession } from "@/features/routine/services/routine-session";
+import { getSessionKey } from "@/features/routine/services/routine-session-progress";
 
 import {
 	buildRoutineSaveSummary,
@@ -10,6 +11,23 @@ type BuildRoutinePageDerivedStateParams = {
 	data: StudentRoutineSessionDetail | undefined;
 	isSavePending: boolean;
 };
+
+// Cuando se hizo este dia: la fecha del ultimo registro que el estudiante cargo en el.
+function getDayDoneDate( data: StudentRoutineSessionDetail | undefined ) {
+	if (!data) return null;
+
+	const ownSessionKey = getSessionKey( {
+		dayNumber: data.dayNumber,
+		month: data.trainingRoutine.month,
+		week: data.trainingRoutine.week,
+		year: data.trainingRoutine.year,
+	} );
+	const ownDates = data.progressEntries
+		.filter( ( entry ) => getSessionKey( entry ) === ownSessionKey )
+		.map( ( entry ) => new Date( entry.date ).getTime() );
+
+	return ownDates.length > 0 ? new Date( Math.max( ...ownDates ) ) : null;
+}
 
 export function buildRoutinePageDerivedState( {
 	activeSession,
@@ -31,6 +49,7 @@ export function buildRoutinePageDerivedState( {
 	return {
 		backHref: `/student/training-routine?month=${ data?.trainingRoutine.month ?? "" }&year=${ data?.trainingRoutine.year ?? "" }`,
 		canFinishDay: hasExercises && !isSavePending,
+		dayDoneDate: getDayDoneDate( data ),
 		halfLoadedSetCount: activeSession ? countHalfLoadedSets( activeSession ) : 0,
 		isDayFinished: Boolean( data?.isFinalized ),
 		routineStatusDescription,

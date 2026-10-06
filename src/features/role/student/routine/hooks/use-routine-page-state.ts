@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { useRoutinePageActions } from "@/features/role/student/routine/hooks/use-routine-page-actions";
 import { buildRoutinePageDerivedState } from "@/features/role/student/routine/hooks/use-routine-page-state.utils";
@@ -49,6 +49,7 @@ export function useRoutinePageState( {
 	const {
 		backHref,
 		canFinishDay,
+		dayDoneDate,
 		halfLoadedSetCount,
 		isDayFinished,
 		routineStatusDescription,
@@ -61,6 +62,10 @@ export function useRoutinePageState( {
 		} ),
 		[ activeSession, data, saveRoutineSession.isPending ],
 	);
+	// Un dia terminado queda bloqueado hasta que el estudiante pide corregirlo. Se
+	// recuerda por dia: al pasar a otro dia terminado, ese tambien abre bloqueado.
+	const [ unlockedDayId, setUnlockedDayId ] = useState<string | null>( null );
+	const isSessionLocked = isDayFinished && unlockedDayId !== routineDayId;
 	const {
 		handleConfirmFinish,
 		handleConfirmRefresh,
@@ -93,6 +98,7 @@ export function useRoutinePageState( {
 		backHref,
 		canFinishDay,
 		data,
+		dayDoneDate,
 		error,
 		halfLoadedSetCount,
 		handleConfirmFinish,
@@ -103,6 +109,7 @@ export function useRoutinePageState( {
 		handleRepeatLastSession,
 		handleSaveNow,
 		handleSetUpdate,
+		handleUnlockSession: () => setUnlockedDayId( routineDayId ),
 		handleVariantChange,
 		isDayFinished,
 		isError,
@@ -111,6 +118,7 @@ export function useRoutinePageState( {
 		isLoading,
 		isRefreshConfirmOpen,
 		isRefreshing,
+		isSessionLocked,
 		routineStatusDescription,
 		saveRoutineSession,
 		saveStatus,

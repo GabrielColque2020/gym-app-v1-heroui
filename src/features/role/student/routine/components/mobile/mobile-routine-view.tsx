@@ -1,6 +1,6 @@
 import { Button } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react/carousel";
-import { ArrowLeft, ArrowRight, CheckCircle2, Flag } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Flag, Pencil } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import MobileExerciseCard from "@/features/role/student/routine/components/mobile/mobile-exercise-card";
@@ -19,6 +19,8 @@ interface MobileRoutineViewProps {
 	exercises: Exercise[];
 	canFinishDay: boolean;
 	isDayFinished: boolean;
+	isSessionLocked: boolean;
+	onUnlockSessionAction: () => void;
 	onExerciseUpdate: ( exerciseId: string, updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }> ) => void;
 	onFinishDayAction: () => void;
 	onRepeatLastSessionAction: ( exerciseId: string ) => void;
@@ -30,6 +32,8 @@ export default function MobileRoutineView( {
 	exercises,
 	canFinishDay,
 	isDayFinished,
+	isSessionLocked,
+	onUnlockSessionAction,
 	onExerciseUpdate,
 	onFinishDayAction,
 	onRepeatLastSessionAction,
@@ -165,10 +169,18 @@ export default function MobileRoutineView( {
 							</Button>
 						</div>
 						{ isDayFinished ? (
-							<p className={ "flex items-center justify-center gap-1.5 py-2 text-sm font-semibold text-success" }>
-								<CheckCircle2 className={ "size-4" }/>
-								Día terminado
-							</p>
+							<div className={ "flex items-center justify-between gap-2 py-1" }>
+								<p className={ "flex items-center gap-1.5 text-sm font-semibold text-success" }>
+									<CheckCircle2 className={ "size-4" }/>
+									{ isSessionLocked ? "Día terminado" : "Corrigiendo el día" }
+								</p>
+								{ isSessionLocked ? (
+									<Button size={ "sm" } variant={ "secondary" } onPress={ onUnlockSessionAction }>
+										<Pencil className={ "size-4" }/>
+										Corregir
+									</Button>
+								) : null }
+							</div>
 						) : (
 							<Button className={ "flex w-full font-semibold" } fullWidth isDisabled={ !canFinishDay } onPress={ onFinishDayAction }>
 								<Flag className={ "size-4" }/>

@@ -2,6 +2,7 @@ import { PageBreadcrumbs } from "@/components/common";
 import DesktopRoutineView from "@/features/role/student/routine/components/desktop/desktop-routine-view";
 import MobileRoutineView from "@/features/role/student/routine/components/mobile/mobile-routine-view";
 import { RoutinePageLoadedHeader } from "@/features/role/student/routine/components/shared/routine-page-loaded-header";
+import { RoutineSessionLockProvider } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
 import RoutineSaveDrawer from "@/features/role/student/routine/components/shared/routine-save-drawer";
 import { RoutineRefreshConfirmModal } from "@/features/role/student/routine/components/shared/routine-refresh-confirm-modal";
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
@@ -25,10 +26,12 @@ export function RoutinePageLoadedContent( {
 		handleOpenFinishDrawer,
 		handleRepeatLastSession,
 		handleSetUpdate,
+		handleUnlockSession,
 		handleVariantChange,
 		isDayFinished,
 		isFinishDrawerOpen,
 		isRefreshConfirmOpen,
+		isSessionLocked,
 		saveRoutineSession,
 		saveSummary,
 		setIsFinishDrawerOpen,
@@ -54,10 +57,13 @@ export function RoutinePageLoadedContent( {
 				/>
 			</div>
 			<RoutinePageLoadedHeader state={ state }/>
+			<RoutineSessionLockProvider value={ isSessionLocked }>
 			<MobileRoutineView
 				exercises={ activeSession.exercises }
 				canFinishDay={ canFinishDay }
 				isDayFinished={ isDayFinished }
+				isSessionLocked={ isSessionLocked }
+				onUnlockSessionAction={ handleUnlockSession }
 				onExerciseUpdate={ handleExerciseUpdate }
 				onRepeatLastSessionAction={ handleRepeatLastSession }
 				onFinishDayAction={ handleOpenFinishDrawer }
@@ -71,6 +77,7 @@ export function RoutinePageLoadedContent( {
 				onVariantChangeAction={ handleVariantChange }
 				onSetUpdate={ handleSetUpdate }
 			/>
+			</RoutineSessionLockProvider>
 			<RoutineSaveDrawer
 				isOpen={ isFinishDrawerOpen }
 				isPending={ saveRoutineSession.isPending }

@@ -26,7 +26,7 @@ function isSetCompleted( reps: number | null, weight: number | null ) {
 export function countHalfLoadedSets( session: StudentRoutineSession ) {
 	return session.exercises.reduce(
 		( count, exercise ) => count + exercise.sets.filter(
-			( set ) => ( set.currentReps === null ) !== ( set.currentWeight === null ),
+			( set ) => !set.completed && ( set.currentReps === null ) !== ( set.currentWeight === null ),
 		).length,
 		0,
 	);

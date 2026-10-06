@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button, Card, Checkbox, Drawer, Input, Label, TextArea } from "@heroui/react";
 import { MessageSquarePlus } from "lucide-react";
 
+import { useIsRoutineSessionLocked } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
 import { parseWeightInput } from "@/features/role/student/routine/views/routine-page-content.utils";
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import type { ExerciseSessionHistory, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
@@ -33,6 +34,7 @@ export function MobileExerciseSetCard( {
 	previousSessionHistory,
 	sets,
 }: MobileExerciseSetCardProps ) {
+	const isLocked = useIsRoutineSessionLocked();
 	const [ noteSetId, setNoteSetId ] = useState<string | null>( null );
 	const selectedNoteSet = sets.find( ( set ) => set.id === noteSetId ) ?? null;
 	const previousSessionSetsByNumber = new Map(
@@ -69,7 +71,8 @@ export function MobileExerciseSetCard( {
 										fullWidth
 										aria-label={ `Reps de la serie ${ set.setNumber }` }
 										// Marcado cuando falta y el otro dato ya esta: la serie no se guarda a medias.
-										className={ `min-w-0 border px-1 text-center ${ set.currentReps === null && set.currentWeight !== null ? "border-warning" : "border-border" }` }
+										className={ `min-w-0 border px-1 text-center ${ !set.completed && set.currentReps === null && set.currentWeight !== null ? "border-warning" : "border-border" }` }
+										disabled={ isLocked }
 										inputMode={ "numeric" }
 										placeholder={ `${ set.targetReps } reps` }
 										type={ "number" }
@@ -79,7 +82,8 @@ export function MobileExerciseSetCard( {
 									<Input
 										fullWidth
 										aria-label={ `Peso de la serie ${ set.setNumber }` }
-										className={ `min-w-0 border px-1 text-center ${ set.currentWeight === null && set.currentReps !== null ? "border-warning" : "border-border" }` }
+										className={ `min-w-0 border px-1 text-center ${ !set.completed && set.currentWeight === null && set.currentReps !== null ? "border-warning" : "border-border" }` }
+										disabled={ isLocked }
 										inputMode={ "decimal" }
 										placeholder={ "kg" }
 										step={ "any" }
@@ -95,6 +99,7 @@ export function MobileExerciseSetCard( {
 												: `Agregar nota a la serie ${ set.setNumber }`
 										}
 										className={ hasNote ? "size-9 text-accent" : "size-9 text-muted" }
+										isDisabled={ isLocked }
 										variant={ "ghost" }
 										onPress={ () => setNoteSetId( set.id ) }
 									>

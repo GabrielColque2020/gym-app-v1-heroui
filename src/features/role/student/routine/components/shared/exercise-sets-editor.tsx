@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Button, Card, Input, Label } from "@heroui/react";
 import { ChevronDown, ChevronUp, History, MessageSquarePlus, Minus, Plus } from "lucide-react";
 
+import { useIsRoutineSessionLocked } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
 import { getExerciseLastSession, parseWeightInput } from "@/features/role/student/routine/views/routine-page-content.utils";
 import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 
@@ -52,6 +53,7 @@ function buildTargetSummary(exercise: Exercise) {
 
 type StepperFieldProps = {
     inputMode: "decimal" | "numeric";
+    isLocked: boolean;
     // A alguna serie le falta este dato: el otro ya esta cargado.
     isMissing: boolean;
     label: string;
@@ -64,7 +66,7 @@ type StepperFieldProps = {
 
 // Campo numerico con botones de menos y mas: en el gimnasio, con el telefono en
 // una mano, ajustar con dos toques es mas comodo que abrir el teclado.
-function StepperField({ inputMode, isMissing, label, onChange, parse, placeholder, step, value }: StepperFieldProps) {
+function StepperField({ inputMode, isLocked, isMissing, label, onChange, parse, placeholder, step, value }: StepperFieldProps) {
     return (
         // Una fila por campo: de a dos por fila, en el telefono el numero no entra.
         <div className={ "flex items-center gap-3" }>
@@ -74,7 +76,7 @@ function StepperField({ inputMode, isMissing, label, onChange, parse, placeholde
                     isIconOnly
                     aria-label={ `Bajar ${label.toLowerCase()}` }
                     className={ "size-10 shrink-0" }
-                    isDisabled={ value === null || value <= 0 }
+                    isDisabled={ isLocked || value === null || value <= 0 }
                     variant={ "secondary" }
                     onPress={ () => onChange(Math.max(0, (value ?? 0) - step)) }
                 >
@@ -84,6 +86,7 @@ function StepperField({ inputMode, isMissing, label, onChange, parse, placeholde
                     fullWidth
                     aria-label={ label }
                     className={ `min-w-0 border px-1 text-center ${ isMissing ? "border-warning" : "border-border" }` }
+                    disabled={ isLocked }
                     inputMode={ inputMode }
                     placeholder={ placeholder }
                     step={ "any" }
@@ -95,6 +98,7 @@ function StepperField({ inputMode, isMissing, label, onChange, parse, placeholde
                     isIconOnly
                     aria-label={ `Subir ${label.toLowerCase()}` }
                     className={ "size-10 shrink-0" }
+                    isDisabled={ isLocked }
                     variant={ "secondary" }
                     onPress={ () => onChange((value ?? 0) + step) }
                 >
@@ -129,6 +133,7 @@ function ExerciseSetsEditorContent({
                                        onExerciseUpdate,
                                        onRepeatLastSession,
                                    }: ExerciseSetsEditorProps) {
+    const isLocked = useIsRoutineSessionLocked();
     const [ isDetailedMode, setIsDetailedMode ] = useState(false);
     const unifiedValues = useMemo(() => ({
         notes: getSharedValue(exercise.sets.map((set) => set.notes ?? ""), ""),
@@ -156,7 +161,7 @@ function ExerciseSetsEditorContent({
                             <p className={ "text-xs font-medium text-muted" }>Objetivo</p>
                             <p className={ "text-base font-semibold text-foreground" }>{ buildTargetSummary(exercise) }</p>
                         </div>
-                        { hasLastSession && onRepeatLastSession ? (
+                        { hasLastSession && onRepeatLastSession && !isLocked ? (
                             <Button size={ "sm" } variant={ "secondary" } onPress={ onRepeatLastSession }>
                                 <History className={ "size-4" }/>
                                 Repetir última vez
@@ -167,7 +172,8 @@ function ExerciseSetsEditorContent({
                     <div className={ "grid gap-2 lg:grid-cols-2 lg:gap-4" }>
                         <StepperField
                             inputMode={ "numeric" }
-                            isMissing={ exercise.sets.some((set) => set.currentReps === null && set.currentWeight !== null) }
+                            isLocked={ isLocked }
+                            isMissing={ exercise.sets.some((set) => !set.completed && set.currentReps === null && set.currentWeight !== null) }
                             label={ "Reps" }
                             parse={ parseNumericInput }
                             placeholder={ hasMixedValues ? "Varias" : "Reps" }
@@ -177,7 +183,8 @@ function ExerciseSetsEditorContent({
                         />
                         <StepperField
                             inputMode={ "decimal" }
-                            isMissing={ exercise.sets.some((set) => set.currentWeight === null && set.currentReps !== null) }
+                            isLocked={ isLocked }
+                            isMissing={ exercise.sets.some((set) => !set.completed && set.currentWeight === null && set.currentReps !== null) }
                             label={ "Peso (kg)" }
                             parse={ parseWeightInput }
                             placeholder={ hasMixedValues ? "Varios" : "Kg" }
@@ -187,11 +194,14 @@ function ExerciseSetsEditorContent({
                         />
                     </div>
 
-                    <p className={ hasMixedValues ? "text-xs font-medium text-warning" : "text-xs text-muted" }>
-                        { hasMixedValues
-                            ? "Las series tienen valores distintos. Si editás acá, se igualan todas."
-                            : "Se aplica a todas las series. Si alguna fue distinta, editala por serie." }
-                    </p>
+                    { /* Bloqueado no hay nada que explicar sobre como se edita. */ }
+                    { isLocked ? null : (
+                        <p className={ hasMixedValues ? "text-xs font-medium text-warning" : "text-xs text-muted" }>
+                            { hasMixedValues
+                                ? "Las series tienen valores distintos. Si editás acá, se igualan todas."
+                                : "Se aplica a todas las series. Si alguna fue distinta, editala por serie." }
+                        </p>
+                    ) }
 
                     { isNotesOpen ? (
                         <div className={ "space-y-2" }>
@@ -199,6 +209,7 @@ function ExerciseSetsEditorContent({
                             <Input
                                 fullWidth
                                 className={ "border border-border" }
+                                disabled={ isLocked }
                                 placeholder={ hasMixedValues ? "Hay notas distintas entre series" : "Opcional" }
                                 value={ unifiedValues.notes }
                                 onChange={ (event) => onExerciseUpdate(exercise.id, { notes: event.target.value }) }
@@ -209,9 +220,9 @@ function ExerciseSetsEditorContent({
                     <div className={ "flex flex-wrap items-center justify-between gap-2" }>
                         <Button size={ "sm" } variant={ "secondary" } onPress={ () => setIsDetailedMode((current) => !current) }>
                             { isDetailedMode ? <ChevronUp className={ "size-4" }/> : <ChevronDown className={ "size-4" }/> }
-                            { isDetailedMode ? "Ocultar series" : "Editar por serie" }
+                            { isDetailedMode ? "Ocultar series" : isLocked ? "Ver por serie" : "Editar por serie" }
                         </Button>
-                        { isNotesOpen ? null : (
+                        { isNotesOpen || isLocked ? null : (
                             <Button size={ "sm" } variant={ "ghost" } onPress={ () => setIsNotesOpen(true) }>
                                 <MessageSquarePlus className={ "size-4" }/>
                                 Agregar nota

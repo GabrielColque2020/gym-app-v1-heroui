@@ -1,6 +1,7 @@
 ﻿import { Checkbox, Chip, Input, Label } from "@heroui/react";
 import { DataGrid, type DataGridColumn } from "@heroui-pro/react";
 
+import { useIsRoutineSessionLocked } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
 import { parseWeightInput } from "@/features/role/student/routine/views/routine-page-content.utils";
 import type { Exercise, ExerciseSessionHistorySet, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
 
@@ -25,6 +26,7 @@ export function DesktopExerciseSetsGrid( {
 											 exercise,
 											 onSetUpdate,
 										 }: DesktopExerciseSetsGridProps ) {
+	const isLocked = useIsRoutineSessionLocked();
 	const selectedVariant = exercise.variantOptions.find( ( variant ) => variant.id === exercise.variantExerciseId ) ?? null;
 	const displayedSessionHistory = selectedVariant?.lastSession ?? exercise.lastSession;
 	const displayedHistorySetsByNumber = new Map<number, ExerciseSessionHistorySet>(
@@ -80,6 +82,7 @@ export function DesktopExerciseSetsGrid( {
 							fullWidth
 							placeholder={ "Reps" }
 							className={ "border border-border" }
+							disabled={ isLocked }
 							type={ "number" }
 							value={ item.currentReps?.toString() || "" }
 							onChange={ ( e ) => {
@@ -116,6 +119,7 @@ export function DesktopExerciseSetsGrid( {
 							step={ "any" }
 							type={ "number" }
 							className={ "border border-border" }
+							disabled={ isLocked }
 							value={ item.currentWeight?.toString() || "" }
 							onChange={ ( e ) => onSetUpdate( exercise.id, item.id, { weight: parseWeightInput( e.target.value ) } ) }
 						/>
@@ -140,6 +144,7 @@ export function DesktopExerciseSetsGrid( {
 							fullWidth
 							placeholder={ "Opcional" }
 							className={ "border border-border" }
+							disabled={ isLocked }
 							value={ item.notes ?? "" }
 							onChange={ ( e ) => onSetUpdate( exercise.id, item.id, { notes: e.target.value } ) }
 						/>
