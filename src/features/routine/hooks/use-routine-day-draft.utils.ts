@@ -2,6 +2,7 @@ import type { DraftRoutineDayExercise } from "@/features/routine/services/routin
 import type { RoutineDayExerciseBase } from "@/features/routine/actions/get-routine-day";
 
 import {
+	getDraftCatalogExerciseIds,
 	mapRoutineExercisesToDraft,
 	serializeRoutineDayDraft,
 	sortDraftRoutineExercises,
@@ -22,11 +23,19 @@ export function buildActiveDraftState(
 	sourceDraftRoutines: DraftRoutineDayExercise[],
 	draftRoutines: DraftRoutineDayExercise[] | undefined,
 ) {
-	const activeDraftRoutines = draftRoutines ?? sourceDraftRoutines;
+	// El id de cada fila sale siempre de lo guardado: una fila del borrador lo
+	// tiene si su ejercicio ya esta guardado en el dia. Asi no depende de lo que
+	// el borrador haya anotado cuando se creo, que puede haber quedado viejo.
+	const savedIdByExerciseId = new Map(
+		sourceDraftRoutines.map( ( routine ) => [ routine.exerciseId, routine.id ] ),
+	);
+	const activeDraftRoutines = draftRoutines
+		? draftRoutines.map( ( routine ) => ( { ...routine, id: savedIdByExerciseId.get( routine.exerciseId ) ?? null } ) )
+		: sourceDraftRoutines;
 	const sortedDraftRoutines = sortDraftRoutineExercises( activeDraftRoutines );
 	const draftSignature = serializeRoutineDayDraft( sortedDraftRoutines );
 	const validationError = validateRoutineDayDraft( sortedDraftRoutines );
-	const addedExerciseIds = new Set( sortedDraftRoutines.map( ( routine ) => routine.exerciseId ) );
+	const addedExerciseIds = new Set( sortedDraftRoutines.flatMap( getDraftCatalogExerciseIds ) );
 
 	return {
 		addedExerciseIds,

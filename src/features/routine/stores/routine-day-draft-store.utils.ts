@@ -2,6 +2,7 @@ import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-
 import type { DayExercise } from "@/features/routine/services/routine-day-editor";
 import {
 	createDraftRoutineExercise,
+	getDraftCatalogExerciseIds,
 	sortDraftRoutineExercises,
 	validateRoutineDayDraft,
 } from "@/features/routine/services/routine-day-editor";
@@ -46,7 +47,7 @@ export function appendDraftExercise(
 	exercise: ExerciseListItem,
 	order: number,
 ): AddDraftExerciseResult {
-	if (currentDraft.some( ( routine ) => routine.exerciseId === exercise.id )) {
+	if (currentDraft.some( ( routine ) => getDraftCatalogExerciseIds( routine ).includes( exercise.id ) )) {
 		return {
 			error: "No puede agregar el mismo ejercicio más de una vez en el mismo día.",
 		};

@@ -52,7 +52,7 @@ export function EditRoutineDayLoadedContent( {
 		isDirty,
 		isRefreshConfirmOpen,
 		isSaveDisabled,
-		isSaving,
+		saveStatus,
 		moveExercise,
 		replaceWithCopies,
 		requiredFieldsMessage,
@@ -91,16 +91,17 @@ export function EditRoutineDayLoadedContent( {
 	async function handleSaveAndNext() {
 		if (!nextDay) return;
 
-		// Sin cambios pendientes no hay nada que guardar: solo avanza.
-		const canAdvance = isDirty ? await handleSave() : true;
+		// Guarda antes de pasar solo lo editado en esta visita. Sin cambios, o con
+		// cambios que quedaron de antes y el coach no decidio guardar, solo avanza.
+		const canAdvance = saveStatus === "pending" ? await handleSave() : true;
 
 		if (canAdvance) router.push( buildEditRoutineDayHref( nextDay.id, student.id, month, year ) );
 	}
 
 	// Las variantes cuelgan del ejercicio ya guardado en la rutina. Para uno recien
 	// agregado se guarda el dia y recien ahi se abre el drawer, con la fila guardada.
-	// Se recuerda por orden y no por id: al guardar, la fila cambia de id y un
-	// ejercicio del catalogo global pasa a ser uno propio del coach, con otro id.
+	// Se recuerda por orden y no por id: la fila nueva recibe su id al guardarse y
+	// un ejercicio del catalogo global pasa a ser uno propio del coach, con otro id.
 	const [ pendingVariantsOrder, setPendingVariantsOrder ] = useState<number | null>( null );
 	const variantsRoutine = pendingVariantsOrder !== null
 		? draftRoutines.find( ( routine ) => routine.order === pendingVariantsOrder && routine.id ) ?? null
@@ -141,9 +142,8 @@ export function EditRoutineDayLoadedContent( {
 				breadcrumbs={ breadcrumbs }
 				description={ description }
 				hasExercises={ draftRoutines.length > 0 }
-				isDirty={ isDirty }
 				isSaveDisabled={ isSaveDisabled }
-				isSaving={ isSaving }
+				saveStatus={ saveStatus }
 				nextStepLabel={ nextStepLabel }
 				title={ title }
 				onSave={ handleSave }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routine-day";
@@ -11,6 +11,15 @@ import { syncCoachTrainingRoutinesAfterSave } from "@/features/role/coach/routin
 import { useRoutineDayDraft } from "@/features/routine/hooks/use-routine-day-draft";
 import { useSaveRoutineDayExercises } from "@/features/routine/hooks/use-routine-day-mutations";
 import { mapDraftToSaveInput } from "@/features/routine/services/routine-day-editor";
+
+// Espera despues del ultimo cambio antes de guardar solo: lo justo para no
+// guardar a mitad de una palabra o de un numero de dos cifras.
+const AUTOSAVE_DELAY_MS = 700;
+
+// `pending`: hay cambios y se van a guardar solos. `blocked`: hay cambios pero
+// falta algun dato para poder guardarlos. `unsaved`: hay cambios que quedaron de
+// una visita anterior y no se guardan solos; el coach decide guardarlos o descartarlos.
+export type RoutineDaySaveStatus = "blocked" | "error" | "pending" | "saved" | "saving" | "unsaved";
 
 function isRequiredRoutineFieldComplete( value: string ) {
 	return value.trim().length > 0;
@@ -35,23 +44,43 @@ export function useEditRoutineDayLoadedState( {
 	const saveRoutineDay = useSaveRoutineDayExercises( {
 		onSuccessAction: syncCoachTrainingRoutinesAfterSave,
 	} );
+	const draft = useRoutineDayDraft( {
+		isSaving: saveRoutineDay.isPending,
+		routineDayId,
+		sourceRoutines: data.routines,
+	} );
 	const {
 		addExercise,
 		addedExerciseIds,
-		deleteExercise,
 		draftRoutines,
 		getSuggestedOrder,
 		hasHydrated,
 		isDirty,
-		moveExercise,
-		replaceWithCopies,
 		resetDraft,
-		updateExerciseField,
 		validationError,
-	} = useRoutineDayDraft( {
-		routineDayId,
-		sourceRoutines: data.routines,
-	} );
+	} = draft;
+	// El dia que el coach edito en esta visita. El guardado automatico solo actua
+	// sobre cambios hechos ahora: un borrador que quedo de otra sesion puede ser
+	// mas viejo que lo que hay en el servidor, y guardarlo solo lo pisaria.
+	const [ editedDayId, setEditedDayId ] = useState<string | null>( null );
+	const hasSessionEdits = editedDayId === routineDayId;
+	const markEdited = () => setEditedDayId( routineDayId );
+	const updateExerciseField: typeof draft.updateExerciseField = ( ...args ) => {
+		markEdited();
+		draft.updateExerciseField( ...args );
+	};
+	const deleteExercise: typeof draft.deleteExercise = ( ...args ) => {
+		markEdited();
+		draft.deleteExercise( ...args );
+	};
+	const moveExercise: typeof draft.moveExercise = ( ...args ) => {
+		markEdited();
+		draft.moveExercise( ...args );
+	};
+	const replaceWithCopies: typeof draft.replaceWithCopies = ( ...args ) => {
+		markEdited();
+		draft.replaceWithCopies( ...args );
+	};
 	const routine = data.trainingRoutine;
 	const incompleteRequiredFieldsCount = draftRoutines.filter(
 		( draftRoutine ) =>
@@ -59,15 +88,23 @@ export function useEditRoutineDayLoadedState( {
 			!isRequiredRoutineFieldComplete( draftRoutine.reps ),
 	).length;
 	const requiredFieldsMessage = incompleteRequiredFieldsCount > 0
-		? `Completa series y repeticiones en ${ incompleteRequiredFieldsCount } ${ incompleteRequiredFieldsCount === 1 ? "ejercicio" : "ejercicios" } para habilitar Guardar cambios.`
+		? `Completá series y repeticiones en ${ incompleteRequiredFieldsCount } ${ incompleteRequiredFieldsCount === 1 ? "ejercicio" : "ejercicios" } para que el día se guarde.`
 		: null;
-	const isSaveDisabled = !isDirty || !draftRoutines.length || Boolean( validationError ) || Boolean( requiredFieldsMessage ) || saveRoutineDay.isPending;
+	// Un dia sin ejercicios tambien se guarda: es como queda al quitar el ultimo.
+	const canSave = isDirty && !validationError && !requiredFieldsMessage;
+	const isSaveDisabled = !canSave || saveRoutineDay.isPending;
+	const draftSignature = useMemo( () => JSON.stringify( mapDraftToSaveInput( draftRoutines ) ), [ draftRoutines ] );
+	// El contenido cuyo guardado automatico fallo: no se reintenta solo, para no
+	// insistir cada segundo con un pedido que vuelve a fallar.
+	const [ failedSignature, setFailedSignature ] = useState<string | null>( null );
 
 	function handleAddExercise(
 		exercise: ExerciseListItem,
 		order: number,
 		prescription?: { reps: string; sets: string },
 	) {
+		markEdited();
+
 		const result = addExercise( exercise, order );
 
 		if (result.error !== undefined) {
@@ -90,7 +127,7 @@ export function useEditRoutineDayLoadedState( {
 			const refreshedData = await onRefreshRoutineDayAction();
 
 			if (refreshedData) {
-				resetDraft( refreshedData.routines );
+				resetDraft();
 			}
 
 			toast.success( "Rutina actualizada", {
@@ -114,19 +151,24 @@ export function useEditRoutineDayLoadedState( {
 		void handleConfirmRefresh();
 	}, [ handleConfirmRefresh, isDirty, isRefreshing ] );
 
-	const handleSave = useCallback( async () => {
+	// `silent` es el guardado automatico: no avisa cada vez que guarda, solo si falla.
+	const saveDraft = useCallback( async ( { silent }: { silent: boolean } ) => {
 		if (requiredFieldsMessage) {
-			toast.danger( "No se puede guardar", {
-				description: requiredFieldsMessage,
-			} );
+			if (!silent) {
+				toast.danger( "No se puede guardar", {
+					description: requiredFieldsMessage,
+				} );
+			}
 
 			return false;
 		}
 
 		if (validationError) {
-			toast.danger( "No se puede guardar", {
-				description: validationError,
-			} );
+			if (!silent) {
+				toast.danger( "No se puede guardar", {
+					description: validationError,
+				} );
+			}
 
 			return false;
 		}
@@ -137,6 +179,9 @@ export function useEditRoutineDayLoadedState( {
 				routineDayId,
 				studentId,
 			} );
+			setFailedSignature( null );
+
+			if (silent) return true;
 
 			toast.success( "Rutina actualizada", {
 				description: "Los ejercicios del día se guardaron correctamente.",
@@ -144,13 +189,57 @@ export function useEditRoutineDayLoadedState( {
 
 			return true;
 		} catch {
+			setFailedSignature( draftSignature );
 			toast.danger( "Error al guardar", {
 				description: "No se pudieron guardar los cambios del día.",
 			} );
 
 			return false;
 		}
-	}, [ draftRoutines, requiredFieldsMessage, routineDayId, saveRoutineDay, studentId, validationError ] );
+	}, [ draftRoutines, draftSignature, requiredFieldsMessage, routineDayId, saveRoutineDay, studentId, validationError ] );
+	const handleSave = useCallback( () => saveDraft( { silent: false } ), [ saveDraft ] );
+
+	const isSaving = saveRoutineDay.isPending;
+	const hasFailed = failedSignature === draftSignature;
+	const shouldAutoSave = hasHydrated && hasSessionEdits && canSave && !isSaving && !hasFailed;
+	// Lo ultimo que se rendereo, para que los temporizadores y la salida de la
+	// pantalla guarden el contenido actual y no el de cuando se programaron.
+	const latestRef = useRef( { saveDraft, shouldAutoSave } );
+
+	// Guardado automatico: un momento despues del ultimo cambio, si el dia esta completo.
+	useEffect( () => {
+		if (!shouldAutoSave) return;
+
+		const timeoutId = window.setTimeout( () => {
+			void latestRef.current.saveDraft( { silent: true } );
+		}, AUTOSAVE_DELAY_MS );
+
+		return () => window.clearTimeout( timeoutId );
+	}, [ draftSignature, shouldAutoSave ] );
+
+	// Al salir del dia (otra pestaña, otra pantalla) se guarda lo que quedo pendiente
+	// sin esperar al temporizador.
+	useEffect( () => () => {
+		if (latestRef.current.shouldAutoSave) {
+			void latestRef.current.saveDraft( { silent: true } );
+		}
+	}, [ routineDayId ] );
+
+	// Va despues de los efectos de arriba: sus limpiezas tienen que ver todavia los
+	// valores del render anterior.
+	useEffect( () => {
+		latestRef.current = { saveDraft, shouldAutoSave };
+	} );
+
+	const saveStatus: RoutineDaySaveStatus = isSaving
+		? "saving"
+		: hasFailed
+			? "error"
+			: !isDirty
+				? "saved"
+				: !canSave
+					? "blocked"
+					: hasSessionEdits ? "pending" : "unsaved";
 
 	return {
 		addedExerciseIds,
@@ -164,7 +253,8 @@ export function useEditRoutineDayLoadedState( {
 		isDirty,
 		isRefreshConfirmOpen,
 		isSaveDisabled,
-		isSaving: saveRoutineDay.isPending,
+		isSaving,
+		saveStatus,
 		moveExercise,
 		replaceWithCopies,
 		resetRefreshConfirmOpen: () => setIsRefreshConfirmOpen( false ),

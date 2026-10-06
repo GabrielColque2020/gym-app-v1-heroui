@@ -127,6 +127,40 @@ function RoutineDayExerciseRow( {
 	);
 }
 
+type KeyedRow = {
+	clientId: string;
+	key: string;
+	order: number;
+};
+
+// Clave estable por fila. Un ejercicio recien agregado recibe su id definitivo al
+// guardarse: si la clave fuera ese id, al guardar solo se remontaria la fila y
+// el campo que el coach esta escribiendo perderia el foco. Una fila conserva su
+// clave mientras conserve su id, y si el id cambio, la hereda de la fila que
+// ocupaba ese orden.
+function assignRowKeys( previousRows: KeyedRow[], routines: DraftRoutineDayExercise[] ): KeyedRow[] {
+	const previousByClientId = new Map( previousRows.map( ( row ) => [ row.clientId, row ] ) );
+	const currentClientIds = new Set( routines.map( ( routine ) => routine.clientId ) );
+	const replacedRows = previousRows.filter( ( row ) => !currentClientIds.has( row.clientId ) );
+	const usedKeys = new Set<string>();
+
+	return routines.map( ( routine ) => {
+		const inherited = previousByClientId.get( routine.clientId )
+			?? replacedRows.find( ( row ) => row.order === routine.order && !usedKeys.has( row.key ) );
+		const key = inherited?.key ?? routine.clientId;
+
+		usedKeys.add( key );
+
+		return { clientId: routine.clientId, key, order: routine.order };
+	} );
+}
+
+function areSameRows( left: KeyedRow[], right: KeyedRow[] ) {
+	return left.length === right.length && left.every( ( row, index ) => (
+		row.clientId === right[ index ].clientId && row.key === right[ index ].key && row.order === right[ index ].order
+	) );
+}
+
 // Una sola lista para cualquier ancho. La tabla anterior necesitaba unos 1230 px:
 // en una notebook, series y repeticiones quedaban fuera de la pantalla. Cada fila
 // se acomoda segun el ancho de la lista y no el de la ventana, porque el menu
@@ -136,11 +170,19 @@ export function RoutineDayExerciseList( {
 										   onUpdateField,
 										   routines,
 									   }: RoutineDayExerciseListProps ) {
+	const [ keyedRows, setKeyedRows ] = useState<KeyedRow[]>( () => assignRowKeys( [], routines ) );
+	const nextKeyedRows = assignRowKeys( keyedRows, routines );
+
+	// Ajuste de estado durante el render: las claves dependen de las anteriores.
+	if (!areSameRows( keyedRows, nextKeyedRows )) {
+		setKeyedRows( nextKeyedRows );
+	}
+
 	return (
 		<ol aria-label={ "Ejercicios del día" } className={ "@container grid min-w-0 grid-cols-1 gap-2" }>
 			{ routines.map( ( routine, index ) => (
 				<RoutineDayExerciseRow
-					key={ routine.clientId }
+					key={ nextKeyedRows[ index ].key }
 					isFirst={ index === 0 }
 					isLast={ index === routines.length - 1 }
 					position={ index + 1 }

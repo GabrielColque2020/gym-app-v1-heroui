@@ -41,8 +41,12 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 			studentId,
 		} );
 
-		const resolvedExercises = await assertRoutineCatalogExercisesAvailable( resolvedCoachId, exercises );
-		await persistRoutineDayExercises( routineDay, resolvedExercises );
+		const resolvedExercises = await assertRoutineCatalogExercisesAvailable(
+			resolvedCoachId,
+			exercises,
+			routineDay.routines.flatMap( ( routine ) => routine.exerciseId ? [ routine.exerciseId ] : [] ),
+		);
+		await persistRoutineDayExercises( routineDay.id, resolvedExercises );
 
 		return await getRoutineDayAction( {
 			coachId: resolvedCoachId,

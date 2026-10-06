@@ -3,7 +3,6 @@ import prisma from "@/lib/prisma";
 import { emptyToNull } from "@/features/exercises/services/exercise-form";
 import { buildCoachExerciseSearchName, mapCategoryToBodyPart } from "@/features/role/coach/exercises/services/coach-exercise-form";
 import type { SaveRoutineDayExercisesActionInput } from "@/features/routine/actions/routine-day-mutations";
-import type { RoutineDayDetail } from "@/features/routine/services/routine-day-detail";
 import { validateRoutineDayDraft, type SaveRoutineDayExerciseInput } from "@/features/routine/services/routine-day-editor";
 
 type NormalizedRoutineDayExerciseInput = SaveRoutineDayExerciseInput;
@@ -35,9 +34,13 @@ export function validateNormalizedRoutineDayExercises( exercises: NormalizedRout
 	}
 }
 
+// `keptExerciseIds`: los ejercicios que el dia ya tenia. Siguen valiendo aunque el
+// coach los haya desactivado despues; si no, un ejercicio desactivado impediria
+// guardar cualquier otro cambio del dia.
 async function resolveCoachExerciseIds(
 	coachId: string,
 	exercises: NormalizedRoutineDayExerciseInput[],
+	keptExerciseIds: string[],
 ) {
 	if (exercises.length === 0) {
 		return exercises;
@@ -49,10 +52,10 @@ async function resolveCoachExerciseIds(
 			id: true,
 		},
 		where: {
-			active: true,
 			id: {
 				in: requestedIds,
 			},
+			OR: [ { active: true }, { id: { in: keptExerciseIds } } ],
 		},
 	} ) ) as Array<{ id: string }>;
 	const existingExerciseIds = new Set( existingExercises.map( ( exercise ) => exercise.id ) );
@@ -166,15 +169,22 @@ async function resolveCoachExerciseIds(
 			id: true,
 		},
 		where: {
-			active: true,
 			id: {
 				in: resolvedExercises.map( ( exercise ) => exercise.exerciseId ),
 			},
+			OR: [ { active: true }, { id: { in: keptExerciseIds } } ],
 		},
 	} );
+	const resolvedExerciseIds = new Set( resolvedExercises.map( ( exercise ) => exercise.exerciseId ) );
 
-	if (resolvedExistingExercises.length !== exercises.length) {
+	if (resolvedExistingExercises.length !== resolvedExerciseIds.size) {
 		throw new Error( "Uno o más ejercicios ya no están disponibles en el catálogo activo." );
+	}
+
+	// Un ejercicio del catalogo global y su copia propia del coach son el mismo
+	// ejercicio: recien aca, con los ids ya resueltos, se nota si vino dos veces.
+	if (resolvedExerciseIds.size !== resolvedExercises.length) {
+		throw new Error( "No puede agregar el mismo ejercicio más de una vez en el mismo día." );
 	}
 
 	return resolvedExercises;
@@ -183,74 +193,101 @@ async function resolveCoachExerciseIds(
 export async function assertRoutineCatalogExercisesAvailable(
 	coachId: string,
 	exercises: NormalizedRoutineDayExerciseInput[],
+	keptExerciseIds: string[] = [],
 ) {
-	return resolveCoachExerciseIds( coachId, exercises );
+	return resolveCoachExerciseIds( coachId, exercises, keptExerciseIds );
 }
 
+// Guarda el dia aplicando solo las diferencias: actualiza las filas que ya estan,
+// crea las nuevas y borra las que el coach quito. Antes se borraba y se volvia a
+// crear todo, y cada guardado le cambiaba el id a todas las filas: las variantes
+// habia que copiarlas a mano y lo que el alumno tenia abierto quedaba apuntando a
+// filas que ya no existian.
+//
+// Una fila se reconoce por su ejercicio, que no se repite dentro de un dia. Por
+// eso el coach puede quitar un ejercicio y volver a agregarlo antes de que se
+// guarde sin perder sus variantes.
 export async function persistRoutineDayExercises(
-	routineDay: RoutineDayDetail,
+	routineDayId: string,
 	exercises: NormalizedRoutineDayExerciseInput[],
 ) {
-	const existingRoutineVariants = routineDay.routines
-		.map( ( routine ) => ( {
-			exerciseId: routine.exerciseId,
-			variantExerciseIds: Array.from(
-				new Set( routine.variants.map( ( variant ) => variant.variantExerciseId ) ),
-			),
-		} ) )
-		.filter( ( routine ) => routine.exerciseId && routine.variantExerciseIds.length > 0 );
-
 	await prisma.$transaction( async ( transaction ) => {
-		await transaction.routine.deleteMany( {
-			where: {
-				routineDayId: routineDay.id,
-			},
-		} );
+		// Bloquea el dia mientras dura el guardado. Dos guardados a la vez (dos
+		// pestañas, o uno que sale al cambiar de dia mientras otro viaja) leerian las
+		// mismas filas y los dos crearian el mismo ejercicio.
+		await transaction.$queryRaw`SELECT "id" FROM "RoutineDay" WHERE "id" = ${ routineDayId } FOR UPDATE`;
 
-		if (exercises.length === 0) return;
-
-		await transaction.routine.createMany( {
-			data: exercises.map( ( exercise ) => ( {
-				exerciseId: exercise.exerciseId,
-				observation: emptyToNull( exercise.observation ),
-				order: exercise.order,
-				reps: exercise.reps.trim(),
-				routineDayId: routineDay.id,
-				sets: exercise.sets.trim(),
-			} ) ),
-		} );
-
-		if (existingRoutineVariants.length === 0) return;
-
-		const createdRoutines = await transaction.routine.findMany( {
+		const existingRoutines = await transaction.routine.findMany( {
+			orderBy: [ { order: "asc" }, { createdAt: "asc" } ],
 			select: {
 				exerciseId: true,
 				id: true,
+				observation: true,
+				order: true,
+				reps: true,
+				sets: true,
 			},
 			where: {
-				routineDayId: routineDay.id,
+				routineDayId,
 			},
 		} );
-		const routineIdByExerciseId = new Map(
-			createdRoutines
-				.filter( ( routine ) => Boolean( routine.exerciseId ) )
-				.map( ( routine ) => [ routine.exerciseId as string, routine.id ] ),
-		);
-		const variantRows = existingRoutineVariants.flatMap( ( routine ) => {
-			const routineId = routineIdByExerciseId.get( routine.exerciseId as string );
+		const existingByExerciseId = new Map<string, ( typeof existingRoutines )[ number ]>();
 
-			if (!routineId) return [];
+		for (const routine of existingRoutines) {
+			// Si quedo un ejercicio repetido de antes, se conserva la primera fila.
+			if (routine.exerciseId && !existingByExerciseId.has( routine.exerciseId )) {
+				existingByExerciseId.set( routine.exerciseId, routine );
+			}
+		}
 
-			return routine.variantExerciseIds.map( ( variantExerciseId ) => ( {
-				routineId,
-				variantExerciseId,
-			} ) );
-		} );
+		const keptRoutineIds = new Set<string>();
+		const routinesToCreate: Array<{
+			exerciseId: string;
+			observation: string | null;
+			order: number;
+			reps: string;
+			routineDayId: string;
+			sets: string;
+		}> = [];
 
-		if (variantRows.length > 0) {
-			await transaction.routineExerciseVariant.createMany( {
-				data: variantRows,
-			} );
+		for (const exercise of exercises) {
+			const data = {
+				observation: emptyToNull( exercise.observation ),
+				order: exercise.order,
+				reps: exercise.reps.trim(),
+				sets: exercise.sets.trim(),
+			};
+			const existing = existingByExerciseId.get( exercise.exerciseId );
+
+			if (!existing) {
+				routinesToCreate.push( { ...data, exerciseId: exercise.exerciseId, routineDayId } );
+				continue;
+			}
+
+			keptRoutineIds.add( existing.id );
+
+			const hasChanges = existing.observation !== data.observation
+				|| existing.order !== data.order
+				|| existing.reps !== data.reps
+				|| existing.sets !== data.sets;
+
+			if (hasChanges) {
+				await transaction.routine.update( { data, where: { id: existing.id } } );
+			}
+		}
+
+		// Lo que el coach quito, las filas sin ejercicio y las repetidas. Sus
+		// variantes se borran con la fila.
+		const routineIdsToDelete = existingRoutines
+			.filter( ( routine ) => !keptRoutineIds.has( routine.id ) )
+			.map( ( routine ) => routine.id );
+
+		if (routineIdsToDelete.length > 0) {
+			await transaction.routine.deleteMany( { where: { id: { in: routineIdsToDelete } } } );
+		}
+
+		if (routinesToCreate.length > 0) {
+			await transaction.routine.createMany( { data: routinesToCreate } );
 		}
 	} );
 }

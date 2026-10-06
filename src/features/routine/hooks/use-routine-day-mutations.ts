@@ -23,7 +23,7 @@ export function useSaveRoutineDayExercises( options?: UseSaveRoutineDayExercises
 		mutationFn: saveRoutineDayExercisesAction,
 		onSuccess: async ( savedRoutineDay, input ) => {
 			await syncRoutineDayAfterSave( queryClient, savedRoutineDay, input );
-			await options?.onSuccessAction?.( queryClient, savedRoutineDay as RoutineDayDetailBase, input );
+			await options?.onSuccessAction?.( queryClient, savedRoutineDay, input );
 		},
 	} );
 }

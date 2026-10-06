@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo } from "react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { RoutineDayExerciseBase } from "@/features/routine/actions/get-routine-day";
@@ -11,10 +11,12 @@ import {
 	getRoutineExerciseFieldPatch,
 	getSuggestedRoutineExerciseOrder,
 } from "@/features/routine/hooks/use-routine-day-draft.utils";
-import { useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
-import { createDraftRoutineExercise, serializeRoutineDayDraft } from "@/features/routine/services/routine-day-editor";
+import { getRoutineDayDraft, useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
+import { createDraftRoutineExercise } from "@/features/routine/services/routine-day-editor";
 
 type UseRoutineDayDraftOptions = {
+	// Hay un guardado de este dia viajando al servidor.
+	isSaving?: boolean;
 	routineDayId: string;
 	sourceRoutines: RoutineDayExerciseBase[];
 };
@@ -31,7 +33,7 @@ type DraftMutationResult =
 	| { error: string; routine?: never }
 	| { error?: never; routine: DraftRoutineDayExercise };
 
-export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutineDayDraftOptions ) {
+export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRoutines }: UseRoutineDayDraftOptions ) {
 	const hasHydrated = useRoutineDayDraftStore( ( state ) => state.hasHydrated );
 	const draftRoutines = useRoutineDayDraftStore( ( state ) => state.drafts[ routineDayId ] );
 	const setDraft = useRoutineDayDraftStore( ( state ) => state.setDraft );
@@ -39,27 +41,10 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 	const removeExercise = useRoutineDayDraftStore( ( state ) => state.removeExercise );
 	const updateExercise = useRoutineDayDraftStore( ( state ) => state.updateExercise );
 	const addExerciseToStore = useRoutineDayDraftStore( ( state ) => state.addExercise );
-	const lastSeededSignatureRef = useRef<string | null>( null );
 	const { sourceDraftRoutines, sourceSignature } = useMemo(
 		() => buildSourceDraftState( sourceRoutines ),
 		[sourceRoutines],
 	);
-
-	useEffect( () => {
-		if (!hasHydrated) return;
-		if (draftRoutines) return;
-		if (lastSeededSignatureRef.current === sourceSignature) return;
-
-		setDraft( routineDayId, sourceDraftRoutines );
-		lastSeededSignatureRef.current = sourceSignature;
-	}, [
-		draftRoutines,
-		hasHydrated,
-		routineDayId,
-		setDraft,
-		sourceDraftRoutines,
-		sourceSignature,
-	] );
 
 	const {
 		addedExerciseIds,
@@ -72,11 +57,30 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 	);
 	const isDirty = draftSignature !== sourceSignature;
 
+	// El borrador existe solo mientras difiere de lo guardado. Uno igual a lo
+	// guardado no aporta nada y es peligroso: si el dia cambia despues en el
+	// servidor, esa copia vieja pasaria por "cambios sin guardar" y, al guardarla,
+	// pisaria lo nuevo. Por eso tampoco se crea un borrador al abrir el dia: nace
+	// con la primera edicion (`hydrateDraftIfNeeded`) y se descarta aca cuando el
+	// guardado lo alcanza.
+	//
+	// Mientras viaja un guardado no se descarta: "lo guardado" esta por cambiar. Si
+	// el coach deshace un cambio que se esta guardando, el borrador vuelve a ser
+	// igual a lo de antes, pero cuando el guardado termine va a ser distinto y ese
+	// deshacer tiene que guardarse tambien.
+	useEffect( () => {
+		if (!hasHydrated || !draftRoutines || isDirty || isSaving) return;
+
+		clearDraft( routineDayId );
+	}, [ clearDraft, draftRoutines, hasHydrated, isDirty, isSaving, routineDayId ] );
+
 	function hydrateDraftIfNeeded() {
-		if (draftRoutines) return;
+		// Se consulta el store y no el valor de este render: agregar un ejercicio
+		// hace varias ediciones seguidas, y la segunda todavia veria "sin borrador"
+		// y pisaria con lo guardado lo que acaba de agregar la primera.
+		if (getRoutineDayDraft( routineDayId )) return;
 
 		setDraft( routineDayId, sourceDraftRoutines );
-		lastSeededSignatureRef.current = sourceSignature;
 	}
 
 	function addExercise( exercise: ExerciseListItem, order: number ): DraftMutationResult {
@@ -151,22 +155,14 @@ export function useRoutineDayDraft( { routineDayId, sourceRoutines }: UseRoutine
 		return getSuggestedRoutineExerciseOrder( sortedDraftRoutines );
 	}
 
-	function resetDraft( nextSourceRoutines: RoutineDayExerciseBase[] ) {
-		const nextDraftRoutines = buildSourceDraftState( nextSourceRoutines ).sourceDraftRoutines;
-
-		setDraft( routineDayId, nextDraftRoutines );
-		lastSeededSignatureRef.current = serializeRoutineDayDraft( nextDraftRoutines );
-	}
-
-	function clearRoutineDraft() {
+	// Descarta los cambios sin guardar: el dia vuelve a mostrar lo guardado.
+	function resetDraft() {
 		clearDraft( routineDayId );
-		lastSeededSignatureRef.current = null;
 	}
 
 	return {
 		addExercise,
 		addedExerciseIds,
-		clearDraft: clearRoutineDraft,
 		deleteExercise,
 		draftRoutines: sortedDraftRoutines,
 		getSuggestedOrder,

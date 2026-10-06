@@ -38,6 +38,17 @@ export function createDraftRoutineExercise(
 	};
 }
 
+// Los ids con los que el catalogo puede mostrar el ejercicio de una fila: el
+// propio y, si es la copia del coach de un ejercicio global, el del global. El
+// catalogo puede seguir listando el global un rato despues de que se guardo la copia.
+export function getDraftCatalogExerciseIds( routine: DraftRoutineDayExercise ) {
+	const globalExerciseId = routine.exercise && "globalExerciseId" in routine.exercise
+		? routine.exercise.globalExerciseId
+		: null;
+
+	return globalExerciseId ? [ routine.exerciseId, globalExerciseId ] : [ routine.exerciseId ];
+}
+
 export function sortDraftRoutineExercises( routines: DraftRoutineDayExercise[] ) {
 	return [ ...routines ].sort( ( a, b ) => {
 		if (a.order !== b.order) return a.order - b.order;

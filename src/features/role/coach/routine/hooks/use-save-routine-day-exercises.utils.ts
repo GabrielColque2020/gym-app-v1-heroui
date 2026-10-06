@@ -38,6 +38,5 @@ export function syncCoachTrainingRoutinesAfterSave(
 			},
 		};
 	} );
-
-	void queryClient.invalidateQueries( { queryKey } );
+	// No se vuelve a pedir el mes: lo que cambio ya quedo aplicado arriba.
 }

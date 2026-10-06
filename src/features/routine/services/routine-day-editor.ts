@@ -5,6 +5,7 @@ export type {
 } from "@/features/routine/services/routine-day-editor.types";
 export {
 	createDraftRoutineExercise,
+	getDraftCatalogExerciseIds,
 	getNextRoutineExerciseOrder,
 	isRoutineDayDraftDirty,
 	mapDraftToSaveInput,

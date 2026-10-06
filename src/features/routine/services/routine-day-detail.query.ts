@@ -40,6 +40,8 @@ export const routineDayDetailInclude = {
 					active: true,
 					bodyPart: true,
 					externalId: true,
+					// Para reconocer en el catalogo el ejercicio global del que salio.
+					globalExerciseId: true,
 					id: true,
 					imageUrl: true,
 					instructions: true,
