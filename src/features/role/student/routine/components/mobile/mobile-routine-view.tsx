@@ -27,6 +27,7 @@ interface MobileRoutineViewProps {
 	routineStatusDescription: string;
 	onExerciseUpdate: ( exerciseId: string, updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }> ) => void;
 	onSave: () => void;
+	onRepeatLastSessionAction: ( exerciseId: string ) => void;
 	onSetUpdate: ( exerciseId: string, setId: string, updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }> ) => void;
 	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 }
@@ -40,6 +41,7 @@ export default function MobileRoutineView( {
 	routineStatusDescription,
 	onExerciseUpdate,
 	onSave,
+	onRepeatLastSessionAction,
 	onSetUpdate,
 	onVariantChangeAction,
 }: MobileRoutineViewProps ) {
@@ -129,6 +131,7 @@ export default function MobileRoutineView( {
 												exercise={ exercise }
 												isActive={ activeExerciseIndex === exercises.findIndex( ( currentExercise ) => currentExercise.id === exercise.id ) + 1 }
 												onExerciseUpdate={ onExerciseUpdate }
+												onRepeatLastSession={ () => onRepeatLastSessionAction( exercise.id ) }
 								detailContent={
 													<MobileExerciseSetCard
 														exerciseId={ exercise.id }

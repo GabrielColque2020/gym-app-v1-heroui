@@ -46,7 +46,7 @@ export default function RoutineSaveDrawer( {
 					<div className={ "min-w-0" }>
 						<Drawer.Heading>Guardar progreso</Drawer.Heading>
 						<Description className={ "mt-1 text-sm" }>
-							Revisa el resumen de series que se van a guardar antes de confirmar.
+							Se guardan solo las series completas, con reps y peso.
 						</Description>
 					</div>
 				</div>

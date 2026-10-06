@@ -1,4 +1,4 @@
-﻿import { Button } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react/carousel";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -25,6 +25,7 @@ type DesktopRoutineViewProps = {
 		exerciseId: string,
 		updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }>,
 	) => void;
+	onRepeatLastSessionAction: ( exerciseId: string ) => void;
 	onSetUpdate: (
 		exerciseId: string,
 		setId: string,
@@ -39,6 +40,7 @@ export default function DesktopRoutineView( {
 	routineObservation,
 	onExerciseUpdate,
 	onVariantChangeAction,
+	onRepeatLastSessionAction,
 	onSetUpdate,
 	routineStatusDescription,
 }: DesktopRoutineViewProps ) {
@@ -65,6 +67,7 @@ export default function DesktopRoutineView( {
 											exercise={ exercise }
 											isActive={ activeExerciseIndex === exercises.findIndex( ( currentExercise ) => currentExercise.id === exercise.id ) + 1 }
 											onExerciseUpdate={ onExerciseUpdate }
+											onRepeatLastSession={ () => onRepeatLastSessionAction( exercise.id ) }
 											detailContent={ <DesktopExerciseSetsGrid exercise={ exercise } onSetUpdate={ onSetUpdate }/> }
 										/>
 									</DesktopExerciseCard>

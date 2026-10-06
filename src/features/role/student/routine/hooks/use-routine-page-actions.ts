@@ -6,6 +6,7 @@ import { toast } from "@heroui/react";
 
 import type { useSaveStudentRoutineSession } from "@/features/role/student/routine/hooks/use-routine-session-mutations";
 import {
+	applyLastSessionToExercise,
 	updateSessionExerciseSets,
 	updateSessionSet,
 } from "@/features/role/student/routine/views/routine-page-content.utils";
@@ -105,6 +106,14 @@ export function useRoutinePageActions( {
 		replaceDraftAction( updateSessionExerciseSets( activeSession, exerciseId, updates ) );
 	}, [ activeSession, replaceDraftAction, routineDayId ] );
 
+	// Carga en todas las series lo que el estudiante hizo la ultima vez, serie por
+	// serie: es el punto de partida mas comun, y despues ajusta solo lo que cambio.
+	const handleRepeatLastSession = useCallback( ( exerciseId: string ) => {
+		if (!routineDayId || !activeSession) return;
+
+		replaceDraftAction( applyLastSessionToExercise( activeSession, exerciseId ) );
+	}, [ activeSession, replaceDraftAction, routineDayId ] );
+
 	const handleOpenSaveDrawer = useCallback( () => {
 		if (!canSaveProgress) {
 			toast.warning( "No hay ejercicios para guardar", {
@@ -147,6 +156,7 @@ export function useRoutinePageActions( {
 		handleExerciseUpdate,
 		handleOpenSaveDrawer,
 		handleRefresh,
+		handleRepeatLastSession,
 		handleSetUpdate,
 		handleVariantChange,
 		isRefreshConfirmOpen,

@@ -29,6 +29,24 @@ export function ExerciseCardSessionHistory( {
 		);
 	}
 
+	// En el telefono va en una linea: una etiqueta por serie ocupaba media pantalla.
+	if (isCompact) {
+		const sets = history.sets.map( ( set ) => ( { reps: set.repsCompleted ?? 0, weight: set.weightUsed ?? 0 } ) );
+		const isUniform = sets.every( ( set ) => set.reps === sets[ 0 ].reps && set.weight === sets[ 0 ].weight );
+		// Coma decimal, igual que la muestra el campo de peso.
+		const formatWeight = ( weight: number ) => weight.toLocaleString( "es-AR" );
+		const summary = isUniform
+			? `${ sets.length } × ${ sets[ 0 ].reps } reps · ${ formatWeight( sets[ 0 ].weight ) } kg`
+			: sets.map( ( set ) => `${ set.reps }×${ formatWeight( set.weight ) } kg` ).join( " · " );
+
+		return (
+			<p className={ `text-sm font-normal ${ isHighlighted ? "text-warning" : "text-muted" }` }>
+				<span className={ "font-medium text-foreground" }>{ summary }</span>
+				{ ` · ${ formatSessionDateLabel( history.date ) }` }
+			</p>
+		);
+	}
+
 	const containerClassName = isCompact
 		? "flex flex-wrap items-center gap-2"
 		: "flex flex-wrap items-center gap-2";

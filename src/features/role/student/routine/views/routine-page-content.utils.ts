@@ -82,3 +82,45 @@ export function updateSessionExerciseSets(
 	};
 }
 
+
+export function parseWeightInput( value: string ) {
+	const nextValue = value.trim() === "" ? null : Number.parseFloat( value.replace( ",", "." ) );
+
+	return nextValue === null || Number.isNaN( nextValue ) ? null : nextValue;
+}
+
+export function getExerciseLastSession( exercise: StudentRoutineSession[ "exercises" ][ number ] ) {
+	const selectedVariant = exercise.variantOptions.find( ( variant ) => variant.id === exercise.variantExerciseId );
+
+	return selectedVariant?.lastSession ?? exercise.lastSession;
+}
+
+export function applyLastSessionToExercise( session: StudentRoutineSession, exerciseId: string ) {
+	return {
+		...session,
+		exercises: session.exercises.map( ( exercise ) => {
+			if (exercise.id !== exerciseId) return exercise;
+
+			const lastSets = getExerciseLastSession( exercise )?.sets ?? [];
+
+			if (lastSets.length === 0) return exercise;
+
+			return {
+				...exercise,
+				sets: exercise.sets.map( ( set ) => {
+					const previous = lastSets.find( ( lastSet ) => lastSet.setNumber === set.setNumber )
+						?? lastSets[ lastSets.length - 1 ];
+					const currentReps = previous.repsCompleted ?? set.currentReps;
+					const currentWeight = previous.weightUsed ?? set.currentWeight;
+
+					return {
+						...set,
+						completed: currentReps !== null && currentWeight !== null,
+						currentReps,
+						currentWeight,
+					};
+				} ),
+			};
+		} ),
+	};
+}

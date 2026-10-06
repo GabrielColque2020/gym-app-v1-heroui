@@ -1,6 +1,7 @@
 ﻿import { Checkbox, Chip, Input, Label } from "@heroui/react";
 import { DataGrid, type DataGridColumn } from "@heroui-pro/react";
 
+import { parseWeightInput } from "@/features/role/student/routine/views/routine-page-content.utils";
 import type { Exercise, ExerciseSessionHistorySet, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
 
 type DesktopExerciseSetsGridProps = {
@@ -112,13 +113,11 @@ export function DesktopExerciseSetsGrid( {
 						<Input
 							fullWidth
 							placeholder={ "Peso (kg)" }
+							step={ "any" }
 							type={ "number" }
 							className={ "border border-border" }
 							value={ item.currentWeight?.toString() || "" }
-							onChange={ ( e ) => {
-								const nextValue = e.target.value.trim() === "" ? null : Number.parseInt( e.target.value, 10 );
-								onSetUpdate( exercise.id, item.id, { weight: Number.isNaN( nextValue ) ? null : nextValue } );
-							} }
+							onChange={ ( e ) => onSetUpdate( exercise.id, item.id, { weight: parseWeightInput( e.target.value ) } ) }
 						/>
 									{ renderPreviousRecord( previousWeight, "kg" ) }
 								</>

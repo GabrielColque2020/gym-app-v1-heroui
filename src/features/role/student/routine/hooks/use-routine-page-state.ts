@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo } from "react";
 
@@ -48,6 +48,7 @@ export function useRoutinePageState( {
 		handleExerciseUpdate,
 		handleOpenSaveDrawer,
 		handleRefresh,
+		handleRepeatLastSession,
 		handleSetUpdate,
 		handleVariantChange,
 		isRefreshConfirmOpen,
@@ -79,6 +80,7 @@ export function useRoutinePageState( {
 		handleExerciseUpdate,
 		handleOpenSaveDrawer,
 		handleRefresh,
+		handleRepeatLastSession,
 		handleSetUpdate,
 		handleVariantChange,
 		isError,

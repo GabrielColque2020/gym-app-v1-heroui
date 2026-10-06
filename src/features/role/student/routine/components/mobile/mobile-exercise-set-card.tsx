@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button, Card, Checkbox, Drawer, Input, Label, TextArea } from "@heroui/react";
 import { MessageSquarePlus } from "lucide-react";
 
+import { parseWeightInput } from "@/features/role/student/routine/views/routine-page-content.utils";
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import type { ExerciseSessionHistory, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
 
@@ -41,70 +42,72 @@ export function MobileExerciseSetCard( {
 	return (
 		<>
 			<Card className={ "flex h-full flex-col border border-accent-soft-hover shadow-sm" }>
-				<Card.Content className={ "min-h-0 flex-1 divide-y divide-border px-1" }>
-					{ sets.map( ( set ) => (
-						<div key={ set.id } className={ "space-y-3 py-4 first:pt-2 last:pb-2" }>
-							{ (() => {
-								const previousSessionSet = previousSessionSetsByNumber.get( set.setNumber );
-								const previousReps = previousSessionSet?.repsCompleted ?? set.previousReps;
-								const previousWeight = previousSessionSet?.weightUsed ?? set.previousWeight;
+				<Card.Content className={ "min-h-0 flex-1 divide-y divide-border px-3" }>
+					{ /* Una fila por serie: las tres o cuatro series entran en una pantalla. */ }
+					{ sets.map( ( set ) => {
+						const previousSessionSet = previousSessionSetsByNumber.get( set.setNumber );
+						const previousReps = previousSessionSet?.repsCompleted ?? set.previousReps;
+						const previousWeight = previousSessionSet?.weightUsed ?? set.previousWeight;
+						const hasNote = Boolean( set.notes?.trim() );
 
-								return (
-									<>
-							<div className={ "flex items-center gap-3" }>
-								<Checkbox isReadOnly isSelected={ set.completed }>
-									<Checkbox.Control className={ "size-5 rounded-md border border-border shadow-sm" }>
-										<Checkbox.Indicator/>
-									</Checkbox.Control>
-								</Checkbox>
-								<span className={ "text-base font-bold text-foreground" }>Serie { set.setNumber }</span>
-							</div>
-
-							<div className={ "grid grid-cols-2 gap-4" }>
-								<div className={ "space-y-2" }>
-									<Label className={ "text-xs  text-muted" }>{ `Meta ${ set.targetReps } reps` }</Label>
+						return (
+							<div key={ set.id } className={ "space-y-1.5 py-3 first:pt-2 last:pb-2" }>
+								<div className={ "grid grid-cols-[auto_1fr_1fr_auto] items-center gap-2" }>
+									<div className={ "flex w-12 items-center gap-1.5" }>
+										<Checkbox
+											isReadOnly
+											aria-label={ `Serie ${ set.setNumber } completa` }
+											isSelected={ set.completed }
+										>
+											<Checkbox.Control className={ "size-5 rounded-md border border-border shadow-sm" }>
+												<Checkbox.Indicator/>
+											</Checkbox.Control>
+										</Checkbox>
+										<span className={ "text-sm font-bold text-foreground" }>S{ set.setNumber }</span>
+									</div>
 									<Input
 										fullWidth
-										className={ "border border-border" }
-										placeholder={ "Reps" }
+										aria-label={ `Reps de la serie ${ set.setNumber }` }
+										className={ "min-w-0 border border-border px-1 text-center" }
+										inputMode={ "numeric" }
+										placeholder={ `${ set.targetReps } reps` }
 										type={ "number" }
 										value={ set.currentReps?.toString() || "" }
 										onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { reps: parseNumericInput( e.target.value ) } ) }
 									/>
-									<span className={ "block text-xs text-muted" }>
-										{ previousReps === null ? "Sin registro anterior" : `${ previousReps } reps Anterior` }
-									</span>
-								</div>
-
-								<div className={ "space-y-2" }>
-									<Label className={ "text-xs text-muted" }>Peso (Kg)</Label>
 									<Input
 										fullWidth
-										className={ "border border-border" }
-										placeholder={ "Peso kg" }
+										aria-label={ `Peso de la serie ${ set.setNumber }` }
+										className={ "min-w-0 border border-border px-1 text-center" }
+										inputMode={ "decimal" }
+										placeholder={ "kg" }
+										step={ "any" }
 										type={ "number" }
 										value={ set.currentWeight?.toString() || "" }
-										onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { weight: parseNumericInput( e.target.value ) } ) }
+										onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { weight: parseWeightInput( e.target.value ) } ) }
 									/>
-									<span className={ "block text-xs text-muted" }>
-										{ previousWeight === null ? "Sin registro anterior" : `${ previousWeight } Kg Anterior` }
-									</span>
+									<Button
+										isIconOnly
+										aria-label={
+											hasNote
+												? `Editar nota de la serie ${ set.setNumber }`
+												: `Agregar nota a la serie ${ set.setNumber }`
+										}
+										className={ hasNote ? "size-9 text-accent" : "size-9 text-muted" }
+										variant={ "ghost" }
+										onPress={ () => setNoteSetId( set.id ) }
+									>
+										<MessageSquarePlus className={ "size-4" }/>
+									</Button>
 								</div>
+								<p className={ "text-xs text-muted" }>
+									{ previousReps === null && previousWeight === null
+										? "Sin registro anterior"
+										: `Anterior: ${ previousReps ?? "–" } reps · ${ previousWeight ?? "–" } kg` }
+								</p>
 							</div>
-
-							<Button
-								className={ "h-auto min-h-0 justify-start px-0 py-0 text-sm text-accent" }
-								variant={ "ghost" }
-								onPress={ () => setNoteSetId( set.id ) }
-							>
-								<MessageSquarePlus className={ "size-4" }/>
-								{ set.notes?.trim() ? "Editar nota" : "Agregar nota" }
-							</Button>
-									</>
-								);
-							} )() }
-						</div>
-					) ) }
+						);
+					} ) }
 				</Card.Content>
 			</Card>
 
@@ -136,7 +139,7 @@ export function MobileExerciseSetCard( {
 				</Drawer.Body>
 				<Drawer.Footer className={ "border-default-100 shrink-0 justify-end gap-2 border-t pt-4" }>
 					<Button slot={ "close" } variant={ "secondary" }>
-						Cerrar
+						Listo
 					</Button>
 				</Drawer.Footer>
 			</FeatureDrawerLayout>

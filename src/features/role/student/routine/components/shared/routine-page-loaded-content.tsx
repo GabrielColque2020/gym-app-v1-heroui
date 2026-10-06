@@ -1,4 +1,4 @@
-﻿import { PageBreadcrumbs } from "@/components/common";
+import { PageBreadcrumbs } from "@/components/common";
 import DesktopRoutineView from "@/features/role/student/routine/components/desktop/desktop-routine-view";
 import MobileRoutineView from "@/features/role/student/routine/components/mobile/mobile-routine-view";
 import { RoutinePageLoadedHeader } from "@/features/role/student/routine/components/shared/routine-page-loaded-header";
@@ -23,6 +23,7 @@ export function RoutinePageLoadedContent( {
 		handleConfirmSave,
 		handleExerciseUpdate,
 		handleOpenSaveDrawer,
+		handleRepeatLastSession,
 		handleSetUpdate,
 		handleVariantChange,
 		isRefreshConfirmOpen,
@@ -57,6 +58,7 @@ export function RoutinePageLoadedContent( {
 				latestProgressDate={ latestProgressDate }
 				routineObservation={ routineObservation }
 				onExerciseUpdate={ handleExerciseUpdate }
+				onRepeatLastSessionAction={ handleRepeatLastSession }
 				onSave={ handleOpenSaveDrawer }
 				onSetUpdate={ handleSetUpdate }
 				onVariantChangeAction={ handleVariantChange }
@@ -67,6 +69,7 @@ export function RoutinePageLoadedContent( {
 				latestProgressDate={ latestProgressDate }
 				routineObservation={ routineObservation }
 				onExerciseUpdate={ handleExerciseUpdate }
+				onRepeatLastSessionAction={ handleRepeatLastSession }
 				onVariantChangeAction={ handleVariantChange }
 				onSetUpdate={ handleSetUpdate }
 				routineStatusDescription={ state.routineStatusDescription }
