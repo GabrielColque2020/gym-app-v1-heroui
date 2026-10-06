@@ -151,6 +151,7 @@ function ExerciseSetsEditorContent({
     // Las notas son opcionales: quedan plegadas salvo que ya haya algo escrito.
     const [ isNotesOpen, setIsNotesOpen ] = useState(() => exercise.sets.some((set) => set.notes?.trim()));
     const hasLastSession = Boolean(getExerciseLastSession(exercise)?.sets.length);
+    const isWeightMissing = exercise.sets.some((set) => !set.completed && set.currentWeight === null && set.currentReps !== null);
 
     return (
         <div className={ "space-y-3" }>
@@ -184,7 +185,7 @@ function ExerciseSetsEditorContent({
                         <StepperField
                             inputMode={ "decimal" }
                             isLocked={ isLocked }
-                            isMissing={ exercise.sets.some((set) => !set.completed && set.currentWeight === null && set.currentReps !== null) }
+                            isMissing={ isWeightMissing }
                             label={ "Peso (kg)" }
                             parse={ parseWeightInput }
                             placeholder={ hasMixedValues ? "Varios" : "Kg" }
@@ -193,6 +194,13 @@ function ExerciseSetsEditorContent({
                             onChange={ (weight) => onExerciseUpdate(exercise.id, { weight }) }
                         />
                     </div>
+
+                    { /* El peso es requerido: sin el, la serie no se guarda. */ }
+                    { isWeightMissing && !isLocked ? (
+                        <p className={ "text-xs font-medium text-warning" }>
+                            Falta el peso. Si es con el peso del cuerpo, poné 0.
+                        </p>
+                    ) : null }
 
                     { /* Bloqueado no hay nada que explicar sobre como se edita. */ }
                     { isLocked ? null : (

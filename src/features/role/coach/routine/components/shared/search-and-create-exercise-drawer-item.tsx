@@ -21,6 +21,14 @@ export function SearchAndCreateExerciseDrawerItem( {
 }: SearchAndCreateExerciseDrawerItemProps ) {
 	// El equipo ayuda a distinguir ejercicios de nombre parecido.
 	const details = [ formatBodyPart( exercise.bodyPart ), exercise.equipment ].filter( Boolean ).join( " · " );
+	// Hay ejercicios distintos con el mismo nombre: se avisa y se muestra el codigo
+	// del catalogo, que junto con la imagen es lo que permite elegir el correcto.
+	const duplicateNote = exercise.sameNameCount > 1
+		? [
+			`Hay ${ exercise.sameNameCount } con este nombre`,
+			exercise.catalogCode ? `cód. ${ exercise.catalogCode }` : null,
+		].filter( Boolean ).join( " · " )
+		: null;
 
 	return (
 		<div
@@ -48,6 +56,9 @@ export function SearchAndCreateExerciseDrawerItem( {
 							</Chip>
 						) : null }
 					</div>
+					{ duplicateNote ? (
+						<p className={ "mt-0.5 text-xs font-medium text-warning" }>{ duplicateNote }</p>
+					) : null }
 				</div>
 			</div>
 			<Button

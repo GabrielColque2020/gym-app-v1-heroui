@@ -23,9 +23,13 @@ const SEARCH_DEBOUNCE_MS = 250;
 export const RECENT_ROUTINE_EXERCISES_QUERY_KEY = [ "coach-recent-routine-exercises" ] as const;
 
 export type RoutineCatalogExercise = ExerciseListItem & {
+	// Codigo del catalogo: lo unico que distingue a dos ejercicios de igual nombre.
+	catalogCode: string | null;
 	equipment: string;
 	// Posicion entre los usados recientemente, o `null` si no esta entre ellos.
 	recentRank: number | null;
+	// Cuantos ejercicios del catalogo comparten este nombre, contando este.
+	sameNameCount: number;
 };
 
 type UseRoutineDayExerciseCatalogOptions = {
@@ -52,17 +56,30 @@ export function useRoutineDayExerciseCatalog( { initialSelectedExerciseId }: Use
 				( recentExerciseIdsQuery.data ?? [] ).map( ( exerciseId, index ) => [ exerciseId, index ] ),
 			);
 
-			return ( exercisesQuery.data ?? [] )
-				.filter( ( exercise: CoachExerciseListItem ) => exercise.active )
+			const activeExercises = ( exercisesQuery.data ?? [] )
+				.filter( ( exercise: CoachExerciseListItem ) => exercise.active );
+			// El catalogo trae ejercicios distintos con el mismo nombre: se cuentan
+			// para avisarle al coach, que si no los ve como uno solo repetido.
+			const countByName = new Map<string, number>();
+
+			for (const exercise of activeExercises) {
+				const nameKey = normalizeSearchName( exercise.name );
+
+				countByName.set( nameKey, ( countByName.get( nameKey ) ?? 0 ) + 1 );
+			}
+
+			return activeExercises
 				.map( ( exercise: CoachExerciseListItem ) => ( {
 					active: exercise.active,
 					bodyPart: exercise.bodyPart,
+					catalogCode: exercise.externalId?.trim() || null,
 					createdAt: exercise.createdAt,
 					equipment: exercise.equipment,
 					id: exercise.id,
 					imageUrl: exercise.imageUrl,
 					name: exercise.name,
 					recentRank: recentRankById.get( exercise.coachExerciseId ?? exercise.id ) ?? null,
+					sameNameCount: countByName.get( normalizeSearchName( exercise.name ) ) ?? 1,
 					tips: exercise.tips,
 					videoUrl: exercise.videoUrl,
 				} ) );

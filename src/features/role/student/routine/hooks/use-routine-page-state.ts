@@ -82,6 +82,7 @@ export function useRoutinePageState( {
 		setIsRefreshConfirmOpen,
 	} = useRoutinePageActions( {
 		activeSession,
+		backHref,
 		canFinishDay,
 		discardDraftAction: clearDraft,
 		isDirty,

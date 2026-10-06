@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { toast } from "@heroui/react";
 
@@ -13,6 +14,7 @@ import type { StudentRoutineSession } from "@/features/routine/services/routine-
 
 type UseRoutinePageActionsOptions = {
 	activeSession: StudentRoutineSession | null;
+	backHref: string;
 	canFinishDay: boolean;
 	discardDraftAction: () => void;
 	isDirty: boolean;
@@ -26,6 +28,7 @@ type UseRoutinePageActionsOptions = {
 
 export function useRoutinePageActions( {
 	activeSession,
+	backHref,
 	canFinishDay,
 	discardDraftAction,
 	isDirty,
@@ -36,6 +39,7 @@ export function useRoutinePageActions( {
 	routineDayId,
 	saveSessionAction,
 }: UseRoutinePageActionsOptions ) {
+	const router = useRouter();
 	const [ isFinishDrawerOpen, setIsFinishDrawerOpen ] = useState( false );
 	const [ isRefreshConfirmOpen, setIsRefreshConfirmOpen ] = useState( false );
 
@@ -130,7 +134,10 @@ export function useRoutinePageActions( {
 
 		setIsFinishDrawerOpen( false );
 		toast.success( "Día terminado", { description: "Tu entrenador ya puede ver lo que hiciste." } );
-	}, [ saveSessionAction ] );
+		// De vuelta a la rutina del mes, que marca cual es el dia que sigue. Quedarse
+		// en un dia ya cerrado no le dejaba al estudiante nada por hacer.
+		router.push( backHref );
+	}, [ backHref, router, saveSessionAction ] );
 
 	// Guarda a mano lo que quedo sin guardar de una visita anterior, o reintenta
 	// un guardado que fallo.
