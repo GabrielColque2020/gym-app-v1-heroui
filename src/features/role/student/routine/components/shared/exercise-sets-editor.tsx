@@ -71,7 +71,7 @@ function StepperField({ inputMode, isLocked, isMissing, label, onChange, parse, 
         // Una fila por campo: de a dos por fila, en el telefono el numero no entra.
         <div className={ "flex items-center gap-3" }>
             <Label className={ "w-16 shrink-0 text-sm font-medium text-muted" }>{ label }</Label>
-            <div className={ "flex min-w-0 flex-1 items-center gap-2" }>
+            <div className={ "flex min-w-0 flex-1 items-center gap-3" }>
                 <Button
                     isIconOnly
                     aria-label={ `Bajar ${label.toLowerCase()}` }
@@ -156,7 +156,7 @@ function ExerciseSetsEditorContent({
     return (
         <div className={ "space-y-3" }>
             <Card className={ "border border-accent-soft-hover shadow-sm" }>
-                <Card.Content className={ "space-y-3 p-3" }>
+                <Card.Content className={ "space-y-4 p-3" }>
                     <div className={ "flex flex-wrap items-center justify-between gap-2" }>
                         <div className={ "min-w-0" }>
                             <p className={ "text-xs font-medium text-muted" }>Objetivo</p>
@@ -170,7 +170,7 @@ function ExerciseSetsEditorContent({
                         ) : null }
                     </div>
 
-                    <div className={ "grid gap-2 lg:grid-cols-2 lg:gap-4" }>
+                    <div className={ "grid gap-4 lg:grid-cols-2" }>
                         <StepperField
                             inputMode={ "numeric" }
                             isLocked={ isLocked }

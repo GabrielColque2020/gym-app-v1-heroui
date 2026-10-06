@@ -1,15 +1,16 @@
-﻿"use server";
+"use server";
 
 import prisma from "@/lib/prisma";
 
 import { getAuthenticatedSession } from "@/features/auth/session";
-import { getRoutineDayAction } from "@/features/routine/actions/get-routine-day";
-import { getStudentRoutineSessionAction } from "@/features/role/student/routine/actions/get-routine-session";
 import {
 	buildStudentRoutineProgressRows,
 	resolveStudentRoutineExercises,
 } from "@/features/role/student/routine/actions/save-routine-session.utils";
-import type { StudentRoutineSessionSaveInput } from "@/features/routine/services/routine-session";
+import type {
+	StudentRoutineProgressEntry,
+	StudentRoutineSessionSaveInput,
+} from "@/features/routine/services/routine-session";
 
 type SaveStudentRoutineSessionInput = StudentRoutineSessionSaveInput & {
 	// El estudiante toco "Terminar día". El guardado automatico no lo manda: cargar
@@ -18,12 +19,43 @@ type SaveStudentRoutineSessionInput = StudentRoutineSessionSaveInput & {
 	studentId?: string | null;
 };
 
+// Lo que cambia al guardar: las series de este dia y si quedo terminado. La
+// pantalla ya tiene todo lo demas (ejercicios, variantes, historial), asi que no
+// se le devuelve el dia completo.
+export type SavedStudentRoutineSession = {
+	dayNumber: number;
+	isFinalized: boolean;
+	month: number;
+	progressEntries: StudentRoutineProgressEntry[];
+	routineDayId: string;
+	week: number;
+	year: number;
+};
+
+// El cliente de Prisma extendido no infiere el tipo de un `select` anidado.
+type SavedDayForSave = {
+	dayNumber: number;
+	id: string;
+	isFinalized: boolean;
+	routines: Array<{
+		exerciseId: string | null;
+		variants: Array<{ variantExerciseId: string }>;
+	}>;
+	trainingRoutineWeek: {
+		trainingRoutineMonth: {
+			month: number;
+			year: number;
+		};
+		week: number;
+	};
+};
+
 export async function saveStudentRoutineSessionAction( {
 														   exercises,
 														   finalize = false,
 														   routineDayId,
 														   studentId,
-													   }: SaveStudentRoutineSessionInput ) {
+													   }: SaveStudentRoutineSessionInput ): Promise<SavedStudentRoutineSession> {
 	try {
 		const session = await getAuthenticatedSession();
 
@@ -47,33 +79,76 @@ export async function saveStudentRoutineSessionAction( {
 			throw new Error( "Seleccioná un día válido antes de guardar cambios." );
 		}
 
-		const routineDay = await getRoutineDayAction( {
-			routineDayId: normalizedRoutineDayId,
-			studentId: activeStudentId,
-		} );
+		// Solo lo necesario para validar y ubicar el dia. Con el guardado automatico
+		// esto corre muchas veces por sesion: leer el dia completo, con imagenes,
+		// instrucciones y variantes, era la consulta mas pesada de cada guardado.
+		const savedDay = await prisma.routineDay.findFirst( {
+			select: {
+				dayNumber: true,
+				id: true,
+				isFinalized: true,
+				routines: {
+					select: {
+						exerciseId: true,
+						variants: {
+							select: {
+								variantExerciseId: true,
+							},
+						},
+					},
+				},
+				trainingRoutineWeek: {
+					select: {
+						trainingRoutineMonth: {
+							select: {
+								month: true,
+								year: true,
+							},
+						},
+						week: true,
+					},
+				},
+			},
+			where: {
+				id: normalizedRoutineDayId,
+				trainingRoutineWeek: {
+					trainingRoutineMonth: {
+						student: {
+							active: true,
+							id: activeStudentId,
+							role: "STUDENT",
+						},
+					},
+				},
+			},
+		} ) as SavedDayForSave | null;
+
+		if (!savedDay) {
+			throw new Error( "No se encontró el día de rutina seleccionado." );
+		}
+
+		const routineDay = {
+			dayNumber: savedDay.dayNumber,
+			id: savedDay.id,
+			routines: savedDay.routines,
+			trainingRoutine: {
+				month: savedDay.trainingRoutineWeek.trainingRoutineMonth.month,
+				week: savedDay.trainingRoutineWeek.week,
+				year: savedDay.trainingRoutineWeek.trainingRoutineMonth.year,
+			},
+		};
 		const resolvedExercises = resolveStudentRoutineExercises( routineDay, exercises );
 		const progressRows = buildStudentRoutineProgressRows( routineDay, resolvedExercises, activeStudentId );
 
-		// Se guarda aplicando solo las diferencias: con el guardado automatico esto
-		// corre con cada serie que el estudiante carga, y borrar y recrear todo le
-		// cambiaria la fecha a las series que ya estaban.
-		await prisma.$transaction( async ( tx ) => {
+		// Se guarda aplicando solo las diferencias: borrar y recrear todo le cambiaria
+		// la fecha a las series que ya estaban.
+		const progressEntries = await prisma.$transaction( async ( tx ) => {
 			// Bloquea el dia mientras dura el guardado, para que dos guardados a la
 			// vez (dos pestañas, o el telefono y la computadora) no dupliquen series.
 			await tx.$queryRaw`SELECT "id" FROM "RoutineDay" WHERE "id" = ${ routineDay.id } FOR UPDATE`;
 
 			const existingRows = await tx.exerciseProgress.findMany( {
 				orderBy: [ { date: "desc" }, { id: "desc" } ],
-				select: {
-					exerciseId: true,
-					id: true,
-					notes: true,
-					repsCompleted: true,
-					repsNumber: true,
-					setsCompleted: true,
-					variantExerciseId: true,
-					weightUsed: true,
-				},
 				where: {
 					dayNumber: routineDay.dayNumber,
 					month: routineDay.trainingRoutine.month,
@@ -94,6 +169,9 @@ export async function saveStudentRoutineSessionAction( {
 				}
 			}
 
+			// Como quedan las series del dia. Se arma con lo que ya se leyo y lo que
+			// devuelve cada escritura, sin volver a consultar al final.
+			const savedRows: Array<( typeof existingRows )[ number ]> = [];
 			const keptRowIds = new Set<string>();
 			const rowsToCreate: typeof progressRows = [];
 
@@ -113,8 +191,8 @@ export async function saveStudentRoutineSessionAction( {
 					|| existing.variantExerciseId !== row.variantExerciseId
 					|| existing.weightUsed !== row.weightUsed;
 
-				if (hasChanges) {
-					await tx.exerciseProgress.update( {
+				savedRows.push( hasChanges
+					? await tx.exerciseProgress.update( {
 						data: {
 							notes: row.notes,
 							repsCompleted: row.repsCompleted,
@@ -123,8 +201,8 @@ export async function saveStudentRoutineSessionAction( {
 							weightUsed: row.weightUsed,
 						},
 						where: { id: existing.id },
-					} );
-				}
+					} )
+					: existing );
 			}
 
 			const rowIdsToDelete = existingRows.filter( ( row ) => !keptRowIds.has( row.id ) ).map( ( row ) => row.id );
@@ -134,10 +212,10 @@ export async function saveStudentRoutineSessionAction( {
 			}
 
 			if (rowsToCreate.length > 0) {
-				await tx.exerciseProgress.createMany( { data: rowsToCreate as never } );
+				savedRows.push( ...await tx.exerciseProgress.createManyAndReturn( { data: rowsToCreate as never } ) );
 			}
 
-			if (finalize) {
+			if (finalize && !savedDay.isFinalized) {
 				await tx.routineDay.update( {
 					data: {
 						isFinalized: true,
@@ -147,16 +225,22 @@ export async function saveStudentRoutineSessionAction( {
 					},
 				} );
 			}
+
+			return savedRows;
 		} );
 
-		return await getStudentRoutineSessionAction( {
+		return {
+			dayNumber: routineDay.dayNumber,
+			isFinalized: savedDay.isFinalized || finalize,
+			month: routineDay.trainingRoutine.month,
+			progressEntries: progressEntries as unknown as StudentRoutineProgressEntry[],
 			routineDayId: routineDay.id,
-			studentId: activeStudentId,
-		} );
+			week: routineDay.trainingRoutine.week,
+			year: routineDay.trainingRoutine.year,
+		};
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al guardar la rutina del estudiante.";
 
 		throw new Error( `No se pudo guardar la rutina del estudiante. ${ message }` );
 	}
 }
-

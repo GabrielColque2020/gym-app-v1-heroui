@@ -1,8 +1,22 @@
-﻿import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routine-day";
-import type {
+﻿import type {
 	StudentRoutineSessionSaveExercise,
 	StudentRoutineSessionSaveSet,
 } from "@/features/routine/services/routine-session";
+
+// Lo unico que el guardado necesita saber del dia: donde cae y que ejercicios y
+// variantes admite.
+type RoutineDayForSave = {
+	dayNumber: number;
+	routines: Array<{
+		exerciseId: string | null;
+		variants: Array<{ variantExerciseId: string }>;
+	}>;
+	trainingRoutine: {
+		month: number;
+		week: number;
+		year: number;
+	};
+};
 
 type ResolvedStudentRoutineExercise = {
 	baseExerciseId: string;
@@ -34,7 +48,7 @@ export function validateStudentRoutineSet( set: StudentRoutineSessionSaveSet ) {
 }
 
 export function resolveStudentRoutineExercises(
-	routineDay: RoutineDayDetailBase,
+	routineDay: RoutineDayForSave,
 	exercises: StudentRoutineSessionSaveExercise[],
 ) {
 	const baseExerciseIds = Array.from(
@@ -80,7 +94,7 @@ export function resolveStudentRoutineExercises(
 }
 
 export function buildStudentRoutineProgressRows(
-	routineDay: RoutineDayDetailBase,
+	routineDay: RoutineDayForSave,
 	resolvedExercises: ResolvedStudentRoutineExercise[],
 	studentId: string,
 ) {

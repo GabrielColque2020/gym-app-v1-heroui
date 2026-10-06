@@ -53,8 +53,8 @@ export function MobileExerciseSetCard( {
 						const hasNote = Boolean( set.notes?.trim() );
 
 						return (
-							<div key={ set.id } className={ "space-y-1.5 py-3 first:pt-2 last:pb-2" }>
-								<div className={ "grid grid-cols-[auto_1fr_1fr_auto] items-center gap-2" }>
+							<div key={ set.id } className={ "space-y-2.5 py-4 first:pt-3 last:pb-3" }>
+								<div className={ "grid grid-cols-[auto_1fr_1fr_auto] items-center gap-3" }>
 									<div className={ "flex w-12 items-center gap-1.5" }>
 										<Checkbox
 											isReadOnly

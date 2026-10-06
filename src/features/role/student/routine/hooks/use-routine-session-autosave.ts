@@ -10,9 +10,12 @@ import {
 	type StudentRoutineSession,
 } from "@/features/routine/services/routine-session";
 
-// Espera despues del ultimo cambio antes de guardar solo: lo justo para no
-// guardar a mitad de un numero o de varios toques seguidos en mas y menos.
-const AUTOSAVE_DELAY_MS = 700;
+// Espera despues del ultimo cambio antes de guardar solo. Es mas larga que la
+// del entrenador a proposito: el estudiante ajusta el peso con varios toques en
+// mas y menos, a veces despacio, y cada pausa mas corta que esto seria un
+// guardado. Al salir de la pantalla o bloquear el telefono se guarda igual, sin
+// esperar.
+const AUTOSAVE_DELAY_MS = 1500;
 
 // `pending`: hay series por guardar y se van a guardar solas. `unsaved`: quedaron
 // series sin guardar de una visita anterior y no se guardan solas; el estudiante
