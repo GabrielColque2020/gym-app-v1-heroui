@@ -1,16 +1,15 @@
 "use client";
 
-import type { Key } from "react-aria-components/Breadcrumbs";
-import { useMemo, useState } from "react";
-import { Card, Typography } from "@heroui/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Card } from "@heroui/react";
 
 import { PageBreadcrumbs } from "@/components/common";
-import { TrainingRoutinesDayCard } from "@/features/role/student/training-routine/components/training-routines-day-card";
 import { TrainingRoutinesEmptyState } from "@/features/role/student/training-routine/components/training-routines-empty-state";
 import { TrainingRoutinesErrorState } from "@/features/role/student/training-routine/components/training-routines-error-state";
-import { TrainingRoutinesFilter } from "@/features/role/student/training-routine/components/training-routines-filter";
 import { TrainingRoutinesLoadingState } from "@/features/role/student/training-routine/components/training-routines-loading-state";
-import { TrainingRoutinesWeekSelector } from "@/features/role/student/training-routine/components/training-routines-week-selector";
+import { TrainingRoutinesMonthHeader } from "@/features/role/student/training-routine/components/training-routines-month-header";
+import { TrainingRoutinesWeekList } from "@/features/role/student/training-routine/components/training-routines-week-list";
 import { useTrainingRoutines } from "@/features/role/student/training-routine/hooks/use-training-routines";
 import { downloadFileFromUrl } from "@/features/shared/services/download-file";
 import { buildTrainingRoutineReportPdfUrl } from "@/features/training-routine/services/training-routines-report-pdf-url";
@@ -34,37 +33,26 @@ export default function TrainingRoutinesPageContent( {
 	initialMonth = getCurrentMonth(),
 	initialYear = getCurrentYear(),
 }: TrainingRoutinesPageContentProps ) {
-	const [ activeMonth, setActiveMonth ] = useState( initialMonth );
-	const [ activeYear, setActiveYear ] = useState( initialYear );
+	const router = useRouter();
 	const [ isDownloading, setIsDownloading ] = useState( false );
-	const [ selectedWeekId, setSelectedWeekId ] = useState<Key | null>( null );
+	// El mes sale de la direccion: asi "volver" desde un dia cae en el mes de ese dia.
+	const activeMonth = initialMonth;
+	const activeYear = initialYear;
 	const { data, error, isError, isFetching, isLoading, refetch } = useTrainingRoutines( {
 		month: activeMonth,
 		year: activeYear,
 	} );
 
 	const routineWeeks = data?.routineMonth.weeks ?? EMPTY_ROUTINE_WEEKS;
-	const selectedWeekExists =
-		selectedWeekId !== null &&
-		routineWeeks.some( ( routineWeek ) => routineWeek.id === selectedWeekId );
-	const effectiveSelectedWeekId = selectedWeekExists ? selectedWeekId : ( routineWeeks[ 0 ]?.id ?? "" );
-	const selectedRoutine = useMemo(
-		() =>
-			routineWeeks.find( ( routineWeek ) => routineWeek.id === effectiveSelectedWeekId ) ??
-			routineWeeks[ 0 ] ??
-			null,
-		[ effectiveSelectedWeekId, routineWeeks ],
-	);
 
-	function handleSearch( value: { month: string; year: string } ) {
-		const nextMonth = Number( value.month );
-		const nextYear = Number( value.year );
-		if (Number.isInteger( nextMonth ) && nextMonth >= 1 && nextMonth <= 12) {
-			setActiveMonth( nextMonth );
-		}
-		if (Number.isInteger( nextYear ) && nextYear >= 2000 && nextYear <= 2100) {
-			setActiveYear( nextYear );
-		}
+	function handleChangeMonth( offset: -1 | 1 ) {
+		const target = new Date( activeYear, activeMonth - 1 + offset, 1 );
+		const params = new URLSearchParams( {
+			month: String( target.getMonth() + 1 ),
+			year: String( target.getFullYear() ),
+		} );
+
+		router.replace( `/student/training-routine?${ params.toString() }` );
 	}
 
 	function handleDownload() {
@@ -82,69 +70,58 @@ export default function TrainingRoutinesPageContent( {
 
 	return (
 		<div className={ "flex flex-col gap-4" }>
-			<PageBreadcrumbs
-				backHref={ "/student/dashboard" }
-				backLabel={ "Volver" }
-				crumbs={ [
-					{ href: "/student/dashboard", label: "Inicio" },
-					{ label: "Rutina de entrenamiento" },
-				] }
-			/>
+			{ /* En el telefono las migas no suman: el menu ya lleva al inicio. */ }
+			<div className={ "hidden sm:block" }>
+				<PageBreadcrumbs
+					backHref={ "/student/dashboard" }
+					backLabel={ "Volver" }
+					crumbs={ [
+						{ href: "/student/dashboard", label: "Inicio" },
+						{ label: "Rutina de entrenamiento" },
+					] }
+				/>
+			</div>
 
-			<TrainingRoutinesFilter
-				defaultMonth={ String( activeMonth ).padStart( 2, "0" ) }
-				defaultYear={ String( activeYear ) }
-				isPrintDisabled={ routineWeeks.length === 0 || isDownloading }
-				isRefreshing={ isFetching && !isLoading }
+			<TrainingRoutinesMonthHeader
+				isDownloadDisabled={ routineWeeks.length === 0 || isDownloading }
 				isDownloading={ isDownloading }
-				onPrint={ handleDownload }
-				onRefresh={ () => {
+				isRefreshing={ isFetching && !isLoading }
+				month={ activeMonth }
+				objective={ data?.routineMonth.objective }
+				year={ activeYear }
+				onChangeMonthAction={ handleChangeMonth }
+				onDownloadAction={ handleDownload }
+				onRefreshAction={ () => {
 					void refetch();
 				} }
-				onSearch={ handleSearch }
 			/>
 
-			<Card className={ "border border-border shadow-sm py-2" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col border-b border-border gap-4 sm:flex-row sm:items-center sm:justify-between p-3" }>
-					<Typography className={ "font-black" } type={ "h3" }>
-						Plan Semanal
-					</Typography>
-					{ isLoading ? (
-						<div className={ "flex items-center justify-center rounded-full border border-border bg-surface px-4 py-2 text-sm text-muted" }>
-							Cargando semanas
-						</div>
-					) : routineWeeks.length > 0 ? (
-						<TrainingRoutinesWeekSelector
-							activeMonth={ activeMonth }
-							activeYear={ activeYear }
-							routines={ routineWeeks }
-							onSelectionChange={ setSelectedWeekId }
-						/>
-					) : null }
-				</Card.Header>
-				{ isLoading ? <TrainingRoutinesLoadingState/> : null }
+			{ isLoading ? (
+				<Card className={ "border border-border py-2" } variant={ "default" }>
+					<TrainingRoutinesLoadingState/>
+				</Card>
+			) : null }
 
-				{ isError ? (
+			{ isError ? (
+				<Card className={ "border border-border py-2" } variant={ "default" }>
 					<TrainingRoutinesErrorState
 						errorMessage={ error instanceof Error ? error.message : "Ocurrió un error inesperado." }
 						onRetry={ () => {
 							void refetch();
 						} }
 					/>
-				) : null }
+				</Card>
+			) : null }
 
-				{ !isLoading && !isError ? (
-					routineWeeks.length === 0 ? (
+			{ !isLoading && !isError ? (
+				routineWeeks.length === 0 ? (
+					<Card className={ "border border-border py-2" } variant={ "default" }>
 						<TrainingRoutinesEmptyState month={ activeMonth } year={ activeYear }/>
-					) : (
-						<Card.Content className={ "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 p-3" }>
-							{ selectedRoutine?.routineDays.map( ( day ) => (
-								<TrainingRoutinesDayCard key={ day.id } day={ day }/>
-							) ) }
-						</Card.Content>
-					)
-				) : null }
-			</Card>
+					</Card>
+				) : (
+					<TrainingRoutinesWeekList routineWeeks={ routineWeeks }/>
+				)
+			) : null }
 		</div>
 	);
 }
