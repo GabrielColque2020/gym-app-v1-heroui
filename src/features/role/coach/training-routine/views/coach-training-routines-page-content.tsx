@@ -23,7 +23,7 @@ export default function CoachTrainingRoutinesPageContent( {
 															  studentId,
 															  year,
 														  }: CoachTrainingRoutinesPageContentProps ) {
-	const { data, error, isError, isFetching, isLoading, refetch } = useTrainingRoutines( { month, studentId, year } );
+	const { data, error, isError, isFetching, isLoading, refetch } = useTrainingRoutines( { alwaysFresh: true, month, studentId, year } );
 	const breadcrumbs = studentId ? [
 		{ href: "/coach/dashboard", label: "Inicio" },
 		{ href: "/coach/student", label: "Estudiantes" },

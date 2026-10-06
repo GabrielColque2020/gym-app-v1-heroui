@@ -58,15 +58,11 @@ export type TrainingRoutineStudent = Prisma.UserGetPayload<{
 	select: typeof trainingRoutineStudentSelect;
 }>;
 
-export type TrainingRoutineDay = Prisma.TrainingRoutineWeekGetPayload<{
-	include: typeof trainingRoutineWeekInclude;
-}>["routineDays"][number];
-
-export type TrainingRoutineWeek = Prisma.TrainingRoutineWeekGetPayload<{
+type FetchedTrainingRoutineWeek = Prisma.TrainingRoutineWeekGetPayload<{
 	include: typeof trainingRoutineWeekInclude;
 }>;
 
-export type TrainingRoutineMonth = Prisma.TrainingRoutineMonthGetPayload<{
+type FetchedTrainingRoutineMonth = Prisma.TrainingRoutineMonthGetPayload<{
 	include: {
 		weeks: {
 			include: typeof trainingRoutineWeekInclude;
@@ -76,6 +72,20 @@ export type TrainingRoutineMonth = Prisma.TrainingRoutineMonthGetPayload<{
 		};
 	};
 }>;
+
+export type TrainingRoutineDay = FetchedTrainingRoutineWeek["routineDays"][number] & {
+	// Series que el estudiante ya cargo en este dia. Con el guardado automatico un
+	// dia puede estar empezado sin estar terminado: esto es lo que lo distingue.
+	loadedSetCount: number;
+};
+
+export type TrainingRoutineWeek = Omit<FetchedTrainingRoutineWeek, "routineDays"> & {
+	routineDays: TrainingRoutineDay[];
+};
+
+export type TrainingRoutineMonth = Omit<FetchedTrainingRoutineMonth, "weeks"> & {
+	weeks: TrainingRoutineWeek[];
+};
 
 function pickFirstText( ...values: Array<string | null | undefined> ) {
 	return values.find( ( value ) => value?.trim() )?.trim() ?? null;
@@ -130,15 +140,36 @@ export async function getTrainingRoutinesByStudentBase( {
 			studentId,
 			year,
 		},
-	} ) as TrainingRoutineMonth | null;
+	} ) as FetchedTrainingRoutineMonth | null;
+	const loadedSets = routineMonth
+		? await prisma.exerciseProgress.findMany( {
+			select: {
+				dayNumber: true,
+				week: true,
+			},
+			where: {
+				month,
+				studentId,
+				year,
+			},
+		} )
+		: [];
+	const loadedSetCountByDay = new Map<string, number>();
 
-	const resolvedRoutineMonth = routineMonth
+	for (const loadedSet of loadedSets) {
+		const key = `${ loadedSet.week }-${ loadedSet.dayNumber }`;
+
+		loadedSetCountByDay.set( key, ( loadedSetCountByDay.get( key ) ?? 0 ) + 1 );
+	}
+
+	const resolvedRoutineMonth: TrainingRoutineMonth = routineMonth
 		? {
 			...routineMonth,
 			weeks: routineMonth.weeks.map( ( week ) => ( {
 				...week,
 				routineDays: week.routineDays.map( ( day ) => ( {
 					...day,
+					loadedSetCount: loadedSetCountByDay.get( `${ week.week }-${ day.dayNumber }` ) ?? 0,
 					routines: day.routines.map( ( routine ) => ( {
 						...routine,
 						exercise: routine.exercise

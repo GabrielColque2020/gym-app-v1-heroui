@@ -27,6 +27,10 @@ export function useStudentRoutineSession( {
 	return useQuery( {
 		...QUERY_DEFAULTS.student,
 		enabled: Boolean( routineDayId && studentId ),
+		// Cada vez que se abre el dia se pide lo ultimo: si el entrenador cambio la
+		// rutina, el estudiante no entrena con la version vieja. Mientras llega se
+		// muestra lo que ya estaba guardado en el telefono.
+		refetchOnMount: "always",
 		queryFn: () =>
 			getStudentRoutineSessionAction( {
 				routineDayId: routineDayId ?? "",

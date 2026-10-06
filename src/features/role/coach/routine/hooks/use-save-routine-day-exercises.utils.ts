@@ -4,13 +4,20 @@ import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routin
 import type { TrainingRoutinesByStudent } from "@/features/training-routine/services/training-routines-by-student";
 import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
 
-export function syncCoachTrainingRoutinesAfterSave(
+export async function syncCoachTrainingRoutinesAfterSave(
 	queryClient: QueryClient,
 	savedRoutineDay: RoutineDayDetailBase,
 ) {
 	const studentId = savedRoutineDay.trainingRoutine.student.id;
 	const { month, year } = savedRoutineDay.trainingRoutine;
 	const queryKey = coachTrainingRoutinesQueryKey( studentId, month, year );
+
+	// Si justo se estaba pidiendo el mes (al volver del editor a la pantalla del
+	// mes, mientras sale el ultimo guardado), ese pedido puede haber leido la base
+	// antes de este guardado: se descarta y se vuelve a pedir despues.
+	const wasFetching = queryClient.isFetching( { queryKey } ) > 0;
+
+	if (wasFetching) await queryClient.cancelQueries( { queryKey } );
 
 	queryClient.setQueryData<TrainingRoutinesByStudent>( queryKey, ( currentData ) => {
 		if (!currentData) return currentData;
@@ -38,5 +45,7 @@ export function syncCoachTrainingRoutinesAfterSave(
 			},
 		};
 	} );
-	// No se vuelve a pedir el mes: lo que cambio ya quedo aplicado arriba.
+	// No se vuelve a pedir el mes: lo que cambio ya quedo aplicado arriba. Salvo que
+	// se haya descartado un pedido en curso, que traia lo que cargo el estudiante.
+	if (wasFetching) void queryClient.invalidateQueries( { queryKey } );
 }

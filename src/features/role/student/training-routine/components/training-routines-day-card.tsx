@@ -2,12 +2,11 @@ import type { StudentTrainingRoutineDay } from "@/features/role/student/training
 
 import Link from "next/link";
 import { Button, Card, Chip } from "@heroui/react";
-import { CheckCircle2, Dumbbell } from "lucide-react";
+import { CheckCircle2, CircleDashed, Dumbbell, Play } from "lucide-react";
 
 import {
 	getTrainingRoutineDayDescription,
-	getTrainingRoutineDayStatusColor,
-	getTrainingRoutineDayStatusLabel,
+	getTrainingRoutineDayStatus,
 	getTrainingRoutineDayTitle,
 } from "@/features/role/student/training-routine/components/training-routines-day-card.utils";
 
@@ -16,6 +15,8 @@ type TrainingRoutinesDayCardProps = {
 };
 
 export function TrainingRoutinesDayCard( { day }: TrainingRoutinesDayCardProps ) {
+	const status = getTrainingRoutineDayStatus( day );
+
 	return (
 		<Card className={ "w-full border border-border shadow-sm py-2" }>
 			<div className={ "flex flex-1 flex-col gap-3" }>
@@ -26,13 +27,15 @@ export function TrainingRoutinesDayCard( { day }: TrainingRoutinesDayCardProps )
 						</span>
 						<Chip
 							className={ "absolute right-0 top-0 z-10" }
-							color={ getTrainingRoutineDayStatusColor( day.isFinalized ) }
+							color={ status.color }
 							size={ "md" }
 							variant={ "soft" }
 						>
-							<CheckCircle2 className={ "size-3" }/>
+							{ day.isFinalized
+								? <CheckCircle2 className={ "size-3" }/>
+								: day.loadedSetCount > 0 ? <Play className={ "size-3" }/> : <CircleDashed className={ "size-3" }/> }
 							<Chip.Label>
-								{ getTrainingRoutineDayStatusLabel( day.isFinalized ) }
+								{ status.label }
 							</Chip.Label>
 						</Chip>
 					</Card.Title>
@@ -42,9 +45,10 @@ export function TrainingRoutinesDayCard( { day }: TrainingRoutinesDayCardProps )
 				</Card.Header>
 				<Card.Footer className={ "mt-auto flex w-full flex-col items-end gap-3 px-3 pb-3" }>
 					<Link className={ "w-full text-center" } href={ `/student/routine?routineDayId=${ day.id }` }>
-						<Button className={ "w-full" } variant={ "secondary" }>
+						{ /* El dia en curso es el que hay que retomar: su boton es el que resalta. */ }
+						<Button className={ "w-full" } variant={ status.label === "En curso" ? "primary" : "secondary" }>
 							<Dumbbell/>
-							Ver rutina
+							{ status.actionLabel }
 						</Button>
 					</Link>
 				</Card.Footer>

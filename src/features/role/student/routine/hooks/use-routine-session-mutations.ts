@@ -25,12 +25,15 @@ export function useSaveStudentRoutineSession() {
 			// El borrador no se toca aca. Lo descarta `useRoutineSession` cuando ve que
 			// quedo igual a lo guardado; si el estudiante siguio cargando mientras
 			// viajaba el pedido, no queda igual y eso entra en el guardado siguiente.
-			queryClient.setQueryData(
-				studentRoutineSessionQueryKey( input.routineDayId, input.studentId ?? null ),
-				savedSession,
-			);
+			const sessionQueryKey = studentRoutineSessionQueryKey( input.routineDayId, input.studentId ?? null );
 
-			// La lista del mes solo muestra si el dia esta terminado.
+			// Si justo se estaba pidiendo el dia, ese pedido puede haber leido la base
+			// antes de este guardado: se descarta para que no pise lo recien guardado.
+			await queryClient.cancelQueries( { queryKey: sessionQueryKey } );
+			queryClient.setQueryData( sessionQueryKey, savedSession );
+
+			// La lista del mes muestra el estado del dia: se actualiza al terminarlo. El
+			// paso a "en curso" lo toma sola la proxima vez que se abre.
 			if (input.finalize) {
 				await queryClient.invalidateQueries( {
 					queryKey: studentTrainingRoutinesQueryKey(

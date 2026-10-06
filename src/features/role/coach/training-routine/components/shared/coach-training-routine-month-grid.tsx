@@ -57,9 +57,13 @@ function DayCell( { day, hasUnsavedChanges, href }: DayCellProps ) {
 							Sin guardar
 						</span>
 					) : null }
-					{ /* El estudiante ya registro este dia. */ }
+					{ /* El estudiante ya termino este dia, o lo empezo y todavia no lo cerro. */ }
 					{ day.isFinalized ? (
 						<CheckCircle2 aria-label={ "Realizado por el estudiante" } className={ "size-4 text-success" }/>
+					) : day.loadedSetCount > 0 ? (
+						<span className={ "rounded-full bg-accent/15 px-2 py-0.5 text-[11px] font-medium text-accent" }>
+							En curso
+						</span>
 					) : null }
 				</span>
 			</div>

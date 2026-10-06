@@ -9,6 +9,9 @@ export type TrainingRoutinesByStudent = Awaited<ReturnType<typeof getTrainingRou
 export function trainingRoutinesQueryOptions( month: number, year: number ) {
 	return queryOptions( {
 		...QUERY_DEFAULTS.student,
+		// La lista muestra el estado de cada dia (pendiente, en curso, terminado),
+		// que cambia mientras el estudiante entrena.
+		refetchOnMount: "always",
 		queryFn: () => getTrainingRoutinesByStudentAction( { month, year } ),
 		queryKey: studentTrainingRoutinesQueryKey( month, year ),
 	} );

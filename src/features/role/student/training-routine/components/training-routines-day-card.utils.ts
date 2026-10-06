@@ -25,10 +25,15 @@ export function getTrainingRoutineDayDescription( day: {
 	return bodyParts.length > 0 ? bodyParts.join( " + " ) : "Sin ejercicios cargados";
 }
 
-export function getTrainingRoutineDayStatusLabel( isFinalized: boolean ) {
-	return isFinalized ? "Terminado" : "Pendiente";
-}
+type DayStatusInput = {
+	isFinalized: boolean;
+	loadedSetCount: number;
+};
 
-export function getTrainingRoutineDayStatusColor( isFinalized: boolean ) {
-	return isFinalized ? "success" : "warning";
+// Un dia esta en curso cuando ya tiene series cargadas y todavia no se termino.
+export function getTrainingRoutineDayStatus( day: DayStatusInput ) {
+	if (day.isFinalized) return { actionLabel: "Ver lo que hice", color: "success", label: "Terminado" } as const;
+	if (day.loadedSetCount > 0) return { actionLabel: "Continuar", color: "accent", label: "En curso" } as const;
+
+	return { actionLabel: "Empezar", color: "default", label: "Pendiente" } as const;
 }
