@@ -125,13 +125,17 @@ export const useRoutineSessionStore = create<RoutineSessionStoreState>()(
 			syncDraftFromSource: ( routineDayId, detail, session ) => {
 				set( ( state ) => {
 					const currentDraft = state.drafts[ routineDayId ] ?? null;
-					const nextDraft = mergeStudentRoutineSessionDraft( session, currentDraft );
 
 					return {
-						drafts: {
-							...state.drafts,
-							[ routineDayId ]: nextDraft,
-						},
+						// Solo se actualiza un borrador que ya existe. No se crea uno al abrir
+						// el dia: una copia de lo guardado, vieja, taparia despues lo que el
+						// estudiante cargo desde otro dispositivo.
+						drafts: currentDraft
+							? {
+								...state.drafts,
+								[ routineDayId ]: mergeStudentRoutineSessionDraft( session, currentDraft ),
+							}
+							: state.drafts,
 						routinePagesByRoutineDayId: {
 							...state.routinePagesByRoutineDayId,
 							[ routineDayId ]: mapStudentRoutineSessionDetailToRoutinePages( detail ),

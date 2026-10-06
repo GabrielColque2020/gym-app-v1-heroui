@@ -63,7 +63,7 @@ export function StudentDashboardTodayCard( {
 								size={ "sm" }
 								variant={ "soft" }
 							>
-								{ nextRoutineDay.isFinalized ? "Guardada" : "Pendiente" }
+								{ nextRoutineDay.isFinalized ? "Terminada" : "Pendiente" }
 							</Chip>
 						</div>
 						<div className={ "space-y-1" }>
@@ -100,7 +100,7 @@ export function StudentDashboardTodayCard( {
 					<div className={ "rounded-lg border border-border bg-surface-secondary px-4 py-3" }>
 						<p className={ "text-xs font-medium text-muted" }>Estado del día</p>
 						<p className={ "mt-1 text-lg font-semibold text-foreground" }>
-							{ nextRoutineDay.isFinalized ? "Completado" : "En curso" }
+							{ nextRoutineDay.isFinalized ? "Terminado" : "Pendiente" }
 						</p>
 					</div>
 				</div>

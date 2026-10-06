@@ -1,6 +1,6 @@
 import { Button } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react/carousel";
-import { ArrowLeft, ArrowRight, Calendar, ChartLine, Lightbulb, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, ChartLine, CheckCircle2, Flag } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import MobileExerciseCard from "@/features/role/student/routine/components/mobile/mobile-exercise-card";
@@ -20,13 +20,12 @@ import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 
 interface MobileRoutineViewProps {
 	exercises: Exercise[];
-	canSaveProgress: boolean;
-	isPending: boolean;
+	canFinishDay: boolean;
+	isDayFinished: boolean;
 	latestProgressDate: Date | null;
-	routineObservation: string | null;
 	routineStatusDescription: string;
 	onExerciseUpdate: ( exerciseId: string, updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }> ) => void;
-	onSave: () => void;
+	onFinishDayAction: () => void;
 	onRepeatLastSessionAction: ( exerciseId: string ) => void;
 	onSetUpdate: ( exerciseId: string, setId: string, updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }> ) => void;
 	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
@@ -34,13 +33,12 @@ interface MobileRoutineViewProps {
 
 export default function MobileRoutineView( {
 	exercises,
-	canSaveProgress,
-	isPending,
+	canFinishDay,
+	isDayFinished,
 	latestProgressDate,
-	routineObservation,
 	routineStatusDescription,
 	onExerciseUpdate,
-	onSave,
+	onFinishDayAction,
 	onRepeatLastSessionAction,
 	onSetUpdate,
 	onVariantChangeAction,
@@ -100,18 +98,6 @@ export default function MobileRoutineView( {
 		<div className={ "flex flex-col sm:hidden" }>
 			{ exercises.length > 0 ? (
 				<>
-					{ /* Antes del ejercicio solo va la nota del entrenador, y solo si escribio
-					     una: el resto del resumen queda al final para llegar rapido a entrenar. */ }
-					{ routineObservation ? (
-						<div className={ "mb-4 flex gap-3 rounded-2xl border border-border bg-surface px-3 py-3" }>
-							<Lightbulb className={ "mt-0.5 size-5 shrink-0 text-warning" }/>
-							<div className={ "min-w-0" }>
-								<p className={ "text-sm font-semibold text-foreground" }>Nota del entrenador</p>
-								<p className={ "text-sm text-muted" }>{ routineObservation }</p>
-							</div>
-						</div>
-					) : null }
-
 					<div
 						className={ "transition-[height] duration-200 ease-out" }
 						style={ carouselHeight !== null ? { height: `${ carouselHeight }px` } : undefined }
@@ -152,8 +138,9 @@ export default function MobileRoutineView( {
 						</Carousel>
 					</div>
 
-					{ /* Barra fija abajo: pasar de ejercicio y guardar quedan a mano del pulgar
-					     sin tener que llegar al final de una tarjeta larga. */ }
+					{ /* Barra fija abajo: pasar de ejercicio y terminar el dia quedan a mano del
+					     pulgar sin tener que llegar al final de una tarjeta larga. Las series se
+					     guardan solas; este boton solo marca el dia como realizado. */ }
 					<div className={ "sticky bottom-0 z-10 -mx-1 mt-4 space-y-2 border-t border-border bg-background/95 px-1 pb-2 pt-3 backdrop-blur" }>
 						<div className={ "flex items-center justify-between gap-2" }>
 							<Button
@@ -174,10 +161,17 @@ export default function MobileRoutineView( {
 								<ArrowRight className={ "size-4" }/>
 							</Button>
 						</div>
-						<Button className={ "flex w-full font-semibold" } fullWidth isDisabled={ !canSaveProgress } isPending={ isPending } onPress={ onSave }>
-							<Save/>
-							Guardar progreso
-						</Button>
+						{ isDayFinished ? (
+							<p className={ "flex items-center justify-center gap-1.5 py-2 text-sm font-semibold text-success" }>
+								<CheckCircle2 className={ "size-4" }/>
+								Día terminado
+							</p>
+						) : (
+							<Button className={ "flex w-full font-semibold" } fullWidth isDisabled={ !canFinishDay } onPress={ onFinishDayAction }>
+								<Flag className={ "size-4" }/>
+								Terminar día
+							</Button>
+						) }
 					</div>
 
 					<div className={ "mt-4 grid gap-3" }>

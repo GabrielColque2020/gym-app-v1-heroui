@@ -4,45 +4,39 @@ import { useCallback, useState } from "react";
 
 import { toast } from "@heroui/react";
 
-import type { useSaveStudentRoutineSession } from "@/features/role/student/routine/hooks/use-routine-session-mutations";
 import {
 	applyLastSessionToExercise,
 	updateSessionExerciseSets,
 	updateSessionSet,
 } from "@/features/role/student/routine/views/routine-page-content.utils";
-import {
-	mapStudentRoutineSessionToSaveInput,
-	type StudentRoutineSession,
-} from "@/features/routine/services/routine-session";
+import type { StudentRoutineSession } from "@/features/routine/services/routine-session";
 
 type UseRoutinePageActionsOptions = {
 	activeSession: StudentRoutineSession | null;
-	canSaveProgress: boolean;
+	canFinishDay: boolean;
+	discardDraftAction: () => void;
 	isDirty: boolean;
 	isLoading: boolean;
 	isRefreshing: boolean;
 	refetchAction: () => Promise<unknown>;
 	replaceDraftAction: ( nextSession: StudentRoutineSession ) => void;
 	routineDayId: string | null;
-	saveRoutineSession: ReturnType<typeof useSaveStudentRoutineSession>;
-	studentId: string | null;
-	validationError: string | null;
+	saveSessionAction: ( options: { finalize: boolean; silent: boolean } ) => Promise<boolean>;
 };
 
 export function useRoutinePageActions( {
 	activeSession,
-	canSaveProgress,
+	canFinishDay,
+	discardDraftAction,
 	isDirty,
 	isLoading,
 	isRefreshing,
 	refetchAction,
 	replaceDraftAction,
 	routineDayId,
-	saveRoutineSession,
-	studentId,
-	validationError,
+	saveSessionAction,
 }: UseRoutinePageActionsOptions ) {
-	const [ isSaveDrawerOpen, setIsSaveDrawerOpen ] = useState( false );
+	const [ isFinishDrawerOpen, setIsFinishDrawerOpen ] = useState( false );
 	const [ isRefreshConfirmOpen, setIsRefreshConfirmOpen ] = useState( false );
 
 	const handleRefresh = useCallback( () => {
@@ -58,10 +52,12 @@ export function useRoutinePageActions( {
 		void refetchAction();
 	}, [ isDirty, isLoading, isRefreshing, refetchAction ] );
 
+	// Actualizar con cambios sin guardar los descarta: vuelve a lo que hay guardado.
 	const handleConfirmRefresh = useCallback( () => {
 		setIsRefreshConfirmOpen( false );
+		discardDraftAction();
 		void refetchAction();
-	}, [ refetchAction ] );
+	}, [ discardDraftAction, refetchAction ] );
 
 	const handleSetUpdate = useCallback( (
 		exerciseId: string,
@@ -114,55 +110,48 @@ export function useRoutinePageActions( {
 		replaceDraftAction( applyLastSessionToExercise( activeSession, exerciseId ) );
 	}, [ activeSession, replaceDraftAction, routineDayId ] );
 
-	const handleOpenSaveDrawer = useCallback( () => {
-		if (!canSaveProgress) {
-			toast.warning( "No hay ejercicios para guardar", {
-				description: "Primero debe haber ejercicios cargados para ese día.",
+	// Las series se guardan solas. Terminar el dia es el unico paso que el
+	// estudiante confirma: muestra el resumen y marca el dia como realizado.
+	const handleOpenFinishDrawer = useCallback( () => {
+		if (!canFinishDay) {
+			toast.warning( "No hay ejercicios en este día", {
+				description: "Tu entrenador todavía no cargó ejercicios para este día.",
 			} );
 			return;
 		}
 
-		setIsSaveDrawerOpen( true );
-	}, [ canSaveProgress ] );
+		setIsFinishDrawerOpen( true );
+	}, [ canFinishDay ] );
 
-	const handleConfirmSave = useCallback( async () => {
-		if (!activeSession || !routineDayId || !studentId) {
-			toast.danger( "No se puede guardar", { description: "Faltan datos para persistir la sesión." } );
-			return;
-		}
+	const handleConfirmFinish = useCallback( async () => {
+		const isSaved = await saveSessionAction( { finalize: true, silent: false } );
 
-		if (validationError) {
-			toast.danger( "No se puede guardar", { description: validationError } );
-			return;
-		}
+		if (!isSaved) return;
 
-		try {
-			await saveRoutineSession.mutateAsync( {
-				...mapStudentRoutineSessionToSaveInput( activeSession ),
-				studentId,
-			} );
-			setIsSaveDrawerOpen( false );
-			toast.success( "Rutina actualizada", { description: "Los cambios se guardaron correctamente." } );
-		} catch (saveError) {
-			toast.danger( "Error al guardar", {
-				description: saveError instanceof Error ? saveError.message : "No se pudieron guardar los cambios.",
-			} );
-		}
-	}, [ activeSession, routineDayId, saveRoutineSession, studentId, validationError ] );
+		setIsFinishDrawerOpen( false );
+		toast.success( "Día terminado", { description: "Tu entrenador ya puede ver lo que hiciste." } );
+	}, [ saveSessionAction ] );
+
+	// Guarda a mano lo que quedo sin guardar de una visita anterior, o reintenta
+	// un guardado que fallo.
+	const handleSaveNow = useCallback( () => {
+		void saveSessionAction( { finalize: false, silent: false } );
+	}, [ saveSessionAction ] );
 
 	return {
+		handleConfirmFinish,
 		handleConfirmRefresh,
-		handleConfirmSave,
 		handleExerciseUpdate,
-		handleOpenSaveDrawer,
+		handleOpenFinishDrawer,
 		handleRefresh,
 		handleRepeatLastSession,
+		handleSaveNow,
 		handleSetUpdate,
 		handleVariantChange,
+		isFinishDrawerOpen,
 		isRefreshConfirmOpen,
-		isSaveDrawerOpen,
+		setIsFinishDrawerOpen,
 		setIsRefreshConfirmOpen,
-		setIsSaveDrawerOpen,
 	};
 }
 

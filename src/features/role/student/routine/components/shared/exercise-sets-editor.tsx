@@ -176,7 +176,7 @@ function ExerciseSetsEditorContent({
                             inputMode={ "decimal" }
                             label={ "Peso (kg)" }
                             parse={ parseWeightInput }
-                            placeholder={ hasMixedValues ? "Varios" : "Kg" }
+                            placeholder={ hasMixedValues ? "Varios" : "Opcional" }
                             step={ WEIGHT_STEP }
                             value={ unifiedValues.weight }
                             onChange={ (weight) => onExerciseUpdate(exercise.id, { weight }) }

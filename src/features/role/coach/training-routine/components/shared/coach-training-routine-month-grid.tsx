@@ -7,7 +7,7 @@ import type {
 
 import Link from "next/link";
 import { Card } from "@heroui/react";
-import { CheckCircle2, Plus } from "lucide-react";
+import { CheckCircle2, Pencil, Plus } from "lucide-react";
 
 import { buildEditRoutineDayHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
 import { CoachRepeatWeekAction } from "@/features/role/coach/training-routine/components/shared/coach-repeat-week-action";
@@ -88,6 +88,12 @@ function DayCell( { day, hasUnsavedChanges, href }: DayCellProps ) {
 					{ hiddenCount > 0 ? (
 						<p className={ "text-xs text-muted" }>+{ hiddenCount } más</p>
 					) : null }
+					{ /* La accion a la vista, igual que "Cargar" en un dia vacio: sin esto no
+					     se nota que la celda entera abre el editor. */ }
+					<p className={ "mt-auto flex items-center gap-1 pt-1 text-sm font-medium text-accent" }>
+						<Pencil className={ "size-3.5" }/>
+						Editar
+					</p>
 				</>
 			) }
 		</Link>

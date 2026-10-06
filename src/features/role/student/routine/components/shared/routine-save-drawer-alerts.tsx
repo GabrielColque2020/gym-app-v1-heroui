@@ -3,11 +3,13 @@
 type RoutineSaveDrawerAlertsProps = {
 	validationError: string | null;
 	hasCompletedSets: boolean;
+	hasPendingSets: boolean;
 };
 
 export function RoutineSaveDrawerAlerts( {
 	validationError,
 	hasCompletedSets,
+	hasPendingSets,
 }: RoutineSaveDrawerAlertsProps ) {
 	return (
 		<>
@@ -22,9 +24,20 @@ export function RoutineSaveDrawerAlerts( {
 			{ !hasCompletedSets ? (
 				<Alert className={ "border border-warning/20" } status={ "warning" }>
 					<Alert.Content>
-						<Alert.Title>Debes completar al menos una serie</Alert.Title>
+						<Alert.Title>Todavía no cargaste ninguna serie</Alert.Title>
 						<Alert.Description>
-							El guardado solo se habilita cuando existe por lo menos una serie marcada como completada.
+							Para terminar el día cargá las repeticiones de al menos una serie.
+						</Alert.Description>
+					</Alert.Content>
+				</Alert>
+			) : null }
+			{ /* Se puede terminar con series sin hacer: solo se avisa. */ }
+			{ hasCompletedSets && hasPendingSets ? (
+				<Alert className={ "border border-warning/20" } status={ "warning" }>
+					<Alert.Content>
+						<Alert.Title>Te quedaron series sin cargar</Alert.Title>
+						<Alert.Description>
+							Podés terminar igual. Si después las hacés, las podés cargar y se guardan solas.
 						</Alert.Description>
 					</Alert.Content>
 				</Alert>

@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useRoutinePageActions } from "@/features/role/student/routine/hooks/use-routine-page-actions";
 import { buildRoutinePageDerivedState } from "@/features/role/student/routine/hooks/use-routine-page-state.utils";
 import { useRoutineSession } from "@/features/role/student/routine/hooks/use-routine-session";
+import { useRoutineSessionAutosave } from "@/features/role/student/routine/hooks/use-routine-session-autosave";
 import { useSaveStudentRoutineSession } from "@/features/role/student/routine/hooks/use-routine-session-mutations";
 import { useStudentRoutineSession } from "@/features/role/student/routine/hooks/use-student-routine-session";
 
@@ -21,17 +22,35 @@ export function useRoutinePageState( {
 		routineDayId,
 		studentId,
 	} );
-	const { activeSession, validationError, replaceDraft, isDirty } = useRoutineSession( {
+	const saveRoutineSession = useSaveStudentRoutineSession();
+	const {
+		activeSession,
+		clearDraft,
+		hasSessionEdits,
+		isDirty,
+		replaceDraft,
+		sourceSession,
+		validationError,
+	} = useRoutineSession( {
+		isSaving: saveRoutineSession.isPending,
 		routineDayId: routineDayId ?? "",
 		sourceDetail: data ?? null,
 	} );
-	const saveRoutineSession = useSaveStudentRoutineSession();
+	const { saveSession, saveStatus } = useRoutineSessionAutosave( {
+		activeSession,
+		hasSessionEdits,
+		routineDayId,
+		saveRoutineSession,
+		sourceSession,
+		studentId,
+		validationError,
+	} );
 	const isRefreshing = isFetching && !isLoading;
 	const {
 		backHref,
-		canSaveProgress,
+		canFinishDay,
+		isDayFinished,
 		latestProgressDate,
-		routineObservation,
 		routineStatusDescription,
 		saveSummary,
 	} = useMemo(
@@ -43,59 +62,61 @@ export function useRoutinePageState( {
 		[ activeSession, data, saveRoutineSession.isPending ],
 	);
 	const {
+		handleConfirmFinish,
 		handleConfirmRefresh,
-		handleConfirmSave,
 		handleExerciseUpdate,
-		handleOpenSaveDrawer,
+		handleOpenFinishDrawer,
 		handleRefresh,
 		handleRepeatLastSession,
+		handleSaveNow,
 		handleSetUpdate,
 		handleVariantChange,
+		isFinishDrawerOpen,
 		isRefreshConfirmOpen,
-		isSaveDrawerOpen,
+		setIsFinishDrawerOpen,
 		setIsRefreshConfirmOpen,
-		setIsSaveDrawerOpen,
 	} = useRoutinePageActions( {
 		activeSession,
-		canSaveProgress,
+		canFinishDay,
+		discardDraftAction: clearDraft,
 		isDirty,
 		isLoading,
 		isRefreshing,
 		refetchAction: refetch,
 		replaceDraftAction: replaceDraft,
 		routineDayId,
-		saveRoutineSession,
-		studentId,
-		validationError,
+		saveSessionAction: saveSession,
 	} );
 
 	return {
 		activeSession,
 		backHref,
-		canSaveProgress,
+		canFinishDay,
 		data,
 		error,
+		handleConfirmFinish,
 		handleConfirmRefresh,
-		handleConfirmSave,
 		handleExerciseUpdate,
-		handleOpenSaveDrawer,
+		handleOpenFinishDrawer,
 		handleRefresh,
 		handleRepeatLastSession,
+		handleSaveNow,
 		handleSetUpdate,
 		handleVariantChange,
+		isDayFinished,
 		isError,
 		isFetching,
+		isFinishDrawerOpen,
 		isLoading,
 		isRefreshConfirmOpen,
 		isRefreshing,
-		isSaveDrawerOpen,
 		latestProgressDate,
-		routineObservation,
 		routineStatusDescription,
 		saveRoutineSession,
+		saveStatus,
 		saveSummary,
+		setIsFinishDrawerOpen,
 		setIsRefreshConfirmOpen,
-		setIsSaveDrawerOpen,
 		validationError,
 	};
 }

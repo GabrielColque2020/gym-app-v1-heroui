@@ -25,6 +25,12 @@ export function buildRoutineSaveSummary( session: StudentRoutineSession ): Routi
 	} );
 }
 
+// Una serie esta hecha cuando tiene repeticiones. El peso es opcional: en un
+// ejercicio con el peso del cuerpo no hay nada que cargar ahi.
+function isSetCompleted( reps: number | null ) {
+	return reps !== null;
+}
+
 export function updateSessionSet(
 	session: StudentRoutineSession,
 	exerciseId: string,
@@ -44,9 +50,7 @@ export function updateSessionSet(
 								...( updates.reps !== undefined ? { currentReps: updates.reps } : {} ),
 								...( updates.weight !== undefined ? { currentWeight: updates.weight } : {} ),
 								...( updates.notes !== undefined ? { notes: updates.notes } : {} ),
-								completed:
-									( updates.reps !== undefined ? updates.reps : set.currentReps ) !== null
-									&& ( updates.weight !== undefined ? updates.weight : set.currentWeight ) !== null,
+								completed: isSetCompleted( updates.reps !== undefined ? updates.reps : set.currentReps ),
 							}
 							: set
 					) ),
@@ -72,9 +76,7 @@ export function updateSessionExerciseSets(
 						...( updates.reps !== undefined ? { currentReps: updates.reps } : {} ),
 						...( updates.weight !== undefined ? { currentWeight: updates.weight } : {} ),
 						...( updates.notes !== undefined ? { notes: updates.notes } : {} ),
-						completed:
-							( updates.reps !== undefined ? updates.reps : set.currentReps ) !== null
-							&& ( updates.weight !== undefined ? updates.weight : set.currentWeight ) !== null,
+						completed: isSetCompleted( updates.reps !== undefined ? updates.reps : set.currentReps ),
 					} ) ),
 				}
 				: exercise
@@ -115,7 +117,7 @@ export function applyLastSessionToExercise( session: StudentRoutineSession, exer
 
 					return {
 						...set,
-						completed: currentReps !== null && currentWeight !== null,
+						completed: isSetCompleted( currentReps ),
 						currentReps,
 						currentWeight,
 					};

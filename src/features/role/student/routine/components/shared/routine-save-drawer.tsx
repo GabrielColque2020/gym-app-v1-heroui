@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { Button, Card, Description, Drawer, Spinner } from "@heroui/react";
-import { Info, Save } from "lucide-react";
+import { Flag, Info } from "lucide-react";
 
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
@@ -34,6 +34,7 @@ export default function RoutineSaveDrawer( {
 										   }: RoutineSaveDrawerProps ) {
 	const placement = useResponsiveDrawerPlacement();
 	const hasCompletedSets = summaryItems.some( ( item ) => item.completedSets > 0 );
+	const hasPendingSets = summaryItems.some( ( item ) => item.completedSets < item.totalSets );
 	const canConfirmSave = hasCompletedSets && !validationError && !isPending;
 
 	return (
@@ -41,23 +42,27 @@ export default function RoutineSaveDrawer( {
 			<Drawer.Header className={ "border-default-100 relative border-b pb-4" }>
 				<div className={ "flex items-start gap-3" }>
 					<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
-						<Info className={ "size-5" }/>
+						<Flag className={ "size-5" }/>
 					</div>
 					<div className={ "min-w-0" }>
-						<Drawer.Heading>Guardar progreso</Drawer.Heading>
+						<Drawer.Heading>Terminar día</Drawer.Heading>
 						<Description className={ "mt-1 text-sm" }>
-							Se guardan solo las series completas, con reps y peso.
+							Tus series ya se fueron guardando. Al terminar, el día queda marcado como realizado.
 						</Description>
 					</div>
 				</div>
 			</Drawer.Header>
 			<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
-				<RoutineSaveDrawerAlerts validationError={ validationError } hasCompletedSets={ hasCompletedSets }/>
+				<RoutineSaveDrawerAlerts
+					hasCompletedSets={ hasCompletedSets }
+					hasPendingSets={ hasPendingSets }
+					validationError={ validationError }
+				/>
 				<Card className={ "border border-border bg-surface/60" }>
 					<Card.Content className={ "space-y-3 p-4" }>
 						<div className={ "flex items-center gap-2 text-sm font-semibold text-foreground" }>
 							<Info className={ "size-4" }/>
-							Resumen de guardado
+							Lo que hiciste hoy
 						</div>
 						{ summaryItems.length > 0 ? (
 							<div className={ "space-y-3" }>
@@ -67,8 +72,8 @@ export default function RoutineSaveDrawer( {
 							</div>
 						) : (
 							<div className={ "rounded-xl border border-warning/20 bg-warning/5 p-4" }>
-								<p className={ "text-sm font-semibold text-foreground" }>No hay ejercicios para guardar</p>
-								<p className={ "mt-1 text-sm text-muted" }>La rutina no tiene series completadas para persistir.</p>
+								<p className={ "text-sm font-semibold text-foreground" }>No hay ejercicios en este día</p>
+								<p className={ "mt-1 text-sm text-muted" }>Tu entrenador todavía no cargó ejercicios para este día.</p>
 							</div>
 						) }
 					</Card.Content>
@@ -77,8 +82,8 @@ export default function RoutineSaveDrawer( {
 			<Drawer.Footer className={ "border-default-100 shrink-0 justify-end gap-2 border-t pt-4" }>
 				<Button slot={ "close" } variant={ "secondary" }>Cancelar</Button>
 				<Button isDisabled={ !canConfirmSave } isPending={ isPending } onPress={ onConfirmAction }>
-					{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Save className={ "size-4" }/> }
-					{ isPending ? "Guardando..." : "Guardar progreso" }
+					{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Flag className={ "size-4" }/> }
+					{ isPending ? "Guardando..." : "Terminar día" }
 				</Button>
 			</Drawer.Footer>
 		</FeatureDrawerLayout>

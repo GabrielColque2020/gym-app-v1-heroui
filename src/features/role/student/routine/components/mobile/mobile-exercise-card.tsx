@@ -3,6 +3,7 @@ import { Card } from "@heroui/react";
 
 import { AsyncMedia } from "@/components/common";
 import ExerciseChangeDrawer from "@/features/role/student/routine/components/shared/exercise-change-drawer";
+import { ExerciseCoachNote } from "@/features/role/student/routine/components/shared/exercise-coach-note";
 import { ExerciseCardSessionHistory } from "@/features/role/student/routine/components/shared/exercise-card-session-history";
 import { ExerciseCardStatusChips } from "@/features/role/student/routine/components/shared/exercise-card-status-chips";
 import { useExerciseCardState } from "@/features/role/student/routine/components/shared/use-exercise-card-state";
@@ -72,6 +73,8 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 								/>
 							</div>
 						</div>
+
+						<ExerciseCoachNote note={ exercise.coachNote }/>
 
 						<div className={ "space-y-1" }>
 							<p className={ "text-xs font-semibold tracking-wide text-foreground" }>Última sesión</p>

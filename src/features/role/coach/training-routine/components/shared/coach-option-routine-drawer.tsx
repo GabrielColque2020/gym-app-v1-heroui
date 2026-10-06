@@ -2,7 +2,8 @@
 
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 import { useMemo, useState } from "react";
-import { toast } from "@heroui/react";
+import { Button, toast } from "@heroui/react";
+import { CalendarRange } from "lucide-react";
 
 import { CoachCopyRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer";
 import { CoachOptionRoutineActionMenu } from "@/features/role/coach/training-routine/components/shared/coach-option-routine-action-menu";
@@ -95,11 +96,16 @@ export function CoachOptionRoutineDrawer( {
 
 	return (
 		<>
+			{ /* Agregar o quitar semanas y dias es parte de armar la rutina: va a la
+			     vista y con su nombre, no dentro del menu como un "Editar" mas. */ }
+			<Button variant={ "secondary" } onPress={ () => setIsEditOpen( true ) }>
+				<CalendarRange className={ "size-4" }/>
+				Semanas y días
+			</Button>
 			<CoachOptionRoutineActionMenu
 				isDownloading={ isDownloading }
 				onCopyAction={ () => setIsCopyOpen( true ) }
 				onDeleteAction={ handleOpenDeleteConfirm }
-				onEditAction={ () => setIsEditOpen( true ) }
 				onPrintAction={ handleDownloadReport }
 			/>
 

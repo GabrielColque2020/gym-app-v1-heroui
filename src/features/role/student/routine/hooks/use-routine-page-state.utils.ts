@@ -15,10 +15,9 @@ export function buildRoutinePageDerivedState( {
 }: BuildRoutinePageDerivedStateParams ) {
 	const exerciseCount = activeSession?.exercises.length ?? 0;
 	const hasExercises = exerciseCount > 0;
-	const routineObservation = data?.routines.find( ( routine ) => routine.observation?.trim().length )?.observation?.trim() ?? null;
 	const completedExercises = activeSession?.exercises.filter( ( exercise ) =>
 		exercise.sets.length > 0
-		&& exercise.sets.every( ( set ) => set.completed && set.currentReps !== null && set.currentWeight !== null ),
+		&& exercise.sets.every( ( set ) => set.completed ),
 	).length ?? 0;
 	const latestProgressDate = data?.progressEntries[ 0 ]?.date ? new Date( data.progressEntries[ 0 ].date ) : null;
 	const routineStatusDescription = activeSession
@@ -29,9 +28,9 @@ export function buildRoutinePageDerivedState( {
 
 	return {
 		backHref: `/student/training-routine?month=${ data?.trainingRoutine.month ?? "" }&year=${ data?.trainingRoutine.year ?? "" }`,
-		canSaveProgress: hasExercises && !isSavePending,
+		canFinishDay: hasExercises && !isSavePending,
+		isDayFinished: Boolean( data?.isFinalized ),
 		latestProgressDate,
-		routineObservation,
 		routineStatusDescription,
 		saveSummary: activeSession ? buildRoutineSaveSummary( activeSession ) : [],
 	};

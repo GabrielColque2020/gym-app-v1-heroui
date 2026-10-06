@@ -140,13 +140,16 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				const currentWeight = parseDecimal( savedSet?.weightUsed );
 				const previousReps = parseInteger( previousSavedSet?.repsCompleted );
 				const previousSeriesWeight = parseDecimal( previousSavedSet?.weightUsed );
-				const hasCurrentValues = currentReps !== null || currentWeight !== null;
 
 				return {
-					completed: Boolean( hasCurrentValues ),
+					// Con las repeticiones alcanza: el peso es opcional.
+					completed: currentReps !== null,
 					currentReps,
 					currentWeight,
-					id: savedSet?.id ?? `${ exerciseId }-${ setNumber }`,
+					// Id fijo por ejercicio y numero de serie, y no el del registro guardado:
+					// asi la serie no cambia de id al guardarse por primera vez y el campo
+					// que el estudiante esta escribiendo no pierde el foco.
+					id: `${ exerciseId }-${ setNumber }`,
 					notes: savedSetNotes,
 					previousReps,
 					previousWeight: previousSeriesWeight,
@@ -167,6 +170,7 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 					routine.exercise?.instructions,
 					routine.exercise?.globalExercise?.instructions,
 				),
+				coachNote: routine.observation?.trim() || null,
 				muscleGroup: routine.observation ?? detail.trainingRoutine.objective ?? "",
 				name: selectedVariant?.name ?? exercise?.name ?? "Ejercicio",
 				notes: exercise?.tips ?? routine.observation ?? undefined,
@@ -392,7 +396,10 @@ export function mapStudentRoutineSessionToSaveInput( session: StudentRoutineSess
 			.filter( ( exercise ) => exercise.sets.some( ( set ) => set.completed ) )
 			.map( ( exercise ) => ( {
 				exerciseId: exercise.id,
-				variantExerciseId: exercise.variantSelectionExplicit ? exercise.variantExerciseId : null,
+				// Siempre la variante que se esta mostrando, la haya elegido ahora o
+				// venga de antes: mandarla solo cuando se acaba de elegir hacia que el
+				// guardado siguiente la borrara.
+				variantExerciseId: exercise.variantExerciseId ?? null,
 				sets: exercise.sets
 					.filter( ( set ) => set.completed )
 					.slice()

@@ -29,6 +29,8 @@ export interface ExerciseSessionHistory {
 }
 
 export interface Exercise {
+	// La nota que el entrenador escribio para este ejercicio en este dia.
+	coachNote?: string | null;
 	id: string;
 	name: string;
 	baseName: string;

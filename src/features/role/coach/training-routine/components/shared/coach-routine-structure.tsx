@@ -78,7 +78,7 @@ export default function CoachRoutineStructure( {
 	const [ objective, setObjective ] = useState( () => routineObjective ?? "" );
 
 	const Icon = mode === "create" ? Plus : PencilLine;
-	const title = mode === "create" ? "Crear rutina" : "Editar rutina";
+	const title = mode === "create" ? "Crear rutina" : "Semanas y días";
 
 	const createStructure = useCreateTrainingRoutineStructure();
 	const updateStructure = useUpdateTrainingRoutineStructure();
@@ -104,7 +104,7 @@ export default function CoachRoutineStructure( {
 			? previousLabel
 				? `Arranca con la estructura de ${ previousLabel }. Ajustá semanas y días si este mes cambia.`
 				: "Configura semanas y días de entrenamiento para crear la base de la rutina."
-			: "Activa o desactiva semanas y días sin modificar ejercicios desde la pantalla principal.";
+			: "Agregá o quitá semanas y días del mes. Los ejercicios de los días que ya están no se tocan.";
 
 	function handleWeeksChange( value: string[] ) {
 		setSelectedWeeks( [ ...value ].sort( ( a, b ) => Number( a ) - Number( b ) ) );
@@ -212,7 +212,7 @@ export default function CoachRoutineStructure( {
 					{ ( { isPending: buttonPending } ) => (
 						<>
 							{ buttonPending ? <Spinner color={ "current" } size={ "sm" }/> : <CheckCircle2 className={ "size-4" }/> }
-							{ buttonPending ? "Guardando..." : mode === "create" ? "Crear rutina" : "Guardar estructura" }
+							{ buttonPending ? "Guardando..." : mode === "create" ? "Crear rutina" : "Guardar cambios" }
 						</>
 					) }
 				</Button>

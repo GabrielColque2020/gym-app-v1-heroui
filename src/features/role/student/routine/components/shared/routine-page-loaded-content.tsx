@@ -18,22 +18,22 @@ export function RoutinePageLoadedContent( {
 	const {
 		activeSession,
 		backHref,
-		canSaveProgress,
+		canFinishDay,
+		handleConfirmFinish,
 		handleConfirmRefresh,
-		handleConfirmSave,
 		handleExerciseUpdate,
-		handleOpenSaveDrawer,
+		handleOpenFinishDrawer,
 		handleRepeatLastSession,
 		handleSetUpdate,
 		handleVariantChange,
+		isDayFinished,
+		isFinishDrawerOpen,
 		isRefreshConfirmOpen,
-		isSaveDrawerOpen,
 		latestProgressDate,
 		saveRoutineSession,
 		saveSummary,
-		routineObservation,
+		setIsFinishDrawerOpen,
 		setIsRefreshConfirmOpen,
-		setIsSaveDrawerOpen,
 		validationError,
 	} = state;
 
@@ -53,13 +53,12 @@ export function RoutinePageLoadedContent( {
 			<RoutinePageLoadedHeader state={ state }/>
 			<MobileRoutineView
 				exercises={ activeSession.exercises }
-				canSaveProgress={ canSaveProgress }
-				isPending={ saveRoutineSession.isPending }
+				canFinishDay={ canFinishDay }
+				isDayFinished={ isDayFinished }
 				latestProgressDate={ latestProgressDate }
-				routineObservation={ routineObservation }
 				onExerciseUpdate={ handleExerciseUpdate }
 				onRepeatLastSessionAction={ handleRepeatLastSession }
-				onSave={ handleOpenSaveDrawer }
+				onFinishDayAction={ handleOpenFinishDrawer }
 				onSetUpdate={ handleSetUpdate }
 				onVariantChangeAction={ handleVariantChange }
 				routineStatusDescription={ state.routineStatusDescription }
@@ -67,7 +66,6 @@ export function RoutinePageLoadedContent( {
 			<DesktopRoutineView
 				exercises={ activeSession.exercises }
 				latestProgressDate={ latestProgressDate }
-				routineObservation={ routineObservation }
 				onExerciseUpdate={ handleExerciseUpdate }
 				onRepeatLastSessionAction={ handleRepeatLastSession }
 				onVariantChangeAction={ handleVariantChange }
@@ -75,12 +73,12 @@ export function RoutinePageLoadedContent( {
 				routineStatusDescription={ state.routineStatusDescription }
 			/>
 			<RoutineSaveDrawer
-				isOpen={ isSaveDrawerOpen }
+				isOpen={ isFinishDrawerOpen }
 				isPending={ saveRoutineSession.isPending }
 				validationError={ validationError }
 				summaryItems={ saveSummary }
-				onConfirmAction={ handleConfirmSave }
-				onOpenChangeAction={ setIsSaveDrawerOpen }
+				onConfirmAction={ handleConfirmFinish }
+				onOpenChangeAction={ setIsFinishDrawerOpen }
 			/>
 			<RoutineRefreshConfirmModal
 				isOpen={ isRefreshConfirmOpen }

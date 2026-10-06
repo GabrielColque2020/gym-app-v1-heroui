@@ -50,10 +50,8 @@ export function updateExerciseSet(
 					...( patch.currentReps !== undefined ? { currentReps: patch.currentReps } : {} ),
 					...( patch.currentWeight !== undefined ? { currentWeight: patch.currentWeight } : {} ),
 					...( patch.notes !== undefined ? { notes: patch.notes } : {} ),
-					completed: (
-						( patch.currentReps !== undefined ? patch.currentReps : set.currentReps ) !== null
-						&& ( patch.currentWeight !== undefined ? patch.currentWeight : set.currentWeight ) !== null
-					),
+					// Con las repeticiones alcanza: el peso es opcional.
+					completed: ( patch.currentReps !== undefined ? patch.currentReps : set.currentReps ) !== null,
 				}
 				: set
 		) ),

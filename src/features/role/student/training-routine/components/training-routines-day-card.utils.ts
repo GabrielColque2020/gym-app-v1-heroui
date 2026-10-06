@@ -26,7 +26,7 @@ export function getTrainingRoutineDayDescription( day: {
 }
 
 export function getTrainingRoutineDayStatusLabel( isFinalized: boolean ) {
-	return isFinalized ? "Guardado" : "Sin guardar";
+	return isFinalized ? "Terminado" : "Pendiente";
 }
 
 export function getTrainingRoutineDayStatusColor( isFinalized: boolean ) {

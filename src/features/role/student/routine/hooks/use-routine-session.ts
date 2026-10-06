@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { StudentRoutineSession } from "@/features/routine/services/routine-session";
 import {
 	mapStudentRoutineSessionDetailToSession,
@@ -12,16 +12,23 @@ import {
 import { useRoutineSessionStore } from "@/features/routine/stores/use-routine-session-store";
 
 type UseRoutineSessionOptions = {
+	// Hay un guardado de este dia viajando al servidor.
+	isSaving?: boolean;
 	routineDayId: string;
 	sourceDetail: StudentRoutineSessionDetail | null;
 };
 
-export function useRoutineSession( { routineDayId, sourceDetail }: UseRoutineSessionOptions ) {
+export function useRoutineSession( { isSaving = false, routineDayId, sourceDetail }: UseRoutineSessionOptions ) {
+	const hasHydrated = useRoutineSessionStore( ( state ) => state.hasHydrated );
 	const draftSession = useRoutineSessionStore( ( state ) => state.drafts[ routineDayId ] ?? null );
 	const syncDraftFromSource = useRoutineSessionStore( ( state ) => state.syncDraftFromSource );
 	const setDraft = useRoutineSessionStore( ( state ) => state.setDraft );
 	const clearDraft = useRoutineSessionStore( ( state ) => state.clearDraft );
 	const updateSet = useRoutineSessionStore( ( state ) => state.updateSet );
+	// El dia que el estudiante edito en esta visita. El guardado automatico solo
+	// actua sobre cambios hechos ahora: un borrador que quedo de otra vez puede
+	// ser mas viejo que lo que hay en el servidor.
+	const [ editedDayId, setEditedDayId ] = useState<string | null>( null );
 
 	const sourceSession = useMemo( () => ( sourceDetail ? mapStudentRoutineSessionDetailToSession( sourceDetail ) : null ), [ sourceDetail ] );
 	const activeSession = useMemo( () => ( sourceSession ? mergeStudentRoutineSessionDraft( sourceSession, draftSession ) : draftSession ), [ draftSession, sourceSession ] );
@@ -41,7 +48,19 @@ export function useRoutineSession( { routineDayId, sourceDetail }: UseRoutineSes
 		syncDraftFromSource,
 	] );
 
+	// El borrador existe solo mientras difiere de lo guardado: nace con la primera
+	// edicion y se descarta aca cuando el guardado lo alcanza. Mientras viaja un
+	// guardado no se descarta, porque "lo guardado" esta por cambiar: si el
+	// estudiante deshace un cambio que se esta guardando, ese deshacer tambien
+	// tiene que guardarse.
+	useEffect( () => {
+		if (!hasHydrated || !draftSession || !sourceSession || isDirty || isSaving) return;
+
+		clearDraft( routineDayId );
+	}, [ clearDraft, draftSession, hasHydrated, isDirty, isSaving, routineDayId, sourceSession ] );
+
 	function replaceDraft( nextSession: StudentRoutineSession ) {
+		setEditedDayId( routineDayId );
 		setDraft( routineDayId, nextSession );
 	}
 
@@ -53,6 +72,7 @@ export function useRoutineSession( { routineDayId, sourceDetail }: UseRoutineSes
 		activeSession,
 		clearDraft: clearRoutineDraft,
 		draftSession,
+		hasSessionEdits: editedDayId === routineDayId,
 		isDirty,
 		replaceDraft,
 		sourceSession,
@@ -60,4 +80,3 @@ export function useRoutineSession( { routineDayId, sourceDetail }: UseRoutineSes
 		validationError,
 	};
 }
-

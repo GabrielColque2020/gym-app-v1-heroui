@@ -16,6 +16,12 @@ function formatSessionDateLabel( date: Date ) {
 	} ).format( date );
 }
 
+// Coma decimal, igual que la muestra el campo de peso. Una serie sin peso es un
+// ejercicio con el peso del cuerpo: no se muestra "0 kg".
+function formatWeightLabel( weight: number | null ) {
+	return weight === null ? "sin peso" : `${ weight.toLocaleString( "es-AR" ) } kg`;
+}
+
 export function ExerciseCardSessionHistory( {
 												history,
 												isHighlighted = false,
@@ -31,13 +37,11 @@ export function ExerciseCardSessionHistory( {
 
 	// En el telefono va en una linea: una etiqueta por serie ocupaba media pantalla.
 	if (isCompact) {
-		const sets = history.sets.map( ( set ) => ( { reps: set.repsCompleted ?? 0, weight: set.weightUsed ?? 0 } ) );
+		const sets = history.sets.map( ( set ) => ( { reps: set.repsCompleted ?? 0, weight: set.weightUsed } ) );
 		const isUniform = sets.every( ( set ) => set.reps === sets[ 0 ].reps && set.weight === sets[ 0 ].weight );
-		// Coma decimal, igual que la muestra el campo de peso.
-		const formatWeight = ( weight: number ) => weight.toLocaleString( "es-AR" );
 		const summary = isUniform
-			? `${ sets.length } × ${ sets[ 0 ].reps } reps · ${ formatWeight( sets[ 0 ].weight ) } kg`
-			: sets.map( ( set ) => `${ set.reps }×${ formatWeight( set.weight ) } kg` ).join( " · " );
+			? `${ sets.length } × ${ sets[ 0 ].reps } reps · ${ formatWeightLabel( sets[ 0 ].weight ) }`
+			: sets.map( ( set ) => `${ set.reps }×${ formatWeightLabel( set.weight ) }` ).join( " · " );
 
 		return (
 			<p className={ `text-sm font-normal ${ isHighlighted ? "text-warning" : "text-muted" }` }>
@@ -66,7 +70,7 @@ export function ExerciseCardSessionHistory( {
 					size={ "sm" }
 					variant={ "soft" }
 				>
-					<Chip.Label>{ `Serie ${ set.setNumber }: ${ set.repsCompleted ?? 0 } reps · ${ set.weightUsed ?? 0 } kg` }</Chip.Label>
+					<Chip.Label>{ `Serie ${ set.setNumber }: ${ set.repsCompleted ?? 0 } reps · ${ formatWeightLabel( set.weightUsed ) }` }</Chip.Label>
 				</Chip>
 			) ) }
 		</div>

@@ -28,9 +28,8 @@ export function RoutineRefreshConfirmModal( {
 							</Modal.Header>
 							<Modal.Body>
 								<p className={ "text-sm leading-6 text-muted" }>
-									Vas a volver a cargar la rutina desde el servidor. Los cambios compatibles que ya
-									hiciste se conservarán, y si alguna variante ya no está disponible, se mostrará el
-									ejercicio original.
+									Tenés series que todavía no se guardaron. Si actualizás, se descartan y vas a
+									ver la rutina tal como está guardada.
 								</p>
 							</Modal.Body>
 							<Modal.Footer className={ "gap-2" }>

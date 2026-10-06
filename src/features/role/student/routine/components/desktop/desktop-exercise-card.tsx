@@ -3,6 +3,7 @@ import { Card, Typography } from "@heroui/react";
 
 import { AsyncMedia } from "@/components/common";
 import ExerciseChangeDrawer from "@/features/role/student/routine/components/shared/exercise-change-drawer";
+import { ExerciseCoachNote } from "@/features/role/student/routine/components/shared/exercise-coach-note";
 import { ExerciseCardSessionHistory } from "@/features/role/student/routine/components/shared/exercise-card-session-history";
 import { ExerciseCardStatusChips } from "@/features/role/student/routine/components/shared/exercise-card-status-chips";
 import { useExerciseCardState } from "@/features/role/student/routine/components/shared/use-exercise-card-state";
@@ -58,6 +59,8 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 										totalSets={ completedSetsSummary.totalSets }
 									/>
 								</div>
+
+								<ExerciseCoachNote note={ exercise.coachNote }/>
 
 								<div className={ "flex flex-col gap-2 rounded-2xl bg-surface/50 px-3 py-3 sm:flex-row sm:items-start" }>
 									<p className={ "shrink-0 text-sm font-semibold tracking-wide text-foreground" }>
