@@ -33,7 +33,7 @@ export function ExerciseCardStatusChips( {
 				size={ size }
 				variant={ "soft" }
 			>
-				<Chip.Label>{ `Series completadas: ${ completedSets }/${ totalSets }` }</Chip.Label>
+				<Chip.Label>{ `${ completedSets }/${ totalSets } series` }</Chip.Label>
 			</Chip>
 			{ isVariantSelected ? (
 				<Chip className={ chipClassName } color={ "warning" } size={ size } variant={ "soft" }>

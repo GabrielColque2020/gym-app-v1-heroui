@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@heroui/react";
 
-import { AsyncMedia } from "@/components/common";
 import ExerciseChangeDrawer from "@/features/role/student/routine/components/shared/exercise-change-drawer";
 import { ExerciseCoachNote } from "@/features/role/student/routine/components/shared/exercise-coach-note";
+import { ExerciseExecutionTrigger } from "@/features/role/student/routine/components/shared/exercise-execution-trigger";
 import { ExerciseCardSessionHistory } from "@/features/role/student/routine/components/shared/exercise-card-session-history";
 import { ExerciseCardStatusChips } from "@/features/role/student/routine/components/shared/exercise-card-status-chips";
 import { useExerciseCardState } from "@/features/role/student/routine/components/shared/use-exercise-card-state";
@@ -29,49 +29,52 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 		variantOptions,
 	} = useExerciseCardState( exercise );
 	const displayedImageUrl = selectedVariant?.imageUrl ?? exercise.imageUrl;
+	const [ isExecutionOpen, setIsExecutionOpen ] = useState( false );
 
 	return (
 		<Card className={ "flex w-full flex-col border border-border py-2 shadow-sm" }>
 			<Card.Header className={ "shrink-0 px-3 pt-3" }>
 				<Card.Title className={ "w-full text-xl font-bold text-foreground" }>
 					<div className={ "space-y-3" }>
-						<div className={ "flex items-start justify-between gap-3" }>
-							<AsyncMedia
-								alt={ `Imagen de ${ displayedExerciseName }` }
-								className={ "h-28 w-full rounded-2xl border border-border bg-transparent" }
-								emptyLabel={ "Sin imagen" }
-								mediaClassName={ "bg-transparent" }
-								spinnerLabel={ `Cargando imagen de ${ displayedExerciseName }` }
-								src={ displayedImageUrl }
+						{ /* Imagen chica al lado del nombre: con la imagen a todo el ancho, los
+						     campos para cargar quedaban fuera de la primera pantalla. */ }
+						<div className={ "flex items-start gap-3" }>
+							<ExerciseExecutionTrigger
+								className={ "h-20 w-20" }
+								exerciseName={ displayedExerciseName }
+								imageUrl={ displayedImageUrl }
+								onPressAction={ () => setIsExecutionOpen( true ) }
 							/>
+
+							<div className={ "min-w-0 flex-1 space-y-2" }>
+								<h2 className={ "text-lg font-black leading-tight tracking-tight text-foreground" }>
+									{ displayedExerciseName }
+								</h2>
+
+								<div className={ "flex flex-wrap items-center gap-1.5" }>
+									<ExerciseCardStatusChips
+										baseName={ exercise.baseName }
+										completedSets={ completedSetsSummary.completedSets }
+										hasCompletedSets={ hasCompletedSets }
+										isCompact
+										isVariantSelected={ Boolean( selectedVariant ) }
+										label={ exercise.equipment }
+										totalSets={ completedSetsSummary.totalSets }
+									/>
+								</div>
+							</div>
 
 							<ExerciseChangeDrawer
 								exercise={ exercise }
 								hasVariants={ hasVariants }
+								isExecutionOpen={ isExecutionOpen }
 								isVariantOverridden={ isVariantOverridden }
 								originalVariant={ originalVariant }
 								selectedVariant={ selectedVariant }
 								variantOptions={ variantOptions }
+								onExecutionOpenChangeAction={ setIsExecutionOpen }
 								onVariantChangeAction={ onVariantChangeAction }
 							/>
-						</div>
-
-						<div className={ "space-y-3" }>
-							<h2 className={ "text-xl font-black leading-tight tracking-tight text-foreground" }>
-								{ displayedExerciseName }
-							</h2>
-
-							<div className={ "flex flex-wrap items-center gap-2" }>
-								<ExerciseCardStatusChips
-									baseName={ exercise.baseName }
-									completedSets={ completedSetsSummary.completedSets }
-									hasCompletedSets={ hasCompletedSets }
-									isCompact
-									isVariantSelected={ Boolean( selectedVariant ) }
-									label={ exercise.equipment }
-									totalSets={ completedSetsSummary.totalSets }
-								/>
-							</div>
 						</div>
 
 						<ExerciseCoachNote note={ exercise.coachNote }/>

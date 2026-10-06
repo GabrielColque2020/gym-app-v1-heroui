@@ -1,5 +1,6 @@
+import Link from "next/link";
 import { Button, Card, Chip, Spinner } from "@heroui/react";
-import { CheckCircle2, Flag, RotateCw, Save } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Flag, RotateCw, Save } from "lucide-react";
 
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
 import { PageHeader } from "@/components/common";
@@ -26,7 +27,9 @@ export function RoutinePageLoadedHeader( {
 										 }: RoutinePageLoadedHeaderProps ) {
 	const {
 		activeSession,
+		backHref,
 		canFinishDay,
+		halfLoadedSetCount,
 		handleOpenFinishDrawer,
 		handleRefresh,
 		handleSaveNow,
@@ -35,11 +38,20 @@ export function RoutinePageLoadedHeader( {
 		routineStatusDescription,
 		saveStatus,
 	} = state;
-	const chip = SAVE_STATUS_CHIP[ saveStatus ];
+	// Con todo lo demas guardado, una serie a medio cargar es lo que el estudiante
+	// tiene que saber: "Guardado" a secas le haria creer que esa serie ya esta.
+	const chip = saveStatus === "saved" && halfLoadedSetCount > 0
+		? {
+			color: "warning",
+			label: halfLoadedSetCount === 1
+				? "Falta completar 1 serie"
+				: `Falta completar ${ halfLoadedSetCount } series`,
+		} as const
+		: SAVE_STATUS_CHIP[ saveStatus ];
 	const isBusy = saveStatus === "saving" || saveStatus === "pending";
 	// Un dia sin ninguna serie cargada no tiene nada que informar como "Guardado".
 	const hasLoadedSets = activeSession.exercises.some( ( exercise ) => exercise.sets.some( ( set ) => set.completed ) );
-	const showSaveChip = saveStatus !== "saved" || hasLoadedSets;
+	const showSaveChip = saveStatus !== "saved" || hasLoadedSets || halfLoadedSetCount > 0;
 	const statusChips = !showSaveChip && !isDayFinished ? null : (
 		<div className={ "flex flex-wrap items-center gap-2" }>
 			{ showSaveChip ? (
@@ -75,11 +87,21 @@ export function RoutinePageLoadedHeader( {
 			{ /* En el telefono el avance de la sesion va en el subtitulo y "Terminar día"
 			     queda en la barra fija de abajo. */ }
 			<div className={ "flex flex-col gap-2 p-3 sm:hidden" }>
-				<div className={ "flex items-start justify-between gap-3" }>
+				<div className={ "flex items-start gap-2" }>
+					<Link
+						aria-label={ "Volver a la rutina de entrenamiento" }
+						className={ "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full border border-border text-foreground" }
+						href={ backHref }
+					>
+						<ArrowLeft className={ "size-4" }/>
+					</Link>
+					<div className={ "min-w-0 flex-1" }>
 					<PageHeader
 						title={ `Día ${ activeSession.dayNumber }` }
-						description={ `${ activeSession.title } · ${ routineStatusDescription }` }
+						// Mas corto que en escritorio para que entre en un renglon.
+						description={ `${ activeSession.title } · ${ routineStatusDescription.replace( " ejercicios completos", " completos" ) }` }
 					/>
+					</div>
 					<Button
 						isIconOnly
 						aria-label={ "Actualizar" }

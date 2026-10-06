@@ -142,8 +142,8 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				const previousSeriesWeight = parseDecimal( previousSavedSet?.weightUsed );
 
 				return {
-					// Con las repeticiones alcanza: el peso es opcional.
-					completed: currentReps !== null,
+					// Repeticiones y peso son requeridos los dos.
+					completed: currentReps !== null && currentWeight !== null,
 					currentReps,
 					currentWeight,
 					// Id fijo por ejercicio y numero de serie, y no el del registro guardado:

@@ -26,7 +26,7 @@ export function RoutineSaveDrawerAlerts( {
 					<Alert.Content>
 						<Alert.Title>Todavía no cargaste ninguna serie</Alert.Title>
 						<Alert.Description>
-							Para terminar el día cargá las repeticiones de al menos una serie.
+							Para terminar el día cargá al menos una serie con repeticiones y peso.
 						</Alert.Description>
 					</Alert.Content>
 				</Alert>

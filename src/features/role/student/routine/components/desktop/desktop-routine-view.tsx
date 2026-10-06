@@ -8,9 +8,7 @@ import { ExerciseSetsEditor } from "@/features/role/student/routine/components/s
 import {
 	RoutineExerciseEmptyState
 } from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
-import {
-	RoutineSessionOverviewCards
-} from "@/features/role/student/routine/components/shared/routine-session-overview-cards";
+import { RoutineExerciseStrip } from "@/features/role/student/routine/components/shared/routine-exercise-strip";
 import {
 	useExerciseCarouselState
 } from "@/features/role/student/routine/components/shared/use-exercise-carousel-state";
@@ -18,7 +16,6 @@ import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 
 type DesktopRoutineViewProps = {
 	exercises: Exercise[];
-	latestProgressDate: Date | null;
 	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 	onExerciseUpdate: (
 		exerciseId: string,
@@ -30,17 +27,14 @@ type DesktopRoutineViewProps = {
 		setId: string,
 		updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }>,
 	) => void;
-	routineStatusDescription: string;
 };
 
 export default function DesktopRoutineView( {
 	exercises,
-	latestProgressDate,
 	onExerciseUpdate,
 	onVariantChangeAction,
 	onRepeatLastSessionAction,
 	onSetUpdate,
-	routineStatusDescription,
 }: DesktopRoutineViewProps ) {
 	const { activeExerciseIndex, api, setApi } = useExerciseCarouselState();
 
@@ -48,14 +42,13 @@ export default function DesktopRoutineView( {
 		<div className={ "hidden w-full flex-col gap-4 sm:flex" }>
 			{ exercises.length > 0 ? (
 				<>
-					<div className={ "grid gap-4 lg:grid-cols-2" }>
-						<RoutineSessionOverviewCards
-							latestProgressDate={ latestProgressDate }
-							routineStatusDescription={ routineStatusDescription }
-						/>
-					</div>
+					<RoutineExerciseStrip
+						activeExerciseIndex={ activeExerciseIndex }
+						exercises={ exercises }
+						onSelectAction={ ( index ) => api?.scrollTo( index ) }
+					/>
 					<div className={ "min-w-0" }>
-						<Carousel opts={ { loop: true } } setApi={ setApi }>
+						<Carousel opts={ { loop: false } } setApi={ setApi }>
 							<Carousel.Content>
 							{ exercises.map( ( exercise ) => (
 								<Carousel.Item key={ exercise.id }>
@@ -73,12 +66,12 @@ export default function DesktopRoutineView( {
 							</Carousel.Content>
 						</Carousel>
 						<div className={ "flex items-center justify-between gap-3 px-4 mt-2" }>
-							<Button variant={ "secondary" } onPress={ () => api?.scrollPrev() }>
+							<Button isDisabled={ activeExerciseIndex <= 1 } variant={ "secondary" } onPress={ () => api?.scrollPrev() }>
 								<ArrowLeft className={ "size-4" }/>
 								Anterior
 							</Button>
 							<p className={ "min-w-20 text-center text-sm font-medium text-muted" }>{ `Ejercicio ${activeExerciseIndex} de ${exercises.length}` }</p>
-							<Button variant={ "secondary" } onPress={ () => api?.scrollNext() }>
+							<Button isDisabled={ activeExerciseIndex >= exercises.length } variant={ "secondary" } onPress={ () => api?.scrollNext() }>
 								Siguiente
 								<ArrowRight className={ "size-4" }/>
 							</Button>

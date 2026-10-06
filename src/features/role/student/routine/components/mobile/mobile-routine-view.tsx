@@ -1,6 +1,6 @@
 import { Button } from "@heroui/react";
 import { Carousel } from "@heroui-pro/react/carousel";
-import { ArrowLeft, ArrowRight, Calendar, ChartLine, CheckCircle2, Flag } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Flag } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import MobileExerciseCard from "@/features/role/student/routine/components/mobile/mobile-exercise-card";
@@ -9,10 +9,7 @@ import { ExerciseSetsEditor } from "@/features/role/student/routine/components/s
 import {
 	RoutineExerciseEmptyState
 } from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
-import {
-	RoutineSessionOverviewCard
-} from "@/features/role/student/routine/components/shared/routine-session-overview-card";
-import { formatDateLabel } from "@/features/role/student/routine/views/routine-page-content.utils";
+import { RoutineExerciseStrip } from "@/features/role/student/routine/components/shared/routine-exercise-strip";
 import {
 	useExerciseCarouselState
 } from "@/features/role/student/routine/components/shared/use-exercise-carousel-state";
@@ -22,8 +19,6 @@ interface MobileRoutineViewProps {
 	exercises: Exercise[];
 	canFinishDay: boolean;
 	isDayFinished: boolean;
-	latestProgressDate: Date | null;
-	routineStatusDescription: string;
 	onExerciseUpdate: ( exerciseId: string, updates: Partial<{ weight: number | null; reps: number | null; notes: string | null }> ) => void;
 	onFinishDayAction: () => void;
 	onRepeatLastSessionAction: ( exerciseId: string ) => void;
@@ -35,8 +30,6 @@ export default function MobileRoutineView( {
 	exercises,
 	canFinishDay,
 	isDayFinished,
-	latestProgressDate,
-	routineStatusDescription,
 	onExerciseUpdate,
 	onFinishDayAction,
 	onRepeatLastSessionAction,
@@ -98,11 +91,19 @@ export default function MobileRoutineView( {
 		<div className={ "flex flex-col sm:hidden" }>
 			{ exercises.length > 0 ? (
 				<>
+					<div className={ "mb-3" }>
+						<RoutineExerciseStrip
+							activeExerciseIndex={ activeExerciseIndex }
+							exercises={ exercises }
+							onSelectAction={ ( index ) => api?.scrollTo( index ) }
+						/>
+					</div>
+
 					<div
 						className={ "transition-[height] duration-200 ease-out" }
 						style={ carouselHeight !== null ? { height: `${ carouselHeight }px` } : undefined }
 					>
-						<Carousel opts={ { loop: true } } setApi={ setApi }>
+						<Carousel opts={ { loop: false } } setApi={ setApi }>
 							<Carousel.Content>
 							{ exercises.map( ( exercise ) => (
 								<Carousel.Item key={ exercise.id } className={ "flex items-start" }>
@@ -146,6 +147,7 @@ export default function MobileRoutineView( {
 							<Button
 								isIconOnly
 								aria-label={ "Ejercicio anterior" }
+								isDisabled={ activeExerciseIndex <= 1 }
 								variant={ "secondary" }
 								onPress={ () => api?.scrollPrev() }
 							>
@@ -155,6 +157,7 @@ export default function MobileRoutineView( {
 							<Button
 								isIconOnly
 								aria-label={ "Ejercicio siguiente" }
+								isDisabled={ activeExerciseIndex >= exercises.length }
 								variant={ "secondary" }
 								onPress={ () => api?.scrollNext() }
 							>
@@ -174,20 +177,6 @@ export default function MobileRoutineView( {
 						) }
 					</div>
 
-					<div className={ "mt-4 grid gap-3" }>
-						<RoutineSessionOverviewCard
-							description={ routineStatusDescription }
-							icon={ <ChartLine className={ "size-5" }/> }
-							iconClassName={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }
-							title={ "Resumen de la sesión" }
-						/>
-						<RoutineSessionOverviewCard
-							description={ formatDateLabel( latestProgressDate ) }
-							icon={ <Calendar className={ "size-5" }/> }
-							iconClassName={ "flex size-10 items-center justify-center rounded-full bg-accent/10 text-accent" }
-							title={ "Última sesión completa" }
-						/>
-					</div>
 				</>
 			) : (
 				<RoutineExerciseEmptyState/>

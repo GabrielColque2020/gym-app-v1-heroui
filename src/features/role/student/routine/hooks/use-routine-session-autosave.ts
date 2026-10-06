@@ -29,8 +29,8 @@ type UseRoutineSessionAutosaveOptions = {
 	validationError: string | null;
 };
 
-// Lo que se manda al servidor: solo las series hechas, que son las que tienen
-// repeticiones. Un peso suelto, sin repeticiones, no cuenta como cambio.
+// Lo que se manda al servidor: solo las series hechas, con repeticiones y peso.
+// Una serie con un solo dato no cuenta como cambio hasta que se completa.
 function buildSaveSignature( session: StudentRoutineSession | null ) {
 	return session ? JSON.stringify( mapStudentRoutineSessionToSaveInput( session ).exercises ) : null;
 }

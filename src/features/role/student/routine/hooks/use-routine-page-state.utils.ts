@@ -1,6 +1,9 @@
 ﻿import type { StudentRoutineSessionDetail, StudentRoutineSession } from "@/features/routine/services/routine-session";
 
-import { buildRoutineSaveSummary } from "@/features/role/student/routine/views/routine-page-content.utils";
+import {
+	buildRoutineSaveSummary,
+	countHalfLoadedSets,
+} from "@/features/role/student/routine/views/routine-page-content.utils";
 
 type BuildRoutinePageDerivedStateParams = {
 	activeSession: StudentRoutineSession | null;
@@ -19,7 +22,6 @@ export function buildRoutinePageDerivedState( {
 		exercise.sets.length > 0
 		&& exercise.sets.every( ( set ) => set.completed ),
 	).length ?? 0;
-	const latestProgressDate = data?.progressEntries[ 0 ]?.date ? new Date( data.progressEntries[ 0 ].date ) : null;
 	const routineStatusDescription = activeSession
 		? hasExercises
 			? `${ completedExercises } de ${ exerciseCount } ejercicios completos`
@@ -29,8 +31,8 @@ export function buildRoutinePageDerivedState( {
 	return {
 		backHref: `/student/training-routine?month=${ data?.trainingRoutine.month ?? "" }&year=${ data?.trainingRoutine.year ?? "" }`,
 		canFinishDay: hasExercises && !isSavePending,
+		halfLoadedSetCount: activeSession ? countHalfLoadedSets( activeSession ) : 0,
 		isDayFinished: Boolean( data?.isFinalized ),
-		latestProgressDate,
 		routineStatusDescription,
 		saveSummary: activeSession ? buildRoutineSaveSummary( activeSession ) : [],
 	};

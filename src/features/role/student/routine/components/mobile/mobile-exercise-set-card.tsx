@@ -68,7 +68,8 @@ export function MobileExerciseSetCard( {
 									<Input
 										fullWidth
 										aria-label={ `Reps de la serie ${ set.setNumber }` }
-										className={ "min-w-0 border border-border px-1 text-center" }
+										// Marcado cuando falta y el otro dato ya esta: la serie no se guarda a medias.
+										className={ `min-w-0 border px-1 text-center ${ set.currentReps === null && set.currentWeight !== null ? "border-warning" : "border-border" }` }
 										inputMode={ "numeric" }
 										placeholder={ `${ set.targetReps } reps` }
 										type={ "number" }
@@ -78,7 +79,7 @@ export function MobileExerciseSetCard( {
 									<Input
 										fullWidth
 										aria-label={ `Peso de la serie ${ set.setNumber }` }
-										className={ "min-w-0 border border-border px-1 text-center" }
+										className={ `min-w-0 border px-1 text-center ${ set.currentWeight === null && set.currentReps !== null ? "border-warning" : "border-border" }` }
 										inputMode={ "decimal" }
 										placeholder={ "kg" }
 										step={ "any" }

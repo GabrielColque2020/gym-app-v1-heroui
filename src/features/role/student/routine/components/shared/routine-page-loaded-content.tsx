@@ -29,7 +29,6 @@ export function RoutinePageLoadedContent( {
 		isDayFinished,
 		isFinishDrawerOpen,
 		isRefreshConfirmOpen,
-		latestProgressDate,
 		saveRoutineSession,
 		saveSummary,
 		setIsFinishDrawerOpen,
@@ -41,36 +40,36 @@ export function RoutinePageLoadedContent( {
 
 	return (
 		<div className={ "flex w-full flex-col gap-4" }>
-			<PageBreadcrumbs
-				backHref={ backHref }
-				backLabel={ "Volver" }
-				crumbs={ [
-					{ href: "/student/dashboard", label: "Inicio" },
-					{ href: backHref, label: "Rutina de entrenamiento" },
-					{ label: "Rutina" },
-				] }
-			/>
+			{ /* En el telefono la vuelta atras va dentro del encabezado, para que el
+			     ejercicio quede mas arriba. */ }
+			<div className={ "hidden sm:block" }>
+				<PageBreadcrumbs
+					backHref={ backHref }
+					backLabel={ "Volver" }
+					crumbs={ [
+						{ href: "/student/dashboard", label: "Inicio" },
+						{ href: backHref, label: "Rutina de entrenamiento" },
+						{ label: "Rutina" },
+					] }
+				/>
+			</div>
 			<RoutinePageLoadedHeader state={ state }/>
 			<MobileRoutineView
 				exercises={ activeSession.exercises }
 				canFinishDay={ canFinishDay }
 				isDayFinished={ isDayFinished }
-				latestProgressDate={ latestProgressDate }
 				onExerciseUpdate={ handleExerciseUpdate }
 				onRepeatLastSessionAction={ handleRepeatLastSession }
 				onFinishDayAction={ handleOpenFinishDrawer }
 				onSetUpdate={ handleSetUpdate }
 				onVariantChangeAction={ handleVariantChange }
-				routineStatusDescription={ state.routineStatusDescription }
 			/>
 			<DesktopRoutineView
 				exercises={ activeSession.exercises }
-				latestProgressDate={ latestProgressDate }
 				onExerciseUpdate={ handleExerciseUpdate }
 				onRepeatLastSessionAction={ handleRepeatLastSession }
 				onVariantChangeAction={ handleVariantChange }
 				onSetUpdate={ handleSetUpdate }
-				routineStatusDescription={ state.routineStatusDescription }
 			/>
 			<RoutineSaveDrawer
 				isOpen={ isFinishDrawerOpen }

@@ -52,6 +52,8 @@ function buildTargetSummary(exercise: Exercise) {
 
 type StepperFieldProps = {
     inputMode: "decimal" | "numeric";
+    // A alguna serie le falta este dato: el otro ya esta cargado.
+    isMissing: boolean;
     label: string;
     onChange: (value: number | null) => void;
     parse: (value: string) => number | null;
@@ -62,7 +64,7 @@ type StepperFieldProps = {
 
 // Campo numerico con botones de menos y mas: en el gimnasio, con el telefono en
 // una mano, ajustar con dos toques es mas comodo que abrir el teclado.
-function StepperField({ inputMode, label, onChange, parse, placeholder, step, value }: StepperFieldProps) {
+function StepperField({ inputMode, isMissing, label, onChange, parse, placeholder, step, value }: StepperFieldProps) {
     return (
         // Una fila por campo: de a dos por fila, en el telefono el numero no entra.
         <div className={ "flex items-center gap-3" }>
@@ -81,7 +83,7 @@ function StepperField({ inputMode, label, onChange, parse, placeholder, step, va
                 <Input
                     fullWidth
                     aria-label={ label }
-                    className={ "min-w-0 border border-border px-1 text-center" }
+                    className={ `min-w-0 border px-1 text-center ${ isMissing ? "border-warning" : "border-border" }` }
                     inputMode={ inputMode }
                     placeholder={ placeholder }
                     step={ "any" }
@@ -165,6 +167,7 @@ function ExerciseSetsEditorContent({
                     <div className={ "grid gap-2 lg:grid-cols-2 lg:gap-4" }>
                         <StepperField
                             inputMode={ "numeric" }
+                            isMissing={ exercise.sets.some((set) => set.currentReps === null && set.currentWeight !== null) }
                             label={ "Reps" }
                             parse={ parseNumericInput }
                             placeholder={ hasMixedValues ? "Varias" : "Reps" }
@@ -174,9 +177,10 @@ function ExerciseSetsEditorContent({
                         />
                         <StepperField
                             inputMode={ "decimal" }
+                            isMissing={ exercise.sets.some((set) => set.currentWeight === null && set.currentReps !== null) }
                             label={ "Peso (kg)" }
                             parse={ parseWeightInput }
-                            placeholder={ hasMixedValues ? "Varios" : "Opcional" }
+                            placeholder={ hasMixedValues ? "Varios" : "Kg" }
                             step={ WEIGHT_STEP }
                             value={ unifiedValues.weight }
                             onChange={ (weight) => onExerciseUpdate(exercise.id, { weight }) }

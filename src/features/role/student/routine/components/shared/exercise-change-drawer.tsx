@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 import ExerciseChangeDrawerContent from "@/features/role/student/routine/components/shared/exercise-change-drawer-content";
@@ -17,6 +15,9 @@ type ExerciseChangeDrawerProps = {
 	originalVariant: ExerciseVariantOption | null;
 	selectedVariant: ExerciseVariantOption | null;
 	variantOptions: ExerciseVariantOption[];
+	// La tarjeta tambien abre la ejecucion al tocar la imagen: el estado es suyo.
+	isExecutionOpen: boolean;
+	onExecutionOpenChangeAction: ( isOpen: boolean ) => void;
 	onVariantChangeAction: ( exerciseId: string, variantExerciseId: string | null ) => void;
 };
 
@@ -27,6 +28,8 @@ export default function ExerciseChangeDrawer( {
 	originalVariant,
 	selectedVariant,
 	variantOptions,
+	isExecutionOpen,
+	onExecutionOpenChangeAction,
 	onVariantChangeAction,
 }: ExerciseChangeDrawerProps ) {
 	const {
@@ -41,7 +44,6 @@ export default function ExerciseChangeDrawer( {
 		originalVariantExerciseId: exercise.originalVariantExerciseId,
 		onVariantChangeAction,
 	} );
-	const [ isExecutionOpen, setIsExecutionOpen ] = useState( false );
 	const placement = useResponsiveDrawerPlacement();
 	const executionExercise = selectedVariant
 		? {
@@ -62,7 +64,7 @@ export default function ExerciseChangeDrawer( {
 			<ExerciseChangeDrawerTrigger
 				hasVariants={ hasVariants }
 				onOpen={ handleOpenVariantDrawer }
-				onViewExecution={ () => setIsExecutionOpen( true ) }
+				onViewExecution={ () => onExecutionOpenChangeAction( true ) }
 			/>
 			<FeatureDrawerLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ setIsOpen }>
 				<ExerciseChangeDrawerContent
@@ -80,7 +82,7 @@ export default function ExerciseChangeDrawer( {
 				isOpen={ isExecutionOpen }
 				placement={ placement }
 				rightContentClassName={ "flex h-full max-h-dvh w-[42rem] flex-col" }
-				onOpenChangeAction={ setIsExecutionOpen }
+				onOpenChangeAction={ onExecutionOpenChangeAction }
 			>
 				<ExerciseExecutionDrawerContent
 					imageUrl={ executionExercise.imageUrl }

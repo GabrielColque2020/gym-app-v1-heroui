@@ -49,8 +49,8 @@ export function useRoutinePageState( {
 	const {
 		backHref,
 		canFinishDay,
+		halfLoadedSetCount,
 		isDayFinished,
-		latestProgressDate,
 		routineStatusDescription,
 		saveSummary,
 	} = useMemo(
@@ -94,6 +94,7 @@ export function useRoutinePageState( {
 		canFinishDay,
 		data,
 		error,
+		halfLoadedSetCount,
 		handleConfirmFinish,
 		handleConfirmRefresh,
 		handleExerciseUpdate,
@@ -110,7 +111,6 @@ export function useRoutinePageState( {
 		isLoading,
 		isRefreshConfirmOpen,
 		isRefreshing,
-		latestProgressDate,
 		routineStatusDescription,
 		saveRoutineSession,
 		saveStatus,
