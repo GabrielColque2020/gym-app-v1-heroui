@@ -308,7 +308,6 @@ export async function persistRoutineDayExercises(
 
 export function normalizeRoutineDayMutationInput( input: SaveRoutineDayExercisesActionInput ) {
 	return {
-		coachId: input.coachId,
 		exercises: normalizeRoutineDayExercises( input.exercises ),
 		routineDayId: input.routineDayId.trim(),
 		studentId: input.studentId?.trim(),

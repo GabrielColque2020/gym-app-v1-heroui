@@ -17,7 +17,6 @@ export type SaveRoutineDayExercisesActionInput = {
 	studentId?: string | null;
 	// Con valor, el dia que se guarda es de esa plantilla.
 	templateId?: string | null;
-	coachId?: string | null;
 };
 
 // Como quedo cada fila despues de guardar, sin los datos del ejercicio.
@@ -42,13 +41,13 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 	try {
 		const session = await requireCoachSession( "guardar el día de rutina" );
 		const {
-			coachId,
 			exercises,
 			routineDayId,
 			studentId,
 			templateId,
 		} = normalizeRoutineDayMutationInput( input );
-		const resolvedCoachId = templateId ? session.sub : coachId || session.sub;
+		// El entrenador es siempre el de la sesion: nadie guarda en nombre de otro.
+		const resolvedCoachId = session.sub;
 
 		if (!routineDayId) {
 			throw new Error( "Seleccioná un día válido antes de guardar cambios." );
@@ -76,7 +75,6 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 
 		return {
 			routineDay: await getRoutineDayAction( {
-				coachId: resolvedCoachId,
 				routineDayId: routineDay.id,
 				studentId,
 				templateId,
