@@ -2,12 +2,13 @@
 
 import type { Key } from "@heroui/react";
 import { Button, Dropdown, Header, Label, Spinner, toast } from "@heroui/react";
-import { CheckCircle2, EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
+import { CheckCircle2, EllipsisVertical, Eye, PencilLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import {
 	CoachDeleteExerciseDrawer
 } from "@/features/role/coach/exercises/components/shared/coach-delete-exercise-drawer";
+import { ExerciseDetailDrawer } from "@/features/role/coach/exercises/components/shared/exercise-detail-drawer";
 import { ExerciseDrawer } from "@/features/role/coach/exercises/components/shared/exercise-drawer";
 import { useDeleteCoachExercise } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 import { useCoachExerciseStatusAction } from "@/features/role/coach/exercises/hooks/use-coach-exercise-status-action";
@@ -21,6 +22,7 @@ type ExerciseRowActionsProps = {
 export function ExerciseRowActions( {
 	exercise,
 }: ExerciseRowActionsProps ) {
+	const [ isDetailOpen, setIsDetailOpen ] = useState( false );
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
 	const { changeStatus, isPending, statusClassName, statusLabel } = useCoachExerciseStatusAction( { exercise } );
@@ -29,6 +31,11 @@ export function ExerciseRowActions( {
 	const canDeleteExercise = exercise.sourceType === "coach" && Boolean( exercise.coachExerciseId );
 
 	function handleAction( key: Key ) {
+		if (key === "view") {
+			setIsDetailOpen( true );
+			return;
+		}
+
 		if (key === "edit") {
 			setIsEditOpen( true );
 			return;
@@ -80,6 +87,10 @@ export function ExerciseRowActions( {
 				<Dropdown.Popover placement={ "bottom end" }>
 					<Dropdown.Menu onAction={ handleAction }>
 						<Header>Opciones</Header>
+						<Dropdown.Item id={ "view" } textValue={ "Ver ejercicio" }>
+							<Eye className={ "size-4 shrink-0" }/>
+							<Label>Ver ejercicio</Label>
+						</Dropdown.Item>
 						<Dropdown.Item id={ "edit" } textValue={ "Editar" }>
 							<PencilLine className={ "size-4 shrink-0 text-warning" }/>
 							<Label className={ "text-warning" }>Editar</Label>
@@ -106,6 +117,15 @@ export function ExerciseRowActions( {
 				</Dropdown.Popover>
 			</Dropdown>
 
+			<ExerciseDetailDrawer
+				exercise={ exercise }
+				isOpen={ isDetailOpen }
+				onEditAction={ () => {
+					setIsDetailOpen( false );
+					setIsEditOpen( true );
+				} }
+				onOpenChangeAction={ setIsDetailOpen }
+			/>
 			<ExerciseDrawer
 				hideTrigger
 				exercise={ exercise }

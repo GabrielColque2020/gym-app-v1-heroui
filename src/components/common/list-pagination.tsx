@@ -13,6 +13,9 @@ export type PageItem = number | "ellipsis";
 type UsePaginationParams<TItem> = {
 	items: TItem[];
 	itemsPerPage: number;
+	// Tope en el telefono. Por defecto son pocos, pensado para tarjetas altas;
+	// las listas de filas compactas pueden pedir mas.
+	mobileItemsPerPage?: number;
 	page: number;
 };
 
@@ -30,6 +33,9 @@ type ListPaginationProps = {
 
 type PaginationControlsProps = {
 	currentPage: number;
+	// En el telefono "Anterior" y "Siguiente" quedan solo como flechas: con el
+	// texto, la barra se salia del ancho cuando hay muchas paginas.
+	isCompact?: boolean;
 	onPageChangeAction: ( page: number ) => void;
 	pageItems: PageItem[];
 	totalPages: number;
@@ -64,10 +70,13 @@ function getPageItems( currentPage: number, totalPages: number ): PageItem[] {
 
 function PaginationControls( {
 								 currentPage,
+								 isCompact = false,
 								 onPageChangeAction,
 								 pageItems,
 								 totalPages,
 							 }: PaginationControlsProps ) {
+	const stepLabelClassName = isCompact ? "sr-only" : undefined;
+
 	return (
 		<Pagination.Content>
 			<Pagination.Item>
@@ -76,7 +85,7 @@ function PaginationControls( {
 					onPress={ () => onPageChangeAction( Math.max( 1, currentPage - 1 ) ) }
 				>
 					<Pagination.PreviousIcon/>
-					<span>Anterior</span>
+					<span className={ stepLabelClassName }>Anterior</span>
 				</Pagination.Previous>
 			</Pagination.Item>
 			{ pageItems.map( ( pageItem, index ) =>
@@ -100,7 +109,7 @@ function PaginationControls( {
 					isDisabled={ currentPage === totalPages }
 					onPress={ () => onPageChangeAction( Math.min( totalPages, currentPage + 1 ) ) }
 				>
-					<span>Siguiente</span>
+					<span className={ stepLabelClassName }>Siguiente</span>
 					<Pagination.NextIcon/>
 				</Pagination.Next>
 			</Pagination.Item>
@@ -108,10 +117,10 @@ function PaginationControls( {
 	);
 }
 
-export function usePagination<TItem>( { items, itemsPerPage, page }: UsePaginationParams<TItem> ) {
+export function usePagination<TItem>( { items, itemsPerPage, mobileItemsPerPage, page }: UsePaginationParams<TItem> ) {
 	const placement = useResponsiveDrawerPlacement();
 	const effectiveItemsPerPage = placement === "bottom"
-		? Math.min( itemsPerPage, MOBILE_ITEMS_PER_PAGE )
+		? ( mobileItemsPerPage ?? Math.min( itemsPerPage, MOBILE_ITEMS_PER_PAGE ) )
 		: itemsPerPage;
 
 	return useMemo(
@@ -159,6 +168,7 @@ export function ListPagination( {
 				<span className={ "block w-full text-center text-sm text-muted sm:w-auto sm:text-left" }>{ summaryContent }</span>
 				<Pagination className={ "mx-auto w-fit sm:mx-0" } size={ size }>
 					<PaginationControls
+						isCompact
 						currentPage={ currentPage }
 						onPageChangeAction={ onPageChangeAction }
 						pageItems={ pageItems }

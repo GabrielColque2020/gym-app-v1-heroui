@@ -81,7 +81,7 @@ export function CoachDeleteExerciseDrawer( {
 						</div>
 						<div className={ "grid gap-1" }>
 							<span className={ "font-medium text-muted" }>Origen</span>
-							<span className={ "text-foreground" }>{ exercise.isOverride ? "Global personalizado" : "Propio del coach" }</span>
+							<span className={ "text-foreground" }>{ exercise.isOverride ? "Del catálogo, editado por vos" : "Creado por vos" }</span>
 						</div>
 					</div>
 				</Surface>

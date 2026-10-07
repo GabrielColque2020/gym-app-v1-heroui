@@ -69,7 +69,7 @@ export default function CoachExercisesPageContent() {
 				</Card.Content>
 				<Card.Footer className={ "border-t border-border p-3" }>
 					<div className={ "text-sm text-muted" }>
-						Los ejercicios globales se comparten entre coaches; tus cambios se guardan como versión local.
+						Los ejercicios del catálogo general los ven todos los entrenadores. Si editás uno, el cambio queda solo para vos.
 					</div>
 				</Card.Footer>
 			</Card>

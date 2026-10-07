@@ -97,13 +97,13 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 		);
 
 	const title = isEditMode
-		? ( currentExercise?.sourceType === "global" ? "Editar global" : "Editar ejercicio" )
+		? "Editar ejercicio"
 		: "Nuevo ejercicio";
 	const description = isEditMode
 		? currentExercise?.sourceType === "global"
-			? "Se guardara una versión privada para tu catálogo sin modificar el ejercicio global."
-			: "Actualiza los datos del ejercicio dentro de tu catálogo propio."
-		: "Carga un ejercicio propio o una versión local de un ejercicio global.";
+			? "El cambio queda solo para vos; el ejercicio del catálogo general no se modifica."
+			: "Actualizá los datos de tu ejercicio."
+		: "Creá un ejercicio propio. Solo lo vas a ver vos.";
 
 	const resetFormState = useCallback( () => {
 		setValues( getInitialValues( currentExercise ?? undefined ) );
@@ -199,6 +199,7 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 					ariaLabel={ isEditMode && currentExercise ? `Editar ${ currentExercise.name }` : "Nuevo ejercicio" }
 					className={ props.triggerClassName }
 					isEditMode={ isEditMode }
+					isIconOnlyCreate={ !isEditMode && props.triggerVariant === "icon" }
 					showEditTriggerLabel={ showEditTriggerLabel }
 					onPress={ openDrawer }
 				/>

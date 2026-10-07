@@ -14,25 +14,30 @@ export function CoachExercisesPageHeader( {
 	onRefreshAction,
 }: CoachExercisesPageHeaderProps ) {
 	return (
-		<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between " }>
-			<PageHeader
-				title={ "Ejercicios" }
-				description={ "Catálogo global compartido + ejercicios propios y overrides del coach." }
-			/>
-			<div className={ "flex w-full flex-col gap-2 md:hidden" }>
+		<Card.Header className={ "flex flex-row items-start justify-between gap-3 border-b border-border p-3 sm:items-center" }>
+			<div className={ "min-w-0" }>
+				<PageHeader
+					title={ "Ejercicios" }
+					description={ "Los del catálogo general y los que creaste vos." }
+				/>
+			</div>
+			{ /* En el telefono las dos acciones van como iconos junto al titulo, para
+			     que la lista empiece mas arriba. */ }
+			<div className={ "flex shrink-0 items-center gap-2 md:hidden" }>
 				<Button
-					className={ "w-full" }
+					isIconOnly
+					aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
 					isDisabled={ isRefreshing }
 					variant={ "secondary" }
 					onPress={ onRefreshAction }
 				>
 					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-					{ isRefreshing ? "Actualizando..." : "Actualizar" }
 				</Button>
 				<ExerciseDrawer
 					mode={ "create" }
 					placement={ "bottom" }
-					triggerClassName={ "w-full bg-accent text-accent-foreground" }
+					triggerClassName={ "bg-accent text-accent-foreground" }
+					triggerVariant={ "icon" }
 				/>
 			</div>
 			<div className={ "hidden items-center gap-2 md:flex" }>

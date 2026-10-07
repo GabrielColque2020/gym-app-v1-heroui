@@ -1,5 +1,7 @@
 ﻿"use client";
 
+import { useRef } from "react";
+
 import { ListPagination } from "@/components/common";
 import { CoachExercisesEmptyState } from "@/features/role/coach/exercises/components/shared/coach-exercises-empty-state";
 import { ExerciseFilters } from "@/features/role/coach/exercises/components/shared/exercise-filters";
@@ -35,12 +37,21 @@ export function ExercisesContentMobile( { exercises }: ExercisesContentMobilePro
 		totalPages,
 	} = pagination;
 
+	const listRef = useRef<HTMLDivElement | null>( null );
+
+	// Los botones de pagina estan al final: al cambiar, se vuelve al principio de
+	// la lista para no quedar mirando el fondo de la pagina nueva.
+	function handlePageChange( nextPage: number ) {
+		changePage( nextPage );
+		listRef.current?.scrollIntoView( { block: "start" } );
+	}
+
 	if (exercises.length === 0) {
 		return <CoachExercisesEmptyState message={ "No hay ejercicios cargados" }/>;
 	}
 
 	return (
-		<div className={ "flex w-full flex-col gap-4" }>
+		<div className={ "flex w-full flex-col gap-3" }>
 			<ExerciseFilters
 				bodyParts={ bodyParts }
 				bodyPartFilter={ bodyPartFilter }
@@ -58,7 +69,7 @@ export function ExercisesContentMobile( { exercises }: ExercisesContentMobilePro
 				<CoachExercisesEmptyState message={ "No hay ejercicios que coincidan con los filtros" }/>
 			) : (
 				<>
-					<div className={ "grid gap-3" }>
+					<div ref={ listRef } className={ "grid scroll-mt-20 gap-2" }>
 						{ paginatedExercises.map( ( exercise ) => (
 							<ExerciseMobileCard key={ exercise.id } exercise={ exercise }/>
 						) ) }
@@ -66,11 +77,12 @@ export function ExercisesContentMobile( { exercises }: ExercisesContentMobilePro
 
 					<ListPagination
 						currentPage={ currentPage }
+						itemLabel={ "ejercicios" }
 						showingFrom={ showingFrom }
 						showingTo={ showingTo }
 						totalItems={ totalItems }
 						totalPages={ totalPages }
-						onPageChangeAction={ changePage }
+						onPageChangeAction={ handlePageChange }
 					/>
 				</>
 			) }

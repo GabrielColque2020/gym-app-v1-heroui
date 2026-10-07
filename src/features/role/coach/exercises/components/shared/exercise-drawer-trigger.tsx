@@ -5,6 +5,8 @@ type ExerciseDrawerTriggerProps = {
 	ariaLabel: string;
 	className?: string;
 	isEditMode: boolean;
+	// "Nuevo ejercicio" como boton de icono, para el encabezado del telefono.
+	isIconOnlyCreate?: boolean;
 	showEditTriggerLabel: boolean;
 	onPress: () => void;
 };
@@ -13,6 +15,7 @@ export function ExerciseDrawerTrigger( {
 	ariaLabel,
 	className,
 	isEditMode,
+	isIconOnlyCreate = false,
 	showEditTriggerLabel,
 	onPress,
 }: ExerciseDrawerTriggerProps ) {
@@ -33,9 +36,14 @@ export function ExerciseDrawerTrigger( {
 	}
 
 	return (
-		<Button className={ className } onPress={ onPress }>
+		<Button
+			aria-label={ isIconOnlyCreate ? ariaLabel : undefined }
+			className={ className }
+			isIconOnly={ isIconOnlyCreate }
+			onPress={ onPress }
+		>
 			<Plus className={ "size-4" }/>
-			Nuevo ejercicio
+			{ isIconOnlyCreate ? null : "Nuevo ejercicio" }
 		</Button>
 	);
 }

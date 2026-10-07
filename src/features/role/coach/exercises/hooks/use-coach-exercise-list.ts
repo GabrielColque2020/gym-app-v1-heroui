@@ -19,6 +19,8 @@ type UseCoachExerciseListOptions = {
 };
 
 const ITEMS_PER_PAGE = 8;
+// En el telefono las filas son compactas: con 4 por pagina el catalogo eran mas de 300 paginas.
+const MOBILE_ITEMS_PER_PAGE = 10;
 
 export function useCoachExerciseList( { exercises }: UseCoachExerciseListOptions ) {
 	const [ nameFilter, setNameFilter ] = useState( "" );
@@ -33,18 +35,22 @@ export function useCoachExerciseList( { exercises }: UseCoachExerciseListOptions
 
 	const filteredExercises = useMemo(
 		() => {
-			const normalizedNameFilter = normalizeSearchName( nameFilter );
+			// Se busca por palabras sueltas: "prensa trineo" encuentra "prensa de
+			// piernas con trineo". Las instrucciones quedan afuera porque, palabra
+			// por palabra, traian ejercicios que no tenian nada que ver.
+			const searchWords = normalizeSearchName( nameFilter ).split( " " ).filter( Boolean );
 
 			return exercises.filter( ( exercise ) => {
-				const matchesName = normalizedNameFilter.length === 0
-					|| normalizeSearchName( [
+				const searchableText = searchWords.length === 0
+					? ""
+					: normalizeSearchName( [
 						exercise.name,
 						exercise.category,
 						exercise.equipment,
 						exercise.target,
 						exercise.muscleGroup,
-						exercise.instructions ?? "",
-					].join( " " ) ).includes( normalizedNameFilter );
+					].join( " " ) );
+				const matchesName = searchWords.every( ( word ) => searchableText.includes( word ) );
 				const matchesBodyPart = bodyPartFilter === ALL_BODY_PARTS || exercise.bodyPart === bodyPartFilter;
 				const matchesSource =
 					sourceFilter === ALL_COACH_EXERCISE_SOURCES
@@ -61,6 +67,7 @@ export function useCoachExerciseList( { exercises }: UseCoachExerciseListOptions
 	const pagination = usePagination( {
 		items: filteredExercises,
 		itemsPerPage: ITEMS_PER_PAGE,
+		mobileItemsPerPage: MOBILE_ITEMS_PER_PAGE,
 		page,
 	} );
 	const hasFilters = nameFilter.trim().length > 0 || bodyPartFilter !== ALL_BODY_PARTS || sourceFilter !== ALL_COACH_EXERCISE_SOURCES;

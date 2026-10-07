@@ -78,7 +78,7 @@ export function ExerciseDrawerFields( {
 			</div>
 
 			<div className={ "grid gap-2" }>
-				<Label>Categoría</Label>
+				<Label>Grupo muscular</Label>
 				<Select
 					fullWidth
 					isInvalid={ isCategoryInvalid }
@@ -136,7 +136,7 @@ export function ExerciseDrawerFields( {
 				</div>
 
 				<div className={ "grid gap-2" }>
-					<Label>Músculo principal</Label>
+					<Label>Músculo secundario</Label>
 					<Select
 						fullWidth
 						name={ "muscleGroup" }
@@ -162,7 +162,7 @@ export function ExerciseDrawerFields( {
 			</div>
 
 			<div className={ "grid gap-2" }>
-				<Label>Grupo muscular objetivo</Label>
+				<Label>Músculo objetivo</Label>
 				<Select
 					fullWidth
 					name={ "target" }
