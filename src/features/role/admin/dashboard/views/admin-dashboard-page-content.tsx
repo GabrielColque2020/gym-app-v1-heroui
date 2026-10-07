@@ -63,12 +63,12 @@ export default function AdminDashboardPageContent() {
 			</div>
 
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Content className={ "flex flex-col gap-3 p-3 md:flex-row md:items-center md:justify-between" }>
+				<Card.Content className={ "flex flex-col gap-3 p-3 xl:flex-row xl:items-center xl:justify-between" }>
 					<div className={ "space-y-1" }>
 						<p className={ "text-base font-semibold text-foreground" }>Accesos rápidos</p>
 						<p className={ "text-sm text-muted" }>Las tareas más comunes.</p>
 					</div>
-					<div className={ "flex flex-col gap-2 sm:flex-row" }>
+					<div className={ "flex flex-col gap-2 sm:flex-row sm:flex-wrap" }>
 						<Button variant={ "secondary" } onPress={ () => router.push( "/admin/users" ) }>
 							<Users className={ "size-4" }/>
 							Ir a usuarios
@@ -77,9 +77,13 @@ export default function AdminDashboardPageContent() {
 							<Dumbbell className={ "size-4" }/>
 							Ir a ejercicios globales
 						</Button>
-						<Button onPress={ () => router.push( "/admin/users" ) }>
+						<Button variant={ "secondary" } onPress={ () => router.push( "/admin/users?nuevo=entrenador" ) }>
 							<UserPlus className={ "size-4" }/>
 							Nuevo entrenador
+						</Button>
+						<Button onPress={ () => router.push( "/admin/users?nuevo=estudiante" ) }>
+							<UserPlus className={ "size-4" }/>
+							Nuevo estudiante
 						</Button>
 					</div>
 				</Card.Content>

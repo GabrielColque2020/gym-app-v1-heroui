@@ -1,11 +1,11 @@
 "use client";
 
-import type { Key } from "@heroui/react";
-import { Button, Card, Chip, Dropdown, Header, Label, ListBox, SearchField, Select } from "@heroui/react";
+import { Button, Card, Chip, Label, ListBox, SearchField, Select } from "@heroui/react";
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
-import { useMemo, useState } from "react";
-import { EllipsisVertical, RotateCw, UserPlus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { RotateCw, UserPlus } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { TableSkeleton } from "@/components/common/skeletons";
@@ -19,29 +19,30 @@ import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-
 import { getAdminCoachLabel, getAdminRoleLabel } from "@/features/role/admin/users/services/admin-user-labels";
 import { useAdminUsersPageState } from "@/features/role/admin/users/hooks/use-admin-users-page-state";
 
-export default function AdminUsersPageContent() {
+type AdminUsersPageContentProps = {
+	// Formulario que se abre al entrar, cuando se llega desde un acceso rápido.
+	initialCreate?: "coach" | "student" | null;
+};
+
+export default function AdminUsersPageContent( { initialCreate = null }: AdminUsersPageContentProps ) {
+	const router = useRouter();
 	const isMounted = useIsMounted();
 	const { data = [], error, isError, isFetching, isLoading, refetch } = useAdminUsers();
 	const isRefreshing = isFetching && !isLoading;
-	const [ isCreateCoachOpen, setIsCreateCoachOpen ] = useState( false );
-	const [ isCreateStudentOpen, setIsCreateStudentOpen ] = useState( false );
+	const [ isCreateCoachOpen, setIsCreateCoachOpen ] = useState( initialCreate === "coach" );
+	const [ isCreateStudentOpen, setIsCreateStudentOpen ] = useState( initialCreate === "student" );
+
+	// Se limpia la dirección para que recargar o volver atrás no reabra el formulario.
+	useEffect( () => {
+		if (initialCreate) router.replace( "/admin/users" );
+	}, [ initialCreate, router ] );
+
 	const pageState = useAdminUsersPageState( data );
 	const filteredUsers = pageState.filteredUsers;
 	const breadcrumbs = [
 		{ href: "/admin/dashboard", label: "Inicio" },
 		{ label: "Usuarios" },
 	];
-
-	function handleCreateAction( key: Key ) {
-		if (key === "create-coach") {
-			setIsCreateCoachOpen( true );
-			return;
-		}
-
-		if (key === "create-student") {
-			setIsCreateStudentOpen( true );
-		}
-	}
 
 	const columns = useMemo<DataGridColumn<AdminUserListItem>[]>( () => [
 		{
@@ -138,39 +139,24 @@ export default function AdminUsersPageContent() {
 				crumbs={ breadcrumbs }
 			/>
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Content className={ "flex flex-col gap-3 p-3 sm:flex-row sm:items-end sm:justify-between" }>
+				<Card.Content className={ "flex flex-col gap-3 p-3 lg:flex-row lg:items-end lg:justify-between" }>
 					<PageHeader
 						description={ "Todas las cuentas de la app y el entrenador de cada estudiante." }
 						title={ "Usuarios" }
 					/>
-					<div className={ "flex items-center justify-end gap-2" }>
-						<Button className={ "w-full md:w-auto" } isDisabled={ isRefreshing } variant={ "secondary" } onPress={ () => void refetch() }>
-							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+					{ /* Crear es lo que mas se hace aca: los dos botones van a la vista. */ }
+					<div className={ "grid grid-cols-2 gap-2 sm:flex sm:items-center lg:justify-end" }>
+						<Button aria-label={ "Nuevo entrenador" } className={ "w-full min-w-0 sm:w-auto" } variant={ "secondary" } onPress={ () => setIsCreateCoachOpen( true ) }>
+							<UserPlus className={ "size-4 shrink-0" }/>
+							{ /* En el telefono no entran los dos rotulos completos: queda lo que los distingue. */ }
+							<span className={ "truncate sm:hidden" }>Entrenador</span>
+							<span className={ "hidden truncate sm:inline" }>Nuevo entrenador</span>
 						</Button>
-						<Dropdown>
-							<Button
-								isIconOnly
-								aria-label={ "Crear usuario" }
-								className={ "size-10 shrink-0 " }
-								variant={ "secondary" }
-							>
-								<EllipsisVertical className={ "size-5" }/>
-							</Button>
-							<Dropdown.Popover placement={ "bottom end" }>
-								<Dropdown.Menu onAction={ handleCreateAction }>
-									<Header>Crear usuario</Header>
-									<Dropdown.Item id={ "create-coach" } textValue={ "Nuevo entrenador" }>
-										<UserPlus className={ "size-4 shrink-0 text-accent" }/>
-										<Label className={ "text-accent" }>Nuevo entrenador</Label>
-									</Dropdown.Item>
-									<Dropdown.Item id={ "create-student" } textValue={ "Nuevo estudiante" }>
-										<UserPlus className={ "size-4 shrink-0 text-accent" }/>
-										<Label className={ "text-accent" }>Nuevo estudiante</Label>
-									</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown.Popover>
-						</Dropdown>
+						<Button aria-label={ "Nuevo estudiante" } className={ "w-full min-w-0 sm:w-auto" } onPress={ () => setIsCreateStudentOpen( true ) }>
+							<UserPlus className={ "size-4 shrink-0" }/>
+							<span className={ "truncate sm:hidden" }>Estudiante</span>
+							<span className={ "hidden truncate sm:inline" }>Nuevo estudiante</span>
+						</Button>
 						<AdminCoachDrawer hideTrigger isOpen={ isCreateCoachOpen } onOpenChangeAction={ setIsCreateCoachOpen }/>
 						<AdminStudentDrawer hideTrigger isOpen={ isCreateStudentOpen } mode={ "create" } onOpenChangeAction={ setIsCreateStudentOpen }/>
 					</div>
@@ -215,9 +201,15 @@ export default function AdminUsersPageContent() {
 						</Select>
 					</div>
 
-					<Chip size={ "sm" } variant={ "soft" }>
-						{ filteredUsers.length === 1 ? "1 usuario" : `${ filteredUsers.length } usuarios` }
-					</Chip>
+					<div className={ "flex items-center justify-between gap-2" }>
+						<Chip size={ "sm" } variant={ "soft" }>
+							{ filteredUsers.length === 1 ? "1 usuario" : `${ filteredUsers.length } usuarios` }
+						</Chip>
+						<Button isDisabled={ isRefreshing } size={ "sm" } variant={ "ghost" } onPress={ () => void refetch() }>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							{ isRefreshing ? "Actualizando..." : "Actualizar" }
+						</Button>
+					</div>
 
 					<div className={ "hidden md:block" }>
 						<DataGrid

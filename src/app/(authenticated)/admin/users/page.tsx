@@ -7,6 +7,14 @@ export const metadata: Metadata = {
 	title: "Usuarios",
 };
 
-export default function AdminUsersPage() {
-	return <AdminUsersPageContent/>;
+type AdminUsersPageProps = {
+	searchParams: Promise<{ nuevo?: string }>;
+};
+
+export default async function AdminUsersPage( { searchParams }: AdminUsersPageProps ) {
+	const { nuevo } = await searchParams;
+
+	// Desde Inicio se llega con "?nuevo=entrenador" o "?nuevo=estudiante" para
+	// abrir directamente el formulario.
+	return <AdminUsersPageContent initialCreate={ nuevo === "entrenador" ? "coach" : nuevo === "estudiante" ? "student" : null }/>;
 }
