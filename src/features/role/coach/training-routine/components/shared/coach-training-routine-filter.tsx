@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button, Card } from "@heroui/react";
 import { ChevronLeft, ChevronRight, RotateCw } from "lucide-react";
 
-import { monthYearLabel } from "@/constants/months";
+import { MonthJumpPicker } from "@/components/common/month-jump-picker";
+import { getRoutineMonthsWithContentAction } from "@/features/role/coach/training-routine/actions/get-routine-months-with-content";
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 import { CoachOptionRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-option-routine-drawer";
 
@@ -23,6 +24,7 @@ type CoachTrainingRoutineFilterProps = {
 
 // Encabezado del mes: se pasa de un mes a otro con las flechas, que es como se
 // recorre una rutina (el mes anterior, el que viene), en vez de dos selectores.
+// Para ir mas lejos, el titulo abre un selector de mes.
 export function CoachTrainingRoutineFilter( {
 	isRefreshing,
 	month,
@@ -36,38 +38,47 @@ export function CoachTrainingRoutineFilter( {
 }: CoachTrainingRoutineFilterProps ) {
 	const router = useRouter();
 
-	function goToMonth( offset: -1 | 1 ) {
-		const target = new Date( year, month - 1 + offset, 1 );
+	function goToMonth( targetMonth: number, targetYear: number ) {
 		const params = new URLSearchParams( {
-			month: String( target.getMonth() + 1 ),
+			month: String( targetMonth ),
 			studentId,
-			year: String( target.getFullYear() ),
+			year: String( targetYear ),
 		} );
 
 		router.replace( `/coach/training-routine?${ params.toString() }` );
 	}
 
+	function stepMonth( offset: -1 | 1 ) {
+		const target = new Date( year, month - 1 + offset, 1 );
+
+		goToMonth( target.getMonth() + 1, target.getFullYear() );
+	}
+
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
-			<Card.Content className={ "flex flex-row flex-wrap items-center justify-between gap-3 p-3" }>
-				{ /* En el telefono el mes ocupa todo el renglon, con las flechas en las
-				     puntas; las acciones bajan a un renglon propio. */ }
-				<div className={ `flex min-w-0 items-center gap-1 sm:w-auto sm:flex-none ${ routineCount === 0 ? "flex-1" : "w-full" }` }>
-					<Button isIconOnly aria-label={ "Mes anterior" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => goToMonth( -1 ) }>
+			<Card.Content className={ "@container flex flex-row flex-wrap items-center justify-between gap-3 p-3" }>
+				{ /* Cuando el mes y las acciones no entran en un renglon, el mes ocupa todo
+				     el ancho, con las flechas en las puntas, y las acciones bajan a un
+				     renglon propio. Se decide por el ancho de la tarjeta y no por el de la
+				     pantalla: con el menu lateral abierto la tarjeta es mucho mas angosta. */ }
+				<div className={ `flex min-w-0 items-center gap-1 @xl:w-auto @xl:flex-none ${ routineCount === 0 ? "flex-1" : "w-full" }` }>
+					<Button isIconOnly aria-label={ "Mes anterior" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => stepMonth( -1 ) }>
 						<ChevronLeft className={ "size-5" }/>
 					</Button>
-					<div className={ "min-w-0 flex-1 text-center sm:min-w-36 sm:flex-none" }>
-						<p className={ "whitespace-nowrap text-base font-black leading-tight text-foreground sm:text-xl" }>
-							{ monthYearLabel( String( month ), String( year ) ) }
-						</p>
-						<p className={ "truncate text-xs text-muted" }>Rutina de { studentName }</p>
-					</div>
-					<Button isIconOnly aria-label={ "Mes siguiente" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => goToMonth( 1 ) }>
+					<MonthJumpPicker
+						loadedMonthsQueryFn={ () => getRoutineMonthsWithContentAction( studentId ) }
+						loadedMonthsQueryKey={ [ "coach-routine-months", studentId ] }
+						month={ month }
+						subtitle={ `Rutina de ${ studentName }` }
+						year={ year }
+						onSelectAction={ goToMonth }
+					/>
+					<Button isIconOnly aria-label={ "Mes siguiente" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => stepMonth( 1 ) }>
 						<ChevronRight className={ "size-5" }/>
 					</Button>
 				</div>
 				{ /* Sin rutina solo queda "Actualizar": va en el mismo renglon que el mes. */ }
-				<div className={ `flex items-center gap-2 sm:w-auto sm:shrink-0 ${ routineCount === 0 ? "shrink-0" : "w-full" }` }>
+				<div className={ `flex items-center gap-2 @xl:w-auto @xl:shrink-0 ${ routineCount === 0 ? "shrink-0" : "w-full" }` }>
 					<Button
 						isIconOnly
 						aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }

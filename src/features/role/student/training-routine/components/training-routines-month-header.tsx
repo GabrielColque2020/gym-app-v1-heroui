@@ -1,7 +1,8 @@
 import { Button, Card } from "@heroui/react";
 import { ChevronLeft, ChevronRight, Download, RotateCw } from "lucide-react";
 
-import { monthYearLabel } from "@/constants/months";
+import { MonthJumpPicker } from "@/components/common/month-jump-picker";
+import { getRoutineMonthsWithContentAction } from "@/features/role/student/training-routine/actions/get-routine-months-with-content";
 
 type TrainingRoutinesMonthHeaderProps = {
 	isDownloadDisabled: boolean;
@@ -12,12 +13,14 @@ type TrainingRoutinesMonthHeaderProps = {
 	onChangeMonthAction: ( offset: -1 | 1 ) => void;
 	onDownloadAction: () => void;
 	onRefreshAction: () => void;
+	onSelectMonthAction: ( month: number, year: number ) => void;
 	year: number;
 };
 
 // Encabezado del mes: se pasa de un mes a otro con las flechas, igual que en la
 // pantalla del entrenador. Reemplaza al titulo y a los selectores de año y mes,
 // que en el telefono ocupaban la primera pantalla antes de mostrar un solo dia.
+// Para ir mas lejos, el titulo abre un selector de mes.
 export function TrainingRoutinesMonthHeader( {
 	isDownloadDisabled,
 	isDownloading,
@@ -27,6 +30,7 @@ export function TrainingRoutinesMonthHeader( {
 	onChangeMonthAction,
 	onDownloadAction,
 	onRefreshAction,
+	onSelectMonthAction,
 	year,
 }: TrainingRoutinesMonthHeaderProps ) {
 	return (
@@ -36,12 +40,14 @@ export function TrainingRoutinesMonthHeader( {
 					<Button isIconOnly aria-label={ "Mes anterior" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => onChangeMonthAction( -1 ) }>
 						<ChevronLeft className={ "size-5" }/>
 					</Button>
-					<div className={ "min-w-0 flex-1 text-center sm:min-w-32 sm:flex-none" }>
-						<p className={ "whitespace-nowrap text-base font-black leading-tight text-foreground sm:text-xl" }>
-							{ monthYearLabel( String( month ), String( year ) ) }
-						</p>
-						<p className={ "text-xs text-muted" }>Tu rutina del mes</p>
-					</div>
+					<MonthJumpPicker
+						loadedMonthsQueryFn={ getRoutineMonthsWithContentAction }
+						loadedMonthsQueryKey={ [ "student-routine-months" ] }
+						month={ month }
+						subtitle={ "Tu rutina del mes" }
+						year={ year }
+						onSelectAction={ onSelectMonthAction }
+					/>
 					<Button isIconOnly aria-label={ "Mes siguiente" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => onChangeMonthAction( 1 ) }>
 						<ChevronRight className={ "size-5" }/>
 					</Button>

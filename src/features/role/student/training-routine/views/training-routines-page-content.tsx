@@ -45,14 +45,16 @@ export default function TrainingRoutinesPageContent( {
 
 	const routineWeeks = data?.routineMonth.weeks ?? EMPTY_ROUTINE_WEEKS;
 
-	function handleChangeMonth( offset: -1 | 1 ) {
-		const target = new Date( activeYear, activeMonth - 1 + offset, 1 );
-		const params = new URLSearchParams( {
-			month: String( target.getMonth() + 1 ),
-			year: String( target.getFullYear() ),
-		} );
+	function handleSelectMonth( month: number, year: number ) {
+		const params = new URLSearchParams( { month: String( month ), year: String( year ) } );
 
 		router.replace( `/student/training-routine?${ params.toString() }` );
+	}
+
+	function handleChangeMonth( offset: -1 | 1 ) {
+		const target = new Date( activeYear, activeMonth - 1 + offset, 1 );
+
+		handleSelectMonth( target.getMonth() + 1, target.getFullYear() );
 	}
 
 	function handleDownload() {
@@ -94,6 +96,7 @@ export default function TrainingRoutinesPageContent( {
 				onRefreshAction={ () => {
 					void refetch();
 				} }
+				onSelectMonthAction={ handleSelectMonth }
 			/>
 
 			{ isLoading ? (

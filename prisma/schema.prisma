@@ -164,6 +164,8 @@ model RoutineDay {
   isFinalized           Boolean             @default(false)
 
   routines Routine[]
+
+  @@index([trainingRoutineWeekId])
 }
 
 model StudentExercise {
@@ -194,6 +196,8 @@ model Routine {
   variants     RoutineExerciseVariant[]
   RoutineDay   RoutineDay?              @relation(fields: [routineDayId], references: [id], onDelete: Cascade)
   routineDayId String?
+
+  @@index([routineDayId])
 }
 
 model ExerciseProgress {

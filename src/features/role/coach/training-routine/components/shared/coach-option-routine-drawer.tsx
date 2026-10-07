@@ -98,7 +98,7 @@ export function CoachOptionRoutineDrawer( {
 		<>
 			{ /* Agregar o quitar semanas y dias es parte de armar la rutina: va a la
 			     vista y con su nombre, no dentro del menu como un "Editar" mas. */ }
-			<Button className={ "flex-1 sm:flex-none" } variant={ "secondary" } onPress={ () => setIsEditOpen( true ) }>
+			<Button className={ "flex-1 @xl:flex-none" } variant={ "secondary" } onPress={ () => setIsEditOpen( true ) }>
 				<CalendarRange className={ "size-4" }/>
 				Semanas y días
 			</Button>
