@@ -13,7 +13,7 @@ type FetchedRoutineDayDetail = Prisma.RoutineDayGetPayload<{
 }>;
 
 type RoutineDayStudent = NonNullable<
-	FetchedRoutineDayDetail["trainingRoutineWeek"]["trainingRoutineMonth"]["student"]
+	NonNullable<FetchedRoutineDayDetail["trainingRoutineWeek"]["trainingRoutineMonth"]>["student"]
 >;
 
 function pickFirstText( ...values: Array<string | null | undefined> ) {
@@ -81,9 +81,12 @@ export async function getRoutineDayDetailBase( {
 		throw new Error( "No se encontró el día de rutina seleccionado." );
 	}
 
-	const student = routineDay.trainingRoutineWeek.trainingRoutineMonth.student;
+	// La busqueda ya exige un estudiante, asi que el mes siempre viene: los dias de
+	// una plantilla, que no tienen mes, no llegan hasta aca.
+	const routineMonth = routineDay.trainingRoutineWeek.trainingRoutineMonth;
+	const student = routineMonth?.student;
 
-	if (!student) {
+	if (!routineMonth || !student) {
 		throw new Error( "No se encontró el estudiante asociado a la rutina." );
 	}
 
@@ -128,12 +131,12 @@ export async function getRoutineDayDetailBase( {
 			} ) ),
 		} ) ),
 		trainingRoutine: {
-			month: routineDay.trainingRoutineWeek.trainingRoutineMonth.month,
+			month: routineMonth.month,
 			name: routineDay.trainingRoutineWeek.name,
-			objective: routineDay.trainingRoutineWeek.trainingRoutineMonth.objective,
+			objective: routineMonth.objective,
 			student,
 			week: routineDay.trainingRoutineWeek.week,
-			year: routineDay.trainingRoutineWeek.trainingRoutineMonth.year,
+			year: routineMonth.year,
 		},
 	};
 }

@@ -9,6 +9,7 @@ import { CoachCopyRoutineDrawer } from "@/features/role/coach/training-routine/c
 import { CoachOptionRoutineActionMenu } from "@/features/role/coach/training-routine/components/shared/coach-option-routine-action-menu";
 import { CoachDeleteRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-delete-routine-drawer";
 import { CoachEditRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-edit-routine-drawer";
+import { CoachSaveTemplateModal } from "@/features/role/coach/training-routine/components/shared/coach-save-template-modal";
 import { useDeleteTrainingRoutineStructure } from "@/features/role/coach/training-routine/hooks/use-training-routine-structure";
 import { downloadFileFromUrl } from "@/features/shared/services/download-file";
 import { buildTrainingRoutineReportPdfUrl } from "@/features/training-routine/services/training-routines-report-pdf-url";
@@ -33,6 +34,7 @@ export function CoachOptionRoutineDrawer( {
 	const [ isConfirmOpen, setIsConfirmOpen ] = useState( false );
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const [ isCopyOpen, setIsCopyOpen ] = useState( false );
+	const [ isSaveTemplateOpen, setIsSaveTemplateOpen ] = useState( false );
 	const [ isDownloading, setIsDownloading ] = useState( false );
 	const deleteRoutine = useDeleteTrainingRoutineStructure();
 
@@ -107,6 +109,7 @@ export function CoachOptionRoutineDrawer( {
 				onCopyAction={ () => setIsCopyOpen( true ) }
 				onDeleteAction={ handleOpenDeleteConfirm }
 				onPrintAction={ handleDownloadReport }
+				onSaveTemplateAction={ () => setIsSaveTemplateOpen( true ) }
 			/>
 
 			<CoachEditRoutineDrawer
@@ -134,6 +137,16 @@ export function CoachOptionRoutineDrawer( {
 				isOpen={ isCopyOpen }
 				studentId={ studentId }
 				onOpenChangeAction={ setIsCopyOpen }
+			/>
+
+			<CoachSaveTemplateModal
+				isOpen={ isSaveTemplateOpen }
+				month={ month }
+				studentId={ studentId }
+				studentName={ studentName }
+				summary={ summary }
+				year={ year }
+				onOpenChangeAction={ setIsSaveTemplateOpen }
 			/>
 
 			<CoachDeleteRoutineDrawer

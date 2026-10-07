@@ -79,6 +79,7 @@ model User {
   trainingRoutineMonths TrainingRoutineMonth[]
   ExerciseProgress      ExerciseProgress[]
   exerciseCoach         ExerciseCoach[]
+  routineTemplates      RoutineTemplate[]
   StudentExercise       StudentExercise[]
   loginHistory          UserLoginHistory[]
 
@@ -141,18 +142,41 @@ model TrainingRoutineMonth {
   @@index([studentId, year, month])
 }
 
+// Plantilla de rutina de un entrenador: una rutina con nombre que no pertenece a
+// ningun estudiante y sirve de punto de partida. Sus semanas, dias y ejercicios
+// usan las mismas tablas que la rutina de un mes.
+model RoutineTemplate {
+  id        String   @id @default(uuid())
+  name      String
+  objective String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coach   User   @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  coachId String
+
+  weeks TrainingRoutineWeek[]
+
+  @@unique([coachId, name])
+}
+
+// Una semana pertenece al mes de un estudiante o a una plantilla, nunca a los
+// dos ni a ninguno (lo asegura una restriccion CHECK en la base).
 model TrainingRoutineWeek {
-  id                     String               @id @default(uuid())
+  id                     String                @id @default(uuid())
   name                   String
   week                   Int
-  createdAt              DateTime             @default(now())
-  updatedAt              DateTime             @updatedAt
-  trainingRoutineMonth   TrainingRoutineMonth @relation(fields: [trainingRoutineMonthId], references: [id], onDelete: Cascade)
-  trainingRoutineMonthId String
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  trainingRoutineMonth   TrainingRoutineMonth? @relation(fields: [trainingRoutineMonthId], references: [id], onDelete: Cascade)
+  trainingRoutineMonthId String?
+  routineTemplate        RoutineTemplate?      @relation(fields: [routineTemplateId], references: [id], onDelete: Cascade)
+  routineTemplateId      String?
 
   routineDays RoutineDay[]
 
   @@unique([trainingRoutineMonthId, week])
+  @@unique([routineTemplateId, week])
   @@index([trainingRoutineMonthId])
 }
 
