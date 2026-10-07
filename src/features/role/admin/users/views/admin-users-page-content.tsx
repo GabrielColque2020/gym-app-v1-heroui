@@ -211,7 +211,7 @@ export default function AdminUsersPageContent( { initialCreate = null }: AdminUs
 						</Button>
 					</div>
 
-					<div className={ "hidden md:block" }>
+					<div className={ "hidden lg:block" }>
 						<DataGrid
 							aria-label={ "Listado de usuarios" }
 							columns={ columns }
@@ -220,7 +220,7 @@ export default function AdminUsersPageContent( { initialCreate = null }: AdminUs
 							getRowId={ ( user ) => user.id }
 						/>
 					</div>
-					<div className={ "space-y-3 md:hidden" }>
+					<div className={ "space-y-2 lg:hidden" }>
 						{ filteredUsers.map( ( user ) => (
 							<AdminUserMobileCard key={ user.id } user={ user }/>
 						) ) }

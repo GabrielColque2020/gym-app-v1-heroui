@@ -160,7 +160,7 @@ export function AdminExerciseGlobalDrawer( {
 						<div>
 							<Drawer.Heading>Editar ejercicio global</Drawer.Heading>
 							<Description className={ "mt-1 text-sm" }>
-								Este ejercicio es del catálogo compartido: lo que cambies acá vale para todos los entrenadores.
+								{ exercise.externalId ? `Código ${ exercise.externalId }. ` : "" }Este ejercicio es del catálogo compartido: lo que cambies acá vale para todos los entrenadores.
 							</Description>
 						</div>
 					</div>

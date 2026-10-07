@@ -2,7 +2,9 @@ import type { Prisma } from "@/generated/prisma/client";
 
 import type { AdminExerciseGlobalListItem } from "@/features/role/admin/exercises/types/admin-exercise-global-list-item";
 
-export const ADMIN_EXERCISE_GLOBAL_PAGE_SIZE = 8;
+// Son mas de mil ejercicios: con pocas filas por pagina no se termina nunca.
+export const ADMIN_EXERCISE_GLOBAL_PAGE_SIZE = 20;
+export const ADMIN_EXERCISE_GLOBAL_MOBILE_PAGE_SIZE = 10;
 
 export type AdminExerciseGlobalStatusFilter = "ALL" | "ACTIVE" | "INACTIVE";
 

@@ -39,6 +39,23 @@ function normalizeSelectValue( value: Key | null ) {
 	return value === null ? "" : String( value );
 }
 
+// El catalogo guarda las categorias con su propia escritura ("piernas superiores"),
+// que no coincide con la lista de opciones. Sin sumar el valor actual, el campo
+// aparecia vacio al abrir el ejercicio.
+function getCategoryOptions( currentValue: string ) {
+	const normalizedCurrentValue = currentValue.trim();
+	const currentValueIsKnown = ADMIN_EXERCISE_GLOBAL_CATEGORY_OPTIONS.some( ( option ) => option.value === normalizedCurrentValue );
+
+	if (normalizedCurrentValue.length === 0 || currentValueIsKnown) {
+		return ADMIN_EXERCISE_GLOBAL_CATEGORY_OPTIONS;
+	}
+
+	return [
+		{ label: normalizedCurrentValue, value: normalizedCurrentValue },
+		...ADMIN_EXERCISE_GLOBAL_CATEGORY_OPTIONS,
+	];
+}
+
 function getTargetOptions( currentValue: string ) {
 	const normalizedCurrentValue = currentValue.trim();
 	const hasCurrentValue = normalizedCurrentValue.length > 0;
@@ -125,7 +142,7 @@ export function AdminExerciseGlobalDrawerFields( {
 					</Select.Trigger>
 					<Select.Popover>
 						<ListBox>
-							{ ADMIN_EXERCISE_GLOBAL_CATEGORY_OPTIONS.map( ( option ) => (
+							{ getCategoryOptions( values.category ).map( ( option ) => (
 								<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
 									{ option.label }
 									<ListBox.ItemIndicator/>
@@ -139,7 +156,7 @@ export function AdminExerciseGlobalDrawerFields( {
 
 			<div className={ "grid gap-4 md:grid-cols-2" }>
 				<div className={ "grid gap-2" }>
-					<Label>Grupo muscular objetivo</Label>
+					<Label>Músculo objetivo</Label>
 					<Select
 						fullWidth
 						isInvalid={ isTargetInvalid }

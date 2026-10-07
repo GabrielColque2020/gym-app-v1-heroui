@@ -4,19 +4,14 @@ import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
 import { Button, Card, Chip, Label, ListBox, SearchField, Select } from "@heroui/react";
 import { useMemo } from "react";
-import { RotateCw } from "lucide-react";
+import { CopyX, RotateCw } from "lucide-react";
 
 import { AsyncMedia, ListPagination, PageBreadcrumbs, PageHeader } from "@/components/common";
 import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 import { useAdminExerciseGlobals } from "@/features/role/admin/exercises/hooks/use-admin-exercise-globals";
-import { useAdminExerciseGlobalsPageState } from "@/features/role/admin/exercises/hooks/use-admin-exercise-globals-page-state";
+import { formatAdminExerciseCode, useAdminExerciseGlobalsPageState, type AdminExerciseGlobalRow } from "@/features/role/admin/exercises/hooks/use-admin-exercise-globals-page-state";
 import { AdminExerciseGlobalMobileCard } from "@/features/role/admin/exercises/components/admin-exercise-global-mobile-card";
 import { AdminExerciseGlobalRowActions } from "@/features/role/admin/exercises/components/admin-exercise-global-row-actions";
-import type { AdminExerciseGlobalListItem } from "@/features/role/admin/exercises/types/admin-exercise-global-list-item";
-
-function getStatusLabel( exercise: AdminExerciseGlobalListItem ) {
-	return exercise.active ? "Activo" : "Inactivo";
-}
 
 export default function AdminExercisesPageContent() {
 	const { data = [], error, isError, isFetching, isLoading, refetch } = useAdminExerciseGlobals();
@@ -35,13 +30,13 @@ export default function AdminExercisesPageContent() {
 		{ label: "Ejercicios globales" },
 	];
 
-	const columns = useMemo<DataGridColumn<AdminExerciseGlobalListItem>[]>( () => [
+	const columns = useMemo<DataGridColumn<AdminExerciseGlobalRow>[]>( () => [
 		{
 			accessorKey: "name",
 			header: "Ejercicio",
 			id: "name",
 			isRowHeader: true,
-			minWidth: 280,
+			minWidth: 260,
 			cell: ( exercise ) => (
 				<div className={ "flex min-w-0 items-center gap-3" }>
 					<AsyncMedia
@@ -53,44 +48,49 @@ export default function AdminExercisesPageContent() {
 					/>
 					<div className={ "flex min-w-0 flex-col" }>
 						<span className={ "truncate font-medium text-foreground" }>{ exercise.name }</span>
+						{ /* El codigo distingue a los que se llaman igual. */ }
+						<span className={ exercise.sameNameCount > 1 ? "truncate text-xs font-medium text-warning" : "truncate text-xs text-muted" }>
+							{ exercise.sameNameCount > 1 ? `Hay ${ exercise.sameNameCount } con este nombre · ` : "" }
+							{ formatAdminExerciseCode( exercise ) }
+						</span>
 					</div>
 				</div>
 			),
 		},
 		{
 			accessorKey: "category",
-			header: "Categoría",
+			header: "Categoría y músculo",
 			id: "category",
-			minWidth: 140,
-		},
-		{
-			accessorKey: "target",
-			header: "Músculo objetivo",
-			id: "target",
-			minWidth: 150,
+			minWidth: 160,
+			cell: ( exercise ) => (
+				<div className={ "flex min-w-0 flex-col" }>
+					<span className={ "truncate text-sm text-foreground" }>{ exercise.category }</span>
+					<span className={ "truncate text-xs text-muted" }>{ exercise.target }</span>
+				</div>
+			),
 		},
 		{
 			accessorKey: "equipment",
 			header: "Equipamiento",
 			id: "equipment",
-			minWidth: 170,
+			minWidth: 130,
 		},
 		{
 			accessorKey: "active",
 			header: "Estado",
 			id: "active",
-			minWidth: 110,
+			minWidth: 100,
 			cell: ( exercise ) => (
 				<Chip color={ exercise.active ? "success" : "danger" } size={ "sm" } variant={ "soft" }>
-					{ getStatusLabel( exercise ) }
+					{ exercise.active ? "Activo" : "Inactivo" }
 				</Chip>
 			),
 		},
 		{
 			align: "end",
-			header: "Acciones",
+			header: "Editar",
 			id: "actions",
-			minWidth: 120,
+			minWidth: 70,
 			cell: ( exercise ) => <AdminExerciseGlobalRowActions exercise={ exercise }/>,
 		},
 	], [] );
@@ -181,28 +181,43 @@ export default function AdminExercisesPageContent() {
 						</Select>
 					</div>
 
-					<Chip size={ "sm" } variant={ "soft" }>
-						{ totalItems === 1 ? "1 ejercicio" : `${ totalItems } ejercicios` }
-					</Chip>
+					<div className={ "flex flex-wrap items-center gap-2" }>
+						<Chip size={ "sm" } variant={ "soft" }>
+							{ totalItems === 1 ? "1 ejercicio" : `${ totalItems } ejercicios` }
+						</Chip>
+						{ /* Los que comparten nombre: los entrenadores no pueden distinguirlos al armar una rutina. */ }
+						{ pageState.duplicateCount > 0 || pageState.onlyDuplicates ? (
+							<Button
+								aria-pressed={ pageState.onlyDuplicates }
+								className={ pageState.onlyDuplicates ? "bg-warning text-warning-foreground" : "text-warning" }
+								size={ "sm" }
+								variant={ "secondary" }
+								onPress={ pageState.toggleOnlyDuplicates }
+							>
+								<CopyX className={ "size-4" }/>
+								{ pageState.onlyDuplicates ? "Ver todos" : `${ pageState.duplicateCount } con nombre repetido` }
+							</Button>
+						) : null }
+					</div>
 
 					{ exercises.length === 0 ? (
 						<Card className={ "border border-border bg-surface" } variant={ "default" }>
 							<Card.Content className={ "p-4 text-sm text-muted" }>
-								No hay ejercicios que coincidan con los filtros.
+								{ pageState.onlyDuplicates ? "No quedan ejercicios con el nombre repetido." : "No hay ejercicios que coincidan con los filtros." }
 							</Card.Content>
 						</Card>
 					) : (
 						<>
-							<div className={ "hidden md:block" }>
+							<div className={ "hidden lg:block" }>
 								<DataGrid
 									aria-label={ "Listado de ejercicios globales" }
 									columns={ columns }
-									contentClassName={ "min-w-full sm:min-w-[1100px]" }
+									contentClassName={ "min-w-full sm:min-w-[720px]" }
 									data={ exercises }
 									getRowId={ ( exercise ) => exercise.id }
 								/>
 							</div>
-							<div className={ "space-y-3 md:hidden" }>
+							<div className={ "space-y-2 lg:hidden" }>
 								{ exercises.map( ( exercise ) => (
 									<AdminExerciseGlobalMobileCard key={ exercise.id } exercise={ exercise }/>
 								) ) }

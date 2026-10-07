@@ -3,53 +3,41 @@
 import { Card, Chip } from "@heroui/react";
 
 import { AsyncMedia } from "@/components/common";
-import { AdminExerciseGlobalActionMenu } from "@/features/role/admin/exercises/components/admin-exercise-global-action-menu";
-import type { AdminExerciseGlobalListItem } from "@/features/role/admin/exercises/types/admin-exercise-global-list-item";
+import { AdminExerciseGlobalRowActions } from "@/features/role/admin/exercises/components/admin-exercise-global-row-actions";
+import { formatAdminExerciseCode, type AdminExerciseGlobalRow } from "@/features/role/admin/exercises/hooks/use-admin-exercise-globals-page-state";
 
 type AdminExerciseGlobalMobileCardProps = {
-	exercise: AdminExerciseGlobalListItem;
+	exercise: AdminExerciseGlobalRow;
 };
 
-function getStatusLabel( exercise: AdminExerciseGlobalListItem ) {
-	return exercise.active ? "Activo" : "Inactivo";
-}
-
+// Fila compacta: son mas de mil ejercicios, conviene que entren varios por pantalla.
 export function AdminExerciseGlobalMobileCard( {
 	exercise,
 }: AdminExerciseGlobalMobileCardProps ) {
+	const details = [ exercise.category, exercise.target, exercise.equipment ].filter( Boolean ).join( " · " );
+
 	return (
 		<Card className={ "border border-border" } variant={ "default" }>
-			<Card.Content className={ "space-y-3 py-2 pl-2" }>
-				<div className={ "flex items-start justify-between gap-3" }>
-					<div className={ "flex min-w-0 items-center gap-3" }>
-						<AsyncMedia
-							alt={ `Imagen de ${ exercise.name }` }
-							className={ "size-16 shrink-0 rounded-2xl border border-border" }
-							emptyLabel={ "Sin imagen" }
-							spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
-							src={ exercise.imageUrl }
-						/>
-						<div className={ "min-w-0 space-y-1" }>
-							<p className={ "truncate font-semibold text-foreground" }>{ exercise.name }</p>
-						</div>
-					</div>
-					<AdminExerciseGlobalActionMenu exercise={ exercise }/>
+			<Card.Content className={ "flex flex-row items-center gap-3 p-2" }>
+				<AsyncMedia
+					alt={ `Imagen de ${ exercise.name }` }
+					className={ "size-14 shrink-0 rounded-xl border border-border" }
+					emptyLabel={ "Sin imagen" }
+					spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
+					src={ exercise.imageUrl }
+				/>
+				<div className={ "min-w-0 flex-1 space-y-0.5" }>
+					<p className={ "line-clamp-2 text-sm font-semibold leading-snug text-foreground" }>{ exercise.name }</p>
+					<p className={ "truncate text-xs text-muted" }>{ details }</p>
+					<p className={ exercise.sameNameCount > 1 ? "truncate text-xs font-medium text-warning" : "truncate text-xs text-muted" }>
+						{ exercise.sameNameCount > 1 ? `Hay ${ exercise.sameNameCount } con este nombre · ` : "" }
+						{ formatAdminExerciseCode( exercise ) }
+					</p>
+					{ exercise.active ? null : (
+						<Chip color={ "danger" } size={ "sm" } variant={ "soft" }>Inactivo</Chip>
+					) }
 				</div>
-
-				<div className={ "flex flex-wrap gap-2" }>
-					<Chip size={ "sm" } variant={ "soft" }>{ exercise.category }</Chip>
-					<Chip size={ "sm" } variant={ "soft" }>{ exercise.target }</Chip>
-					<Chip color={ exercise.active ? "success" : "danger" } size={ "sm" } variant={ "soft" }>
-						{ getStatusLabel( exercise ) }
-					</Chip>
-				</div>
-
-				<div className={ "grid gap-2 text-sm text-muted" }>
-					<div className={ "flex items-center gap-2" }>
-						<span className={ "truncate font-medium text-foreground/80" }>Equipamiento</span>
-						<span className={ "truncate" }>{ exercise.equipment }</span>
-					</div>
-				</div>
+				<AdminExerciseGlobalRowActions exercise={ exercise }/>
 			</Card.Content>
 		</Card>
 	);
