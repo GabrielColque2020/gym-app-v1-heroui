@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Alert, Button, Card } from "@heroui/react";
-import { Download, RotateCw } from "lucide-react";
+import { Copy, Download, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { buildMealPlansReportPdfUrl } from "@/features/meal-plans/services/meal-plans-report-pdf-url";
@@ -10,6 +10,7 @@ import { CoachMealPlansEmptyState } from "@/features/role/coach/meal-plans/compo
 import { CoachMealPlansErrorState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-error-state";
 import { CoachMealPlansLoadingState } from "@/features/role/coach/meal-plans/components/shared/coach-meal-plans-loading-state";
 import { MealPlanCard } from "@/features/role/coach/meal-plans/components/shared/meal-plan-card";
+import { MealPlanCopyDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-copy-drawer";
 import { MealPlanDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer";
 import { useCoachMealPlansPageState } from "@/features/role/coach/meal-plans/hooks/use-coach-meal-plans-page-state";
 import { CoachStudentTabs } from "@/features/role/coach/students/components/coach-student-tabs";
@@ -22,6 +23,7 @@ type CoachMealPlansPageContentProps = {
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const { breadcrumbs, data, error, handleRefresh, isError, isLoading, isRefreshing } = useCoachMealPlansPageState( studentId );
 	const [ isDownloading, setIsDownloading ] = useState( false );
+	const [ isCopyOpen, setIsCopyOpen ] = useState( false );
 
 	function handleDownload() {
 		setIsDownloading( true );
@@ -83,6 +85,14 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 						>
 							{ isDownloading ? <RotateCw className={ "size-4 animate-spin" }/> : <Download className={ "size-4" }/> }
 						</Button>
+						<Button
+							isIconOnly
+							aria-label={ "Copiar plan de otro estudiante" }
+							variant={ "secondary" }
+							onPress={ () => setIsCopyOpen( true ) }
+						>
+							<Copy className={ "size-4" }/>
+						</Button>
 						<div className={ "min-w-0 flex-1" }>
 							<MealPlanDrawer existingMealTimes={ mealTimes } mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
 						</div>
@@ -104,12 +114,20 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
+						<Button variant={ "secondary" } onPress={ () => setIsCopyOpen( true ) }>
+							<Copy className={ "size-4" }/>
+							Copiar de otro
+						</Button>
 						<MealPlanDrawer existingMealTimes={ mealTimes } mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
 					</div>
 				</Card.Header>
 				<Card.Content className={ "p-3" }>
 					{ data.mealPlans.length === 0 ? (
-						<CoachMealPlansEmptyState studentId={ studentId } studentName={ data.student.name }/>
+						<CoachMealPlansEmptyState
+							studentId={ studentId }
+							studentName={ data.student.name }
+							onCopyAction={ () => setIsCopyOpen( true ) }
+						/>
 					) : (
 						<div className={ "grid gap-3 md:grid-cols-2 xl:grid-cols-3" }>
 							{ data.mealPlans.map( ( mealPlan ) => (
@@ -124,6 +142,14 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 					) }
 				</Card.Content>
 			</Card>
+
+			<MealPlanCopyDrawer
+				existingMealCount={ data.mealPlans.length }
+				isOpen={ isCopyOpen }
+				studentId={ studentId }
+				studentName={ data.student.name }
+				onOpenChangeAction={ setIsCopyOpen }
+			/>
 		</div>
 	);
 }
