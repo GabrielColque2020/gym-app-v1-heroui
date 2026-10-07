@@ -6,6 +6,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import MobileExerciseCard from "@/features/role/student/routine/components/mobile/mobile-exercise-card";
 import { MobileExerciseSetCard } from "@/features/role/student/routine/components/mobile/mobile-exercise-set-card";
 import { ExerciseSetsEditor } from "@/features/role/student/routine/components/shared/exercise-sets-editor";
+import { RestTimerPanel, RestTimerStartButton } from "@/features/role/student/routine/components/shared/rest-timer";
+import { useRestTimer } from "@/features/role/student/routine/hooks/use-rest-timer";
 import {
 	RoutineExerciseEmptyState
 } from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
@@ -41,6 +43,7 @@ export default function MobileRoutineView( {
 	onVariantChangeAction,
 }: MobileRoutineViewProps ) {
 	const { activeExerciseIndex, api, setApi } = useExerciseCarouselState();
+	const { isRunning: isResting } = useRestTimer();
 	const slideRefs = useRef<Array<HTMLDivElement | null>>( [] );
 	const [ carouselHeight, setCarouselHeight ] = useState<number | null>( null );
 
@@ -147,6 +150,9 @@ export default function MobileRoutineView( {
 					     pulgar sin tener que llegar al final de una tarjeta larga. Las series se
 					     guardan solas; este boton solo marca el dia como realizado. */ }
 					<div className={ "sticky bottom-0 z-10 -mx-1 mt-4 space-y-2 border-t border-border bg-background/95 px-1 pb-2 pt-3 backdrop-blur" }>
+						{ /* El descanso va aca y no dentro de la tarjeta del ejercicio: asi sigue a
+						     la vista al deslizar al ejercicio siguiente. */ }
+						{ isResting ? <RestTimerPanel/> : null }
 						<div className={ "flex items-center justify-between gap-2" }>
 							<Button
 								isIconOnly
@@ -181,12 +187,19 @@ export default function MobileRoutineView( {
 									</Button>
 								) : null }
 							</div>
-						) : (
-							<Button className={ "flex w-full font-semibold" } fullWidth isDisabled={ !canFinishDay } onPress={ onFinishDayAction }>
-								<Flag className={ "size-4" }/>
-								Terminar día
-							</Button>
+						) : isResting ? null : (
+							// Mientras descansa, el reloj ocupa el lugar de estos botones: en ese
+							// momento no se termina el dia.
+							<div className={ "grid grid-cols-2 gap-2" }>
+								<RestTimerStartButton className={ "min-w-0" }/>
+								<Button className={ "min-w-0 font-semibold" } isDisabled={ !canFinishDay } onPress={ onFinishDayAction }>
+									<Flag className={ "size-4 shrink-0" }/>
+									<span className={ "truncate" }>Terminar día</span>
+								</Button>
+							</div>
 						) }
+						{ /* Corrigiendo un dia ya terminado tambien se puede descansar. */ }
+						{ isDayFinished && !isSessionLocked && !isResting ? <RestTimerStartButton className={ "w-full" }/> : null }
 					</div>
 
 				</>

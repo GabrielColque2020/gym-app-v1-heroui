@@ -4,6 +4,8 @@ import { ArrowLeft, CheckCircle2, Flag, Pencil, RotateCw, Save } from "lucide-re
 
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
 import { PageHeader } from "@/components/common";
+import { RestTimerPanel, RestTimerStartButton } from "@/features/role/student/routine/components/shared/rest-timer";
+import { useRestTimer } from "@/features/role/student/routine/hooks/use-rest-timer";
 
 type RoutinePageState = ReturnType<typeof useRoutinePageState>;
 
@@ -41,6 +43,7 @@ export function RoutinePageLoadedHeader( {
 		routineStatusDescription,
 		saveStatus,
 	} = state;
+	const { isRunning: isResting } = useRestTimer();
 	// Con todo lo demas guardado, una serie a medio cargar es lo que el estudiante
 	// tiene que saber: "Guardado" a secas le haria creer que esa serie ya esta.
 	const chip = saveStatus === "saved" && halfLoadedSetCount > 0
@@ -130,7 +133,9 @@ export function RoutinePageLoadedHeader( {
 						/>
 						{ statusChips }
 					</div>
-					<div className={ "flex items-center gap-2" }>
+					<div className={ "flex flex-wrap items-center justify-end gap-2" }>
+						{ /* En escritorio no hay barra fija: el descanso va junto a las acciones del dia. */ }
+						{ isSessionLocked ? null : isResting ? <RestTimerPanel className={ "w-80" }/> : <RestTimerStartButton/> }
 						<Button isDisabled={ isRefreshing } variant={ "secondary" } onPress={ handleRefresh }>
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
