@@ -60,6 +60,8 @@ export type StudentDashboardSummary = {
 		nextRoutineDay: {
 			dayNumber: number;
 			exerciseCount: number;
+			// Ya cargo series en este dia y todavia no lo termino.
+			hasProgress: boolean;
 			id: string;
 			isFinalized: boolean;
 			title: string;
@@ -88,7 +90,7 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 		const now = new Date();
 		const currentMonth = now.getMonth() + 1;
 		const currentYear = now.getFullYear();
-		const [ student, currentMonthRoutineMonth, mealPlans, latestProgress ] = await Promise.all( [
+		const [ student, currentMonthRoutineMonth, mealPlans, latestProgress, currentMonthProgress ] = await Promise.all( [
 			prisma.user.findFirst( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 				select: studentSelect,
@@ -142,6 +144,18 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 					studentId: session.sub,
 				},
 			} ),
+			// Sin cache: es lo que distingue un dia "en curso", y cambia mientras entrena.
+			prisma.exerciseProgress.findMany( {
+				select: {
+					dayNumber: true,
+					week: true,
+				},
+				where: {
+					month: currentMonth,
+					studentId: session.sub,
+					year: currentYear,
+				},
+			} ),
 		] );
 
 		if (!student) {
@@ -149,10 +163,14 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 		}
 
 		const currentMonthRoutines = currentMonthRoutineMonth?.weeks ?? [];
+		const daysWithProgress = new Set(
+			currentMonthProgress.map( ( progress ) => `${ progress.week }-${ progress.dayNumber }` ),
+		);
 		const orderedRoutineDays = currentMonthRoutines.flatMap( ( routine ) =>
 			routine.routineDays.map( ( day ) => ( {
 				dayNumber: day.dayNumber,
 				exerciseCount: day.routines.length,
+				hasProgress: daysWithProgress.has( `${ routine.week }-${ day.dayNumber }` ),
 				id: day.id,
 				isFinalized: day.isFinalized,
 				title: routine.name,

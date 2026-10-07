@@ -15,7 +15,9 @@ export const studentDashboardSummaryQueryOptions = () => queryOptions( {
 	queryFn: fetchStudentDashboardSummary,
 	queryKey: STUDENT_DASHBOARD_SUMMARY_QUERY_KEY,
 	refetchInterval: false,
-	refetchOnMount: false,
+	// El inicio dice que dia sigue y si esta en curso: se pide al abrirlo, para
+	// que no muestre "pendiente" un dia que el estudiante ya empezo.
+	refetchOnMount: "always",
 	refetchOnReconnect: false,
 	refetchOnWindowFocus: false,
 	retry: 2,

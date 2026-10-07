@@ -27,11 +27,12 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 		<div className={ "space-y-2 rounded-xl border border-border bg-surface-secondary p-3" }>
 			<p className={ "text-sm font-medium text-foreground" }>
 				Series y repeticiones
-				<span className={ "font-normal text-muted" }> · para cada ejercicio que agregues</span>
+				<span className={ "hidden font-normal text-muted sm:inline" }> · para cada ejercicio que agregues</span>
 			</p>
-			{ /* Todo en una fila que envuelve: en el telefono no le saca lugar a la lista. */ }
-			<div className={ "flex flex-wrap items-center gap-2" }>
-				<TextField className={ "w-20" } name={ "exercise-sets" } value={ setsValue } onChange={ onSetsChange }>
+			{ /* En el telefono va todo en un solo renglon que se desliza: envolviendo
+			     en dos renglones le sacaba lugar a la lista de ejercicios. */ }
+			<div className={ "flex items-center gap-2 overflow-x-auto [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden" }>
+				<TextField className={ "w-16 shrink-0 sm:w-20" } name={ "exercise-sets" } value={ setsValue } onChange={ onSetsChange }>
 					<Input
 						aria-label={ "Series para los ejercicios que agregues" }
 						className={ "border border-border" }
@@ -39,8 +40,8 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 						placeholder={ "Series" }
 					/>
 				</TextField>
-				<span aria-hidden className={ "text-sm text-muted" }>×</span>
-				<TextField className={ "w-24" } name={ "exercise-reps" } value={ repsValue } onChange={ onRepsChange }>
+				<span aria-hidden className={ "shrink-0 text-sm text-muted" }>×</span>
+				<TextField className={ "w-20 shrink-0 sm:w-24" } name={ "exercise-reps" } value={ repsValue } onChange={ onRepsChange }>
 					<Input
 						aria-label={ "Repeticiones para los ejercicios que agregues" }
 						className={ "border border-border" }
@@ -54,7 +55,7 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 						<Button
 							key={ `${ preset.sets }x${ preset.reps }` }
 							aria-pressed={ isActive }
-							className={ isActive ? "bg-accent text-accent-foreground" : undefined }
+							className={ isActive ? "shrink-0 bg-accent text-accent-foreground" : "shrink-0" }
 							size={ "sm" }
 							variant={ isActive ? undefined : "secondary" }
 							onPress={ () => {

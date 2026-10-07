@@ -95,14 +95,14 @@ export function SearchAndCreateExerciseDrawer({
                         </div>
                         <div className={"min-w-0 flex-1"}>
                             <Drawer.Heading>Agregar ejercicio</Drawer.Heading>
-                            <Description className={"mt-1 text-sm"}>
+                            <Description className={"mt-1 hidden text-sm sm:block"}>
                                 Buscá en tu catálogo y sumá todos los ejercicios del día sin cerrar.
                             </Description>
                         </div>
                     </div>
                 </Drawer.Header>
 
-                <Drawer.Body className={"min-h-0 flex-1 space-y-6 overflow-y-auto py-3"}>
+                <Drawer.Body className={"min-h-0 flex-1 space-y-3 overflow-y-auto py-3 sm:space-y-6"}>
                     <SearchAndCreateExerciseDrawerPrescription
                         repsValue={repsValue}
                         setsValue={setsValue}

@@ -15,6 +15,7 @@ type StudentDashboardTodayCardProps = {
 	nextRoutineDay: {
 		dayNumber: number;
 		exerciseCount: number;
+		hasProgress: boolean;
 		id: string;
 		isFinalized: boolean;
 		title: string;
@@ -59,11 +60,11 @@ export function StudentDashboardTodayCard( {
 						<div className={ "flex flex-wrap items-center gap-2" }>
 							<p className={ "text-base font-semibold text-foreground" }>Tu próxima sesión</p>
 							<Chip
-								color={ nextRoutineDay.isFinalized ? "success" : "warning" }
+								color={ nextRoutineDay.isFinalized ? "success" : nextRoutineDay.hasProgress ? "accent" : "default" }
 								size={ "sm" }
 								variant={ "soft" }
 							>
-								{ nextRoutineDay.isFinalized ? "Terminada" : "Pendiente" }
+								{ nextRoutineDay.isFinalized ? "Terminada" : nextRoutineDay.hasProgress ? "En curso" : "Pendiente" }
 							</Chip>
 						</div>
 						<div className={ "space-y-1" }>
@@ -83,7 +84,7 @@ export function StudentDashboardTodayCard( {
 						size={ "lg" }
 						onPress={ () => router.push( buildRoutineDayHref( nextRoutineDay.id ) ) }
 					>
-						{ nextRoutineDay.isFinalized ? "Volver a la rutina" : "Continuar rutina" }
+						{ nextRoutineDay.isFinalized ? "Ver lo que hice" : nextRoutineDay.hasProgress ? "Continuar rutina" : "Empezar rutina" }
 						<ArrowRight className={ "size-4" }/>
 					</Button>
 				</div>
@@ -100,7 +101,7 @@ export function StudentDashboardTodayCard( {
 					<div className={ "rounded-lg border border-border bg-surface-secondary px-4 py-3" }>
 						<p className={ "text-xs font-medium text-muted" }>Estado del día</p>
 						<p className={ "mt-1 text-lg font-semibold text-foreground" }>
-							{ nextRoutineDay.isFinalized ? "Terminado" : "Pendiente" }
+							{ nextRoutineDay.isFinalized ? "Terminado" : nextRoutineDay.hasProgress ? "En curso" : "Pendiente" }
 						</p>
 					</div>
 				</div>

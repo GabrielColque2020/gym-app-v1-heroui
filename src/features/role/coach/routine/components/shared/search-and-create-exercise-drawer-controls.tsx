@@ -22,7 +22,8 @@ export function SearchAndCreateExerciseDrawerControls( {
 	return (
 		<>
 			<TextField name={ "search-exercise" }>
-				<Label>Buscar ejercicio</Label>
+				{ /* En el telefono el campo ya dice que es: la etiqueta era un renglon de mas. */ }
+				<Label className={ "hidden sm:block" }>Buscar ejercicio</Label>
 				<Input
 					aria-label={ "Buscar ejercicio" }
 					autoComplete={ "off" }
