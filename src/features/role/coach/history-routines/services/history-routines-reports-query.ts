@@ -14,6 +14,8 @@ export async function fetchHistoryRoutinesReportsByStudent( studentId: string ):
 
 export const historyRoutinesReportsQueryOptions = ( studentId: string ) => queryOptions( {
 	...QUERY_DEFAULTS.coach,
+	// Se pide al abrir: el historial cambia cada vez que el estudiante entrena.
+	refetchOnMount: "always",
 	queryFn: () => fetchHistoryRoutinesReportsByStudent( studentId ),
 	queryKey: historyRoutinesReportsQueryKey( studentId ),
 } );

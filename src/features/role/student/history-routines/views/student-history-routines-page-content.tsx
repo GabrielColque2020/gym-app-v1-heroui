@@ -90,7 +90,8 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 
 			{ !isLoading && !isError && data ? (
 				<HistoryRoutinesReportsIndex
-					description={ "Los meses en los que cargaste series, con su reporte en PDF." }
+					buildMonthHrefAction={ ( report ) => `/student/training-routine?month=${ report.month }&year=${ report.year }` }
+					description={ "Los meses en los que entrenaste. Tocá uno para ver lo que hiciste." }
 					emptyMessage={ "Todavía no hay meses con historial de rutinas disponible." }
 					isDownloadingPeriodKey={ pendingPeriodKey }
 					isRefreshing={ isFetching && !isLoading }

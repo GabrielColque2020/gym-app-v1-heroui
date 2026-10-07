@@ -31,9 +31,13 @@ type HistoryRoutineReportStudent = Prisma.UserGetPayload<{
 }>;
 
 export type HistoryRoutineReportRow = {
+	// Dias del mes que el estudiante marco como terminados.
+	finishedDays: number;
 	month: number;
 	monthLabel: string;
 	periodKey: string;
+	// Dias con ejercicios en la rutina de ese mes. Cero si el mes ya no tiene rutina.
+	plannedDays: number;
 	summary: HistoryRoutineMonthSummary;
 	year: number;
 };
@@ -90,6 +94,48 @@ export async function getHistoryRoutinesReportsByStudentBase( {
 		},
 	} );
 
+	// La rutina de cada mes, para saber cuantos dias tenia y cuantos se terminaron.
+	const routineMonths = await prisma.trainingRoutineMonth.findMany( {
+		select: {
+			month: true,
+			weeks: {
+				select: {
+					routineDays: {
+						select: {
+							isFinalized: true,
+							routines: {
+								select: {
+									id: true,
+								},
+							},
+						},
+					},
+				},
+			},
+			year: true,
+		},
+		where: {
+			studentId,
+		},
+	} ) as unknown as Array<{
+		month: number;
+		weeks: Array<{ routineDays: Array<{ isFinalized: boolean; routines: Array<{ id: string }> }> }>;
+		year: number;
+	}>;
+	const dayCountsByPeriod = new Map( routineMonths.map( ( routineMonth ) => {
+		const daysWithExercises = routineMonth.weeks
+			.flatMap( ( week ) => week.routineDays )
+			.filter( ( day ) => day.routines.length > 0 );
+
+		return [
+			`${ routineMonth.year }-${ routineMonth.month }`,
+			{
+				finishedDays: daysWithExercises.filter( ( day ) => day.isFinalized ).length,
+				plannedDays: daysWithExercises.length,
+			},
+		] as const;
+	} ) );
+
 	const reports = await Promise.all(
 		periods.map( async ( period ) => {
 			const monthData = await getHistoryRoutinesByStudentBase( {
@@ -100,11 +146,15 @@ export async function getHistoryRoutinesReportsByStudentBase( {
 				year: period.year,
 			} );
 
+			const dayCounts = dayCountsByPeriod.get( `${ period.year }-${ period.month }` );
+
 			return {
+				finishedDays: dayCounts?.finishedDays ?? 0,
 				month: period.month,
 				// "Octubre 2026" y no "10/2026": se lee de un vistazo.
 				monthLabel: monthYearLabel( String( period.month ), String( period.year ) ),
 				periodKey: `${ period.year }-${ String( period.month ).padStart( 2, "0" ) }`,
+				plannedDays: dayCounts?.plannedDays ?? 0,
 				summary: buildHistoryRoutineMonthSummary(
 					groupHistoryRoutinesByWeek( monthData.historyRoutines ),
 				),

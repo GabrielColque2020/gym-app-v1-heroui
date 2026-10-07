@@ -1,15 +1,19 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
 import { Button, Card, Chip } from "@heroui/react";
-import { Download, RotateCw } from "lucide-react";
+import { ChevronRight, Download, RotateCw } from "lucide-react";
 
 import { ListPagination, PageHeader, usePagination } from "@/components/common";
 import type { HistoryRoutineReportRow } from "@/features/history-routines/services/history-routines-reports";
 
 type HistoryRoutinesReportsIndexProps = {
+	// Adonde lleva cada mes: la rutina de ese mes, con lo que el estudiante hizo.
+	buildMonthHrefAction: ( report: HistoryRoutineReportRow ) => string;
 	description: string;
 	emptyMessage: string;
 	isDownloadingPeriodKey?: string | null;
@@ -19,28 +23,6 @@ type HistoryRoutinesReportsIndexProps = {
 	onDownloadAction: ( report: HistoryRoutineReportRow ) => void;
 	onRefreshAction: () => void;
 };
-
-function getStatusColor( status: HistoryRoutineReportRow["summary"]["status"] ) {
-	switch (status) {
-		case "complete":
-			return "success";
-		case "partial":
-			return "warning";
-		default:
-			return "default";
-	}
-}
-
-function getStatusLabel( status: HistoryRoutineReportRow["summary"]["status"] ) {
-	switch (status) {
-		case "complete":
-			return "Completo";
-		case "partial":
-			return "Parcial";
-		default:
-			return "Sin datos";
-	}
-}
 
 function pluralize( count: number, singular: string, plural: string ) {
 	return `${ count } ${ count === 1 ? singular : plural }`;
@@ -56,7 +38,25 @@ function formatSummary( summary: HistoryRoutineReportRow["summary"] ) {
 	].join( " · " );
 }
 
+// Cuanto del mes se hizo, en numeros: "3 de 5 días terminados". Reemplaza a
+// "Parcial / Completo", que no decia respecto de que y casi siempre daba
+// "Parcial" (pedia seis dias con registro por semana).
+function getProgress( report: HistoryRoutineReportRow ) {
+	// Sin el dato tambien cae aca: lo que quedo guardado en el navegador de antes
+	// de este cambio no lo trae, hasta que la pantalla vuelve a pedirlo.
+	if (!report.plannedDays) {
+		// El mes tiene registros pero ya no tiene rutina cargada con la cual comparar.
+		return { color: "default", label: `${ pluralize( report.summary.days, "día", "días" ) } con registro` } as const;
+	}
+
+	return {
+		color: report.finishedDays >= report.plannedDays ? "success" : "default",
+		label: `${ report.finishedDays } de ${ pluralize( report.plannedDays, "día terminado", "días terminados" ) }`,
+	} as const;
+}
+
 export function HistoryRoutinesReportsIndex( {
+	buildMonthHrefAction,
 	description,
 	emptyMessage,
 	isDownloadingPeriodKey = null,
@@ -66,6 +66,7 @@ export function HistoryRoutinesReportsIndex( {
 	onDownloadAction,
 	onRefreshAction,
 }: HistoryRoutinesReportsIndexProps ) {
+	const router = useRouter();
 	const [ page, setPage ] = useState( 1 );
 	const pagination = usePagination( {
 		items: reports,
@@ -77,25 +78,27 @@ export function HistoryRoutinesReportsIndex( {
 		{
 			accessorKey: "monthLabel",
 			cell: ( report ) => (
-				<div className={ "flex min-w-0 flex-col text-muted" }>
-					<span className={ "truncate font-medium" }>{ report.monthLabel }</span>
-				</div>
+				<span className={ "truncate font-medium text-foreground" }>{ report.monthLabel }</span>
 			),
-			header: "Periodo",
+			header: "Mes",
 			id: "period",
 			isRowHeader: true,
 			minWidth: 180,
 		},
 		{
 			accessorKey: "summary",
-			cell: ( report ) => (
-				<Chip color={ getStatusColor( report.summary.status ) } size={ "sm" } variant={ "soft" }>
-					{ getStatusLabel( report.summary.status ) }
-				</Chip>
-			),
-			header: "Estado",
-			id: "status",
-			minWidth: 140,
+			cell: ( report ) => {
+				const progress = getProgress( report );
+
+				return (
+					<Chip color={ progress.color } size={ "sm" } variant={ "soft" }>
+						{ progress.label }
+					</Chip>
+				);
+			},
+			header: "Avance",
+			id: "progress",
+			minWidth: 200,
 		},
 		{
 			accessorKey: "summary",
@@ -104,35 +107,52 @@ export function HistoryRoutinesReportsIndex( {
 					{ formatSummary( report.summary ) }
 				</span>
 			),
-			header: "Resumen",
+			header: "Lo registrado",
 			id: "summary",
-			minWidth: 320,
+			minWidth: 300,
 		},
 		{
 			align: "end",
 			cell: ( report ) => (
-				<Button
-					className={ "text-accent-soft-foreground" }
-					isDisabled={ isDownloadingPeriodKey === report.periodKey }
-					size={ "sm" }
-					variant={ "ghost" }
-					onPress={ () => {
-						onDownloadAction( report );
-					} }
-				>
-					{ isDownloadingPeriodKey === report.periodKey ? (
-						<RotateCw className={ "size-4 animate-spin" }/>
-					) : (
-						<Download className={ "size-4" }/>
-					) }
-					{ isDownloadingPeriodKey === report.periodKey ? "Descargando..." : "Descargar PDF" }
-				</Button>
+				<div className={ "flex items-center justify-end gap-1" }>
+					{ /* Boton y no enlace: dentro de la tabla, la fila se queda con el clic
+					     de un enlace y no navega. */ }
+					<Button
+						className={ "text-accent" }
+						size={ "sm" }
+						variant={ "ghost" }
+						onPress={ () => router.push( buildMonthHrefAction( report ) ) }
+					>
+						Ver el mes
+						<ChevronRight className={ "size-4" }/>
+					</Button>
+					<Button
+						isIconOnly
+						aria-label={
+							isDownloadingPeriodKey === report.periodKey
+								? `Descargando el reporte de ${ report.monthLabel }`
+								: `Descargar el reporte de ${ report.monthLabel } en PDF`
+						}
+						isDisabled={ isDownloadingPeriodKey === report.periodKey }
+						size={ "sm" }
+						variant={ "ghost" }
+						onPress={ () => {
+							onDownloadAction( report );
+						} }
+					>
+						{ isDownloadingPeriodKey === report.periodKey ? (
+							<RotateCw className={ "size-4 animate-spin" }/>
+						) : (
+							<Download className={ "size-4" }/>
+						) }
+					</Button>
+				</div>
 			),
 			header: "Acciones",
 			id: "actions",
-			minWidth: 220,
+			minWidth: 200,
 		},
-	], [ isDownloadingPeriodKey, onDownloadAction ] );
+	], [ buildMonthHrefAction, isDownloadingPeriodKey, onDownloadAction, router ] );
 
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
@@ -174,7 +194,7 @@ export function HistoryRoutinesReportsIndex( {
 					<>
 						<div className={ "hidden md:block" }>
 							<DataGrid
-								aria-label={ "Reportes mensuales de historial de rutinas" }
+								aria-label={ "Meses con historial de rutinas" }
 								columns={ columns }
 								contentClassName={ "min-w-full" }
 								data={ pagination.paginatedItems }
@@ -182,50 +202,59 @@ export function HistoryRoutinesReportsIndex( {
 							/>
 						</div>
 
-						{ /* Una fila por mes: con un boton a todo el ancho cada mes ocupaba una
-						     tarjeta entera. */ }
+						{ /* Una fila por mes. Tocarla abre la rutina de ese mes, que es donde se
+						     ve lo que se hizo; el PDF queda como boton aparte. */ }
 						<div className={ "space-y-2 md:hidden" }>
-							{ pagination.paginatedItems.map( ( report ) => (
-								<div
-									key={ report.periodKey }
-									className={ "flex items-center gap-3 rounded-2xl border border-border bg-surface-secondary px-3 py-2.5" }
-								>
-									<div className={ "min-w-0 flex-1" }>
-										<p className={ "flex flex-wrap items-center gap-2 text-base font-semibold text-foreground" }>
-											{ report.monthLabel }
-											<Chip color={ getStatusColor( report.summary.status ) } size={ "sm" } variant={ "soft" }>
-												{ getStatusLabel( report.summary.status ) }
-											</Chip>
-										</p>
-										<p className={ "mt-0.5 text-xs text-muted" }>{ formatSummary( report.summary ) }</p>
-									</div>
-									<Button
-										isIconOnly
-										aria-label={
-											isDownloadingPeriodKey === report.periodKey
-												? `Descargando el reporte de ${ report.monthLabel }`
-												: `Descargar el reporte de ${ report.monthLabel } en PDF`
-										}
-										className={ "shrink-0" }
-										isDisabled={ isDownloadingPeriodKey === report.periodKey }
-										variant={ "secondary" }
-										onPress={ () => {
-											onDownloadAction( report );
-										} }
+							{ pagination.paginatedItems.map( ( report ) => {
+								const progress = getProgress( report );
+
+								return (
+									<div
+										key={ report.periodKey }
+										className={ "flex items-center gap-1 rounded-2xl border border-border bg-surface-secondary py-2.5 pl-3 pr-1.5" }
 									>
-										{ isDownloadingPeriodKey === report.periodKey ? (
-											<RotateCw className={ "size-4 animate-spin" }/>
-										) : (
-											<Download className={ "size-4" }/>
-										) }
-									</Button>
-								</div>
-							) ) }
+										<Link
+											aria-label={ `Ver ${ report.monthLabel }: ${ progress.label }` }
+											className={ "flex min-w-0 flex-1 items-center gap-2" }
+											href={ buildMonthHrefAction( report ) }
+										>
+											<div className={ "min-w-0 flex-1" }>
+												<p className={ "text-base font-semibold text-foreground" }>{ report.monthLabel }</p>
+												<p className={ `text-sm font-medium ${ progress.color === "success" ? "text-success" : "text-foreground" }` }>
+													{ progress.label }
+												</p>
+												<p className={ "mt-0.5 text-xs text-muted" }>{ formatSummary( report.summary ) }</p>
+											</div>
+											<ChevronRight className={ "size-4 shrink-0 text-muted" }/>
+										</Link>
+										<Button
+											isIconOnly
+											aria-label={
+												isDownloadingPeriodKey === report.periodKey
+													? `Descargando el reporte de ${ report.monthLabel }`
+													: `Descargar el reporte de ${ report.monthLabel } en PDF`
+											}
+											className={ "shrink-0" }
+											isDisabled={ isDownloadingPeriodKey === report.periodKey }
+											variant={ "ghost" }
+											onPress={ () => {
+												onDownloadAction( report );
+											} }
+										>
+											{ isDownloadingPeriodKey === report.periodKey ? (
+												<RotateCw className={ "size-4 animate-spin" }/>
+											) : (
+												<Download className={ "size-4" }/>
+											) }
+										</Button>
+									</div>
+								);
+							} ) }
 						</div>
 
 						<ListPagination
 							currentPage={ pagination.currentPage }
-							itemLabel={ "reportes" }
+							itemLabel={ "meses" }
 							onPageChangeAction={ setPage }
 							showingFrom={ pagination.showingFrom }
 							showingTo={ pagination.showingTo }

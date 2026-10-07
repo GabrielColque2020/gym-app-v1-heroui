@@ -87,12 +87,13 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 
 			{ !isLoading && !isError && data ? (
 				<HistoryRoutinesReportsIndex
-					description={ `Revisa los periodos con registro de ${ data.student.name } y descarga cada reporte mensual en PDF.` }
+					buildMonthHrefAction={ ( report ) => `/coach/training-routine?studentId=${ studentId }&month=${ report.month }&year=${ report.year }` }
+					description={ `Los meses en los que ${ data.student.name } entrenó. Abrí uno para ver su rutina o descargá el reporte.` }
 					emptyMessage={ "Este estudiante todavía no tiene meses con historial de rutinas disponible." }
 					isDownloadingPeriodKey={ pendingPeriodKey }
 					isRefreshing={ isFetching && !isLoading }
 					reports={ data.reports }
-					title={ "Reportes mensuales" }
+					title={ "Historial" }
 					onDownloadAction={ handleDownloadReport }
 					onRefreshAction={ () => {
 						void refetch();
