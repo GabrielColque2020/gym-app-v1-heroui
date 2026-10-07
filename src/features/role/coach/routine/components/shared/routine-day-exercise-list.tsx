@@ -61,7 +61,7 @@ function RoutineDayExerciseRow( {
 						src={ routine.exercise?.imageUrl }
 					/>
 					<div className={ "min-w-0" }>
-						<p className={ "line-clamp-2 text-sm font-semibold leading-5 text-foreground" }>{ exerciseName }</p>
+						<p className={ "line-clamp-4 text-sm font-semibold leading-5 text-foreground" }>{ exerciseName }</p>
 						<p className={ "truncate text-xs text-muted" }>{ formatBodyPartValue( routine.exercise?.bodyPart ) }</p>
 					</div>
 				</div>

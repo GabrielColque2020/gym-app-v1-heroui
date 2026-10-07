@@ -38,7 +38,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 							src={ exercise.imageUrl }
 						/>
 						<div className={ "flex min-w-0 flex-col" }>
-							<span className={ "truncate font-medium text-foreground" }>{ exercise.name }</span>
+							<span className={ "line-clamp-2 font-medium text-foreground" }>{ exercise.name }</span>
 							<span className={ "truncate text-xs text-muted" }>{ formatCoachExerciseSummary( exercise ) || "Sin datos adicionales" }</span>
 						</div>
 					</div>

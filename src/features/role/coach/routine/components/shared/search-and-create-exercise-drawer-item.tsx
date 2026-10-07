@@ -47,7 +47,7 @@ export function SearchAndCreateExerciseDrawerItem( {
 					src={ exercise.imageUrl }
 				/>
 				<div className={ "min-w-0" }>
-					<p className={ "line-clamp-2 text-sm font-medium text-foreground" }>{ exercise.name }</p>
+					<p className={ "line-clamp-4 text-sm font-medium text-foreground" }>{ exercise.name }</p>
 					<div className={ "mt-0.5 flex min-w-0 items-center gap-2" }>
 						<p className={ "truncate text-xs text-muted" }>{ details }</p>
 						{ exercise.recentRank !== null ? (

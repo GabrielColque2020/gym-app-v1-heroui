@@ -43,7 +43,7 @@ export function ExerciseCandidateRow( {
 							src={ candidate.imageUrl }
 						/>
 						<div className={ "min-w-0" }>
-							<p className={ "line-clamp-2 text-sm font-medium leading-5 text-foreground" }>{ candidate.name }</p>
+							<p className={ "line-clamp-4 text-sm font-medium leading-5 text-foreground" }>{ candidate.name }</p>
 							<p className={ "truncate text-xs text-muted" }>{ summary }</p>
 							{ duplicateNote ? <p className={ "truncate text-xs text-warning" }>{ duplicateNote }</p> : null }
 						</div>

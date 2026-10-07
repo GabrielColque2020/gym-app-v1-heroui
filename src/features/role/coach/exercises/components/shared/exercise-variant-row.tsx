@@ -30,7 +30,7 @@ export function ExerciseVariantRow( {
 							src={ variant.exercise.imageUrl }
 						/>
 						<div className={ "min-w-0" }>
-							<p className={ "line-clamp-2 text-sm font-medium leading-5 text-foreground" }>{ variant.exercise.name }</p>
+							<p className={ "line-clamp-4 text-sm font-medium leading-5 text-foreground" }>{ variant.exercise.name }</p>
 							<p className={ "truncate text-xs text-muted" }>
 								{ formatBodyPart( variant.exercise.bodyPart ) }
 								{ variant.exercise.active ? "" : " · Inactivo" }

@@ -84,7 +84,7 @@ export function ExerciseMobileCard( {
 
 						<div className={ "min-w-0 flex-1" }>
 							{ /* Dos renglones: muchos nombres del catalogo solo se distinguen por el final. */ }
-							<h3 className={ "line-clamp-2 text-sm font-semibold leading-5 text-foreground" }>{ exercise.name }</h3>
+							<h3 className={ "line-clamp-4 text-sm font-semibold leading-5 text-foreground" }>{ exercise.name }</h3>
 							<p className={ "mt-0.5 truncate text-xs text-muted" }>{ formatCoachExerciseSummary( exercise ) || "Sin datos adicionales" }</p>
 							{ /* Solo se marca lo que se sale de lo comun: casi todo es del catalogo y esta activo. */ }
 							{ exercise.sourceType === "coach" || !exercise.active ? (
