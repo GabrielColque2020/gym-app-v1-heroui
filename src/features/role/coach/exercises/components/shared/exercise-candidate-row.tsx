@@ -17,9 +17,22 @@ export function ExerciseCandidateRow( {
 	isDisabled,
 	onAdd,
 }: ExerciseCandidateRowProps ) {
+	// Con que se hace y que trabaja: es lo que distingue una variante de otra.
+	const summary = [ candidate.equipment, candidate.target ]
+		.map( ( part ) => part?.trim() ?? "" )
+		.filter( Boolean )
+		.join( " · " ) || formatBodyPart( candidate.bodyPart );
+	const catalogCode = candidate.externalId?.trim() || null;
+	const duplicateNote = ( candidate.sameNameCount ?? 1 ) > 1
+		? [
+			`Hay ${ candidate.sameNameCount } con este nombre`,
+			catalogCode ? `cód. ${ catalogCode }` : null,
+		].filter( Boolean ).join( " · " )
+		: null;
+
 	return (
 		<Card className={ "border border-border py-1" }>
-			<Card.Content className={ "py-3 px-1" }>
+			<Card.Content className={ "px-1 py-1.5" }>
 				<div className={ "flex items-center justify-between gap-3" }>
 					<div className={ "flex min-w-0 flex-1 items-center gap-3" }>
 						<AsyncMedia
@@ -30,14 +43,14 @@ export function ExerciseCandidateRow( {
 							src={ candidate.imageUrl }
 						/>
 						<div className={ "min-w-0" }>
-							<p className={ "truncate text-sm font-medium text-foreground" }>{ candidate.name }</p>
-							<p className={ "truncate text-xs text-muted" }>
-								{ formatBodyPart( candidate.bodyPart ) }
-								{ candidate.active ? " · Activo" : " · Inactivo" }
-							</p>
+							<p className={ "line-clamp-2 text-sm font-medium leading-5 text-foreground" }>{ candidate.name }</p>
+							<p className={ "truncate text-xs text-muted" }>{ summary }</p>
+							{ duplicateNote ? <p className={ "truncate text-xs text-warning" }>{ duplicateNote }</p> : null }
 						</div>
 					</div>
 					<Button
+						isIconOnly
+						aria-label={ `Agregar ${ candidate.name } como variante` }
 						className={ "shrink-0" }
 						isDisabled={ isDisabled }
 						size={ "sm" }
@@ -45,7 +58,6 @@ export function ExerciseCandidateRow( {
 						onPress={ () => onAdd( candidate ) }
 					>
 						<Plus className={ "size-4" }/>
-						Agregar
 					</Button>
 				</div>
 			</Card.Content>

@@ -19,7 +19,7 @@ export function ExerciseVariantRow( {
 }: ExerciseVariantRowProps ) {
 	return (
 		<Card className={ "border border-border py-1" } variant={ "secondary" }>
-			<Card.Content className={ "py-3 px-1" }>
+			<Card.Content className={ "px-1 py-1.5" }>
 				<div className={ "flex items-center justify-between gap-3" }>
 					<div className={ "flex min-w-0 flex-1 items-center gap-3" }>
 						<AsyncMedia
@@ -30,17 +30,17 @@ export function ExerciseVariantRow( {
 							src={ variant.exercise.imageUrl }
 						/>
 						<div className={ "min-w-0" }>
-							<p className={ "truncate text-sm font-medium text-foreground" }>{ variant.exercise.name }</p>
+							<p className={ "line-clamp-2 text-sm font-medium leading-5 text-foreground" }>{ variant.exercise.name }</p>
 							<p className={ "truncate text-xs text-muted" }>
 								{ formatBodyPart( variant.exercise.bodyPart ) }
-								{ variant.exercise.active ? " · Activo" : " · Inactivo" }
+								{ variant.exercise.active ? "" : " · Inactivo" }
 							</p>
 						</div>
 					</div>
 					<Button
 						className={ "shrink-0" }
 						isIconOnly
-						aria-label={ `Eliminar variante ${ variant.exercise.name }` }
+						aria-label={ `Quitar la variante ${ variant.exercise.name }` }
 						isDisabled={ isRemoveDisabled }
 						size={ "sm" }
 						variant={ "ghost" }

@@ -16,6 +16,8 @@ import { ExerciseVariantsDrawerSearch } from "./exercise-variants-drawer-search"
 import { type DraftVariantItem, EMPTY_ARRAY, type ExerciseVariantsTarget, SEARCH_DEBOUNCE_MS } from "./exercise-variants-drawer.types";
 
 const ITEMS_PER_PAGE = 8;
+// Filas compactas: en el telefono entran mas que las 4 por defecto.
+const MOBILE_ITEMS_PER_PAGE = 10;
 
 type ExerciseVariantsDrawerContentProps = {
 	exercise: ExerciseVariantsTarget;
@@ -95,10 +97,11 @@ export function ExerciseVariantsDrawerContent( {
 	onCloseAction,
 }: ExerciseVariantsDrawerContentProps ) {
 	const [ searchValue, setSearchValue ] = useState( "" );
-	const [ bodyPartFilter, setBodyPartFilter ] = useState<BodyPartFilter>( ALL_BODY_PARTS );
+	// Arranca en el grupo del ejercicio: una variante casi siempre trabaja lo
+	// mismo, y asi no hay que recorrer el catalogo entero para encontrarla.
+	const [ bodyPartFilter, setBodyPartFilter ] = useState<BodyPartFilter>( exercise.bodyPart );
 	const [ page, setPage ] = useState( 1 );
 	const [ draftVariants, setDraftVariants ] = useState<DraftVariantItem[]>( initialVariants );
-	const [ initialVariantIds ] = useState( () => new Set( initialVariants.map( ( variant ) => variant.exercise.id ) ) );
 	const debouncedSearchValue = useDebouncedValue( searchValue, SEARCH_DEBOUNCE_MS );
 	const coachExercisesQuery = useCoachExercises();
 	const saveCoachExercise = useSaveCoachExercise();
@@ -126,24 +129,61 @@ export function ExerciseVariantsDrawerContent( {
 		),
 		[ exercise.globalExerciseId, exercise.id ],
 	);
+	// El musculo objetivo del ejercicio principal, para poner primero los que
+	// trabajan lo mismo. Se busca en el catalogo porque el editor no siempre lo trae.
+	const mainTarget = useMemo(
+		() => {
+			const mainExercise = ( coachExercisesQuery.data ?? EMPTY_ARRAY ).find( ( candidate ) => mainExerciseIds.has( candidate.id ) );
+
+			return normalizeSearchName( mainExercise?.target ?? exercise.target ?? "" );
+		},
+		[ coachExercisesQuery.data, exercise.target, mainExerciseIds ],
+	);
+	// El catalogo trae ejercicios distintos con el mismo nombre: se cuentan para
+	// poder distinguirlos en la lista.
+	const sameNameCountByName = useMemo(
+		() => {
+			const countByName = new Map<string, number>();
+
+			for (const candidate of coachExercisesQuery.data ?? EMPTY_ARRAY) {
+				if (!candidate.active) continue;
+
+				const nameKey = normalizeSearchName( candidate.name );
+
+				countByName.set( nameKey, ( countByName.get( nameKey ) ?? 0 ) + 1 );
+			}
+
+			return countByName;
+		},
+		[ coachExercisesQuery.data ],
+	);
 	const filteredExercises = useMemo(
 		() => {
-			const normalizedSearch = normalizeSearchName( debouncedSearchValue );
+			// Cada palabra tiene que estar, en cualquier orden.
+			const searchWords = normalizeSearchName( debouncedSearchValue ).split( " " ).filter( Boolean );
 
-			return ( coachExercisesQuery.data ?? EMPTY_ARRAY ).filter( ( candidate ) => {
+			const matches = ( coachExercisesQuery.data ?? EMPTY_ARRAY ).filter( ( candidate ) => {
 				if (!candidate.active) return false;
 				if (mainExerciseIds.has( candidate.id )) return false;
 
-				const matchesName =
-					normalizedSearch.length === 0
-					|| normalizeSearchName( candidate.name ).includes( normalizedSearch )
-					|| normalizeSearchName( candidate.searchName ?? "" ).includes( normalizedSearch );
+				const searchableText = searchWords.length === 0
+					? ""
+					: normalizeSearchName( `${ candidate.name } ${ candidate.equipment } ${ candidate.target }` );
+				const matchesName = searchWords.every( ( word ) => searchableText.includes( word ) );
 				const matchesBodyPart = bodyPartFilter === ALL_BODY_PARTS || candidate.bodyPart === bodyPartFilter;
 
 				return matchesName && matchesBodyPart;
 			} );
+
+			if (!mainTarget) return matches;
+
+			// Primero los del mismo musculo objetivo; el resto conserva el orden alfabetico.
+			return [
+				...matches.filter( ( candidate ) => normalizeSearchName( candidate.target ) === mainTarget ),
+				...matches.filter( ( candidate ) => normalizeSearchName( candidate.target ) !== mainTarget ),
+			];
 		},
-		[ bodyPartFilter, coachExercisesQuery.data, debouncedSearchValue, mainExerciseIds ],
+		[ bodyPartFilter, coachExercisesQuery.data, debouncedSearchValue, mainExerciseIds, mainTarget ],
 	);
 	const availableExercises = useMemo(
 		() => filteredExercises.filter( ( candidate ) => {
@@ -156,33 +196,53 @@ export function ExerciseVariantsDrawerContent( {
 	const pagination = usePagination( {
 		items: availableExercises,
 		itemsPerPage: ITEMS_PER_PAGE,
+		mobileItemsPerPage: MOBILE_ITEMS_PER_PAGE,
 		page,
 	} );
 	const candidateExercises = useMemo(
-		() => pagination.paginatedItems.map( mapCoachExerciseToVariantTarget ),
-		[ pagination.paginatedItems ],
+		() => pagination.paginatedItems.map( ( candidate ) => ( {
+			...mapCoachExerciseToVariantTarget( candidate ),
+			sameNameCount: sameNameCountByName.get( normalizeSearchName( candidate.name ) ) ?? 1,
+		} ) ),
+		[ pagination.paginatedItems, sameNameCountByName ],
 	);
-	const isDirty = useMemo( () => {
-		if (draftVariantIdSet.size !== initialVariantIds.size) return true;
+	const isBusy = saveVariants.isPending || saveCoachExercise.isPending;
 
-		for (const variantId of draftVariantIdSet) {
-			if (!initialVariantIds.has( variantId )) return true;
+	// Cada alta o baja se guarda en el momento, como el resto del editor: no hay
+	// un "Guardar" que olvidar. Si falla, la lista vuelve a como estaba.
+	async function persistVariants( nextVariants: DraftVariantItem[] ) {
+		const previousVariants = draftVariants;
+
+		setDraftVariants( nextVariants );
+
+		try {
+			await saveVariants.mutateAsync( {
+				routineId,
+				variantExerciseIds: nextVariants.map( ( variant ) => variant.exercise.id ),
+			} );
+		} catch (error) {
+			setDraftVariants( previousVariants );
+			toast.danger( "No se pudo guardar el cambio", {
+				description: error instanceof Error ? error.message : "Probá de nuevo.",
+			} );
 		}
-
-		return false;
-	}, [ draftVariantIdSet, initialVariantIds ] );
+	}
 
 	function handleAddVariant( candidate: ExerciseVariantsTarget ) {
 		if (draftVariantIdSet.has( candidate.id )) return;
 		if (candidate.globalExerciseId && draftVariantGlobalIdSet.has( candidate.globalExerciseId )) return;
 
-		setDraftVariants( ( current ) => [
-			...current,
+		void persistVariants( [
+			...draftVariants,
 			{
 				exercise: candidate,
 				relationId: null,
 			},
 		] );
+	}
+
+	function handleRemoveVariant( variantExerciseId: string ) {
+		void persistVariants( draftVariants.filter( ( variant ) => variant.exercise.id !== variantExerciseId ) );
 	}
 
 	async function handleAddCandidate( candidate: ExerciseVariantsTarget ) {
@@ -213,7 +273,7 @@ export function ExerciseVariantsDrawerContent( {
 			handleAddVariant( resolvedExercise );
 		} catch {
 			toast.danger( "No se pudo agregar el ejercicio", {
-				description: saveCoachExercise.error?.message ?? "No pudimos materializar el ejercicio global para esta rutina.",
+				description: "No se pudo traer ese ejercicio del catálogo. Probá de nuevo.",
 			} );
 		}
 	}
@@ -228,27 +288,9 @@ export function ExerciseVariantsDrawerContent( {
 		setPage( 1 );
 	}
 
-	async function handleSaveVariants() {
-		try {
-			await saveVariants.mutateAsync( {
-				routineId,
-				variantExerciseIds: draftVariants.map( ( variant ) => variant.exercise.id ),
-			} );
-
-			toast.success( "Variantes guardadas", {
-				description: "La lista quedó actualizada.",
-			} );
-			onCloseAction();
-		} catch {
-			toast.danger( "Error al guardar variantes", {
-				description: saveVariants.error?.message ?? "No se pudieron guardar los cambios.",
-			} );
-		}
-	}
-
 	return (
 		<>
-			<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
+			<Drawer.Body className={ "min-h-0 flex-1 space-y-4 overflow-y-auto py-3" }>
 				{ coachExercisesQuery.isError ? (
 					<Alert className={ "border border-danger/20" } status={ "danger" }>
 						<Alert.Content>
@@ -261,7 +303,7 @@ export function ExerciseVariantsDrawerContent( {
 				{ saveCoachExercise.isError ? (
 					<Alert className={ "border border-danger/20" } status={ "danger" }>
 						<Alert.Content>
-							<Alert.Title>Error al guardar ejercicio global</Alert.Title>
+							<Alert.Title>No se pudo traer el ejercicio del catálogo</Alert.Title>
 							<Alert.Description>{ saveCoachExercise.error?.message }</Alert.Description>
 						</Alert.Content>
 					</Alert>
@@ -279,10 +321,11 @@ export function ExerciseVariantsDrawerContent( {
 				<section className={ "space-y-3" }>
 					<div className={ "flex items-center justify-between gap-3" }>
 						<div>
-							<h3 className={ "text-sm font-semibold text-foreground" }>Variantes asociadas</h3>
-							<p className={ "text-sm text-muted" }>{ draftVariants.length } variantes en el borrador.</p>
+							<h3 className={ "text-sm font-semibold text-foreground" }>
+								{ draftVariants.length === 1 ? "1 variante" : `${ draftVariants.length } variantes` }
+							</h3>
 						</div>
-						{ saveVariants.isPending || saveCoachExercise.isPending ? (
+						{ isBusy ? (
 							<div className={ "flex items-center gap-2 text-xs text-muted" } role={ "status" }>
 								<Spinner size={ "sm" }/>
 								Guardando...
@@ -291,21 +334,17 @@ export function ExerciseVariantsDrawerContent( {
 					</div>
 
 					{ draftVariants.length === 0 ? (
-						<div className={ "rounded-xl border border-dashed border-border bg-surface-secondary px-4 py-6 text-sm text-muted" }>
-							Aún no hay variantes en el borrador.
+						<div className={ "rounded-xl border border-dashed border-border bg-surface-secondary px-4 py-3 text-sm text-muted" }>
+							Todavía no tiene variantes. Agregá una de la lista de abajo.
 						</div>
 					) : (
 						<div className={ "space-y-2" }>
 							{ draftVariants.map( ( variant ) => (
 								<ExerciseVariantRow
 									key={ variant.exercise.id }
-									isRemoveDisabled={ saveVariants.isPending || saveCoachExercise.isPending }
+									isRemoveDisabled={ isBusy }
 									variant={ variant }
-									onRemove={ ( variantExerciseId ) => {
-										setDraftVariants( ( current ) =>
-											current.filter( ( currentVariant ) => currentVariant.exercise.id !== variantExerciseId )
-										);
-									} }
+									onRemove={ handleRemoveVariant }
 								/>
 							) ) }
 						</div>
@@ -318,8 +357,9 @@ export function ExerciseVariantsDrawerContent( {
 					bodyPartFilter={ bodyPartFilter }
 					candidateExercises={ candidateExercises }
 					isLoading={ coachExercisesQuery.isLoading }
-					isPending={ saveVariants.isPending || saveCoachExercise.isPending }
+					isPending={ isBusy }
 					isSearching={ isSearching }
+					totalCount={ pagination.totalItems }
 					searchValue={ searchValue }
 					onAddVariantAction={ handleAddCandidate }
 					onBodyPartFilterChangeAction={ handleBodyPartFilterChange }
@@ -340,20 +380,9 @@ export function ExerciseVariantsDrawerContent( {
 			</Drawer.Body>
 
 			<Drawer.Footer className={ "border-default-100 shrink-0 justify-end gap-2 border-t pt-4" }>
-				<Button slot={ "close" } isDisabled={ saveVariants.isPending || saveCoachExercise.isPending } variant={ "secondary" }>
-					Cerrar
-				</Button>
-				<Button
-					isDisabled={ !isDirty || saveVariants.isPending || saveCoachExercise.isPending }
-					isPending={ saveVariants.isPending }
-					onPress={ handleSaveVariants }
-				>
-					{ ( { isPending } ) => (
-						<>
-							{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : null }
-							Guardar variantes
-						</>
-					) }
+				{ /* No hay "Guardar": cada cambio ya quedo guardado. */ }
+				<Button isDisabled={ isBusy } onPress={ onCloseAction }>
+					Listo
 				</Button>
 			</Drawer.Footer>
 		</>

@@ -16,6 +16,8 @@ export type ExerciseVariantsTarget = {
 	instructions?: string | null;
 	isOverride?: boolean;
 	muscleGroup?: string | null;
+	// Cuantos ejercicios activos del catalogo comparten este nombre.
+	sameNameCount?: number;
 	searchName?: string | null;
 	sourceType?: CoachExerciseSourceType;
 	target?: string | null;

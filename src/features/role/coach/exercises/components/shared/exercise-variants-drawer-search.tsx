@@ -1,4 +1,4 @@
-import { Card, Input, Label, ListBox, Select, Spinner, TextField, } from "@heroui/react";
+import { Card, Input, ListBox, Select, Spinner, TextField, } from "@heroui/react";
 
 import { ALL_BODY_PARTS, BODY_PART_OPTIONS, type BodyPartFilter, } from "@/features/exercises/services/exercise-form";
 
@@ -15,6 +15,7 @@ type ExerciseVariantsDrawerSearchProps = {
 	onBodyPartFilterChangeAction: ( value: BodyPartFilter ) => void;
 	onSearchValueChangeAction: ( value: string ) => void;
 	searchValue: string;
+	totalCount: number;
 };
 
 export function ExerciseVariantsDrawerSearch( {
@@ -27,20 +28,17 @@ export function ExerciseVariantsDrawerSearch( {
 												  onBodyPartFilterChangeAction,
 												  onSearchValueChangeAction,
 												  searchValue,
+												  totalCount,
 											  }: ExerciseVariantsDrawerSearchProps ) {
 	return (
-		<section className={ "space-y-4" }>
-			<div>
-				<h3 className={ "text-sm font-semibold text-foreground" }>Buscar ejercicio</h3>
-				<p className={ "text-sm text-muted" }>Localiza un ejercicio existente para sumarlo al borrador.</p>
-			</div>
+		<section className={ "space-y-3" }>
+			<h3 className={ "text-sm font-semibold text-foreground" }>Agregar una variante</h3>
 
 			<TextField name={ "variant-search" }>
-				<Label>Buscar por nombre</Label>
 				<Input
 					aria-label={ "Buscar ejercicio" }
 					autoComplete={ "off" }
-					placeholder={ "Ej: press inclinado" }
+					placeholder={ "Buscar por nombre, músculo o equipo" }
 					value={ searchValue }
 					onChange={ ( event ) => onSearchValueChangeAction( event.target.value ) }
 					className={ "border border-border" }
@@ -57,15 +55,14 @@ export function ExerciseVariantsDrawerSearch( {
 					}
 				} }
 			>
-				<Label>Parte del cuerpo</Label>
-				<Select.Trigger aria-label={ "Filtrar por parte del cuerpo" } className={ "border border-border" }>
+				<Select.Trigger aria-label={ "Filtrar por grupo muscular" } className={ "border border-border" }>
 					<Select.Value/>
 					<Select.Indicator/>
 				</Select.Trigger>
 				<Select.Popover>
 					<ListBox>
-						<ListBox.Item id={ ALL_BODY_PARTS } textValue={ "Todas" }>
-							Todas
+						<ListBox.Item id={ ALL_BODY_PARTS } textValue={ "Todos los grupos" }>
+							Todos los grupos
 							<ListBox.ItemIndicator/>
 						</ListBox.Item>
 						{ BODY_PART_OPTIONS.map( ( option ) => (
@@ -80,8 +77,9 @@ export function ExerciseVariantsDrawerSearch( {
 
 			<div className={ "space-y-3" }>
 				<div className={ "flex items-center justify-between gap-3" }>
-					<p className={ "text-sm font-medium text-foreground" }>Resultados</p>
-					<p className={ "text-xs text-muted" }>Mostrando el catálogo completo de ejercicios.</p>
+					<p className={ "text-xs text-muted" }>
+						{ totalCount === 1 ? "1 ejercicio" : `${ totalCount } ejercicios` } · primero los del mismo músculo
+					</p>
 					{ isSearching ? (
 						<div className={ "flex items-center gap-2 text-xs text-muted" } role={ "status" }>
 							<Spinner size={ "sm" }/>
@@ -97,7 +95,7 @@ export function ExerciseVariantsDrawerSearch( {
 					</Card>
 				) : candidateExercises.length === 0 ? (
 					<Card className={ "border border-border p-8 text-sm text-muted" }>
-						No hay ejercicios disponibles para asociar con estos filtros.
+						No hay ejercicios con esa búsqueda. Probá con otro grupo muscular.
 					</Card>
 				) : (
 					<div className={ "space-y-2" }>

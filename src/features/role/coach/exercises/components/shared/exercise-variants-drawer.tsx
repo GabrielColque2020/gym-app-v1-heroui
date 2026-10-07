@@ -49,7 +49,7 @@ function ExerciseVariantsDrawerHeader( { exercise }: { exercise: ExerciseVariant
 				<div className={ "min-w-0" }>
 					<Drawer.Heading>{ exercise.name }</Drawer.Heading>
 					<Description className={ "mt-1 text-sm" }>
-						Gestiona las variantes asociadas y guarda la lista cuando termines de editar.
+						Elegí ejercicios que el estudiante pueda hacer en lugar de este. Los cambios se guardan solos.
 					</Description>
 					<Chip className={ "mt-2" } color={ "accent" } size={ "sm" } variant={ "soft" }>
 						{ formatBodyPart( exercise.bodyPart ) }
@@ -111,7 +111,7 @@ export function ExerciseVariantsDrawer( props: ExerciseVariantsDrawerProps ) {
 							<Spinner size={ "lg" }/>
 							<div className={ "space-y-1" }>
 								<p className={ "text-base font-semibold text-foreground" }>Cargando variantes</p>
-								<p className={ "text-sm text-muted" }>Consultando las relaciones asociadas al ejercicio.</p>
+								<p className={ "text-sm text-muted" }>Buscando las que ya tiene este ejercicio.</p>
 							</div>
 						</div>
 					</Drawer.Body>
@@ -119,9 +119,9 @@ export function ExerciseVariantsDrawer( props: ExerciseVariantsDrawerProps ) {
 					<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 						<Alert className={ "border border-warning/20" } status={ "warning" }>
 							<Alert.Content>
-								<Alert.Title>Guarda la rutina primero</Alert.Title>
+								<Alert.Title>Esperá a que se guarde el día</Alert.Title>
 								<Alert.Description>
-									Las variantes ahora se guardan por rutina. Necesitas guardar el ejercicio antes de poder asociarle variantes.
+									Este ejercicio todavía no terminó de guardarse en el día. Cerrá y volvé a abrir en unos segundos.
 								</Alert.Description>
 							</Alert.Content>
 						</Alert>
