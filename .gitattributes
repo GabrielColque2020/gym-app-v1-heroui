@@ -1,0 +1,3 @@
+# Prisma guarda una huella de cada migracion aplicada. Si git cambiara los saltos
+# de linea al bajar el repositorio en Windows, la huella dejaria de coincidir.
+prisma/migrations/** text eol=lf
