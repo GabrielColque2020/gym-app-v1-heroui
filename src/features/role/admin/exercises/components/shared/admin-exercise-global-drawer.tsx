@@ -160,7 +160,7 @@ export function AdminExerciseGlobalDrawer( {
 						<div>
 							<Drawer.Heading>Editar ejercicio global</Drawer.Heading>
 							<Description className={ "mt-1 text-sm" }>
-								Los cambios impactan a todos los coaches porque este ejercicio pertenece al catálogo global.
+								Este ejercicio es del catálogo compartido: lo que cambies acá vale para todos los entrenadores.
 							</Description>
 						</div>
 					</div>

@@ -216,14 +216,14 @@ const ADMIN_FAQ_SECTIONS: FaqSection[] = [
 		id: "admin-exercises",
 		items: [
 			{
-				answer: "En Ejercicios globales creás y editás el catálogo base. Conviene cargar cada ejercicio completo (nombre, categoría, imagen o video) y evitar nombres repetidos: es lo que después ven los entrenadores al armar las rutinas.",
+				answer: "En Ejercicios globales corregís los datos del catálogo base: nombre, categoría, músculos, equipamiento e instrucciones. También podés desactivar un ejercicio para que deje de ofrecerse en rutinas nuevas. Desde esta pantalla no se crean ejercicios nuevos: cada entrenador crea los suyos.",
 				id: "admin-global-exercises",
 				question: "¿Cómo gestiono los ejercicios globales?",
 			},
 			{
-				answer: "Global, cuando sirve para todos los entrenadores. Del entrenador, cuando es una adaptación puntual de su forma de trabajar: cada entrenador puede crear los suyos o editar su copia de uno global sin afectar al resto.",
+				answer: "Los globales son la base común que ven todos los entrenadores. Los del entrenador son los que crea cada uno, o su copia editada de uno global: esos cambios valen solo para él y no afectan al resto.",
 				id: "admin-global-vs-coach",
-				question: "¿Cuándo conviene un ejercicio global y cuándo uno del entrenador?",
+				question: "¿Qué diferencia hay entre un ejercicio global y uno del entrenador?",
 			},
 		],
 		title: "Ejercicios globales",

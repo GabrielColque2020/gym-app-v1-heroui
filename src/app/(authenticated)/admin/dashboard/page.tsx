@@ -4,7 +4,7 @@ import AdminDashboardPageContent from "@/features/role/admin/dashboard/views/adm
 
 export const metadata: Metadata = {
 	description: "Resumen general de administración.",
-	title: "Dashboard Admin",
+	title: "Inicio",
 };
 
 export default function AdminDashboardPage() {

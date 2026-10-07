@@ -11,7 +11,7 @@ export type AdminCoachListItem = Prisma.UserGetPayload<{
 
 export async function getAdminCoachesAction(): Promise<AdminCoachListItem[]> {
 	try {
-		await requireAdminSession( "consultar coaches" );
+		await requireAdminSession( "consultar entrenadores" );
 
 		return await prisma.user.findMany( {
 			orderBy: [
@@ -26,6 +26,6 @@ export async function getAdminCoachesAction(): Promise<AdminCoachListItem[]> {
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
 
-		throw new Error( `No se pudo obtener la lista de coaches. ${ message }` );
+		throw new Error( `No se pudo obtener la lista de entrenadores. ${ message }` );
 	}
 }

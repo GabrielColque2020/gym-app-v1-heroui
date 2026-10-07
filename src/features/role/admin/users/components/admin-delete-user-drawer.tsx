@@ -27,10 +27,10 @@ export function AdminDeleteUserDrawer( {
 	onConfirmAction,
 }: AdminDeleteUserDrawerProps ) {
 	const placement = useResponsiveDrawerPlacement();
-	const roleLabel = user.role === "COACH" ? "Coach" : "Estudiante";
+	const roleLabel = user.role === "COACH" ? "Entrenador" : "Estudiante";
 	const impactLabel = user.role === "COACH"
-		? "Se desacoplaran sus estudiantes y sus ejercicios quedaran sin coach asignado."
-		: "Se eliminarán sus rutinas, planes alimenticios, progreso, relación con coach y demás datos asociados.";
+		? "Sus estudiantes quedan sin entrenador asignado y sus ejercicios propios dejan de tener dueño."
+		: "Se eliminan sus rutinas, su plan alimenticio, todo lo que registró y el resto de sus datos.";
 
 	return (
 		<FeatureDrawerLayout
@@ -57,7 +57,7 @@ export function AdminDeleteUserDrawer( {
 			<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 				<Alert className={ "border border-danger/20" } status={ "danger" }>
 					<Alert.Content>
-						<Alert.Title>Acción irreversible</Alert.Title>
+						<Alert.Title>No se puede deshacer</Alert.Title>
 						<Alert.Description>{ impactLabel }</Alert.Description>
 					</Alert.Content>
 				</Alert>
@@ -78,7 +78,7 @@ export function AdminDeleteUserDrawer( {
 						<AdminDeleteUserSummaryRow label={ "DNI" } value={ user.dni }/>
 						<AdminDeleteUserSummaryRow label={ "Rol" } value={ roleLabel }/>
 						{ user.role === "STUDENT" ? (
-							<AdminDeleteUserSummaryRow label={ "Coach actual" } value={ user.coach?.name ?? "Sin coach" }/>
+							<AdminDeleteUserSummaryRow label={ "Entrenador actual" } value={ user.coach?.name ?? "Sin entrenador" }/>
 						) : null }
 					</div>
 				</Surface>

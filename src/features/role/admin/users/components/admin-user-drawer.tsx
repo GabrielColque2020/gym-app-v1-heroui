@@ -56,7 +56,7 @@ function getBirthDateValue( value: string ): DateValue | null {
 }
 
 function getRoleLabel( role: AdminUserListItem["role"] ) {
-	return role === "ADMIN" ? "admin" : "coach";
+	return role === "ADMIN" ? "administrador" : "entrenador";
 }
 
 export function AdminUserDrawer( {
@@ -161,7 +161,7 @@ export function AdminUserDrawer( {
 						<div>
 							<Drawer.Heading>{ `Editar ${ roleLabel }` }</Drawer.Heading>
 							<Description className={ "mt-1 text-sm" }>
-								{ `Modifica los datos del ${ roleLabel } sin tocar sus relaciones operativas.` }
+								{ `Cambiá los datos de la cuenta del ${ roleLabel }.` }
 							</Description>
 						</div>
 					</div>

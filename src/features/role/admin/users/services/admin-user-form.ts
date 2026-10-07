@@ -101,15 +101,15 @@ export function validateCreateCoachInput( input: CreateCoachInput ) {
 	const password = input.password.trim();
 
 	if (name.length < 2) {
-		throw new Error( "El nombre del coach debe tener al menos 2 caracteres." );
+		throw new Error( "El nombre del entrenador debe tener al menos 2 caracteres." );
 	}
 
 	if (!isValidEmail( email )) {
-		throw new Error( "Ingresa un email válido." );
+		throw new Error( "Ingresá un email válido." );
 	}
 
 	if (password.length < 6) {
-		throw new Error( "La contrasenia debe tener al menos 6 caracteres." );
+		throw new Error( "La contraseña debe tener al menos 6 caracteres." );
 	}
 
 	return {
@@ -136,7 +136,7 @@ export function validateUpdateAdminUserInput( input: UpdateAdminUserInput ) {
 	}
 
 	if (!isValidEmail( email )) {
-		throw new Error( "Ingresa un email válido." );
+		throw new Error( "Ingresá un email válido." );
 	}
 
 	return {

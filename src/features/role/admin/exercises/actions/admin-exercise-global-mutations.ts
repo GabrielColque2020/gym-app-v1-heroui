@@ -44,7 +44,7 @@ function validateAdminExerciseGlobalInput( input: AdminExerciseGlobalMutationInp
 	}
 
 	if (target.length < 2) {
-		throw new Error( "El target del ejercicio debe tener al menos 2 caracteres." );
+		throw new Error( "El músculo objetivo debe tener al menos 2 caracteres." );
 	}
 
 	if (muscleGroup.length < 2) {

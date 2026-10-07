@@ -65,7 +65,7 @@ export default function AdminExercisesPageContent() {
 		},
 		{
 			accessorKey: "target",
-			header: "Grupo Muscular",
+			header: "Músculo objetivo",
 			id: "target",
 			minWidth: 150,
 		},
@@ -132,7 +132,7 @@ export default function AdminExercisesPageContent() {
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<Card.Content className={ "flex flex-col gap-3 p-3 lg:flex-row  md:items-end md:justify-between" }>
 					<PageHeader
-						description={ "Catálogo global compartido por todos los coaches. Desde aquí se corrigen datos." }
+						description={ "El catálogo que comparten todos los entrenadores. Acá se corrigen sus datos." }
 						title={ "Ejercicios globales" }
 					/>
 					<div className={ "flex justify-end" }>
@@ -151,7 +151,7 @@ export default function AdminExercisesPageContent() {
 							<Label>Buscar</Label>
 							<SearchField.Group className={ "border border-border" }>
 								<SearchField.SearchIcon/>
-								<SearchField.Input placeholder={ "Nombre, id, categoría o target..." }/>
+								<SearchField.Input placeholder={ "Nombre, código, categoría o músculo..." }/>
 								<SearchField.ClearButton/>
 							</SearchField.Group>
 						</SearchField>
@@ -182,7 +182,7 @@ export default function AdminExercisesPageContent() {
 					</div>
 
 					<Chip size={ "sm" } variant={ "soft" }>
-						{ totalItems } ejercicios
+						{ totalItems === 1 ? "1 ejercicio" : `${ totalItems } ejercicios` }
 					</Chip>
 
 					{ exercises.length === 0 ? (

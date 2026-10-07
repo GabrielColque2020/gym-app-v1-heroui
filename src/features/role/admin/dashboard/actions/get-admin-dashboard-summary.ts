@@ -15,7 +15,7 @@ export type AdminDashboardSummary = {
 
 export async function getAdminDashboardSummaryAction(): Promise<AdminDashboardSummary> {
 	try {
-		await requireAdminSession( "consultar el dashboard admin" );
+		await requireAdminSession( "consultar el resumen" );
 
 		const [ totalUsers, activeCoaches, activeStudents, inactiveUsers ] = await Promise.all( [
 			prisma.user.count( {
@@ -54,6 +54,6 @@ export async function getAdminDashboardSummaryAction(): Promise<AdminDashboardSu
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
 
-		throw new Error( `No se pudo obtener el resumen del dashboard admin. ${ message }` );
+		throw new Error( `No se pudo obtener el resumen. ${ message }` );
 	}
 }

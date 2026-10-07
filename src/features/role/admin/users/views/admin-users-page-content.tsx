@@ -16,19 +16,8 @@ import { AdminStudentDrawer } from "@/features/role/admin/users/components/admin
 import { AdminUserMobileCard } from "@/features/role/admin/users/components/admin-user-mobile-card";
 import { AdminUserRowActions } from "@/features/role/admin/users/components/admin-user-row-actions";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
+import { getAdminCoachLabel, getAdminRoleLabel } from "@/features/role/admin/users/services/admin-user-labels";
 import { useAdminUsersPageState } from "@/features/role/admin/users/hooks/use-admin-users-page-state";
-
-function getRoleLabel( role: AdminUserListItem["role"] ) {
-	return role === "ADMIN" ? "Admin" : role === "COACH" ? "Coach" : "Student";
-}
-
-function getCoachLabel( user: AdminUserListItem ) {
-	if (user.role !== "STUDENT") {
-		return "No aplica";
-	}
-
-	return user.coach ? user.coach.name : "Sin coach";
-}
 
 export default function AdminUsersPageContent() {
 	const isMounted = useIsMounted();
@@ -73,18 +62,18 @@ export default function AdminUsersPageContent() {
 			header: "Rol",
 			id: "role",
 			minWidth: 110,
-			cell: ( user ) => <Chip size={ "sm" } variant={ "soft" }>{ getRoleLabel( user.role ) }</Chip>,
+			cell: ( user ) => <Chip size={ "sm" } variant={ "soft" }>{ getAdminRoleLabel( user.role ) }</Chip>,
 		},
 		{
 			accessorKey: "coach",
-			header: "Coach",
+			header: "Entrenador",
 			id: "coach",
 			minWidth: 180,
 			cell: ( user ) => (
 				<div className={ "flex min-w-0 flex-col" }>
-					<span className={ "text-sm text-foreground" }>{ getCoachLabel( user ) }</span>
+					<span className={ "text-sm text-foreground" }>{ getAdminCoachLabel( user ) }</span>
 					{ user.role === "STUDENT" ?
-						<span className={ "text-xs text-muted" }>{ user.coach?.active ? "Coach activo" : user.coach ? "Coach inactivo" : "Sin asignación" }</span> : null }
+						<span className={ "text-xs text-muted" }>{ user.coach?.active ? "Entrenador activo" : user.coach ? "Entrenador inactivo" : "Sin asignar" }</span> : null }
 				</div>
 			),
 		},
@@ -151,8 +140,8 @@ export default function AdminUsersPageContent() {
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<Card.Content className={ "flex flex-col gap-3 p-3 sm:flex-row sm:items-end sm:justify-between" }>
 					<PageHeader
-						description={ "Listado global para crear coaches y revisar la asignación estudiante-coach." }
-						title={ "Usuarios admin" }
+						description={ "Todas las cuentas de la app y el entrenador de cada estudiante." }
+						title={ "Usuarios" }
 					/>
 					<div className={ "flex items-center justify-end gap-2" }>
 						<Button className={ "w-full md:w-auto" } isDisabled={ isRefreshing } variant={ "secondary" } onPress={ () => void refetch() }>
@@ -162,6 +151,7 @@ export default function AdminUsersPageContent() {
 						<Dropdown>
 							<Button
 								isIconOnly
+								aria-label={ "Crear usuario" }
 								className={ "size-10 shrink-0 " }
 								variant={ "secondary" }
 							>
@@ -170,13 +160,13 @@ export default function AdminUsersPageContent() {
 							<Dropdown.Popover placement={ "bottom end" }>
 								<Dropdown.Menu onAction={ handleCreateAction }>
 									<Header>Crear usuario</Header>
-									<Dropdown.Item id={ "create-coach" } textValue={ "Crear coach" }>
+									<Dropdown.Item id={ "create-coach" } textValue={ "Nuevo entrenador" }>
 										<UserPlus className={ "size-4 shrink-0 text-accent" }/>
-										<Label className={ "text-accent" }>Crear coach</Label>
+										<Label className={ "text-accent" }>Nuevo entrenador</Label>
 									</Dropdown.Item>
-									<Dropdown.Item id={ "create-student" } textValue={ "Crear estudiante" }>
+									<Dropdown.Item id={ "create-student" } textValue={ "Nuevo estudiante" }>
 										<UserPlus className={ "size-4 shrink-0 text-accent" }/>
-										<Label className={ "text-accent" }>Crear estudiante</Label>
+										<Label className={ "text-accent" }>Nuevo estudiante</Label>
 									</Dropdown.Item>
 								</Dropdown.Menu>
 							</Dropdown.Popover>
@@ -194,7 +184,7 @@ export default function AdminUsersPageContent() {
 							<Label>Buscar</Label>
 							<SearchField.Group className={ "border border-border" }>
 								<SearchField.SearchIcon/>
-								<SearchField.Input placeholder={ "Nombre, email, DNI o coach..." }/>
+								<SearchField.Input placeholder={ "Nombre, email, DNI o entrenador..." }/>
 								<SearchField.ClearButton/>
 							</SearchField.Group>
 						</SearchField>
@@ -205,9 +195,9 @@ export default function AdminUsersPageContent() {
 							<Select.Popover>
 								<ListBox>
 									<ListBox.Item id={ "ALL" } textValue={ "Todos" }>Todos<ListBox.ItemIndicator/></ListBox.Item>
-									<ListBox.Item id={ "ADMIN" } textValue={ "Admin" }>Admin<ListBox.ItemIndicator/></ListBox.Item>
-									<ListBox.Item id={ "COACH" } textValue={ "Coach" }>Coach<ListBox.ItemIndicator/></ListBox.Item>
-									<ListBox.Item id={ "STUDENT" } textValue={ "Student" }>Student<ListBox.ItemIndicator/></ListBox.Item>
+									<ListBox.Item id={ "ADMIN" } textValue={ "Administrador" }>Administrador<ListBox.ItemIndicator/></ListBox.Item>
+									<ListBox.Item id={ "COACH" } textValue={ "Entrenador" }>Entrenador<ListBox.ItemIndicator/></ListBox.Item>
+									<ListBox.Item id={ "STUDENT" } textValue={ "Estudiante" }>Estudiante<ListBox.ItemIndicator/></ListBox.Item>
 								</ListBox>
 							</Select.Popover>
 						</Select>
@@ -226,12 +216,12 @@ export default function AdminUsersPageContent() {
 					</div>
 
 					<Chip size={ "sm" } variant={ "soft" }>
-						{ filteredUsers.length } usuarios
+						{ filteredUsers.length === 1 ? "1 usuario" : `${ filteredUsers.length } usuarios` }
 					</Chip>
 
 					<div className={ "hidden md:block" }>
 						<DataGrid
-							aria-label={ "Listado de usuarios admin" }
+							aria-label={ "Listado de usuarios" }
 							columns={ columns }
 							contentClassName={ "min-w-full sm:min-w-[900px]" }
 							data={ filteredUsers }

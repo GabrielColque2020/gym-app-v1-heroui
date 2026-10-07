@@ -20,7 +20,7 @@ import type { CreateStudentInput, UpdateStudentInput } from "@/features/students
 
 export async function createCoachAction( input: CreateCoachInput ) {
 	try {
-		await requireAdminSession( "crear coaches" );
+		await requireAdminSession( "crear entrenadores" );
 		const { birthDate, email, gender, name, password, userData } = validateCreateCoachInput( input );
 
 		return await prisma.user.create( {
@@ -37,9 +37,9 @@ export async function createCoachAction( input: CreateCoachInput ) {
 			select: adminUserSelect,
 		} ) as unknown as AdminUserListItem;
 	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al crear el coach.";
+		const message = error instanceof Error ? error.message : "Error desconocido al crear el entrenador.";
 
-		throw new Error( `No se pudo crear el coach. ${ message }` );
+		throw new Error( `No se pudo crear el entrenador. ${ message }` );
 	}
 }
 
@@ -66,7 +66,7 @@ export async function toggleUserStatusAction( input: ToggleUserStatusInput ) {
 		}
 
 		if (currentUser.role === "ADMIN") {
-			throw new Error( "No se puede desactivar una cuenta admin desde este MVP." );
+			throw new Error( "Las cuentas de administrador no se pueden desactivar." );
 		}
 
 		return await prisma.user.update( {
@@ -111,7 +111,7 @@ export async function updateAdminUserAction( input: UpdateAdminUserInput ) {
 
 export async function assignCoachToStudentAction( input: AssignCoachInput ) {
 	try {
-		await requireAdminSession( "asignar coach a estudiantes" );
+		await requireAdminSession( "asignar entrenador a estudiantes" );
 
 		const currentUser = await prisma.user.findUnique( {
 			select: {
@@ -128,7 +128,7 @@ export async function assignCoachToStudentAction( input: AssignCoachInput ) {
 		}
 
 		if (currentUser.role !== "STUDENT") {
-			throw new Error( "La asignación de coach solo aplica a estudiantes." );
+			throw new Error( "Solo los estudiantes tienen entrenador asignado." );
 		}
 
 		if (input.coachId) {
@@ -143,7 +143,7 @@ export async function assignCoachToStudentAction( input: AssignCoachInput ) {
 			} );
 
 			if (!coach || coach.role !== "COACH") {
-				throw new Error( "El coach seleccionado no es válido." );
+				throw new Error( "El entrenador elegido no es válido." );
 			}
 		}
 
@@ -157,9 +157,9 @@ export async function assignCoachToStudentAction( input: AssignCoachInput ) {
 			},
 		} ) as unknown as AdminUserListItem;
 	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al asignar coach.";
+		const message = error instanceof Error ? error.message : "Error desconocido al asignar el entrenador.";
 
-		throw new Error( `No se pudo asignar el coach. ${ message }` );
+		throw new Error( `No se pudo asignar el entrenador. ${ message }` );
 	}
 }
 
@@ -176,7 +176,7 @@ async function assertCoachExists( coachId: string ) {
 	} );
 
 	if (!coach) {
-		throw new Error( "El coach seleccionado no es válido." );
+		throw new Error( "El entrenador elegido no está activo o no existe." );
 	}
 }
 
@@ -267,7 +267,7 @@ export async function deleteAdminUserAction( input: DeleteAdminUserInput ) {
 		}
 
 		if (currentUser.role === "ADMIN") {
-			throw new Error( "No se puede eliminar una cuenta admin desde este MVP." );
+			throw new Error( "Las cuentas de administrador no se pueden eliminar." );
 		}
 
 		await prisma.$transaction( async ( tx ) => {

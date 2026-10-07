@@ -58,7 +58,7 @@ export function AdminCoachDrawer( {
 	hideTrigger = false,
 	isOpen: controlledIsOpen,
 	onOpenChangeAction,
-	triggerLabel = "Crear coach",
+	triggerLabel = "Nuevo entrenador",
 }: AdminCoachDrawerProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const [ isPasswordVisible, setIsPasswordVisible ] = useState( false );
@@ -119,12 +119,12 @@ export function AdminCoachDrawer( {
 
 		try {
 			await mutation.mutateAsync( values );
-			toast.success( "Coach creado", {
+			toast.success( "Entrenador creado", {
 				description: "La cuenta quedó disponible en el listado de usuarios.",
 			} );
 			handleOpenChange( false );
 		} catch {
-			toast.danger( "Error al crear coach", {
+			toast.danger( "No se pudo crear el entrenador", {
 				description: "No se pudo crear la cuenta.",
 			} );
 		}
@@ -151,9 +151,9 @@ export function AdminCoachDrawer( {
 							<Plus className={ "size-5" }/>
 						</div>
 						<div>
-							<Drawer.Heading>Crear coach</Drawer.Heading>
+							<Drawer.Heading>Nuevo entrenador</Drawer.Heading>
 							<Description className={ "mt-1 text-sm" }>
-								Alta de cuentas para entrenamiento y gestión operativa.
+								Con esta cuenta va a poder cargar estudiantes, rutinas y planes alimenticios.
 							</Description>
 						</div>
 					</div>
@@ -169,7 +169,7 @@ export function AdminCoachDrawer( {
 
 						<section className={ "space-y-4" }>
 							<div>
-								<h3 className={ "text-sm font-semibold text-foreground" }>Perfil del coach</h3>
+								<h3 className={ "text-sm font-semibold text-foreground" }>Datos del entrenador</h3>
 								<p className={ "text-sm text-muted" }>Datos de acceso e identificación.</p>
 							</div>
 
@@ -196,7 +196,7 @@ export function AdminCoachDrawer( {
 									onChange={ ( value ) => updateValue( "email", value ) }
 								>
 									<Label>Email</Label>
-									<Input autoComplete={ "off" } className={ "border border-border" } placeholder={ "coach@mail.com" } type={ "email" }/>
+									<Input autoComplete={ "off" } className={ "border border-border" } placeholder={ "entrenador@mail.com" } type={ "email" }/>
 									{ isEmailInvalid ? <FieldError>Ingresa un email válido.</FieldError> : null }
 								</TextField>
 
@@ -356,7 +356,7 @@ export function AdminCoachDrawer( {
 							{ ( { isPending } ) => (
 								<>
 									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CheckCircle2 className={ "size-4" }/> }
-									{ isPending ? "Creando..." : "Crear coach" }
+									{ isPending ? "Creando..." : "Crear entrenador" }
 								</>
 							) }
 						</Button>

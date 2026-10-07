@@ -41,8 +41,8 @@ export function AdminExerciseGlobalActionMenu( {
 					<Dropdown.Menu onAction={ handleAction }>
 						<Header>Opciones</Header>
 						<Dropdown.Item id={ "edit" } textValue={ "Editar ejercicio global" }>
-							<PencilLine className={ "size-4 shrink-0 text-warning" }/>
-							<Label className={ "text-warning" }>Editar</Label>
+							<PencilLine className={ "size-4 shrink-0" }/>
+							<Label>Editar</Label>
 						</Dropdown.Item>
 					</Dropdown.Menu>
 				</Dropdown.Popover>

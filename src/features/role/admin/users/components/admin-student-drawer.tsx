@@ -68,8 +68,8 @@ export function AdminStudentDrawer( {
 	const placement = useResponsiveDrawerPlacement();
 	const title = isEditMode ? "Editar estudiante" : "Nuevo estudiante";
 	const description = isEditMode
-		? "Actualiza el perfil del estudiante y su coach asignado."
-		: "Carga un estudiante y opcionalmente asígnale un coach.";
+		? "Cambiá los datos del estudiante o su entrenador."
+		: "Cargá los datos del estudiante. El entrenador se puede asignar ahora o después.";
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear estudiante";
 	const showTriggerLabel = true;
 	const {
@@ -216,11 +216,11 @@ export function AdminStudentDrawer( {
 						/>
 
 						<div className={ "grid gap-2" }>
-							<Label>Coach asignado</Label>
+							<Label>Entrenador asignado</Label>
 							<Select
 								fullWidth
 								name={ "coachId" }
-								placeholder={ "Sin coach" }
+								placeholder={ "Sin entrenador" }
 								value={ values.coachId ?? "" }
 								onChange={ ( value ) => handleCoachChange( value ? String( value ) : null ) }
 							>
@@ -230,8 +230,8 @@ export function AdminStudentDrawer( {
 								</Select.Trigger>
 								<Select.Popover>
 									<ListBox>
-										<ListBox.Item id={ "" } textValue={ "Sin coach" }>
-											Sin coach
+										<ListBox.Item id={ "" } textValue={ "Sin entrenador" }>
+											Sin entrenador
 										</ListBox.Item>
 										{ coaches.map( ( coach ) => (
 											<ListBox.Item key={ coach.id } id={ coach.id } textValue={ coach.name }>
@@ -248,7 +248,7 @@ export function AdminStudentDrawer( {
 								</Select.Popover>
 							</Select>
 							<Description className={ "text-sm text-muted" }>
-								Este coach quedara asociado al estudiante al guardar.
+								Es quien le va a armar la rutina y el plan alimenticio.
 							</Description>
 						</div>
 

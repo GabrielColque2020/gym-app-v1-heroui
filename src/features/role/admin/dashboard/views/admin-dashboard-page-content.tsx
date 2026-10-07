@@ -24,7 +24,7 @@ export default function AdminDashboardPageContent() {
 	const shouldShowLoading = !isMounted || isLoading || ( !data && ( isFetching || !isError ) );
 
 	if (shouldShowLoading) {
-		return <DashboardSkeleton title={ "Cargando dashboard admin" }/>;
+		return <DashboardSkeleton title={ "Cargando el inicio" }/>;
 	}
 
 	if (isError || !data) {
@@ -32,8 +32,8 @@ export default function AdminDashboardPageContent() {
 			<Card className={ "border border-danger/20 bg-surface" } variant={ "default" }>
 				<Card.Content className={ "space-y-3 p-4" }>
 					<PageHeader
-						description={ error?.message ?? "No pudimos cargar el resumen admin." }
-						title={ "Error al cargar el dashboard admin" }
+						description={ error?.message ?? "No pudimos cargar el resumen." }
+						title={ "No se pudo cargar el inicio" }
 					/>
 				</Card.Content>
 			</Card>
@@ -45,8 +45,8 @@ export default function AdminDashboardPageContent() {
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<Card.Content className={ "flex flex-col gap-3 p-3 md:flex-row md:items-end md:justify-between" }>
 					<PageHeader
-						description={ "Resumen global para cuentas, roles y estado general del sistema." }
-						title={ "Dashboard admin" }
+						description={ "Cuántas cuentas hay y en qué estado están." }
+						title={ "Inicio" }
 					/>
 					<Button className={ "w-full md:w-auto" } isDisabled={ isRefreshing } variant={ "secondary" } onPress={ handleRefresh }>
 						<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
@@ -56,17 +56,17 @@ export default function AdminDashboardPageContent() {
 			</Card>
 
 			<div className={ "grid gap-3 md:grid-cols-2 xl:grid-cols-4" }>
-				<StatCard description={ "Usuarios registrados en el sistema." } label={ "Total usuarios" } value={ data.totals.totalUsers }/>
-				<StatCard description={ "Coaches activos disponibles." } label={ "Coaches activos" } value={ data.totals.activeCoaches }/>
-				<StatCard description={ "Estudiantes activos con acceso." } label={ "Estudiantes activos" } value={ data.totals.activeStudents }/>
-				<StatCard description={ "Usuarios inactivos." } label={ "Inactivos" } value={ data.totals.inactiveUsers }/>
+				<StatCard description={ "Todas las cuentas, de cualquier rol." } label={ "Usuarios" } value={ data.totals.totalUsers }/>
+				<StatCard description={ "Entrenadores que pueden entrar a la app." } label={ "Entrenadores activos" } value={ data.totals.activeCoaches }/>
+				<StatCard description={ "Estudiantes que pueden entrar a la app." } label={ "Estudiantes activos" } value={ data.totals.activeStudents }/>
+				<StatCard description={ "Cuentas sin acceso a la app." } label={ "Inactivos" } value={ data.totals.inactiveUsers }/>
 			</div>
 
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<Card.Content className={ "flex flex-col gap-3 p-3 md:flex-row md:items-center md:justify-between" }>
 					<div className={ "space-y-1" }>
 						<p className={ "text-base font-semibold text-foreground" }>Accesos rápidos</p>
-						<p className={ "text-sm text-muted" }>Saltos directos a las tareas más usadas por administración.</p>
+						<p className={ "text-sm text-muted" }>Las tareas más comunes.</p>
 					</div>
 					<div className={ "flex flex-col gap-2 sm:flex-row" }>
 						<Button variant={ "secondary" } onPress={ () => router.push( "/admin/users" ) }>
@@ -79,7 +79,7 @@ export default function AdminDashboardPageContent() {
 						</Button>
 						<Button onPress={ () => router.push( "/admin/users" ) }>
 							<UserPlus className={ "size-4" }/>
-							Crear coach
+							Nuevo entrenador
 						</Button>
 					</div>
 				</Card.Content>
