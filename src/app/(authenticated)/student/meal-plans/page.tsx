@@ -5,7 +5,7 @@ import StudentMealPlansPageContent from "@/features/role/student/meal-plans/view
 
 export const metadata: Metadata = {
 	title: "Plan alimenticio",
-	description: "Planes alimenticios del estudiante autenticado",
+	description: "Plan alimenticio del estudiante",
 };
 
 export default async function StudentMealPlansPage() {

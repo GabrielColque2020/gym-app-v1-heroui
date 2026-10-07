@@ -6,7 +6,7 @@ import { CircleDot, Download, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { CardGridSkeleton } from "@/components/common/skeletons";
-import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
+import { formatMealPlanDescriptionLines, formatMealPlanUpdatedLabel, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import { buildMealPlansReportPdfUrl } from "@/features/meal-plans/services/meal-plans-report-pdf-url";
 import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
 import { useMealPlans } from "@/features/role/student/meal-plans/hooks/use-meal-plans";
@@ -17,19 +17,6 @@ type StudentMealPlansPageContentProps = { studentId: string | null };
 const DAY_MS = 24 * 60 * 60 * 1000;
 // Cuanto tiempo se marca una comida como recien cambiada.
 const RECENT_DAYS = 7;
-
-// "hoy", "ayer", "hace 3 días" y, pasada la semana, la fecha: asi el estudiante
-// sabe de un vistazo si el plan cambio hace poco o es el de siempre.
-function formatUpdatedLabel( updatedAt: Date, now: number ) {
-	const startOfDay = ( time: number ) => new Date( time ).setHours( 0, 0, 0, 0 );
-	const days = Math.round( ( startOfDay( now ) - startOfDay( updatedAt.getTime() ) ) / DAY_MS );
-
-	if (days <= 0) return "hoy";
-	if (days === 1) return "ayer";
-	if (days < RECENT_DAYS) return `hace ${ days } días`;
-
-	return `el ${ new Intl.DateTimeFormat( "es-AR", { day: "numeric", month: "long", year: "numeric" } ).format( updatedAt ) }`;
-}
 
 function MealPlanCard( { isRecent, mealPlan }: { isRecent: boolean; mealPlan: MealPlan } ) {
 	return (
@@ -123,7 +110,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const updatedTimes = data.mealPlans.map( ( mealPlan ) => new Date( mealPlan.updatedAt ).getTime() );
 	const lastUpdatedAt = mealCount > 0 ? new Date( Math.max( ...updatedTimes ) ) : null;
 	const summary = lastUpdatedAt
-		? `${ mealCount } ${ mealCount === 1 ? "comida" : "comidas" } · Actualizado ${ formatUpdatedLabel( lastUpdatedAt, now ) }`
+		? `${ mealCount } ${ mealCount === 1 ? "comida" : "comidas" } · Actualizado ${ formatMealPlanUpdatedLabel( lastUpdatedAt, now ) }`
 		: "Todavía sin comidas cargadas.";
 
 	return (

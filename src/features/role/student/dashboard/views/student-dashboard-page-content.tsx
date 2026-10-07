@@ -34,8 +34,8 @@ export default function StudentDashboardPageContent() {
 			value: data.routine.exercisesInNextDay,
 		},
 		{
-			description: "Planes alimenticios cargados para tu cuenta.",
-			label: "Planes alimenticios",
+			description: "Comidas cargadas en tu plan alimenticio.",
+			label: "Comidas del plan",
 			value: data.mealPlans.total,
 		},
 		{

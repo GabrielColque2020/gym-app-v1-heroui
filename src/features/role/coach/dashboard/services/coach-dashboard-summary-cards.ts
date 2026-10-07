@@ -19,7 +19,7 @@ export function buildCoachDashboardQuickStats( summary: CoachDashboardSummary ) 
 		},
 		{
 			description: "Estudiantes activos con plan alimenticio registrado.",
-			label: "Planes alimenticios",
+			label: "Con plan alimenticio",
 			value: summary.totals.studentsWithMealPlan,
 		},
 	] as const;

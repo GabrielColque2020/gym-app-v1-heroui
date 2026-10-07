@@ -35,6 +35,21 @@ export function sortMealPlansByMealTime<TMealPlan extends { order: number; title
 	);
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// "hoy", "ayer", "hace 3 días" y, pasada la semana, la fecha: asi se ve de un
+// vistazo si la comida cambio hace poco o es la de siempre.
+export function formatMealPlanUpdatedLabel( updatedAt: Date, now: number ) {
+	const startOfDay = ( time: number ) => new Date( time ).setHours( 0, 0, 0, 0 );
+	const days = Math.round( ( startOfDay( now ) - startOfDay( updatedAt.getTime() ) ) / DAY_MS );
+
+	if (days <= 0) return "hoy";
+	if (days === 1) return "ayer";
+	if (days < 7) return `hace ${ days } días`;
+
+	return `el ${ new Intl.DateTimeFormat( "es-AR", { day: "numeric", month: "long", year: "numeric" } ).format( updatedAt ) }`;
+}
+
 export function formatMealPlanDescriptionLines( description: string ) {
 	return description
 		.split( /\r?\n/ )

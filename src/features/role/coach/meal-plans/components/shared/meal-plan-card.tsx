@@ -1,12 +1,11 @@
 "use client";
 
-import type { Key } from "@heroui/react";
-import { Button, Card, Dropdown, Header, Label } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
 import { useState } from "react";
-import { CircleDot, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { CircleDot, Pencil, Trash2 } from "lucide-react";
 
 import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
-import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
+import { formatMealPlanDescriptionLines, formatMealPlanUpdatedLabel, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import { MealPlanDeleteDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-delete-drawer";
 import { MealPlanDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer";
 
@@ -24,50 +23,42 @@ export function MealPlanCard( {
 							  }: MealPlanCardProps ) {
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
-
-	function handleAction( key: Key ) {
-		if (key === "edit") {
-			setIsEditOpen( true );
-			return;
-		}
-
-		if (key === "delete") {
-			setIsDeleteOpen( true );
-		}
-	}
+	// El momento en que se mostro la tarjeta, para calcular "hace cuanto".
+	const [ now ] = useState( () => Date.now() );
+	const mealName = formatMealTime( mealPlan.title );
 
 	return (
 		<Card className={ "border border-border shadow-sm py-2" } variant={ "default" }>
 			<Card.Header className={ "border-b border-border px-1 pt-1" }>
 				<div className={ "min-w-0" }>
-					<div className={ "flex min-w-0 items-center justify-between gap-3" }>
-						<p className={ "min-w-0 truncate text-base font-semibold text-foreground" }>
-							{ formatMealTime( mealPlan.title ) }
-						</p>
+					<div className={ "flex min-w-0 items-center justify-between gap-2" }>
+						<div className={ "min-w-0" }>
+							<p className={ "truncate text-base font-semibold text-foreground" }>{ mealName }</p>
+							{ /* La fecha puede llegar como texto si viene de lo guardado en el navegador. */ }
+							<p className={ "truncate text-xs text-muted" }>
+								Actualizada { formatMealPlanUpdatedLabel( new Date( mealPlan.updatedAt ), now ) }
+							</p>
+						</div>
 
-						<Dropdown>
+						<div className={ "flex shrink-0 items-center" }>
 							<Button
 								isIconOnly
-								aria-label={ `Acciones de ${ formatMealTime( mealPlan.title ) }` }
-								className={ "shrink-0 text-foreground" }
+								aria-label={ `Editar ${ mealName }` }
 								variant={ "ghost" }
+								onPress={ () => setIsEditOpen( true ) }
 							>
-								<MoreVertical className={ "size-4" }/>
+								<Pencil className={ "size-4" }/>
 							</Button>
-							<Dropdown.Popover placement={ "bottom end" }>
-								<Dropdown.Menu onAction={ handleAction }>
-									<Header>Opciones</Header>
-									<Dropdown.Item id={ "edit" } textValue={ "Editar" }>
-										<Pencil className={ "size-4 shrink-0 text-warning" }/>
-										<Label className={ "text-warning" }>Editar</Label>
-									</Dropdown.Item>
-									<Dropdown.Item id={ "delete" } textValue={ "Eliminar" } variant={ "danger" }>
-										<Trash2 className={ "size-4 shrink-0 text-danger" }/>
-										<Label>Eliminar</Label>
-									</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown.Popover>
-						</Dropdown>
+							<Button
+								isIconOnly
+								aria-label={ `Eliminar ${ mealName }` }
+								className={ "text-danger" }
+								variant={ "ghost" }
+								onPress={ () => setIsDeleteOpen( true ) }
+							>
+								<Trash2 className={ "size-4" }/>
+							</Button>
+						</div>
 					</div>
 				</div>
 			</Card.Header>

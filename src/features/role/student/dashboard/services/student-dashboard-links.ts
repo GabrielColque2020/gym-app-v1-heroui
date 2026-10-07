@@ -26,10 +26,10 @@ export const STUDENT_DASHBOARD_QUICK_ACTIONS = [
 		label: "Rutina de entrenamiento",
 	},
 	{
-		compactLabel: "Planes",
+		compactLabel: "Plan",
 		href: buildMealPlansHref(),
 		id: "meal-plans",
-		label: "Planes alimenticios",
+		label: "Plan alimenticio",
 	},
 	{
 		compactLabel: "Historial",

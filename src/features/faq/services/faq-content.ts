@@ -65,7 +65,7 @@ const STUDENT_FAQ_SECTIONS: FaqSection[] = [
 			{
 				answer: "Abre Plan alimenticio desde el menú lateral. Ahí deberías ver el plan que está cargado para tu cuenta, normalmente organizado por comidas, momentos del día o bloques. Lo mejor es revisar primero si tienes un plan activo y después entrar en cada bloque para leerlo con calma. Si la pantalla aparece vacía, lo más probable es que todavía no tengas un plan asignado o que tu coach aún no lo haya cargado.",
 				id: "student-meal-plans",
-				question: "¿Dónde veo mis planes alimenticios?",
+				question: "¿Dónde veo mi plan alimenticio?",
 			},
 			{
 				answer: "Entra en Historial de Rutina desde el menú lateral. Una vez dentro, revisa el periodo que aparece en pantalla y busca el mes que quieras consultar. Desde ahí puedes ver sesiones anteriores y, en algunos casos, descargar o revisar reportes relacionados con tu progreso. Si estás buscando un entrenamiento puntual y no lo encuentras enseguida, lo primero que conviene comprobar es que estés mirando el mes correcto.",
