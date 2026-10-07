@@ -5,21 +5,22 @@ import type {
 	CoachTrainingRoutineDay,
 } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 
+import type { ReactNode } from "react";
+
 import Link from "next/link";
 import { Card } from "@heroui/react";
 import { CheckCircle2, Pencil, Plus } from "lucide-react";
 
-import { buildEditRoutineDayHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
-import { CoachRepeatWeekAction } from "@/features/role/coach/training-routine/components/shared/coach-repeat-week-action";
 import { isRoutineDayDraftDirty } from "@/features/routine/services/routine-day-editor";
 import { useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
 import { getTrainingRoutineDayTitle } from "@/features/training-routine/services/training-routine-day-formatters";
 
 type CoachTrainingRoutineMonthGridProps = {
-	month: number;
+	// Arma el enlace al editor de un dia.
+	buildDayHrefAction: ( routineDayId: string ) => string;
+	// Accion del encabezado de cada semana (por ejemplo, repetirla en las demas).
+	renderWeekAction?: ( routineWeek: CoachTrainingRoutine ) => ReactNode;
 	routineWeeks: CoachTrainingRoutine[];
-	studentId: string;
-	year: number;
 };
 
 type DayCellProps = {
@@ -104,13 +105,13 @@ function DayCell( { day, hasUnsavedChanges, href }: DayCellProps ) {
 	);
 }
 
-// El mes entero a la vista: una fila por semana y una celda por dia, con lo que
-// tiene cargado. Cada celda abre el editor de ese dia.
+// La rutina entera a la vista: una fila por semana y una celda por dia, con lo que
+// tiene cargado. Cada celda abre el editor de ese dia. Sirve para el mes de un
+// estudiante y para una plantilla.
 export function CoachTrainingRoutineMonthGrid( {
-												  month,
+												  buildDayHrefAction,
+												  renderWeekAction,
 												  routineWeeks,
-												  studentId,
-												  year,
 											  }: CoachTrainingRoutineMonthGridProps ) {
 	// Los borradores viven en este navegador: un dia editado y no guardado se avisa aca.
 	const drafts = useRoutineDayDraftStore( ( state ) => state.drafts );
@@ -131,13 +132,7 @@ export function CoachTrainingRoutineMonthGrid( {
 									{ exerciseCount > 0 ? ` · ${ exerciseCount } ${ exerciseCount === 1 ? "ejercicio" : "ejercicios" }` : "" }
 								</p>
 							</div>
-							<CoachRepeatWeekAction
-								month={ month }
-								routineWeeks={ routineWeeks }
-								selectedRoutine={ routineWeek }
-								studentId={ studentId }
-								year={ year }
-							/>
+							{ renderWeekAction?.( routineWeek ) }
 						</Card.Header>
 						<Card.Content className={ "px-3 pb-3" }>
 							{ routineWeek.routineDays.length === 0 ? (
@@ -149,7 +144,7 @@ export function CoachTrainingRoutineMonthGrid( {
 											key={ day.id }
 											day={ day }
 											hasUnsavedChanges={ isRoutineDayDraftDirty( drafts[ day.id ], day.routines ) }
-											href={ buildEditRoutineDayHref( day.id, studentId, month, year ) }
+											href={ buildDayHrefAction( day.id ) }
 										/>
 									) ) }
 								</div>

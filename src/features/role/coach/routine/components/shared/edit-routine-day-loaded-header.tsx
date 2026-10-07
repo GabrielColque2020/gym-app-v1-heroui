@@ -6,6 +6,7 @@ import { ArrowRight, RotateCw, Save } from "lucide-react";
 
 type EditRoutineDayLoadedHeaderProps = {
 	backHref: string;
+	backLabel: string;
 	breadcrumbs: Array<{ label: string; href?: string }>;
 	description: string;
 	hasExercises: boolean;
@@ -35,6 +36,7 @@ function capitalize( text: string ) {
 // para seguir con el dia siguiente. "Reintentar" aparece solo si un guardado fallo.
 export function EditRoutineDayLoadedHeader( {
 												backHref,
+												backLabel,
 												breadcrumbs,
 												description,
 												hasExercises,
@@ -52,7 +54,7 @@ export function EditRoutineDayLoadedHeader( {
 
 	return (
 		<>
-			<PageBreadcrumbs backHref={ backHref } backLabel={ "Volver a rutina" } crumbs={ breadcrumbs }/>
+			<PageBreadcrumbs backHref={ backHref } backLabel={ backLabel } crumbs={ breadcrumbs }/>
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				{ /* Con `flex-wrap` los botones bajan de renglon antes de que el titulo se parta. */ }
 				<Card.Header className={ "flex flex-row flex-wrap items-center justify-between gap-3 p-3" }>

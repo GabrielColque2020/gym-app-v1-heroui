@@ -31,6 +31,7 @@ type UseEditRoutineDayLoadedStateParams = {
 	onRefreshRoutineDayAction: () => Promise<RoutineDayDetailBase | null>;
 	routineDayId: string;
 	studentId: string | null;
+	templateId: string | null;
 };
 
 export function useEditRoutineDayLoadedState( {
@@ -39,6 +40,7 @@ export function useEditRoutineDayLoadedState( {
 	onRefreshRoutineDayAction,
 	routineDayId,
 	studentId,
+	templateId,
 }: UseEditRoutineDayLoadedStateParams ) {
 	const [ isRefreshConfirmOpen, setIsRefreshConfirmOpen ] = useState( false );
 	const saveRoutineDay = useSaveRoutineDayExercises( {
@@ -179,6 +181,7 @@ export function useEditRoutineDayLoadedState( {
 				exercises: mapDraftToSaveInput( draftRoutines ),
 				routineDayId,
 				studentId,
+				templateId,
 			} );
 			setFailedSignature( null );
 
@@ -197,7 +200,7 @@ export function useEditRoutineDayLoadedState( {
 
 			return false;
 		}
-	}, [ draftRoutines, draftSignature, requiredFieldsMessage, routineDayId, saveRoutineDay, studentId, validationError ] );
+	}, [ draftRoutines, draftSignature, requiredFieldsMessage, routineDayId, saveRoutineDay, studentId, templateId, validationError ] );
 	const handleSave = useCallback( () => saveDraft( { silent: false } ), [ saveDraft ] );
 
 	const isSaving = saveRoutineDay.isPending;

@@ -15,6 +15,8 @@ export type SaveRoutineDayExercisesActionInput = {
 	exercises: SaveRoutineDayExerciseInput[];
 	routineDayId: string;
 	studentId?: string | null;
+	// Con valor, el dia que se guarda es de esa plantilla.
+	templateId?: string | null;
 	coachId?: string | null;
 };
 
@@ -44,8 +46,9 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 			exercises,
 			routineDayId,
 			studentId,
+			templateId,
 		} = normalizeRoutineDayMutationInput( input );
-		const resolvedCoachId = coachId || session.sub;
+		const resolvedCoachId = templateId ? session.sub : coachId || session.sub;
 
 		if (!routineDayId) {
 			throw new Error( "Seleccioná un día válido antes de guardar cambios." );
@@ -57,6 +60,7 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 			coachId: resolvedCoachId,
 			routineDayId,
 			studentId,
+			templateId,
 		} );
 
 		const resolvedExercises = await assertRoutineCatalogExercisesAvailable(
@@ -75,6 +79,7 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 				coachId: resolvedCoachId,
 				routineDayId: routineDay.id,
 				studentId,
+				templateId,
 			} ),
 			routines: null,
 		};

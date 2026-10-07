@@ -25,7 +25,11 @@ export type RoutineDayDetail = Omit<FetchedRoutineDayDetail, "trainingRoutineWee
 		month: number;
 		name: string;
 		objective: string | null;
-		student: RoutineDayStudent;
+		// Sin estudiante cuando el dia es de una plantilla.
+		student: RoutineDayStudent | null;
+		// La plantilla a la que pertenece el dia, si no es de un estudiante. En ese
+		// caso mes y año valen 0: una plantilla no tiene fecha.
+		template: { id: string; name: string } | null;
 		week: number;
 		year: number;
 	};
@@ -61,11 +65,13 @@ export async function getRoutineDayDetailBase( {
 												   coachId,
 												   routineDayId,
 												   studentId,
+												   templateId,
 											   }: GetRoutineDayDetailInput ): Promise<RoutineDayDetail> {
 	const normalizedInput = normalizeRoutineDayDetailInput( {
 		coachId,
 		routineDayId,
 		studentId,
+		templateId,
 	} );
 
 	if (!normalizedInput.routineDayId) {
@@ -81,12 +87,12 @@ export async function getRoutineDayDetailBase( {
 		throw new Error( "No se encontró el día de rutina seleccionado." );
 	}
 
-	// La busqueda ya exige un estudiante, asi que el mes siempre viene: los dias de
-	// una plantilla, que no tienen mes, no llegan hasta aca.
+	// El dia es de una plantilla o del mes de un estudiante, segun como se busco.
+	const template = routineDay.trainingRoutineWeek.routineTemplate;
 	const routineMonth = routineDay.trainingRoutineWeek.trainingRoutineMonth;
-	const student = routineMonth?.student;
+	const student = routineMonth?.student ?? null;
 
-	if (!routineMonth || !student) {
+	if (!template && ( !routineMonth || !student )) {
 		throw new Error( "No se encontró el estudiante asociado a la rutina." );
 	}
 
@@ -131,12 +137,13 @@ export async function getRoutineDayDetailBase( {
 			} ) ),
 		} ) ),
 		trainingRoutine: {
-			month: routineMonth.month,
+			month: routineMonth?.month ?? 0,
 			name: routineDay.trainingRoutineWeek.name,
-			objective: routineMonth.objective,
+			objective: routineMonth?.objective ?? template?.objective ?? null,
 			student,
+			template: template ? { id: template.id, name: template.name } : null,
 			week: routineDay.trainingRoutineWeek.week,
-			year: routineMonth.year,
+			year: routineMonth?.year ?? 0,
 		},
 	};
 }

@@ -4,6 +4,8 @@ export type GetRoutineDayDetailInput = {
 	coachId?: string | null;
 	routineDayId: string;
 	studentId?: string | null;
+	// Con valor, el dia se busca dentro de esa plantilla y no en la rutina de un estudiante.
+	templateId?: string | null;
 };
 
 export const routineDayDetailInclude = {
@@ -64,6 +66,13 @@ export const routineDayDetailInclude = {
 	},
 	trainingRoutineWeek: {
 		include: {
+			routineTemplate: {
+				select: {
+					id: true,
+					name: true,
+					objective: true,
+				},
+			},
 			trainingRoutineMonth: {
 				include: {
 					student: {
@@ -89,11 +98,13 @@ export function normalizeRoutineDayDetailInput( {
 	coachId,
 	routineDayId,
 	studentId,
+	templateId,
 }: GetRoutineDayDetailInput ) {
 	return {
 		coachId,
 		routineDayId: routineDayId.trim(),
 		studentId: studentId?.trim(),
+		templateId: templateId?.trim(),
 	};
 }
 
@@ -101,7 +112,22 @@ export function buildRoutineDayDetailWhere( {
 	coachId,
 	routineDayId,
 	studentId,
+	templateId,
 }: ReturnType<typeof normalizeRoutineDayDetailInput> ): Prisma.RoutineDayWhereInput {
+	if (templateId) {
+		return {
+			id: routineDayId,
+			trainingRoutineWeek: {
+				routineTemplate: {
+					// Una plantilla siempre se busca con su entrenador. Sin entrenador no
+					// coincide ninguna, en vez de coincidir todas.
+					coachId: coachId || "",
+					id: templateId,
+				},
+			},
+		};
+	}
+
 	return {
 		id: routineDayId,
 		trainingRoutineWeek: {

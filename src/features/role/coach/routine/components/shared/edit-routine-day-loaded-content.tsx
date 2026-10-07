@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import { ExerciseVariantsDrawer } from "@/features/role/coach/exercises/components/shared/exercise-variants-drawer";
 import { RoutineDayEditorActionsProvider } from "@/features/role/coach/routine/components/shared/routine-day-editor-actions-context";
 
-import { buildEditRoutineDayHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
+import { buildEditRoutineDayHref, buildEditTemplateDayHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
+import { useRoutineTemplateDetail } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
 import { useTrainingRoutines } from "@/features/role/coach/training-routine/hooks/use-training-routines";
 
 import { EditRoutineDayLoadedHeader } from "@/features/role/coach/routine/components/shared/edit-routine-day-loaded-header";
@@ -17,10 +18,13 @@ import { EditRoutineDayMainCard } from "@/features/role/coach/routine/components
 import { EditRoutineDayRefreshModal } from "@/features/role/coach/routine/components/shared/edit-routine-day-refresh-modal";
 import { useEditRoutineDayLoadedState } from "@/features/role/coach/routine/hooks/use-edit-routine-day-loaded-state";
 
+const NO_WEEKS: never[] = [];
+
 type EditRoutineDayLoadedContentProps = {
 	data: RoutineDayDetailBase;
 	description: string;
 	backHref: string;
+	backLabel: string;
 	breadcrumbs: Array<{ label: string; href?: string }>;
 	isRefreshing: boolean;
 	onRefreshRoutineDayAction: () => Promise<RoutineDayDetailBase | null>;
@@ -32,6 +36,7 @@ type EditRoutineDayLoadedContentProps = {
 export function EditRoutineDayLoadedContent( {
 												 data,
 												 backHref,
+												 backLabel,
 												 breadcrumbs,
 												 description,
 												 isRefreshing,
@@ -66,13 +71,23 @@ export function EditRoutineDayLoadedContent( {
 		onRefreshRoutineDayAction,
 		routineDayId,
 		studentId,
+		templateId: data.trainingRoutine.template?.id ?? null,
 	} );
 
 	// El dia que sigue dentro de la misma semana, para guardar y continuar sin
 	// volver a la pantalla de la rutina.
 	const router = useRouter();
-	const { month, student, year } = data.trainingRoutine;
-	const monthWeeks = useTrainingRoutines( { month, studentId: student.id, year } ).data?.routineMonth.weeks;
+	const { month, student, template, year } = data.trainingRoutine;
+	// Las semanas entre las que se mueve el editor: las del mes del estudiante o
+	// las de la plantilla. Solo se pide la que corresponde.
+	const studentWeeks = useTrainingRoutines( { month, studentId: student?.id ?? null, year } ).data?.routineMonth.weeks;
+	const templateWeeks = useRoutineTemplateDetail( { templateId: template?.id ?? null } ).data?.weeks;
+	const monthWeeks = template ? templateWeeks : studentWeeks;
+	const buildDayHref = ( dayId: string ) => (
+		template
+			? buildEditTemplateDayHref( dayId, template.id )
+			: buildEditRoutineDayHref( dayId, student?.id ?? "", month, year )
+	);
 	// Lo que sigue: el proximo dia de la semana y, en el ultimo, el primero de la
 	// semana siguiente, para recorrer el mes entero guardando.
 	const currentWeekIndex = ( monthWeeks ?? [] ).findIndex(
@@ -95,7 +110,7 @@ export function EditRoutineDayLoadedContent( {
 		// cambios que quedaron de antes y el coach no decidio guardar, solo avanza.
 		const canAdvance = saveStatus === "pending" ? await handleSave() : true;
 
-		if (canAdvance) router.push( buildEditRoutineDayHref( nextDay.id, student.id, month, year ) );
+		if (canAdvance) router.push( buildDayHref( nextDay.id ) );
 	}
 
 	// Las variantes cuelgan del ejercicio ya guardado en la rutina. Para uno recien
@@ -139,6 +154,7 @@ export function EditRoutineDayLoadedContent( {
 		<div className={ "flex flex-col gap-4" }>
 			<EditRoutineDayLoadedHeader
 				backHref={ backHref }
+				backLabel={ backLabel }
 				breadcrumbs={ breadcrumbs }
 				description={ description }
 				hasExercises={ draftRoutines.length > 0 }
@@ -151,11 +167,10 @@ export function EditRoutineDayLoadedContent( {
 			/>
 
 			<EditRoutineDayNavigation
+				buildDayHrefAction={ buildDayHref }
 				isCurrentDayDirty={ isDirty }
-				month={ data.trainingRoutine.month }
 				routineDayId={ routineDayId }
-				studentId={ data.trainingRoutine.student.id }
-				year={ data.trainingRoutine.year }
+				weeks={ monthWeeks ?? NO_WEEKS }
 			/>
 
 			<RoutineDayEditorActionsProvider value={ editorActions }>

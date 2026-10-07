@@ -7,8 +7,9 @@ import { routineDayQueryOptions } from "@/features/routine/services/routine-day-
 type UseRoutineDayParams = {
 	routineDayId: string | null;
 	studentId?: string | null;
+	templateId?: string | null;
 };
 
-export function useRoutineDay( { routineDayId, studentId }: UseRoutineDayParams ) {
-	return useQuery( routineDayQueryOptions( routineDayId ?? "", studentId ) );
+export function useRoutineDay( { routineDayId, studentId, templateId }: UseRoutineDayParams ) {
+	return useQuery( routineDayQueryOptions( routineDayId ?? "", studentId, templateId ) );
 }

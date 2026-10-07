@@ -20,7 +20,7 @@ const trainingRoutineStudentSelect = {
 	name: true,
 } satisfies Prisma.UserSelect;
 
-const trainingRoutineWeekInclude = {
+export const trainingRoutineWeekInclude = {
 	routineDays: {
 		include: {
 			routines: {
@@ -58,7 +58,7 @@ export type TrainingRoutineStudent = Prisma.UserGetPayload<{
 	select: typeof trainingRoutineStudentSelect;
 }>;
 
-type FetchedTrainingRoutineWeek = Prisma.TrainingRoutineWeekGetPayload<{
+export type FetchedTrainingRoutineWeek = Prisma.TrainingRoutineWeekGetPayload<{
 	include: typeof trainingRoutineWeekInclude;
 }>;
 
@@ -89,6 +89,38 @@ export type TrainingRoutineMonth = Omit<FetchedTrainingRoutineMonth, "weeks"> & 
 
 function pickFirstText( ...values: Array<string | null | undefined> ) {
 	return values.find( ( value ) => value?.trim() )?.trim() ?? null;
+}
+
+// Deja las semanas como las usa la pantalla: cada dia con las series que el
+// estudiante ya cargo, y cada ejercicio con la imagen y el video del catalogo
+// general cuando no tiene propios.
+export function resolveTrainingRoutineWeeks(
+	weeks: FetchedTrainingRoutineWeek[],
+	loadedSetCountByDay: Map<string, number> = new Map(),
+): TrainingRoutineWeek[] {
+	return weeks.map( ( week ) => ( {
+		...week,
+		routineDays: week.routineDays.map( ( day ) => ( {
+			...day,
+			loadedSetCount: loadedSetCountByDay.get( `${ week.week }-${ day.dayNumber }` ) ?? 0,
+			routines: day.routines.map( ( routine ) => ( {
+				...routine,
+				exercise: routine.exercise
+					? {
+						...routine.exercise,
+						imageUrl: pickFirstText(
+							routine.exercise.imageUrl,
+							routine.exercise.globalExercise?.imageUrl,
+						),
+						videoUrl: pickFirstText(
+							routine.exercise.videoUrl,
+							routine.exercise.globalExercise?.videoUrl,
+						),
+					}
+					: routine.exercise,
+			} ) ),
+		} ) ),
+	} ) );
 }
 
 function validateMonth( month: number ) {
@@ -165,29 +197,7 @@ export async function getTrainingRoutinesByStudentBase( {
 	const resolvedRoutineMonth: TrainingRoutineMonth = routineMonth
 		? {
 			...routineMonth,
-			weeks: routineMonth.weeks.map( ( week ) => ( {
-				...week,
-				routineDays: week.routineDays.map( ( day ) => ( {
-					...day,
-					loadedSetCount: loadedSetCountByDay.get( `${ week.week }-${ day.dayNumber }` ) ?? 0,
-					routines: day.routines.map( ( routine ) => ( {
-						...routine,
-						exercise: routine.exercise
-							? {
-								...routine.exercise,
-								imageUrl: pickFirstText(
-									routine.exercise.imageUrl,
-									routine.exercise.globalExercise?.imageUrl,
-								),
-								videoUrl: pickFirstText(
-									routine.exercise.videoUrl,
-									routine.exercise.globalExercise?.videoUrl,
-								),
-							}
-							: routine.exercise,
-					} ) ),
-				} ) ),
-			} ) ),
+			weeks: resolveTrainingRoutineWeeks( routineMonth.weeks, loadedSetCountByDay ),
 		}
 		: {
 			createdAt: new Date(),

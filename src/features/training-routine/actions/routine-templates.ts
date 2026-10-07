@@ -9,6 +9,7 @@ import {
 	isRoutineTemplateNameValid,
 	normalizeRoutineTemplateName,
 	type RenameRoutineTemplateResult,
+	type RoutineTemplateDetail,
 	type RoutineTemplateListItem,
 	type SaveRoutineAsTemplateInput,
 	type SaveRoutineAsTemplateResult,
@@ -19,6 +20,11 @@ import {
 	type RoutineWeekCopySource,
 	routineWeeksCopyInclude,
 } from "@/features/training-routine/services/routine-weeks-copy";
+import {
+	type FetchedTrainingRoutineWeek,
+	resolveTrainingRoutineWeeks,
+	trainingRoutineWeekInclude,
+} from "@/features/training-routine/services/training-routines-by-student";
 import prisma from "@/lib/prisma";
 
 // "Fuerza" y "fuerza" son la misma plantilla para quien las busca en una lista.
@@ -298,4 +304,32 @@ export async function deleteRoutineTemplateAction( templateId: string ) {
 	} );
 
 	return { ok: true };
+}
+
+// Una plantilla con todo su contenido, en la misma forma que la rutina de un mes,
+// para mostrarla y editarla con las mismas pantallas. Devuelve `null` si no
+// existe o es de otro entrenador.
+export async function getRoutineTemplateDetailAction( templateId: string ): Promise<RoutineTemplateDetail | null> {
+	const session = await requireCoachSession( "consultar la plantilla" );
+	const template = ( await prisma.routineTemplate.findFirst( {
+		include: {
+			weeks: {
+				include: trainingRoutineWeekInclude,
+				orderBy: {
+					week: "asc",
+				},
+			},
+		},
+		where: {
+			coachId: session.sub,
+			id: templateId,
+		},
+	} ) ) as unknown as { id: string; name: string; objective: string | null; weeks: FetchedTrainingRoutineWeek[] } | null;
+
+	if (!template) return null;
+
+	return {
+		template: { id: template.id, name: template.name, objective: template.objective },
+		weeks: resolveTrainingRoutineWeeks( template.weeks ),
+	};
 }

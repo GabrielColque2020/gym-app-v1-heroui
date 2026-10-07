@@ -14,6 +14,7 @@ type EditRoutineDayPageContentProps = {
 	month: number | null;
 	routineDayId: string | null;
 	studentId: string | null;
+	templateId: string | null;
 	year: number | null;
 };
 
@@ -21,10 +22,12 @@ export default function EditRoutineDayPageContent( {
 													   month,
 													   routineDayId,
 													   studentId,
+													   templateId,
 													   year,
 												   }: EditRoutineDayPageContentProps ) {
 	const {
 		backHref,
+		backLabel,
 		breadcrumbs,
 		handleRefreshRoutineDay,
 		isRefreshing,
@@ -33,10 +36,11 @@ export default function EditRoutineDayPageContent( {
 		month,
 		routineDayId,
 		studentId,
+		templateId,
 		year,
 	} );
 	const renderState = ( content: React.ReactNode ) => (
-		<EditRoutineDayStateBlock backHref={ backHref } backLabel={ "Volver a rutina" } breadcrumbs={ breadcrumbs }>
+		<EditRoutineDayStateBlock backHref={ backHref } backLabel={ backLabel } breadcrumbs={ breadcrumbs }>
 			{ content }
 		</EditRoutineDayStateBlock>
 	);
@@ -62,12 +66,15 @@ export default function EditRoutineDayPageContent( {
 	const routine = data.trainingRoutine;
 	const studentName = routine.student?.name ?? "Estudiante";
 	const title = `Día ${ data.dayNumber }`;
-	const description = `Semana ${ routine.week } · ${ monthYearLabel( String( routine.month ), String( routine.year ) ) } · ${ studentName }`;
+	const description = routine.template
+		? `Semana ${ routine.week } · Plantilla "${ routine.template.name }"`
+		: `Semana ${ routine.week } · ${ monthYearLabel( String( routine.month ), String( routine.year ) ) } · ${ studentName }`;
 
 	return (
 		<EditRoutineDayLoadedContent
 			data={ data }
 			backHref={ backHref }
+			backLabel={ backLabel }
 			breadcrumbs={ breadcrumbs }
 			description={ description }
 			isRefreshing={ isRefreshing }

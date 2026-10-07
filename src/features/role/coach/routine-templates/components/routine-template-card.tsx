@@ -2,12 +2,14 @@
 
 import type { RoutineTemplateListItem } from "@/features/training-routine/services/routine-template";
 
+import Link from "next/link";
 import { Button, Dropdown, Label, toast } from "@heroui/react";
 import { Copy, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { RoutineTemplateDeleteModal } from "@/features/role/coach/routine-templates/components/routine-template-delete-modal";
 import { RoutineTemplateRenameModal } from "@/features/role/coach/routine-templates/components/routine-template-rename-modal";
+import { buildRoutineTemplateHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
 import { useDuplicateRoutineTemplate } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
 
 type RoutineTemplateCardProps = {
@@ -40,8 +42,13 @@ export function RoutineTemplateCard( { template }: RoutineTemplateCardProps ) {
 	}
 
 	return (
-		<div className={ "flex items-start gap-2 rounded-2xl border border-border bg-surface p-3" }>
-			<div className={ "min-w-0 flex-1" }>
+		<div className={ "flex items-start gap-2 rounded-2xl border border-border bg-surface p-3 transition-colors hover:border-accent" }>
+			{ /* La tarjeta abre la plantilla; el menu de opciones queda aparte. */ }
+			<Link
+				aria-label={ `Abrir la plantilla ${ template.name }` }
+				className={ "min-w-0 flex-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent" }
+				href={ buildRoutineTemplateHref( template.id ) }
+			>
 				<p className={ "line-clamp-2 text-sm font-semibold text-foreground" }>{ template.name }</p>
 				<p className={ "mt-0.5 text-xs text-muted" }>
 					{ pluralize( template.weekCount, "semana", "semanas" ) } · { pluralize( template.dayCount, "día", "días" ) } · { pluralize( template.exerciseCount, "ejercicio", "ejercicios" ) }
@@ -51,7 +58,8 @@ export function RoutineTemplateCard( { template }: RoutineTemplateCardProps ) {
 						<span className={ "font-medium text-foreground" }>Objetivo:</span> { template.objective }
 					</p>
 				) : null }
-			</div>
+				<p className={ "mt-2 text-sm font-medium text-accent" }>Ver y editar</p>
+			</Link>
 			<Dropdown>
 				<Button
 					isIconOnly

@@ -30,3 +30,22 @@ export function buildEditRoutineDayHref( routineDayId: string, studentId: string
 
 	return `/coach/routine?${ params.toString() }`;
 }
+
+export function buildRoutineTemplateHref( templateId: string ) {
+	return `/coach/templates/${ templateId }`;
+}
+
+export function buildEditTemplateBreadcrumbs( templateId: string, currentLabel: string ) {
+	return [
+		{ href: "/coach/dashboard", label: "Inicio" },
+		{ href: "/coach/templates", label: "Plantillas" },
+		{ href: buildRoutineTemplateHref( templateId ), label: "Plantilla" },
+		{ label: currentLabel },
+	];
+}
+
+export function buildEditTemplateDayHref( routineDayId: string, templateId: string ) {
+	const params = new URLSearchParams( { routineDayId, templateId } );
+
+	return `/coach/routine?${ params.toString() }`;
+}

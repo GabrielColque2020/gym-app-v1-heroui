@@ -49,7 +49,7 @@ export function applySavedRoutineRows(
 	savedRows: SavedRoutineRow[],
 ): RoutineDayDetailBase | null {
 	const cachedRoutineDay = queryClient.getQueryData<RoutineDayDetailBase>(
-		routineDayQueryKey( input.routineDayId, input.studentId ),
+		routineDayQueryKey( input.routineDayId, input.studentId, input.templateId ),
 	);
 
 	if (!cachedRoutineDay || cachedRoutineDay.routines.length !== savedRows.length) return null;
@@ -85,5 +85,5 @@ export async function syncRoutineDayAfterSave(
 	// El borrador no se descarta aca. Lo descarta `useRoutineDayDraft` cuando ve que
 	// quedo igual a lo guardado; si el coach siguio escribiendo mientras viajaba
 	// el pedido, no queda igual y esos cambios entran en el guardado siguiente.
-	queryClient.setQueryData( routineDayQueryKey( input.routineDayId, input.studentId ), savedRoutineDay );
+	queryClient.setQueryData( routineDayQueryKey( input.routineDayId, input.studentId, input.templateId ), savedRoutineDay );
 }

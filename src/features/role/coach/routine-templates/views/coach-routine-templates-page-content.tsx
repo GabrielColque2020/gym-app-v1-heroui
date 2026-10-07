@@ -15,7 +15,7 @@ const BREADCRUMBS = [
 // La biblioteca de plantillas del entrenador: rutinas con nombre que no son de
 // ningun estudiante y sirven para arrancar la de cualquiera.
 export default function CoachRoutineTemplatesPageContent() {
-	const { data: templates = [], isError, isFetching, isLoading, refetch } = useRoutineTemplates();
+	const { data: templates = [], isError, isFetching, isLoading, refetch } = useRoutineTemplates( { alwaysFresh: true } );
 	const isRefreshing = isFetching && !isLoading;
 
 	return (

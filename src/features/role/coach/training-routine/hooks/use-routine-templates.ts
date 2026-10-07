@@ -7,6 +7,7 @@ import {
 	applyRoutineTemplateAction,
 	deleteRoutineTemplateAction,
 	duplicateRoutineTemplateAction,
+	getRoutineTemplateDetailAction,
 	getRoutineTemplatesAction,
 	renameRoutineTemplateAction,
 	saveRoutineAsTemplateAction,
@@ -14,6 +15,8 @@ import {
 import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
 
 export const coachRoutineTemplatesQueryKey = [ "coach-routine-templates" ] as const;
+
+export const coachRoutineTemplateDetailQueryKey = ( templateId: string ) => [ "coach-routine-template", templateId ] as const;
 
 export function useSaveRoutineAsTemplate() {
 	const queryClient = useQueryClient();
@@ -26,10 +29,30 @@ export function useSaveRoutineAsTemplate() {
 	} );
 }
 
-// La lista cambia poco y solo desde esta app: guardar una plantilla la invalida.
-export function useRoutineTemplates() {
+type UseRoutineTemplateDetailParams = {
+	// La pantalla de la plantilla pide lo ultimo al abrirse; el editor de un dia
+	// usa lo que ya hay, que el guardado mantiene al dia.
+	alwaysFresh?: boolean;
+	templateId: string | null;
+};
+
+export function useRoutineTemplateDetail( { alwaysFresh = false, templateId }: UseRoutineTemplateDetailParams ) {
 	return useQuery( {
 		...QUERY_DEFAULTS.coach,
+		enabled: Boolean( templateId ),
+		queryFn: () => getRoutineTemplateDetailAction( templateId ?? "" ),
+		queryKey: coachRoutineTemplateDetailQueryKey( templateId ?? "missing-template" ),
+		refetchOnMount: alwaysFresh ? "always" : QUERY_DEFAULTS.coach.refetchOnMount,
+	} );
+}
+
+// La lista cambia poco y solo desde esta app: guardar una plantilla la invalida.
+// La pantalla "Plantillas" igual la pide al abrirse, porque editar un dia cambia
+// cuantos ejercicios tiene cada una.
+export function useRoutineTemplates( { alwaysFresh = false }: { alwaysFresh?: boolean } = {} ) {
+	return useQuery( {
+		...QUERY_DEFAULTS.coach,
+		refetchOnMount: alwaysFresh ? "always" : QUERY_DEFAULTS.coach.refetchOnMount,
 		queryFn: getRoutineTemplatesAction,
 		queryKey: coachRoutineTemplatesQueryKey,
 	} );

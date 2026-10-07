@@ -312,5 +312,6 @@ export function normalizeRoutineDayMutationInput( input: SaveRoutineDayExercises
 		exercises: normalizeRoutineDayExercises( input.exercises ),
 		routineDayId: input.routineDayId.trim(),
 		studentId: input.studentId?.trim(),
+		templateId: input.templateId?.trim(),
 	};
 }

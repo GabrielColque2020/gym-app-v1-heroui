@@ -12,6 +12,7 @@ type Props = {
 		month?: string;
 		routineDayId?: string;
 		studentId?: string;
+		templateId?: string;
 		year?: string;
 	}>,
 };
@@ -37,6 +38,7 @@ export default async function CoachEditRoutinePage( { searchParams }: Props ) {
 	const month = parseMonth( resolvedSearchParams.month );
 	const routineDayId = resolvedSearchParams.routineDayId?.trim() || null;
 	const studentId = resolvedSearchParams.studentId?.trim() || null;
+	const templateId = resolvedSearchParams.templateId?.trim() || null;
 	const year = parseYear( resolvedSearchParams.year );
 
 	return (
@@ -44,6 +46,7 @@ export default async function CoachEditRoutinePage( { searchParams }: Props ) {
 			month={ month }
 			routineDayId={ routineDayId }
 			studentId={ studentId }
+			templateId={ templateId }
 			year={ year }
 		/>
 	);

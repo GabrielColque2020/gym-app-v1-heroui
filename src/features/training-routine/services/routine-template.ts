@@ -1,3 +1,5 @@
+import type { TrainingRoutineWeek } from "@/features/training-routine/services/training-routines-by-student";
+
 export const ROUTINE_TEMPLATE_NAME_MAX_LENGTH = 60;
 
 export type SaveRoutineAsTemplateInput = {
@@ -21,6 +23,11 @@ export type RoutineTemplateListItem = {
 	name: string;
 	objective: string | null;
 	weekCount: number;
+};
+
+export type RoutineTemplateDetail = {
+	template: { id: string; name: string; objective: string | null };
+	weeks: TrainingRoutineWeek[];
 };
 
 export type ApplyRoutineTemplateInput = {

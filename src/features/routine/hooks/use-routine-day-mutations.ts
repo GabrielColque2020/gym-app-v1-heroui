@@ -28,7 +28,7 @@ export function useSaveRoutineDayExercises( options?: UseSaveRoutineDayExercises
 			// El servidor solo devolvio las filas que cambiaron: se aplican sobre el
 			// dia que ya esta en pantalla. Si no coinciden, se pide el dia entero.
 			return applySavedRoutineRows( queryClient, input, result.routines )
-				?? await getRoutineDayAction( { routineDayId: input.routineDayId, studentId: input.studentId } );
+				?? await getRoutineDayAction( { routineDayId: input.routineDayId, studentId: input.studentId, templateId: input.templateId } );
 		},
 		onSuccess: async ( savedRoutineDay, input ) => {
 			await syncRoutineDayAfterSave( queryClient, savedRoutineDay, input );

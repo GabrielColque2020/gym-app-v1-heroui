@@ -3,6 +3,8 @@
 import { useCallback } from "react";
 
 import { PageBreadcrumbs } from "@/components/common";
+import { buildEditRoutineDayHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
+import { CoachRepeatWeekAction } from "@/features/role/coach/training-routine/components/shared/coach-repeat-week-action";
 import { CoachTrainingRoutineFilter } from "@/features/role/coach/training-routine/components/shared";
 import { CoachTrainingRoutineMonthGrid } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-month-grid";
 import { CoachTrainingRoutinesEmptyState } from "@/features/role/coach/training-routine/components/shared/coach-training-routines-empty-state";
@@ -119,10 +121,17 @@ export default function CoachTrainingRoutinesPageContent( {
 				/>
 			) : (
 				<CoachTrainingRoutineMonthGrid
-					month={ month }
+					buildDayHrefAction={ ( routineDayId ) => buildEditRoutineDayHref( routineDayId, studentId, month, year ) }
+					renderWeekAction={ ( routineWeek ) => (
+						<CoachRepeatWeekAction
+							month={ month }
+							routineWeeks={ routineWeeks }
+							selectedRoutine={ routineWeek }
+							studentId={ studentId }
+							year={ year }
+						/>
+					) }
 					routineWeeks={ routineWeeks }
-					studentId={ studentId }
-					year={ year }
 				/>
 			) }
 		</div>
