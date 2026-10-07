@@ -31,25 +31,28 @@ export function TrainingRoutinesMonthHeader( {
 }: TrainingRoutinesMonthHeaderProps ) {
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
-			<Card.Content className={ "flex flex-row flex-wrap items-center justify-between gap-3 p-3" }>
-				<div className={ "flex min-w-0 items-center gap-1" }>
-					<Button isIconOnly aria-label={ "Mes anterior" } variant={ "ghost" } onPress={ () => onChangeMonthAction( -1 ) }>
+			<Card.Content className={ "flex flex-row flex-wrap items-center justify-between gap-2 p-3" }>
+				<div className={ "flex min-w-0 flex-1 items-center gap-1 sm:flex-none" }>
+					<Button isIconOnly aria-label={ "Mes anterior" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => onChangeMonthAction( -1 ) }>
 						<ChevronLeft className={ "size-5" }/>
 					</Button>
-					<div className={ "min-w-32 text-center" }>
-						<p className={ "text-xl font-black leading-tight text-foreground" }>
+					<div className={ "min-w-0 flex-1 text-center sm:min-w-32 sm:flex-none" }>
+						<p className={ "whitespace-nowrap text-base font-black leading-tight text-foreground sm:text-xl" }>
 							{ monthYearLabel( String( month ), String( year ) ) }
 						</p>
 						<p className={ "text-xs text-muted" }>Tu rutina del mes</p>
 					</div>
-					<Button isIconOnly aria-label={ "Mes siguiente" } variant={ "ghost" } onPress={ () => onChangeMonthAction( 1 ) }>
+					<Button isIconOnly aria-label={ "Mes siguiente" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => onChangeMonthAction( 1 ) }>
 						<ChevronRight className={ "size-5" }/>
 					</Button>
 				</div>
 				<div className={ "flex shrink-0 items-center gap-2" }>
+					{ /* En el telefono no entra junto al mes sin partir el titulo, y no hace
+					     falta: la pantalla ya pide lo ultimo cada vez que se abre. */ }
 					<Button
 						isIconOnly
 						aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
+						className={ "hidden sm:inline-flex" }
 						isDisabled={ isRefreshing }
 						variant={ "secondary" }
 						onPress={ onRefreshAction }

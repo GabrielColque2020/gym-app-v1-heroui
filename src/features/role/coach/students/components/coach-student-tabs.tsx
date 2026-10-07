@@ -15,9 +15,9 @@ type CoachStudentTabsProps = {
 };
 
 const TABS = [
-	{ buildHref: buildStudentTrainingRoutineHref, icon: Dumbbell, id: "routine", label: "Rutina" },
-	{ buildHref: buildStudentMealPlanHref, icon: UtensilsCrossed, id: "meal-plan", label: "Plan alimenticio" },
-	{ buildHref: buildStudentHistoryHref, icon: CalendarClock, id: "history", label: "Historial" },
+	{ buildHref: buildStudentTrainingRoutineHref, icon: Dumbbell, id: "routine", label: "Rutina", shortLabel: "Rutina" },
+	{ buildHref: buildStudentMealPlanHref, icon: UtensilsCrossed, id: "meal-plan", label: "Plan alimenticio", shortLabel: "Plan" },
+	{ buildHref: buildStudentHistoryHref, icon: CalendarClock, id: "history", label: "Historial", shortLabel: "Historial" },
 ] as const;
 
 // Las tres pantallas de un estudiante (rutina, plan e historial) son paginas
@@ -25,7 +25,7 @@ const TABS = [
 // a otra sin volver a elegir al estudiante en otra lista.
 export function CoachStudentTabs( { active, studentId }: CoachStudentTabsProps ) {
 	return (
-		<nav aria-label={ "Secciones del estudiante" } className={ "flex gap-2 overflow-x-auto pb-1" }>
+		<nav aria-label={ "Secciones del estudiante" } className={ "grid grid-cols-3 gap-2 sm:flex" }>
 			{ TABS.map( ( tab ) => {
 				const isActive = tab.id === active;
 				const Icon = tab.icon;
@@ -35,7 +35,9 @@ export function CoachStudentTabs( { active, studentId }: CoachStudentTabsProps )
 						key={ tab.id }
 						aria-current={ isActive ? "page" : undefined }
 						className={
-							`flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${
+							// En el telefono las tres se reparten el ancho: antes la tercera
+							// quedaba cortada y habia que desplazar para verla.
+							`flex min-w-0 items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-sm font-medium transition-colors sm:shrink-0 sm:justify-start sm:gap-2 sm:px-3 ${
 								isActive
 									? "border-accent bg-accent-soft/40 text-foreground"
 									: "border-border bg-surface text-muted hover:bg-surface-secondary hover:text-foreground"
@@ -43,8 +45,9 @@ export function CoachStudentTabs( { active, studentId }: CoachStudentTabsProps )
 						}
 						href={ tab.buildHref( studentId ) }
 					>
-						<Icon className={ "size-4" }/>
-						{ tab.label }
+						<Icon className={ "size-4 shrink-0" }/>
+						<span className={ "truncate sm:hidden" }>{ tab.shortLabel }</span>
+						<span className={ "hidden sm:inline" }>{ tab.label }</span>
 					</Link>
 				);
 			} ) }

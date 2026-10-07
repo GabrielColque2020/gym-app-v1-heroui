@@ -71,7 +71,7 @@ function StepperField({ inputMode, isLocked, isMissing, label, onChange, parse, 
         // Una fila por campo: de a dos por fila, en el telefono el numero no entra.
         <div className={ "flex items-center gap-3" }>
             <Label className={ "w-16 shrink-0 text-sm font-medium text-muted" }>{ label }</Label>
-            <div className={ "flex min-w-0 flex-1 items-center gap-3" }>
+            <div className={ "flex min-w-0 flex-1 items-center gap-2" }>
                 <Button
                     isIconOnly
                     aria-label={ `Bajar ${label.toLowerCase()}` }
@@ -177,7 +177,7 @@ function ExerciseSetsEditorContent({
                             isMissing={ exercise.sets.some((set) => !set.completed && set.currentReps === null && set.currentWeight !== null) }
                             label={ "Reps" }
                             parse={ parseNumericInput }
-                            placeholder={ hasMixedValues ? "Varias" : "Reps" }
+                            placeholder={ hasMixedValues ? "Varias" : "0" }
                             step={ REPS_STEP }
                             value={ unifiedValues.reps }
                             onChange={ (reps) => onExerciseUpdate(exercise.id, { reps }) }
@@ -188,7 +188,7 @@ function ExerciseSetsEditorContent({
                             isMissing={ isWeightMissing }
                             label={ "Peso (kg)" }
                             parse={ parseWeightInput }
-                            placeholder={ hasMixedValues ? "Varios" : "Kg" }
+                            placeholder={ hasMixedValues ? "Varios" : "0" }
                             step={ WEIGHT_STEP }
                             value={ unifiedValues.weight }
                             onChange={ (weight) => onExerciseUpdate(exercise.id, { weight }) }

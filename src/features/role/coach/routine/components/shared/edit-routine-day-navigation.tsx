@@ -50,7 +50,7 @@ export function EditRoutineDayNavigation( {
 	return (
 		<div className={ "flex flex-col gap-2" }>
 			{ weeks.length > 1 ? (
-				<nav aria-label={ "Semanas del mes" } className={ "flex gap-2 overflow-x-auto pb-1" }>
+				<nav aria-label={ "Semanas del mes" } className={ "flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" }>
 					{ weeks.map( ( week ) => {
 						const isCurrent = week.id === currentWeek.id;
 						// Al cambiar de semana se mantiene el mismo dia, que es lo que se viene cargando.
@@ -88,7 +88,7 @@ export function EditRoutineDayNavigation( {
 			) : null }
 
 			{ currentWeek.routineDays.length > 1 ? (
-				<nav aria-label={ `Días de la semana ${ currentWeek.week }` } className={ "flex gap-2 overflow-x-auto pb-1" }>
+				<nav aria-label={ `Días de la semana ${ currentWeek.week }` } className={ "flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" }>
 					{ currentWeek.routineDays.map( ( day ) => {
 						const isCurrent = day.id === routineDayId;
 						const exercisesCount = countExercises( day );

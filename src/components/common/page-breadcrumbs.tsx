@@ -34,7 +34,9 @@ export function PageBreadcrumbs( {
 
 	return (
 		<div className={ "flex flex-col gap-3 md:flex-row md:items-center md:justify-between" }>
-			<div className={ "min-w-0 flex-1" }>
+			{ /* En el telefono las migas ocupaban uno o dos renglones para decir donde
+			     esta el usuario, que ya lo dice el titulo: queda solo la vuelta atras. */ }
+			<div className={ "hidden min-w-0 flex-1 md:block" }>
 				<Breadcrumbs className={ "min-w-0 flex-wrap gap-1 text-sm" }>
 					{ crumbs.map( ( crumb, index ) => (
 						crumb.href || crumb.label === "Inicio" ? (
@@ -54,7 +56,7 @@ export function PageBreadcrumbs( {
 			</div>
 
 			<Button
-				className={ "w-full shrink-0 sm:w-fit" }
+				className={ "w-fit shrink-0" }
 				size={ "sm" }
 				variant={ "secondary" }
 				onPress={ () => router.push( isBackToHome ? dashboardHref : backHref ) }

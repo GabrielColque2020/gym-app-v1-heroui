@@ -21,7 +21,7 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 					</div>
 
 					<div className={ "min-w-0" }>
-						<h3 className={ "truncate text-lg font-semibold leading-6 text-foreground" }>{ student.name }</h3>
+						<h3 className={ "line-clamp-2 break-words text-lg font-semibold leading-6 text-foreground" }>{ student.name }</h3>
 						<p className={ "mt-1 truncate text-sm font-medium text-muted" }>{ student.email }</p>
 						<p className={ "mt-0.5 truncate text-xs text-muted" }>DNI { student.dni }</p>
 						<Chip

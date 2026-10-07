@@ -60,26 +60,30 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							title={ "Plan alimenticio" }
 						/>
 					</div>
-					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
+					{ /* En el telefono va todo en un renglon: tres botones apilados a todo el
+					     ancho ocupaban media pantalla antes de mostrar un solo plan. */ }
+					<div className={ "flex w-full items-center gap-2 md:hidden" }>
 						<Button
-							className={ "w-full" }
-							isDisabled={ data.mealPlans.length === 0 || isDownloading }
-							variant={ "secondary" }
-							onPress={ handleDownload }
-						>
-							{ isDownloading ? <RotateCw className={ "size-4 animate-spin" }/> : <Download className={ "size-4" }/> }
-							{ isDownloading ? "Descargando..." : "Descargar PDF" }
-						</Button>
-						<Button
-							className={ "w-full" }
+							isIconOnly
+							aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
 							isDisabled={ isRefreshing }
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
-						<MealPlanDrawer mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
+						<Button
+							isIconOnly
+							aria-label={ isDownloading ? "Descargando" : "Descargar PDF" }
+							isDisabled={ data.mealPlans.length === 0 || isDownloading }
+							variant={ "secondary" }
+							onPress={ handleDownload }
+						>
+							{ isDownloading ? <RotateCw className={ "size-4 animate-spin" }/> : <Download className={ "size-4" }/> }
+						</Button>
+						<div className={ "min-w-0 flex-1" }>
+							<MealPlanDrawer mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
+						</div>
 					</div>
 					<div className={ "hidden flex-wrap items-center gap-2 md:flex" }>
 						<Button

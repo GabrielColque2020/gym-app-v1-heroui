@@ -7,7 +7,6 @@ import { ChevronLeft, ChevronRight, RotateCw } from "lucide-react";
 
 import { monthYearLabel } from "@/constants/months";
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
-import { CoachCreateRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-create-routine-drawer";
 import { CoachOptionRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-option-routine-drawer";
 
 type CoachTrainingRoutineFilterProps = {
@@ -51,21 +50,24 @@ export function CoachTrainingRoutineFilter( {
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
 			<Card.Content className={ "flex flex-row flex-wrap items-center justify-between gap-3 p-3" }>
-				<div className={ "flex min-w-0 items-center gap-1" }>
-					<Button isIconOnly aria-label={ "Mes anterior" } variant={ "ghost" } onPress={ () => goToMonth( -1 ) }>
+				{ /* En el telefono el mes ocupa todo el renglon, con las flechas en las
+				     puntas; las acciones bajan a un renglon propio. */ }
+				<div className={ `flex min-w-0 items-center gap-1 sm:w-auto sm:flex-none ${ routineCount === 0 ? "flex-1" : "w-full" }` }>
+					<Button isIconOnly aria-label={ "Mes anterior" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => goToMonth( -1 ) }>
 						<ChevronLeft className={ "size-5" }/>
 					</Button>
-					<div className={ "min-w-36 text-center" }>
-						<p className={ "text-xl font-black leading-tight text-foreground" }>
+					<div className={ "min-w-0 flex-1 text-center sm:min-w-36 sm:flex-none" }>
+						<p className={ "whitespace-nowrap text-base font-black leading-tight text-foreground sm:text-xl" }>
 							{ monthYearLabel( String( month ), String( year ) ) }
 						</p>
 						<p className={ "truncate text-xs text-muted" }>Rutina de { studentName }</p>
 					</div>
-					<Button isIconOnly aria-label={ "Mes siguiente" } variant={ "ghost" } onPress={ () => goToMonth( 1 ) }>
+					<Button isIconOnly aria-label={ "Mes siguiente" } className={ "h-8 w-8 min-w-8 sm:h-10 sm:w-10" } variant={ "ghost" } onPress={ () => goToMonth( 1 ) }>
 						<ChevronRight className={ "size-5" }/>
 					</Button>
 				</div>
-				<div className={ "flex shrink-0 items-center gap-2" }>
+				{ /* Sin rutina solo queda "Actualizar": va en el mismo renglon que el mes. */ }
+				<div className={ `flex items-center gap-2 sm:w-auto sm:shrink-0 ${ routineCount === 0 ? "shrink-0" : "w-full" }` }>
 					<Button
 						isIconOnly
 						aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
@@ -75,13 +77,9 @@ export function CoachTrainingRoutineFilter( {
 					>
 						<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 					</Button>
-					{ routineCount === 0 ? (
-						<CoachCreateRoutineDrawer
-							month={ month }
-							studentId={ studentId }
-							year={ year }
-						/>
-					) : (
+					{ /* Sin rutina no hay boton de crear aca: el aviso de abajo ya ofrece
+					     copiar o crear, y repetirlo arriba eran dos caminos para lo mismo. */ }
+					{ routineCount === 0 ? null : (
 						<CoachOptionRoutineDrawer
 							month={ month }
 							routineObjective={ routineObjective }

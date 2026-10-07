@@ -48,13 +48,13 @@ export function CoachTrainingRoutinesEmptyState( {
 				</div>
 				<div className={ "flex w-full flex-col justify-center gap-2 sm:w-auto sm:flex-row" }>
 					{ latestLabel || hasOtherStudents ? (
-						<Button className={ "bg-accent text-accent-foreground" } onPress={ () => setIsCopyOpen( true ) }>
+						<Button className={ "w-full bg-accent text-accent-foreground sm:w-auto" } onPress={ () => setIsCopyOpen( true ) }>
 							<Copy className={ "size-4" }/>
 							{ latestLabel ? `Copiar de ${ latestLabel }` : "Copiar de otro estudiante" }
 						</Button>
 					) : null }
 					<Button
-						className={ latestLabel || hasOtherStudents ? undefined : "bg-accent text-accent-foreground" }
+						className={ latestLabel || hasOtherStudents ? "w-full sm:w-auto" : "w-full bg-accent text-accent-foreground sm:w-auto" }
 						variant={ latestLabel || hasOtherStudents ? "secondary" : undefined }
 						onPress={ () => setIsCreateOpen( true ) }
 					>

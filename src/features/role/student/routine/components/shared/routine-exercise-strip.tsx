@@ -34,7 +34,7 @@ export function RoutineExerciseStrip( {
 	if (exercises.length < 2) return null;
 
 	return (
-		<nav aria-label={ "Ejercicios del día" } className={ "-mx-1 overflow-x-auto px-1 pb-1" }>
+		<nav aria-label={ "Ejercicios del día" } className={ "-mx-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" }>
 			<ol className={ "flex w-max gap-2" }>
 				{ exercises.map( ( exercise, index ) => {
 					const completedSets = exercise.sets.filter( ( set ) => set.completed ).length;
