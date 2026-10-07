@@ -15,6 +15,11 @@ function assertDescription( description: string ) {
 	return trimmedDescription;
 }
 
+// La nota es opcional: vacia se guarda como "sin nota".
+function normalizeObservations( observations: string | null | undefined ) {
+	return observations?.trim() || null;
+}
+
 function assertStudentId( studentId: string ) {
 	const normalizedStudentId = studentId.trim();
 
@@ -102,6 +107,7 @@ export async function createMealPlanAction( input: CreateMealPlanInput ) {
 		return prisma.mealPlan.create( {
 			data: {
 				description,
+				observations: normalizeObservations( input.observations ),
 				order: ( lastMealPlan._max.order ?? 0 ) + 1,
 				studentId,
 				title,
@@ -124,6 +130,7 @@ export async function updateMealPlanAction( input: UpdateMealPlanInput ) {
 		return prisma.mealPlan.update( {
 			data: {
 				description: assertDescription( input.description ),
+				observations: normalizeObservations( input.observations ),
 				title: assertMealTime( input.title ),
 			},
 			where: {

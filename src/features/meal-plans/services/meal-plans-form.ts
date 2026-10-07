@@ -28,6 +28,8 @@ export function formatMealPlanDescriptionLines( description: string ) {
 
 export type MealPlanFormValues = {
 	description: string;
+	// Nota opcional del entrenador para esa comida (horario, reemplazos, etc.).
+	observations: string;
 	title: MealTimeValue;
 };
 

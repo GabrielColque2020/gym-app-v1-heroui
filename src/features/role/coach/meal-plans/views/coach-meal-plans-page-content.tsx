@@ -41,6 +41,8 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 
 	if (!data) return null;
 
+	const mealTimes = data.mealPlans.map( ( mealPlan ) => mealPlan.title as string );
+
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
@@ -82,7 +84,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							{ isDownloading ? <RotateCw className={ "size-4 animate-spin" }/> : <Download className={ "size-4" }/> }
 						</Button>
 						<div className={ "min-w-0 flex-1" }>
-							<MealPlanDrawer mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
+							<MealPlanDrawer existingMealTimes={ mealTimes } mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
 						</div>
 					</div>
 					<div className={ "hidden flex-wrap items-center gap-2 md:flex" }>
@@ -102,16 +104,21 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
-						<MealPlanDrawer mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
+						<MealPlanDrawer existingMealTimes={ mealTimes } mode={ "create" } studentId={ studentId } triggerVariant={ "button" }/>
 					</div>
 				</Card.Header>
 				<Card.Content className={ "p-3" }>
 					{ data.mealPlans.length === 0 ? (
-						<CoachMealPlansEmptyState studentName={ data.student.name }/>
+						<CoachMealPlansEmptyState studentId={ studentId } studentName={ data.student.name }/>
 					) : (
 						<div className={ "grid gap-3 md:grid-cols-2 xl:grid-cols-3" }>
 							{ data.mealPlans.map( ( mealPlan ) => (
-								<MealPlanCard key={ mealPlan.id } mealPlan={ mealPlan } studentId={ studentId }/>
+								<MealPlanCard
+									key={ mealPlan.id }
+									existingMealTimes={ data.mealPlans.filter( ( other ) => other.id !== mealPlan.id ).map( ( other ) => other.title as string ) }
+									mealPlan={ mealPlan }
+									studentId={ studentId }
+								/>
 							) ) }
 						</div>
 					) }

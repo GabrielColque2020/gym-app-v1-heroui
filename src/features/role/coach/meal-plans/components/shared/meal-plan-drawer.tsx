@@ -12,6 +12,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 	const {
 		activeMutation,
 		description,
+		duplicateNotice,
 		handleOpenChange,
 		handleSubmit,
 		isDescriptionInvalid,
@@ -105,6 +106,14 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 							</Select.Popover>
 						</Select>
 
+						{ duplicateNotice ? (
+							<Alert className={ "border border-warning/20" } status={ "warning" }>
+								<Alert.Content>
+									<Alert.Description>{ duplicateNotice }</Alert.Description>
+								</Alert.Content>
+							</Alert>
+						) : null }
+
 						<TextField
 							isRequired
 							fullWidth
@@ -113,9 +122,22 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 							value={ values.description }
 							onChange={ ( value ) => updateValue( "description", value ) }
 						>
-							<Label>Descripción</Label>
-							<TextArea className={ "min-h-32 border border-border" } placeholder={ "Escribe aquí la descripción del plan alimenticio." }/>
+							<Label>Qué incluye</Label>
+							<TextArea className={ "min-h-32 border border-border" } placeholder={ "Té o café sin azúcar\n2 tostadas integrales con palta\n1 huevo" }/>
+							{ /* Cada renglon sale como un item de la lista; sin decirlo, se escribia todo de corrido. */ }
+							<Description className={ "text-xs" }>Un alimento por renglón: el estudiante los ve como lista.</Description>
 							{ isDescriptionInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
+						</TextField>
+
+						<TextField
+							fullWidth
+							name={ "observations" }
+							value={ values.observations }
+							onChange={ ( value ) => updateValue( "observations", value ) }
+						>
+							<Label>Nota (opcional)</Label>
+							<TextArea className={ "min-h-16 border border-border" } placeholder={ "Ej: antes de las 9, o se puede cambiar el huevo por queso" } rows={ 2 }/>
+							<Description className={ "text-xs" }>El estudiante la ve debajo de la comida.</Description>
 						</TextField>
 					</Drawer.Body>
 

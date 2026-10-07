@@ -6,31 +6,41 @@ import { toast } from "@heroui/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useCreateMealPlan, useUpdateMealPlan } from "@/features/meal-plans/hooks/use-meal-plan-mutations";
-import type { MealPlanFormValues, MealTimeValue } from "@/features/meal-plans/services/meal-plans-form";
+import { formatMealTime, MEAL_TIME_OPTIONS, type MealPlanFormValues, type MealTimeValue } from "@/features/meal-plans/services/meal-plans-form";
 import type { MealPlanDrawerProps } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer.types";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 
-const DEFAULT_VALUES: MealPlanFormValues = {
-	description: "",
-	title: "BREAKFAST",
-};
+const NO_MEAL_TIMES: string[] = [];
 
-function getDefaultValues(): MealPlanFormValues {
-	return { ...DEFAULT_VALUES };
+// Una comida nueva arranca en la primera que al plan le falta: cargando el dia
+// completo, el entrenador no tiene que cambiar "Desayuno" a mano cada vez.
+function getDefaultValues( existingMealTimes: string[] ): MealPlanFormValues {
+	const nextMealTime = MEAL_TIME_OPTIONS.find( ( option ) => !existingMealTimes.includes( option.value ) );
+
+	return {
+		description: "",
+		observations: "",
+		title: nextMealTime?.value ?? "BREAKFAST",
+	};
 }
 
-function getInitialValues( mealPlan?: Extract<MealPlanDrawerProps, { mode: "edit" }>["mealPlan"] ): MealPlanFormValues {
-	if (!mealPlan) return getDefaultValues();
+function getInitialValues(
+	mealPlan: Extract<MealPlanDrawerProps, { mode: "edit" }>["mealPlan"] | undefined,
+	existingMealTimes: string[],
+): MealPlanFormValues {
+	if (!mealPlan) return getDefaultValues( existingMealTimes );
 
 	return {
 		description: mealPlan.description,
+		observations: mealPlan.observations ?? "",
 		title: mealPlan.title as MealTimeValue,
 	};
 }
 
 export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
-	const [ values, setValues ] = useState<MealPlanFormValues>( () => getInitialValues( props.mealPlan ) );
+	const existingMealTimes = props.existingMealTimes ?? NO_MEAL_TIMES;
+	const [ values, setValues ] = useState<MealPlanFormValues>( () => getInitialValues( props.mealPlan, existingMealTimes ) );
 	const createMealPlan = useCreateMealPlan();
 	const updateMealPlan = useUpdateMealPlan();
 	const wasOpenRef = useRef( false );
@@ -49,12 +59,17 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 	const isOpen = props.isOpen ?? internalIsOpen;
 	const setIsOpen = props.onOpenChangeAction ?? setInternalIsOpen;
 	const placement = props.placement ?? responsivePlacement;
+	// Repetir una comida no se bloquea (puede haber dos colaciones), pero se avisa:
+	// lo comun es querer editar la que ya esta.
+	const duplicateNotice = existingMealTimes.includes( values.title )
+		? `El plan ya tiene ${ formatMealTime( values.title ) }. Podés agregar otra igual, o cerrar y editar la que ya está.`
+		: null;
 
 	const resetFormState = useCallback( () => {
-		setValues( getInitialValues( props.mealPlan ) );
+		setValues( getInitialValues( props.mealPlan, existingMealTimes ) );
 		createMealPlan.reset();
 		updateMealPlan.reset();
-	}, [ createMealPlan, props.mealPlan, updateMealPlan ] );
+	}, [ createMealPlan, existingMealTimes, props.mealPlan, updateMealPlan ] );
 
 	useEffect( () => {
 		if (!isOpen) {
@@ -109,7 +124,6 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 					...values,
 					studentId: props.studentId,
 				} );
-				setValues( getDefaultValues() );
 				toast.success( "Comida agregada", {
 					description: "Ya está en el plan del estudiante.",
 				} );
@@ -128,6 +142,7 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 	return {
 		activeMutation,
 		description,
+		duplicateNotice,
 		handleOpenChange,
 		handleSubmit,
 		isDescriptionInvalid,

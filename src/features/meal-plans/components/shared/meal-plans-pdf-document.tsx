@@ -161,7 +161,6 @@ export function MealPlansPdfDocument( {
 							<View style={ styles.cardHeader }>
 								<View>
 									<Text style={ styles.cardTitle }>{ formatMealTime( mealPlan.title ) }</Text>
-									<Text style={ styles.cardSubtitle }>{ `Orden ${ mealPlan.order }` }</Text>
 								</View>
 							</View>
 
@@ -172,6 +171,9 @@ export function MealPlansPdfDocument( {
 										<Text style={ styles.bulletText }>{ line }</Text>
 									</View>
 								) ) }
+								{ mealPlan.observations?.trim() ? (
+									<Text style={ [ styles.bulletText, styles.muted ] }>{ `Nota: ${ mealPlan.observations.trim() }` }</Text>
+								) : null }
 							</View>
 						</View>
 					) ) }

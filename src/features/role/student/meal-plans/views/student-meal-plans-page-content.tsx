@@ -58,6 +58,13 @@ function MealPlanCard( { isRecent, mealPlan }: { isRecent: boolean; mealPlan: Me
 						</div>
 					) ) }
 				</div>
+				{ /* La nota del entrenador para esta comida, si la cargo. */ }
+				{ mealPlan.observations?.trim() ? (
+					<p className={ "mt-3 whitespace-pre-wrap border-t border-border pt-2 text-sm text-muted" }>
+						<span className={ "font-medium text-foreground" }>Nota: </span>
+						{ mealPlan.observations.trim() }
+					</p>
+				) : null }
 			</Card.Content>
 		</Card>
 	);

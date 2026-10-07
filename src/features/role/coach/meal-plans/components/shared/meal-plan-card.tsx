@@ -11,11 +11,14 @@ import { MealPlanDeleteDrawer } from "@/features/role/coach/meal-plans/component
 import { MealPlanDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer";
 
 type MealPlanCardProps = {
+	// Las otras comidas del plan, para avisar si al editar se repite una.
+	existingMealTimes: string[];
 	mealPlan: MealPlan;
 	studentId: string;
 };
 
 export function MealPlanCard( {
+								  existingMealTimes,
 								  mealPlan,
 								  studentId,
 							  }: MealPlanCardProps ) {
@@ -80,9 +83,17 @@ export function MealPlanCard( {
 						</div>
 					) ) }
 				</div>
+				{ /* La nota del entrenador para esta comida, si la cargo. */ }
+				{ mealPlan.observations?.trim() ? (
+					<p className={ "mt-3 whitespace-pre-wrap border-t border-border pt-2 text-sm text-muted" }>
+						<span className={ "font-medium text-foreground" }>Nota: </span>
+						{ mealPlan.observations.trim() }
+					</p>
+				) : null }
 			</Card.Content>
 
 			<MealPlanDrawer
+				existingMealTimes={ existingMealTimes }
 				hideTrigger
 				isOpen={ isEditOpen }
 				mealPlan={ mealPlan }
