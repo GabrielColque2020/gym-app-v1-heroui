@@ -2,6 +2,7 @@
 
 import type { Prisma } from "@/generated/prisma/client";
 import { getAuthenticatedSession } from "@/features/auth/session";
+import { sortMealPlansByMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import prisma from "@/lib/prisma";
 
 type GetMealPlansByStudentInput = {
@@ -101,8 +102,9 @@ export async function getMealPlansByStudentAction( { studentId }: GetMealPlansBy
 			},
 		} ) as unknown as MealPlanItem[];
 
+		// Se ordena aca para que el entrenador, el estudiante y el PDF vean lo mismo.
 		return {
-			mealPlans,
+			mealPlans: sortMealPlansByMealTime( mealPlans ),
 			student,
 		};
 	} catch (error) {

@@ -9,7 +9,7 @@ export function useCoachMealPlansPageState( studentId: string ) {
 	const breadcrumbs = [
 		{ href: "/coach/dashboard", label: "Inicio" },
 		{ href: "/coach/student", label: "Estudiantes" },
-		{ label: data?.student.name ?? "Planes alimenticios" },
+		{ label: data?.student.name ?? "Plan alimenticio" },
 	];
 	const isRefreshing = isFetching && !isLoading;
 	const handleRefresh = useCallback( () => {

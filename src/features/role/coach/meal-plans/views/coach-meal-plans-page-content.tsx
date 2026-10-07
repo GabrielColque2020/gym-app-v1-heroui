@@ -36,7 +36,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	}
 
 	if (isError) {
-		return <CoachMealPlansErrorState breadcrumbs={ breadcrumbs } message={ error?.message ?? "Error al cargar planes alimenticios." }/>;
+		return <CoachMealPlansErrorState breadcrumbs={ breadcrumbs } message={ error?.message ?? "No se pudo cargar el plan alimenticio." }/>;
 	}
 
 	if (!data) return null;
@@ -141,7 +141,7 @@ export default function CoachMealPlansPageContent( { studentId }: CoachMealPlans
 					<Alert.Content>
 						<Alert.Title>Selecciona un estudiante</Alert.Title>
 						<Alert.Description>
-							Para consultar planes alimenticios primero tenés que elegir un estudiante activo.
+							Para ver un plan alimenticio primero tenés que elegir un estudiante activo.
 						</Alert.Description>
 					</Alert.Content>
 				</Alert>

@@ -57,13 +57,13 @@ export function useMealPlanDeleteDrawerState( {
 				id: mealPlan.id,
 				studentId,
 			} );
-			toast.success( "Plan alimenticio eliminado", {
-				description: "El plan se eliminó correctamente.",
+			toast.success( "Comida eliminada", {
+				description: "Ya no está en el plan del estudiante.",
 			} );
 			setIsOpen( false );
 		} catch {
-			toast.danger( "Error al eliminar plan", {
-				description: "No se pudo eliminar el plan alimenticio.",
+			toast.danger( "No se pudo eliminar", {
+				description: "La comida sigue en el plan. Probá de nuevo.",
 			} );
 		}
 	}

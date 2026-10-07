@@ -40,11 +40,11 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 	const activeMutation = isEditMode ? updateMealPlan : createMealPlan;
 	const isDescriptionInvalid = values.description.trim().length > 0 && values.description.trim().length < 2;
 	const isSubmitDisabled = values.description.trim().length < 2 || activeMutation.isPending;
-	const title = isEditMode ? "Editar plan alimenticio" : "Nuevo plan alimenticio";
+	const title = isEditMode ? "Editar comida" : "Agregar comida";
 	const description = isEditMode
-		? "Actualiza el tipo de comida y la descripción del plan."
-		: "Carga un nuevo plan alimenticio para el estudiante.";
-	const submitLabel = isEditMode ? "Guardar cambios" : "Crear plan";
+		? "Cambiá qué comida es o lo que incluye."
+		: "Sumá una comida al plan del estudiante.";
+	const submitLabel = isEditMode ? "Guardar cambios" : "Agregar";
 	const showEditTriggerLabel = props.triggerVariant === "button";
 	const isOpen = props.isOpen ?? internalIsOpen;
 	const setIsOpen = props.onOpenChangeAction ?? setInternalIsOpen;
@@ -101,8 +101,8 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 					id: props.mealPlan.id,
 					studentId: props.studentId,
 				} );
-				toast.success( "Plan alimenticio actualizado", {
-					description: "Los cambios se guardaron correctamente.",
+				toast.success( "Comida actualizada", {
+					description: "El estudiante ya ve el cambio en su plan.",
 				} );
 			} else {
 				await createMealPlan.mutateAsync( {
@@ -110,17 +110,17 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 					studentId: props.studentId,
 				} );
 				setValues( getDefaultValues() );
-				toast.success( "Plan alimenticio creado", {
-					description: "Se agregó al listado del estudiante.",
+				toast.success( "Comida agregada", {
+					description: "Ya está en el plan del estudiante.",
 				} );
 			}
 
 			setIsOpen( false );
 		} catch {
-			toast.danger( isEditMode ? "Error al actualizar" : "Error al crear", {
+			toast.danger( isEditMode ? "No se pudo guardar" : "No se pudo agregar", {
 				description: isEditMode
-					? "No se pudieron guardar los cambios."
-					: "No se pudo crear el plan alimenticio.",
+					? "Los cambios de la comida no se guardaron. Probá de nuevo."
+					: "La comida no se agregó. Probá de nuevo.",
 			} );
 		}
 	}

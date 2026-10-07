@@ -33,7 +33,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 				isEditMode ? (
 					<Button
 						isIconOnly={ !showEditTriggerLabel }
-						aria-label={ `Editar plan ${ props.mode === "edit" ? props.mealPlan.description : "alimenticio" }` }
+						aria-label={ "Editar comida" }
 						className={ props.triggerClassName }
 						size={ "sm" }
 						variant={ "ghost" }
@@ -45,7 +45,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 				) : (
 					<Button className={ props.triggerClassName } onPress={ openDrawer } fullWidth={ placement === "bottom" }>
 						<Plus className={ "size-4" }/>
-						Nuevo plan
+						Agregar comida
 					</Button>
 				)
 			) }
@@ -80,7 +80,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 
 						<Select
 							name={ "meal-plan-time" }
-							placeholder={ "Seleccioná tipo de comida" }
+							placeholder={ "Elegí la comida" }
 							value={ values.title }
 							onChange={ ( value ) => {
 								if (value) {
@@ -88,7 +88,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 								}
 							} }
 						>
-							<Label>Tipo de comida</Label>
+							<Label>Comida</Label>
 							<Select.Trigger className={ "border border-border" }>
 								<Select.Value/>
 								<Select.Indicator/>

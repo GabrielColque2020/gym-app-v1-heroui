@@ -54,13 +54,13 @@ export function MealPlanCard( {
 							<Dropdown.Popover placement={ "bottom end" }>
 								<Dropdown.Menu onAction={ handleAction }>
 									<Header>Opciones</Header>
-									<Dropdown.Item id={ "edit" } textValue={ "Editar plan" }>
+									<Dropdown.Item id={ "edit" } textValue={ "Editar" }>
 										<Pencil className={ "size-4 shrink-0 text-warning" }/>
-										<Label className={ "text-warning" }>Editar plan</Label>
+										<Label className={ "text-warning" }>Editar</Label>
 									</Dropdown.Item>
-									<Dropdown.Item id={ "delete" } textValue={ "Eliminar plan" } variant={ "danger" }>
+									<Dropdown.Item id={ "delete" } textValue={ "Eliminar" } variant={ "danger" }>
 										<Trash2 className={ "size-4 shrink-0 text-danger" }/>
-										<Label>Eliminar plan</Label>
+										<Label>Eliminar</Label>
 									</Dropdown.Item>
 								</Dropdown.Menu>
 							</Dropdown.Popover>

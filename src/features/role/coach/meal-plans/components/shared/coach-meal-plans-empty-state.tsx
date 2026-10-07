@@ -8,9 +8,9 @@ export function CoachMealPlansEmptyState( { studentName }: CoachMealPlansEmptySt
 	return (
 		<Card className={ "border border-border" } variant={ "default" }>
 			<Card.Content className={ "py-10 text-center" }>
-				<p className={ "text-base font-semibold text-foreground" }>No hay planes alimenticios cargados</p>
+				<p className={ "text-base font-semibold text-foreground" }>El plan todavía está vacío</p>
 				<p className={ "mt-1 text-sm text-muted" }>
-					{ studentName } no tiene planes alimenticios para consultar.
+					Agregá la primera comida de { studentName } con el botón de arriba.
 				</p>
 			</Card.Content>
 		</Card>

@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import CoachMealPlansPageContent from "@/features/role/coach/meal-plans/views/coach-meal-plans-page-content";
 
 export const metadata: Metadata = {
-	title: "Planes alimenticios",
-	description: "Planes alimenticios del estudiante",
+	title: "Plan alimenticio",
+	description: "Plan alimenticio del estudiante",
 };
 
 type Props = {

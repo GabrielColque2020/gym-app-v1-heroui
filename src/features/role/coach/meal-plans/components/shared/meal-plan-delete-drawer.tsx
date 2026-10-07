@@ -41,7 +41,7 @@ export function MealPlanDeleteDrawer( {
 			{ hideTrigger ? null : (
 				<Button
 					isIconOnly={ !showTriggerLabel }
-					aria-label={ `Eliminar plan ${ formatMealTime( mealPlan.title ) }` }
+					aria-label={ `Eliminar ${ formatMealTime( mealPlan.title ) }` }
 					className={ triggerClassName ?? "text-danger" }
 					size={ "sm" }
 					variant={ "ghost" }
@@ -64,7 +64,7 @@ export function MealPlanDeleteDrawer( {
 							<Trash2 className={ "size-5" }/>
 						</div>
 						<div className={ "min-w-0 flex-1" }>
-							<Drawer.Heading>Eliminar plan alimenticio</Drawer.Heading>
+							<Drawer.Heading>Eliminar comida</Drawer.Heading>
 							<Description className={ "mt-1 text-sm" }>
 								Esta acción no se puede deshacer.
 							</Description>
@@ -77,7 +77,7 @@ export function MealPlanDeleteDrawer( {
 						<Alert.Content>
 							<Alert.Title>Acción irreversible</Alert.Title>
 							<Alert.Description>
-								Se eliminará el plan alimenticio seleccionado del estudiante.
+								Esta comida se quita del plan del estudiante y no se puede recuperar.
 							</Alert.Description>
 						</Alert.Content>
 					</Alert>
@@ -124,7 +124,7 @@ export function MealPlanDeleteDrawer( {
 						{ ( { isPending } ) => (
 							<>
 								{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Trash2 className={ "size-4" }/> }
-								{ isPending ? "Eliminando..." : "Eliminar plan" }
+								{ isPending ? "Eliminando..." : "Eliminar comida" }
 							</>
 						) }
 					</Button>

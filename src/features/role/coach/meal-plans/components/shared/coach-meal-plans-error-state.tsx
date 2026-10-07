@@ -22,7 +22,7 @@ export function CoachMealPlansErrorState( {
 			</div>
 			<Alert className={ "border border-danger/20" } status={ "danger" }>
 				<Alert.Content>
-					<Alert.Title>Error al cargar planes alimenticios</Alert.Title>
+					<Alert.Title>No se pudo cargar el plan alimenticio</Alert.Title>
 					<Alert.Description>{ message }</Alert.Description>
 				</Alert.Content>
 			</Alert>
