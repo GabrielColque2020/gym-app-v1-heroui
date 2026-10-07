@@ -20,6 +20,9 @@ enum BodyPart {
   TRICEPS // TRICEPS
   BICEPS // BICEPS
   SHOULDERS // HOMBROS
+  ABS // ABDOMEN
+  FOREARMS // ANTEBRAZOS
+  CARDIO // CARDIO
 }
 
 // Horarios de comida

@@ -29,7 +29,7 @@ interface SeedStudent {
 
 interface SeedExercise {
     name: string;
-    bodyPart: "CHEST" | "BACK" | "LEGS" | "TRICEPS" | "BICEPS" | "SHOULDERS";
+    bodyPart: "CHEST" | "BACK" | "LEGS" | "TRICEPS" | "BICEPS" | "SHOULDERS" | "ABS" | "FOREARMS" | "CARDIO";
 }
 
 interface SeedTrainingRoutine {

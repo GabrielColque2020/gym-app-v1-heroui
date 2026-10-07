@@ -2,9 +2,12 @@ export const BODY_PART_OPTIONS = [
 	{ label: "Pecho", value: "CHEST" },
 	{ label: "Espalda", value: "BACK" },
 	{ label: "Piernas", value: "LEGS" },
-	{ label: "Triceps", value: "TRICEPS" },
-	{ label: "Biceps", value: "BICEPS" },
+	{ label: "Tríceps", value: "TRICEPS" },
+	{ label: "Bíceps", value: "BICEPS" },
 	{ label: "Hombros", value: "SHOULDERS" },
+	{ label: "Abdomen", value: "ABS" },
+	{ label: "Antebrazos", value: "FOREARMS" },
+	{ label: "Cardio", value: "CARDIO" },
 ] as const;
 
 export type BodyPartValue = ( typeof BODY_PART_OPTIONS )[ number ][ "value" ];

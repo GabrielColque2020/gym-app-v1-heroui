@@ -15,15 +15,6 @@ export type CoachExerciseFormValues = {
 
 export type CoachExerciseSourceType = "coach" | "global";
 
-export const COACH_EXERCISE_BODY_PART_OPTIONS = [
-	{ label: "Pecho", value: "Pecho" },
-	{ label: "Espalda", value: "Espalda" },
-	{ label: "Piernas", value: "Piernas" },
-	{ label: "Triceps", value: "Triceps" },
-	{ label: "Biceps", value: "Biceps" },
-	{ label: "Hombros", value: "Hombros" },
-] as const;
-
 export const COACH_EXERCISE_EQUIPMENT_OPTIONS = [
 	{ label: "Peso corporal", value: "Peso corporal" },
 	{ label: "Mancuerna", value: "Mancuerna" },
@@ -72,22 +63,38 @@ export const COACH_EXERCISE_MUSCLE_GROUP_OPTIONS = [
 	{ label: "Cardio", value: "Cardio" },
 ] as const;
 
+// Las categorias del catalogo global estan en español ("brazos", "core",
+// "antebrazos"); las de ejercicios viejos pueden estar en ingles. El orden
+// importa: "antebrazos" contiene "brazos" y "lower arm" contiene "arm".
 const CATEGORY_TO_BODY_PART: Array<{ bodyPart: BodyPartValue; patterns: string[] }> = [
+	{ bodyPart: "ABS", patterns: [ "core", "abdom", "waist" ] },
+	{ bodyPart: "FOREARMS", patterns: [ "antebrazo", "forearm", "lower arm" ] },
+	{ bodyPart: "CARDIO", patterns: [ "cardio" ] },
 	{ bodyPart: "CHEST", patterns: [ "chest", "pectoral", "pecho" ] },
-	{ bodyPart: "BACK", patterns: [ "back", "espalda" ] },
-	{ bodyPart: "LEGS", patterns: [ "leg", "legs", "pierna", "waist", "cardio", "neck" ] },
-	{ bodyPart: "TRICEPS", patterns: [ "triceps", "tricep" ] },
-	{ bodyPart: "BICEPS", patterns: [ "biceps", "arm", "arms", "lower arm", "upper arm" ] },
-	{ bodyPart: "SHOULDERS", patterns: [ "shoulder", "shoulders", "hombro" ] },
+	{ bodyPart: "BACK", patterns: [ "back", "espalda", "neck", "cuello" ] },
+	{ bodyPart: "LEGS", patterns: [ "leg", "pierna", "gluteo" ] },
+	{ bodyPart: "TRICEPS", patterns: [ "tricep" ] },
+	{ bodyPart: "BICEPS", patterns: [ "bicep" ] },
+	{ bodyPart: "SHOULDERS", patterns: [ "shoulder", "hombro" ] },
 ];
 
-export function mapCategoryToBodyPart( value: string ): BodyPartValue {
-	const normalizedValue = normalizeSearchName( value );
+const ARM_CATEGORY_PATTERNS = [ "brazo", "arm" ];
+
+// El catalogo global junta biceps y triceps en la categoria "brazos": ahi lo que
+// los separa es el musculo objetivo, por eso tambien se recibe el target.
+export function mapCategoryToBodyPart( category: string, target = "" ): BodyPartValue {
+	const normalizedCategory = normalizeSearchName( category );
 	const matchedBodyPart = CATEGORY_TO_BODY_PART.find( ( entry ) =>
-		entry.patterns.some( ( pattern ) => normalizedValue.includes( pattern ) )
+		entry.patterns.some( ( pattern ) => normalizedCategory.includes( pattern ) )
 	);
 
-	return matchedBodyPart?.bodyPart ?? "CHEST";
+	if (matchedBodyPart) return matchedBodyPart.bodyPart;
+
+	if (ARM_CATEGORY_PATTERNS.some( ( pattern ) => normalizedCategory.includes( pattern ) )) {
+		return normalizeSearchName( target ).includes( "tricep" ) ? "TRICEPS" : "BICEPS";
+	}
+
+	return "CHEST";
 }
 
 export function buildCoachExerciseSearchName( values: Pick<CoachExerciseFormValues, "category" | "equipment" | "instructions" | "muscleGroup" | "name" | "target"> ) {

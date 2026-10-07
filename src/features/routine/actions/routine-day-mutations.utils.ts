@@ -113,7 +113,7 @@ async function resolveCoachExerciseIds(
 		const override = await prisma.exerciseCoach.upsert( {
 			create: {
 				active: globalExercise.active,
-				bodyPart: mapCategoryToBodyPart( globalExercise.category ),
+				bodyPart: mapCategoryToBodyPart( globalExercise.category, globalExercise.target ),
 				category: globalExercise.category,
 				coachId,
 				equipment: globalExercise.equipment,

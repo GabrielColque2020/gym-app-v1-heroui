@@ -96,7 +96,7 @@ function mapGlobalExerciseToListItem( exercise: {
 	updatedAt: Date;
 	videoUrl: string | null;
 } ): CoachExerciseListItem {
-	const bodyPart = mapCategoryToBodyPart( exercise.category );
+	const bodyPart = mapCategoryToBodyPart( exercise.category, exercise.target );
 
 	return {
 		active: exercise.active,
