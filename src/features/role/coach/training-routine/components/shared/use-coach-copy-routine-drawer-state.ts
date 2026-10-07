@@ -15,19 +15,30 @@ import { useTrainingRoutinesStudents } from "@/features/role/coach/training-rout
 import { buildYearOptions, monthYearLabel, padMonth, weekListLabel } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer-utils";
 
 export type CoachCopyRoutineDrawerProps = {
+	// Series que el estudiante ya cargo en el mes destino.
+	destinationLoadedSetCount?: number;
 	destinationMonth: string;
+	// Numeros de las semanas que el mes destino ya tiene armadas.
+	destinationWeekNumbers?: number[];
 	destinationWeeksOccupied?: number;
 	destinationYear: string;
 	hasActiveRoutine?: boolean;
+	// Se llama cuando la copia termino bien, para cerrar el drawer.
+	onCopiedAction?: () => void;
 	studentId: string;
 };
+
+const NO_WEEKS: number[] = [];
 
 type CopyRoutineMode = "month" | "weeks";
 
 export function useCoachCopyRoutineDrawerState( {
+													destinationLoadedSetCount = 0,
 													destinationMonth,
+													destinationWeekNumbers = NO_WEEKS,
 													destinationWeeksOccupied = 0,
 													destinationYear,
+													onCopiedAction,
 													studentId,
 												}: CoachCopyRoutineDrawerProps ) {
 	const yearOptions = useMemo( () => buildYearOptions(), [] );
@@ -76,6 +87,8 @@ export function useCoachCopyRoutineDrawerState( {
 	const [ selectedSourceWeeks, setSelectedSourceWeeks ] = useState<string[]>( [] );
 	const [ singleDestWeeks, setSingleDestWeeks ] = useState<string[]>( [] );
 	const [ multiDestByOrigin, setMultiDestByOrigin ] = useState<Record<string, string>>( {} );
+	// La seleccion para la que el coach ya toco "reemplazar" una vez.
+	const [ confirmedKey, setConfirmedKey ] = useState<string | null>( null );
 	const sourceMonthNumber = Number( sourceMonth );
 	const sourceYearNumber = Number( sourceYear );
 	const sameMonth =
@@ -193,8 +206,41 @@ export function useCoachCopyRoutineDrawerState( {
 		weekMappings.length === 0 ||
 		copyWeeks.isPending;
 	const primaryDisabled = mode === "month" ? monthPrimaryDisabled : weeksPrimaryDisabled;
-	const primaryLabel =
-		mode === "month" ? "Copiar rutina completa" : "Copiar semanas seleccionadas";
+	// Que semanas del destino pisa esta copia. El mes completo borra el mes
+	// entero; por semanas, solo las elegidas como destino que ya existian.
+	const replacedWeeks = useMemo( () => {
+		const occupiedWeeks = [ ...destinationWeekNumbers ].sort( ( a, b ) => a - b );
+
+		if (mode === "month") return occupiedWeeks;
+
+		const destinationWeeks = new Set( weekMappings.map( ( mapping ) => mapping.destinationWeek ) );
+
+		return occupiedWeeks.filter( ( week ) => destinationWeeks.has( week ) );
+	}, [ destinationWeekNumbers, mode, weekMappings ] );
+	const willReplace = replacedWeeks.length > 0;
+	// Lo cargado por el estudiante no se borra con la copia, pero los dias se
+	// crean de nuevo y pierden la marca de terminados.
+	const loadedSetsNote = destinationLoadedSetCount > 0
+		? " Las series que el estudiante ya cargó no se borran, pero los días reemplazados vuelven a figurar sin terminar."
+		: "";
+	const destinationNotice = destinationWeekNumbers.length === 0
+		? null
+		: mode === "month"
+			? `${ destLabel } ya tiene rutina. Copiar el mes completo la borra entera, con sus ejercicios, notas y variantes, y pone esta en su lugar.${ loadedSetsNote }`
+			: willReplace
+				? `Se reemplaza ${ weekListLabel( replacedWeeks.map( String ) ) } de ${ destLabel }, con sus ejercicios, notas y variantes. Las demás semanas quedan como están.${ loadedSetsNote }`
+				: `${ destLabel } ya tiene rutina. Solo se reemplazan las semanas que elijas como destino; el resto queda como está.`;
+	// Cualquier cambio en lo elegido vuelve a pedir la confirmacion.
+	const confirmKey = JSON.stringify( [ mode, sourceStudentId, sourceMonth, sourceYear, weekMappings ] );
+	const isConfirming = willReplace && confirmedKey === confirmKey;
+	const confirmQuestion = mode === "month"
+		? `¿Reemplazar toda la rutina de ${ destLabel }? No se puede deshacer.`
+		: `¿Reemplazar ${ weekListLabel( replacedWeeks.map( String ) ) } de ${ destLabel }? No se puede deshacer.`;
+	const primaryLabel = isConfirming
+		? "Sí, reemplazar"
+		: willReplace
+			? ( mode === "month" ? "Reemplazar mes" : "Reemplazar semanas" )
+			: ( mode === "month" ? "Copiar mes" : "Copiar semanas" );
 
 	function clearWeekSelection() {
 		setSelectedSourceWeeks( [] );
@@ -255,8 +301,10 @@ export function useCoachCopyRoutineDrawerState( {
 			}
 
 			toast.success( "Rutina copiada", {
-				description: "La rutina destino se actualizó correctamente.",
+				description: `Ya está en ${ destLabel }.`,
 			} );
+			setConfirmedKey( null );
+			onCopiedAction?.();
 		} catch {
 			toast.danger( "Error al copiar rutina", {
 				description: "No se pudo completar la copia.",
@@ -264,14 +312,29 @@ export function useCoachCopyRoutineDrawerState( {
 		}
 	}
 
+	// Si la copia pisa algo, el primer toque solo pide confirmar.
+	function handlePrimaryPress() {
+		if (willReplace && !isConfirming) {
+			setConfirmedKey( confirmKey );
+			return;
+		}
+
+		void handleCopy();
+	}
+
 	return {
 		assignedDestByOrigin,
+		cancelConfirm: () => setConfirmedKey( null ),
+		confirmQuestion,
 		copyMonth,
 		copyWeeks,
 		destChoicesForRow,
 		destLabel,
 		destinationAffectedLabel,
+		destinationNotice,
 		handleCopy,
+		handlePrimaryPress,
+		isConfirming,
 		handleSourceMonthChange,
 		handleSourceStudentChange,
 		handleSourceYearChange,
@@ -300,6 +363,7 @@ export function useCoachCopyRoutineDrawerState( {
 		studentOptions,
 		sourceYear,
 		weekMappings,
+		willReplace,
 		yearOptions,
 	};
 }

@@ -2,11 +2,12 @@
 
 import { MONTH_OPTIONS_PADDED as MONTH_OPTIONS } from "@/constants/months";
 import { CheckboxButtonGroup } from "@heroui-pro/react";
-import { Alert, Button, Chip, Description, Drawer, EmptyState, Label, ListBox, ScrollShadow, Select, Separator, Spinner, Surface, Typography } from "@heroui/react";
+import { Alert, Chip, Description, Drawer, EmptyState, Label, ListBox, ScrollShadow, Select, Separator, Spinner, Surface, Typography } from "@heroui/react";
 import { Copy } from "lucide-react";
 
 import { type CoachCopyRoutineDrawerProps, useCoachCopyRoutineDrawerState, } from "@/features/role/coach/training-routine/components/shared/use-coach-copy-routine-drawer-state";
 import { CoachCopyRoutineNotice, CoachCopyRoutineWeekPill } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer-elements";
+import { CoachCopyRoutineDrawerFooter } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer-footer";
 import { CoachCopyRoutineDrawerSourceControls } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer-source-controls";
 import { CoachCopyRoutineDrawerSummaryPanel } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer-summary-panel";
 
@@ -18,12 +19,16 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 													}: CoachCopyRoutineDrawerInnerProps ) {
 	const {
 		assignedDestByOrigin,
+		cancelConfirm,
+		confirmQuestion,
 		copyMonth,
 		copyWeeks,
 		destChoicesForRow,
 		destLabel,
 		destinationAffectedLabel,
-		handleCopy,
+		destinationNotice,
+		handlePrimaryPress,
+		isConfirming,
 		handleSourceMonthChange,
 		handleSourceStudentChange,
 		handleSourceYearChange,
@@ -51,6 +56,7 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 		sourceWeeks,
 		studentOptions,
 		sourceYear,
+		willReplace,
 		yearOptions,
 	} = useCoachCopyRoutineDrawerState( {
 		...props,
@@ -99,11 +105,7 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 					<CoachCopyRoutineNotice tone={ "warning" }>No podés copiar desde el mismo mes destino.</CoachCopyRoutineNotice>
 				) : null }
 
-				{ hasActiveRoutine ? (
-					<CoachCopyRoutineNotice tone={ "warning" }>
-						{ destLabel } ya tiene una rutina configurada. La copia puede reemplazar contenido existente.
-					</CoachCopyRoutineNotice>
-				) : null }
+				{ destinationNotice ? <CoachCopyRoutineNotice tone={ "warning" }>{ destinationNotice }</CoachCopyRoutineNotice> : null }
 
 				{ sourceQuery.isError ? (
 					<Alert className={ "border border-danger/20" } status={ "danger" }>
@@ -262,36 +264,31 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 							</div>
 						</ScrollShadow>
 
-						<CoachCopyRoutineDrawerSummaryPanel
-							destLabel={ destLabel }
-							destinationAffectedLabel={ destinationAffectedLabel }
-							mode={ mode }
-							selectedSourceRoutineStats={ selectedSourceRoutineStats }
-							selectedSourceWeeksLabel={ selectedSourceWeeksLabel }
-							sourceLabel={ sourceLabel }
-						/>
+						{ /* En mes completo la tarjeta de arriba ya dice todo; el resumen repetia los mismos numeros. */ }
+						{ mode === "weeks" ? (
+							<CoachCopyRoutineDrawerSummaryPanel
+								destLabel={ destLabel }
+								destinationAffectedLabel={ destinationAffectedLabel }
+								mode={ mode }
+								selectedSourceRoutineStats={ selectedSourceRoutineStats }
+								selectedSourceWeeksLabel={ selectedSourceWeeksLabel }
+								sourceLabel={ sourceLabel }
+							/>
+						) : null }
 					</div>
 				) : null }
 			</Drawer.Body>
 
-			<Drawer.Footer className={ "border-default-100 shrink-0 justify-end gap-2 border-t pt-4" }>
-				<Button slot={ "close" } className={ "flex-1 sm:flex-none" } isDisabled={ copyMonth.isPending || copyWeeks.isPending } variant={ "secondary" }>
-					Cancelar
-				</Button>
-				<Button
-					className={ "min-w-0 flex-1 sm:flex-none" }
-					isDisabled={ primaryDisabled }
-					isPending={ copyMonth.isPending || copyWeeks.isPending }
-					onPress={ handleCopy }
-				>
-					{ ( { isPending } ) => (
-						<>
-							{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <Copy className={ "size-4" }/> }
-							<span className={ "truncate" }>{ isPending ? "Copiando..." : primaryLabel }</span>
-						</>
-					) }
-				</Button>
-			</Drawer.Footer>
+			<CoachCopyRoutineDrawerFooter
+				confirmQuestion={ confirmQuestion }
+				isConfirming={ isConfirming }
+				isPending={ copyMonth.isPending || copyWeeks.isPending }
+				primaryDisabled={ primaryDisabled }
+				primaryLabel={ primaryLabel }
+				willReplace={ willReplace }
+				onCancelConfirmAction={ cancelConfirm }
+				onPrimaryAction={ handlePrimaryPress }
+			/>
 		</>
 	);
 }

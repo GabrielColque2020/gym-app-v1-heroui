@@ -72,17 +72,17 @@ export function CoachCopyRoutineDrawerSourceControls( {
 				>
 					<Segment.Item className={ "flex-1" } id={ "month" }>
 						{ ( { isSelected } ) => (
-							<span className={ `flex items-center justify-center gap-1.5 ${ isSelected ? "font-semibold text-accent" : "text-muted" }` }>
+							<span className={ `flex items-center justify-center gap-1.5 ${ isSelected ? "font-semibold text-foreground" : "text-muted" }` }>
 								<CalendarClock className={ "size-3.5" }/>
-								Mes
+								Mes completo
 							</span>
 						) }
 					</Segment.Item>
 					<Segment.Item className={ "flex-1" } id={ "weeks" }>
 						{ ( { isSelected } ) => (
-							<span className={ `flex items-center justify-center gap-1.5 ${ isSelected ? "font-semibold text-accent" : "text-muted" }` }>
+							<span className={ `flex items-center justify-center gap-1.5 ${ isSelected ? "font-semibold text-foreground" : "text-muted" }` }>
 								<Layers3 className={ "size-3.5" }/>
-								Semanas
+								Por semanas
 							</span>
 						) }
 					</Segment.Item>

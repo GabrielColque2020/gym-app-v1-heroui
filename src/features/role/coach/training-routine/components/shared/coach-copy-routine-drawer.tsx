@@ -52,9 +52,9 @@ export function CoachCopyRoutineDrawer( {
 				onOpenChangeAction={ setOpen }
 			>
 				{ isMobile ? (
-					<CoachCopyRoutineDrawerInnerMobile { ...props } />
+					<CoachCopyRoutineDrawerInnerMobile { ...props } onCopiedAction={ () => setOpen( false ) }/>
 				) : (
-					<CoachCopyRoutineDrawerInnerDesktop { ...props } />
+					<CoachCopyRoutineDrawerInnerDesktop { ...props } onCopiedAction={ () => setOpen( false ) }/>
 				) }
 			</FeatureDrawerLayout>
 		</>

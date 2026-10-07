@@ -122,6 +122,11 @@ export function CoachOptionRoutineDrawer( {
 
 			<CoachCopyRoutineDrawer
 				destinationMonth={ String( month ) }
+				destinationLoadedSetCount={ routineWeeks.reduce(
+					( count, routineWeek ) => count + routineWeek.routineDays.reduce( ( dayTotal, day ) => dayTotal + ( day.loadedSetCount ?? 0 ), 0 ),
+					0,
+				) }
+				destinationWeekNumbers={ routineWeeks.map( ( routineWeek ) => routineWeek.week ) }
 				destinationWeeksOccupied={ routineWeeks.length }
 				destinationYear={ String( year ) }
 				hasActiveRoutine
