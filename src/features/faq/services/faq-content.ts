@@ -15,124 +15,171 @@ export type FaqSection = {
 
 const STUDENT_FAQ_SECTIONS: FaqSection[] = [
 	{
-		description: "Guía rápida para encontrar tu rutina, avanzar en cada sesión y guardar todo correctamente.",
+		description: "Cómo encontrar tu rutina, cargar lo que hiciste y terminar el día.",
 		id: "student-routine",
 		items: [
 			{
-				answer: "Tienes dos formas simples de llegar. La más directa es abrir Rutina de Entrenamiento desde el menú lateral. Si en tu dashboard aparece un acceso rápido al próximo entrenamiento, también puedes entrar por ahí. Cuando abras la pantalla, primero revisa el periodo de arriba para confirmar que estás viendo el mes y el año correctos. Después elige la semana disponible y entra en el día que quieras trabajar. Si no encuentras nada, normalmente significa que todavía no tienes una rutina cargada para ese periodo.",
+				answer: "En Rutina de entrenamiento, desde el menú. Elegí la semana y abrí el día que vas a entrenar. Desde Inicio también tenés un acceso directo al próximo día. Si no aparece nada, tu entrenador todavía no cargó la rutina de ese mes.",
 				id: "student-routine-where",
-				question: "¿Dónde veo mi rutina actual?",
+				question: "¿Dónde veo mi rutina?",
 			},
 			{
-				answer: "Hazlo desde la parte superior de la pantalla de Rutina de Entrenamiento. Primero cambia el mes o el año si hace falta. Después selecciona la semana que quieres revisar. La idea es ir en este orden: 1. elegir el periodo, 2. elegir la semana y 3. abrir el día. Si cambias de mes y la pantalla queda vacia, no significa necesariamente que haya un error; muchas veces solo indica que tu coach todavía no cargo una rutina en ese periodo.",
+				answer: "Arriba de la pantalla de Rutina de entrenamiento está el mes: cambialo ahí si querés ver otro. Debajo están las semanas, y dentro de cada una los días. Si un mes aparece vacío, es que no tiene rutina cargada.",
 				id: "student-routine-period",
-				question: "¿Cómo cambio de semana o de mes en mi rutina?",
+				question: "¿Cómo cambio de semana o de mes?",
 			},
 			{
-				answer: "Entra al día que vas a entrenar y completa cada ejercicio con los datos que te pida la pantalla. A medida que avances, revisa que las series, repeticiones o pesos queden como realmente los hiciste. Antes de cerrar, mira el resumen del día y después toca Guardar progreso. Ese es el paso que confirma tu sesión. Si sales antes de guardar, el avance puede quedar incompleto o directamente no registrarse. Mi recomendación es guardar cuando termines el bloque completo de entrenamiento y no dejarlo para más tarde.",
+				answer: "Abrí el día y completá en cada serie las repeticiones y el peso. No hay botón de guardar: cada serie se guarda sola un momento después de cargarla, y arriba vas a ver el aviso Guardado. Una serie se guarda recién cuando tiene los dos datos, repeticiones y peso. Podés salir y volver más tarde: lo cargado queda.",
 				id: "student-routine-save",
-				question: "¿Cómo guardo el progreso de una rutina?",
+				question: "¿Cómo cargo lo que hice? ¿Tengo que guardar?",
 			},
 			{
-				answer: "Quiere decir que ese día ya fue guardado como realizado y que el sistema lo toma como parte de tu historial. En otras palabras, esa sesión ya quedó registrada. Por eso, cuando un día esta finalizado, ya no se interpreta como un borrador sino como un entrenamiento cerrado. Si notas que algo del contenido debería cambiarse, por ejemplo un ejercicio mal cargado o una estructura distinta, lo correcto es avisarle a tu coach para que lo revise desde su panel.",
+				answer: "Le avisa a tu entrenador que ese entrenamiento está hecho. Antes de confirmar te muestra un resumen, y podés terminar aunque te hayan quedado series sin cargar. Después el día queda como Día terminado y las series se bloquean para que no las cambies sin querer.",
 				id: "student-routine-finalized",
-				question: "¿Qué significa que una rutina quede finalizada?",
+				question: "¿Para qué sirve Terminar día?",
+			},
+			{
+				answer: "Sí. Entrá al día y tocá Corregir (o Corregir series). Se desbloquean las series, cambiás lo que haga falta y se guarda solo. El día sigue figurando como terminado.",
+				id: "student-routine-fix",
+				question: "Terminé el día y me equivoqué en una serie, ¿puedo corregirla?",
 			},
 		],
-		title: "Rutinas",
+		title: "Rutina",
 	},
 	{
-		description: "Conceptos útiles para interpretar mejor tus ejercicios, variantes y registros anteriores.",
+		description: "Cómo cambiar un ejercicio por una variante y ver lo que hiciste la vez anterior.",
 		id: "student-exercises",
 		items: [
 			{
-				answer: "Significa que tu coach eligió una versión alternativa del ejercicio original para esa sesión. Esto suele pasar cuando quiere adaptarte el movimiento, cambiar el equipamiento disponible o ajustar la dificultad. Por ejemplo, puede mantener la misma idea del ejercicio pero con otra maquina, otro agarre o una versión más simple o más exigente. No te preocupes: lo importante es seguir lo que ves en tu pantalla en ese día, porque esa es la versión que realmente debes hacer.",
+				answer: "Solo si tu entrenador le cargó variantes. En las opciones del ejercicio tocá Cambiar ejercicio y elegí una. Si la opción aparece deshabilitada, ese ejercicio no tiene variantes: pedile a tu entrenador que las agregue.",
+				id: "student-exercise-change",
+				question: "¿Puedo cambiar un ejercicio por otro?",
+			},
+			{
+				answer: "Que en ese día estás haciendo una variante en lugar del ejercicio original. Lo que cargues queda registrado para la variante. Podés volver al original desde la misma opción Cambiar ejercicio.",
 				id: "student-exercise-changed",
 				question: "¿Qué significa Ejercicio cambiado?",
 			},
 			{
-				answer: "Entra al ejercicio y busca el bloque Última sesión. Si ya habías hecho ese ejercicio antes, ahí vas a ver una referencia de la fecha y, según el caso, repeticiones, peso o series registradas. Te sirve mucho para comparar como te fue la vez pasada antes de empezar. Si ese bloque no aparece, normalmente significa una de estas dos cosas: o es la primera vez que haces ese ejercicio, o todavía no hay un registro previo guardado para esa variante puntual.",
+				answer: "En cada serie aparece la referencia Anterior, con las repeticiones y el peso de la última vez que hiciste ese ejercicio. Con Repetir última vez se cargan esos mismos valores en todas las series del ejercicio, y después ajustás lo que cambió. Si no aparece nada, es la primera vez que lo hacés.",
 				id: "student-last-session",
-				question: "¿Dónde veo mi última sesión?",
+				question: "¿Dónde veo lo que hice la última vez?",
 			},
 		],
 		title: "Ejercicios",
 	},
 	{
-		description: "Accesos útiles para revisar la parte nutricional y el historial de tu seguimiento.",
+		description: "Tu plan alimenticio y el registro de los meses anteriores.",
 		id: "student-follow-up",
 		items: [
 			{
-				answer: "Abre Plan alimenticio desde el menú lateral. Ahí deberías ver el plan que está cargado para tu cuenta, normalmente organizado por comidas, momentos del día o bloques. Lo mejor es revisar primero si tienes un plan activo y después entrar en cada bloque para leerlo con calma. Si la pantalla aparece vacía, lo más probable es que todavía no tengas un plan asignado o que tu coach aún no lo haya cargado.",
+				answer: "En Plan alimenticio, desde el menú. Las comidas están ordenadas por momento del día, y algunas pueden traer una nota de tu entrenador. Arriba dice cuándo se actualizó por última vez y podés descargarlo en PDF. Si está vacío, tu entrenador todavía no lo cargó.",
 				id: "student-meal-plans",
 				question: "¿Dónde veo mi plan alimenticio?",
 			},
 			{
-				answer: "Entra en Historial de Rutina desde el menú lateral. Una vez dentro, revisa el periodo que aparece en pantalla y busca el mes que quieras consultar. Desde ahí puedes ver sesiones anteriores y, en algunos casos, descargar o revisar reportes relacionados con tu progreso. Si estás buscando un entrenamiento puntual y no lo encuentras enseguida, lo primero que conviene comprobar es que estés mirando el mes correcto.",
+				answer: "En Historial de rutina, desde el menú. Vas a ver una fila por cada mes con lo que registraste y cuántos días terminaste. Desde cada mes podés descargar el reporte en PDF con el detalle de series, repeticiones y peso.",
 				id: "student-history",
-				question: "¿Dónde consulto mi historial de rutinas?",
+				question: "¿Dónde consulto mi historial?",
+			},
+			{
+				answer: "Sí. En Rutina de entrenamiento, junto al mes, está el botón para descargar la rutina en PDF.",
+				id: "student-routine-pdf",
+				question: "¿Puedo descargar mi rutina?",
 			},
 		],
-		title: "Seguimiento",
+		title: "Plan e historial",
 	},
 ];
 
 const COACH_FAQ_SECTIONS: FaqSection[] = [
 	{
-		description: "Pasos básicos para entrar a la rutina del alumno y trabajarla sin perderte en el flujo.",
+		description: "Cómo llegar a la rutina de un estudiante y armar cada día.",
 		id: "coach-routine",
 		items: [
 			{
-				answer: "Empieza en Estudiantes desde el menú lateral. Busca al alumno en el listado y abre su ficha: entra directo a la rutina del mes, y desde las pestañas de arriba pasas al plan alimenticio o al historial. Después entra en la semana que quieras revisar. Desde ahí ya puedes abrir el día puntual para editarlo. Si quieres orientarte rápido, piensa el recorrido así: 1. elegir estudiante, 2. abrir mes, 3. elegir semana y 4. entrar al día. Ese es el flujo base para casi cualquier ajuste de rutina.",
+				answer: "En Estudiantes, tocá al estudiante: se abre su rutina del mes. Con las pestañas de arriba pasás a su Plan alimenticio o a su Historial. Dentro de la rutina elegís la semana y abrís el día que querés editar.",
 				id: "coach-routine-student",
 				question: "¿Cómo entro a la rutina de un estudiante?",
 			},
 			{
-				answer: "Abre el día de rutina que quieres trabajar y usa el editor como tu espacio de armado. Desde ahí puedes agregar ejercicios, cambiar el orden, ajustar series, repeticiones y observaciones. Cuando termines, guarda los cambios antes de salir. Ese último paso es importante: si cierras la pantalla sin guardar, el alumno puede seguir viendo la versión anterior o quedar con un borrador incompleto.",
+				answer: "No. El día se guarda solo un momento después de cada cambio, y arriba vas a ver el aviso Guardado. Lo único que frena el guardado es un ejercicio sin series o sin repeticiones: la pantalla te avisa cuántos faltan completar.",
 				id: "coach-routine-edit",
-				question: "¿Cómo creo o edito una rutina?",
+				question: "¿Tengo que guardar los cambios del día?",
 			},
 			{
-				answer: "Dentro del día toca el botón para agregar ejercicios. Se va a abrir un drawer con el catálogo disponible. Desde ahí puedes buscar por nombre o usar filtros para encontrar algo más rápido. Cuando elijas el ejercicio, agregalo al borrador y después revisa cuatro cosas antes de guardar: el orden, las series, las repeticiones y las observaciones. Con eso te aseguras de que el día quede realmente listo para el alumno.",
+				answer: "Dentro del día tocá Agregar ejercicio. Arriba podés fijar las series y repeticiones con las que se van a agregar (hay atajos como 3×12). Buscá por nombre o filtrá por grupo muscular y tocá Agregar en cada ejercicio: podés sumar varios sin cerrar. Al terminar tocá Listo.",
 				id: "coach-routine-add-exercise",
 				question: "¿Cómo agrego ejercicios a un día?",
 			},
 			{
-				answer: "Cada ejercicio tiene campos editables para orden, series, repeticiones y notas. En desktop normalmente los ves directo en la grilla o en el listado. En mobile suelen aparecer dentro del bloque de edición de detalles. Lo ideal es ajustar cada campo con calma y después guardar al final del día, no ejercicio por ejercicio, para revisar antes si toda la estructura tiene sentido.",
+				answer: "Cada ejercicio tiene sus campos Series y Repeticiones a la vista. El orden se cambia con las flechas que están junto al número del ejercicio. Con el botón de nota le dejás una indicación al estudiante.",
 				id: "coach-routine-fields",
-				question: "¿Cómo cambio el orden, series y repeticiones?",
+				question: "¿Cómo cambio el orden, las series y las repeticiones?",
+			},
+			{
+				answer: "Sí, mientras el día esté vacío: ahí aparece la opción Copiar ejercicios de otro día. Elegís el día de origen y después ajustás lo que haga falta.",
+				id: "coach-routine-copy-day",
+				question: "¿Puedo copiar los ejercicios de otro día?",
 			},
 		],
 		title: "Rutinas",
 	},
 	{
-		description: "Aclaraciones practicas para trabajar con variantes y reaprovechar programaciones anteriores.",
+		description: "Variantes de un ejercicio y formas de no armar todo de cero.",
 		id: "coach-variants",
 		items: [
 			{
-				answer: "En las acciones del ejercicio entra en Variantes. Ahí puedes vincular alternativas, agregar nuevas opciones o sacar las que ya no correspondan. Si el ejercicio todavía no quedó guardado dentro del día, primero guarda la rutina y después vuelve a abrir las variantes. El orden recomendado es este: 1. crear o dejar persistido el ejercicio, 2. abrir Variantes, 3. ajustar las opciones y 4. guardar nuevamente para confirmar los cambios.",
+				answer: "En las opciones del ejercicio, dentro del día, tocá Variantes. Se proponen primero los ejercicios del mismo grupo muscular. Cada variante que agregás o quitás se guarda en el momento; al terminar tocá Listo. El estudiante las ve en Cambiar ejercicio.",
 				id: "coach-routine-variants",
 				question: "¿Cómo agrego variantes a un ejercicio?",
 			},
 			{
-				answer: "Dentro de la rutina mensual del estudiante busca la opción para copiar rutina. Normalmente el flujo es: primero eliges el periodo de origen, después seleccionas la semana que quieres traer y por último confirmas la copia. Una vez copiada la estructura, no la des por terminada automaticamente: revisa cada día y adapta ejercicios, series, repeticiones y notas según el contexto actual del alumno. Esta función te ahorra mucho tiempo, pero siempre conviene hacer una pasada final antes de dejarla publicada.",
+				answer: "En la rutina del mes tocá Copiar rutina. Elegí de dónde copiar y si querés el Mes completo o Por semanas. Si la copia pisa semanas que ya tenían rutina, la pantalla lo avisa y te pide confirmar. Las series que el estudiante ya cargó no se borran.",
 				id: "coach-routine-copy",
-				question: "¿Cómo copio una rutina de otra semana o mes?",
+				question: "¿Cómo copio una rutina de otro mes o de otro estudiante?",
+			},
+			{
+				answer: "En la rutina del mes, con Repetir semana copiás una semana ya armada en las demás del mismo mes. Si alguna ya tenía ejercicios, se reemplazan: la pantalla lo avisa antes de confirmar.",
+				id: "coach-routine-repeat-week",
+				question: "¿Cómo repito una semana en las siguientes?",
 			},
 		],
-		title: "Variantes y reutilización",
+		title: "Variantes y copias",
 	},
 	{
-		description: "Situaciones comunes del día a día y como resolverlas sin perder tiempo.",
+		description: "Carga del plan alimenticio y manejo de tu catálogo de ejercicios.",
+		id: "coach-meal-plan-exercises",
+		items: [
+			{
+				answer: "Abrí al estudiante y pasá a la pestaña Plan alimenticio. Agregá una comida por cada momento del día: se ordenan solas, de desayuno a cena. Cada comida puede llevar una nota opcional. Se editan y eliminan con los botones de cada tarjeta.",
+				id: "coach-meal-plan",
+				question: "¿Cómo cargo el plan alimenticio?",
+			},
+			{
+				answer: "Sí, con Copiar de otro estudiante. Tené en cuenta que la copia reemplaza el plan entero: si el estudiante ya tenía comidas, se borran. La pantalla lo avisa y te pide confirmar.",
+				id: "coach-meal-plan-copy",
+				question: "¿Puedo copiar el plan de otro estudiante?",
+			},
+			{
+				answer: "Los de Catálogo vienen cargados en la app; los Propios los creaste vos. Si editás uno del catálogo pasa a figurar como Catálogo, editado, y el cambio vale solo para vos. Tocando un ejercicio ves su ficha con la imagen o el video.",
+				id: "coach-exercises",
+				question: "¿Qué diferencia hay entre un ejercicio de Catálogo y uno Propio?",
+			},
+		],
+		title: "Plan alimenticio y ejercicios",
+	},
+	{
+		description: "Situaciones del día a día y cómo resolverlas.",
 		id: "coach-troubleshooting",
 		items: [
 			{
-				answer: "Quiere decir que el alumno ya entreno ese día y guardo progreso. Desde ese momento, la rutina deja de ser solo una planificación y pasa a formar parte del historial real. Puedes revisarla, pero si vas a modificar ejercicios o estructura, hazlo con cuidado porque podrias desalinear lo que el sistema muestra con lo que el alumno realmente hizo. Si el cambio es importante, lo mejor es revisar primero el contexto del registro antes de tocar el contenido.",
+				answer: "Que el estudiante entrenó y tocó Terminar día. Lo que cargó lo ves en su Historial. Podés seguir editando ese día, pero si quitás un ejercicio que ya tenía series cargadas, la rutina deja de coincidir con lo que el estudiante hizo.",
 				id: "coach-finalized-day",
-				question: "¿Qué significa que un día esté finalizado?",
+				question: "¿Qué significa que un día esté terminado?",
 			},
 			{
-				answer: "Lo primero es comprobar si el estudiante aparece en tu listado principal. Si aparece ahí pero no dentro de un módulo concreto, por ejemplo rutinas, planes o historial, normalmente no es un problema del usuario sino de datos faltantes en ese flujo. La forma más practica de revisarlo es: 1. confirmar que el alumno exista, 2. abrir el módulo donde falta información y 3. verificar si realmente hay contenido cargado para ese periodo o sección. Muchas veces el alumno si existe, pero todavía no tiene una rutina o un plan asociado.",
+				answer: "Si no está en Estudiantes, crealo con Nuevo estudiante. Si está pero su rutina aparece vacía, revisá que estés mirando el mes correcto: cada mes se arma por separado, desde cero o copiando otro.",
 				id: "coach-student-missing",
 				question: "¿Qué hago si un estudiante no aparece o no tiene rutina?",
 			},
@@ -143,40 +190,40 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 
 const ADMIN_FAQ_SECTIONS: FaqSection[] = [
 	{
-		description: "Consultas habituales para administrar usuarios y mantener el sistema ordenado.",
+		description: "Consultas habituales para administrar las cuentas.",
 		id: "admin-users",
 		items: [
 			{
-				answer: "Entra en Usuarios y crea la cuenta según el rol que necesites. Completa los datos obligatorios, revisa que el rol sea el correcto y antes de cerrar confirma que la cuenta haya quedado lista para iniciar sesión. Si estas creando un coach o un estudiante, conviene hacer una comprobación extra despues: entrar de nuevo en el listado y validar que la cuenta se vea bien y que no falte información básica para operar.",
+				answer: "Entrá en Usuarios y creá la cuenta con el rol que corresponda. Completá los datos obligatorios y, al terminar, confirmá en el listado que la cuenta quedó cargada.",
 				id: "admin-create-user",
 				question: "¿Cómo creo un usuario nuevo?",
 			},
 			{
-				answer: "La diferencia principal esta en hasta donde puede llegar cada usuario dentro de la app. Admin se ocupa de la configuración general, los usuarios y los catálogos globales. Coach trabaja sobre estudiantes, rutinas, planes y seguimiento diario. Student solo ve su propia información y registra su progreso. Pensarlo así ayuda mucho: admin configura, coach gestiona y student ejecuta y consulta.",
+				answer: "El administrador maneja los usuarios y el catálogo global de ejercicios. El entrenador trabaja con sus estudiantes: rutinas, plan alimenticio y seguimiento. El estudiante solo ve lo suyo y registra sus entrenamientos.",
 				id: "admin-roles",
-				question: "¿Qué diferencia hay entre admin, coach y student?",
+				question: "¿Qué diferencia hay entre administrador, entrenador y estudiante?",
 			},
 			{
-				answer: "Desde Usuarios puedes abrir la cuenta, actualizar sus datos y cambiar su estado cuando necesites limitar o devolver acceso. Antes de desactivar a alguien, vale la pena revisar si esa persona todavía participa en procesos activos, por ejemplo si sigue teniendo alumnos asignados o si forma parte de un flujo operativo importante. Eso evita bastante confusion después, sobre todo cuando alguien deja de aparecer en ciertos listados.",
+				answer: "Desde Usuarios abrí la cuenta para actualizar sus datos o cambiar su estado. Antes de desactivar a un entrenador, revisá si todavía tiene estudiantes a cargo.",
 				id: "admin-edit-user",
-				question: "¿Cómo edito o desactivo usuarios?",
+				question: "¿Cómo edito o desactivo un usuario?",
 			},
 		],
 		title: "Usuarios",
 	},
 	{
-		description: "Puntos clave para mantener prolijo el catálogo compartido de ejercicios.",
+		description: "El catálogo de ejercicios que comparten todos los entrenadores.",
 		id: "admin-exercises",
 		items: [
 			{
-				answer: "En Ejercicios globales puedes crear, editar y mantener el catálogo base que después reutiliza el resto del sistema. Lo ideal es cargar cada ejercicio de la forma más completa posible: nombre, categoría, imagen, video y cualquier dato que ayude a identificarlo bien. Cuanto mejor quede cargado aca, más consistente va a verse después en rutinas, variantes y otras pantallas.",
+				answer: "En Ejercicios globales creás y editás el catálogo base. Conviene cargar cada ejercicio completo (nombre, categoría, imagen o video) y evitar nombres repetidos: es lo que después ven los entrenadores al armar las rutinas.",
 				id: "admin-global-exercises",
-				question: "¿Cómo gestiono ejercicios globales?",
+				question: "¿Cómo gestiono los ejercicios globales?",
 			},
 			{
-				answer: "Usa ejercicios globales cuando quieras mantener una base común, prolija y reutilizable para todo el sistema. En cambio, los ejercicios del coach sirven mejor para necesidades más puntuales o adaptaciones especificas de su trabajo diario. Una forma simple de decidirlo es esta: si quieres estandarizar, crea algo global; si quieres personalizar para un caso concreto, deja que viva en el catálogo del coach.",
+				answer: "Global, cuando sirve para todos los entrenadores. Del entrenador, cuando es una adaptación puntual de su forma de trabajar: cada entrenador puede crear los suyos o editar su copia de uno global sin afectar al resto.",
 				id: "admin-global-vs-coach",
-				question: "¿Cuándo conviene usar ejercicios globales y cuándo ejercicios del coach?",
+				question: "¿Cuándo conviene un ejercicio global y cuándo uno del entrenador?",
 			},
 		],
 		title: "Ejercicios globales",

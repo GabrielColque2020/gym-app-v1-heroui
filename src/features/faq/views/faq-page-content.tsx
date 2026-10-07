@@ -30,7 +30,7 @@ export default function FaqPageContent( { role }: FaqPageContentProps ) {
 				<Card.Content className={ "flex flex-col gap-4 p-3" }>
 					<PageHeader
 						title={ "Preguntas frecuentes" }
-						description={ "Aquí encontrarás respuestas rápidas sobre los flujos más comunes." }
+						description={ "Respuestas cortas a las dudas más comunes sobre cómo usar la app." }
 					/>
 				</Card.Content>
 			</Card>
