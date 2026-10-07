@@ -14,10 +14,23 @@ function normalizeSearchValue( value: string ) {
 		.replace( /\s+/g, " " );
 }
 
-export function useAdminUsersPageState( users: AdminUserListItem[] ) {
+export type AdminUsersInitialFilters = {
+	onlyWithoutCoach: boolean;
+	role: AdminUserRoleFilter;
+	status: AdminUserStatusFilter;
+};
+
+// Un estudiante activo sin entrenador, o con uno desactivado: nadie le arma la rutina.
+export function isStudentWithoutCoach( user: AdminUserListItem ) {
+	return user.role === "STUDENT" && user.active && !user.coach?.active;
+}
+
+export function useAdminUsersPageState( users: AdminUserListItem[], initialFilters?: AdminUsersInitialFilters ) {
 	const [ search, setSearch ] = useState( "" );
-	const [ roleFilter, setRoleFilter ] = useState<AdminUserRoleFilter>( "ALL" );
-	const [ statusFilter, setStatusFilter ] = useState<AdminUserStatusFilter>( "ALL" );
+	const [ roleFilter, setRoleFilter ] = useState<AdminUserRoleFilter>( initialFilters?.role ?? "ALL" );
+	const [ statusFilter, setStatusFilter ] = useState<AdminUserStatusFilter>( initialFilters?.status ?? "ALL" );
+	const [ onlyWithoutCoach, setOnlyWithoutCoach ] = useState( initialFilters?.onlyWithoutCoach ?? false );
+	const withoutCoachCount = useMemo( () => users.filter( isStudentWithoutCoach ).length, [ users ] );
 
 	const filteredUsers = useMemo( () => {
 		const q = normalizeSearchValue( search );
@@ -34,19 +47,22 @@ export function useAdminUsersPageState( users: AdminUserListItem[] ) {
 				|| (statusFilter === "ACTIVE" && user.active)
 				|| (statusFilter === "INACTIVE" && !user.active);
 
-			return matchesSearch && matchesRole && matchesStatus;
+			return matchesSearch && matchesRole && matchesStatus && ( !onlyWithoutCoach || isStudentWithoutCoach( user ) );
 		} );
-	}, [ roleFilter, search, statusFilter, users ] );
+	}, [ onlyWithoutCoach, roleFilter, search, statusFilter, users ] );
 
 	return {
 		ADMIN_USER_ROLE_FILTERS,
 		ADMIN_USER_STATUS_FILTERS,
 		filteredUsers,
+		onlyWithoutCoach,
 		roleFilter,
 		search,
 		setRoleFilter,
 		setSearch,
 		setStatusFilter,
 		statusFilter,
+		toggleOnlyWithoutCoach: () => setOnlyWithoutCoach( ( current ) => !current ),
+		withoutCoachCount,
 	};
 }

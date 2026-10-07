@@ -9,6 +9,8 @@ export type AdminDashboardSummary = {
 		activeCoaches: number;
 		activeStudents: number;
 		inactiveUsers: number;
+		// Estudiantes activos sin entrenador, o con un entrenador desactivado.
+		studentsWithoutCoach: number;
 		totalUsers: number;
 	};
 };
@@ -17,7 +19,7 @@ export async function getAdminDashboardSummaryAction(): Promise<AdminDashboardSu
 	try {
 		await requireAdminSession( "consultar el resumen" );
 
-		const [ totalUsers, activeCoaches, activeStudents, inactiveUsers ] = await Promise.all( [
+		const [ totalUsers, activeCoaches, activeStudents, inactiveUsers, studentsWithoutCoach ] = await Promise.all( [
 			prisma.user.count( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 			} ),
@@ -41,6 +43,14 @@ export async function getAdminDashboardSummaryAction(): Promise<AdminDashboardSu
 					active: false,
 				},
 			} ),
+			prisma.user.count( {
+				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
+				where: {
+					active: true,
+					OR: [ { coachId: null }, { coach: { active: false } } ],
+					role: "STUDENT",
+				},
+			} ),
 		] );
 
 		return {
@@ -48,6 +58,7 @@ export async function getAdminDashboardSummaryAction(): Promise<AdminDashboardSu
 				activeCoaches,
 				activeStudents,
 				inactiveUsers,
+				studentsWithoutCoach,
 				totalUsers,
 			},
 		};

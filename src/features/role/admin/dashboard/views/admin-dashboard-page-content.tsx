@@ -3,8 +3,8 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-import { Button, Card } from "@heroui/react";
-import { Dumbbell, RotateCw, UserPlus, Users } from "lucide-react";
+import { Alert, Button, Card } from "@heroui/react";
+import { ChevronRight, Dumbbell, RotateCw, UserPlus, Users } from "lucide-react";
 
 import { PageHeader } from "@/components/common";
 import { DashboardSkeleton } from "@/components/common/skeletons";
@@ -55,11 +55,52 @@ export default function AdminDashboardPageContent() {
 				</Card.Content>
 			</Card>
 
-			<div className={ "grid gap-3 md:grid-cols-2 xl:grid-cols-4" }>
-				<StatCard description={ "Todas las cuentas, de cualquier rol." } label={ "Usuarios" } value={ data.totals.totalUsers }/>
-				<StatCard description={ "Entrenadores que pueden entrar a la app." } label={ "Entrenadores activos" } value={ data.totals.activeCoaches }/>
-				<StatCard description={ "Estudiantes que pueden entrar a la app." } label={ "Estudiantes activos" } value={ data.totals.activeStudents }/>
-				<StatCard description={ "Cuentas sin acceso a la app." } label={ "Inactivos" } value={ data.totals.inactiveUsers }/>
+			{ /* Lo unico que pide una accion: un estudiante sin entrenador no recibe rutina ni plan. */ }
+			{ data.totals.studentsWithoutCoach > 0 ? (
+				<Alert className={ "border border-warning/20" } status={ "warning" }>
+					<Alert.Indicator/>
+					<Alert.Content>
+						<Alert.Title>
+							{ data.totals.studentsWithoutCoach === 1
+								? "Hay 1 estudiante sin entrenador"
+								: `Hay ${ data.totals.studentsWithoutCoach } estudiantes sin entrenador` }
+						</Alert.Title>
+						<Alert.Description>
+							No tienen entrenador asignado, o el que tenían está desactivado. Nadie les arma la rutina ni el plan.
+						</Alert.Description>
+					</Alert.Content>
+					<Button size={ "sm" } variant={ "secondary" } onPress={ () => router.push( "/admin/users?sinEntrenador=1" ) }>
+						Ver quiénes son
+					</Button>
+				</Alert>
+			) : null }
+
+			{ /* Cada numero lleva a la lista ya filtrada. */ }
+			<div className={ "grid grid-cols-2 gap-3 xl:grid-cols-4" }>
+				<StatCard
+					description={ "Todas las cuentas, de cualquier rol." }
+					label={ "Usuarios" }
+					value={ data.totals.totalUsers }
+					onPressAction={ () => router.push( "/admin/users" ) }
+				/>
+				<StatCard
+					description={ "Entrenadores que pueden entrar a la app." }
+					label={ "Entrenadores activos" }
+					value={ data.totals.activeCoaches }
+					onPressAction={ () => router.push( "/admin/users?rol=entrenador&estado=activos" ) }
+				/>
+				<StatCard
+					description={ "Estudiantes que pueden entrar a la app." }
+					label={ "Estudiantes activos" }
+					value={ data.totals.activeStudents }
+					onPressAction={ () => router.push( "/admin/users?rol=estudiante&estado=activos" ) }
+				/>
+				<StatCard
+					description={ "Cuentas sin acceso a la app." }
+					label={ "Inactivos" }
+					value={ data.totals.inactiveUsers }
+					onPressAction={ () => router.push( "/admin/users?estado=inactivos" ) }
+				/>
 			</div>
 
 			<Card className={ "border border-border py-2" } variant={ "default" }>
@@ -96,18 +137,30 @@ function StatCard( {
 	label,
 	value,
 	description,
+	onPressAction,
 }: {
 	description: string;
 	label: string;
+	onPressAction: () => void;
 	value: number;
 } ) {
 	return (
-		<Card className={ "border border-border" } variant={ "default" }>
-			<Card.Content className={ "space-y-2 p-4" }>
-				<p className={ "text-sm font-medium text-muted" }>{ label }</p>
-				<p className={ "text-3xl font-semibold tabular-nums text-foreground" }>{ value }</p>
-				<p className={ "text-xs text-muted" }>{ description }</p>
-			</Card.Content>
-		</Card>
+		<button
+			aria-label={ `${ label }: ${ value }. Ver la lista` }
+			className={ "rounded-3xl text-left outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-accent" }
+			type={ "button" }
+			onClick={ onPressAction }
+		>
+			<Card className={ "h-full border border-border" } variant={ "default" }>
+				<Card.Content className={ "space-y-2 p-4" }>
+					<div className={ "flex items-center justify-between gap-2" }>
+						<p className={ "text-sm font-medium text-muted" }>{ label }</p>
+						<ChevronRight className={ "size-4 shrink-0 text-muted" }/>
+					</div>
+					<p className={ "text-3xl font-semibold tabular-nums text-foreground" }>{ value }</p>
+					<p className={ "text-xs text-muted" }>{ description }</p>
+				</Card.Content>
+			</Card>
+		</button>
 	);
 }

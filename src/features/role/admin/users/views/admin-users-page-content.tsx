@@ -5,7 +5,7 @@ import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { RotateCw, UserPlus } from "lucide-react";
+import { RotateCw, UserPlus, UserX } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import { TableSkeleton } from "@/components/common/skeletons";
@@ -17,14 +17,16 @@ import { AdminUserMobileCard } from "@/features/role/admin/users/components/admi
 import { AdminUserRowActions } from "@/features/role/admin/users/components/admin-user-row-actions";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 import { getAdminCoachLabel, getAdminRoleLabel } from "@/features/role/admin/users/services/admin-user-labels";
-import { useAdminUsersPageState } from "@/features/role/admin/users/hooks/use-admin-users-page-state";
+import { useAdminUsersPageState, type AdminUsersInitialFilters } from "@/features/role/admin/users/hooks/use-admin-users-page-state";
 
 type AdminUsersPageContentProps = {
 	// Formulario que se abre al entrar, cuando se llega desde un acceso rápido.
 	initialCreate?: "coach" | "student" | null;
+	// Filtros con los que se abre la lista, cuando se llega desde un contador de Inicio.
+	initialFilters?: AdminUsersInitialFilters;
 };
 
-export default function AdminUsersPageContent( { initialCreate = null }: AdminUsersPageContentProps ) {
+export default function AdminUsersPageContent( { initialCreate = null, initialFilters }: AdminUsersPageContentProps ) {
 	const router = useRouter();
 	const isMounted = useIsMounted();
 	const { data = [], error, isError, isFetching, isLoading, refetch } = useAdminUsers();
@@ -32,12 +34,15 @@ export default function AdminUsersPageContent( { initialCreate = null }: AdminUs
 	const [ isCreateCoachOpen, setIsCreateCoachOpen ] = useState( initialCreate === "coach" );
 	const [ isCreateStudentOpen, setIsCreateStudentOpen ] = useState( initialCreate === "student" );
 
-	// Se limpia la dirección para que recargar o volver atrás no reabra el formulario.
-	useEffect( () => {
-		if (initialCreate) router.replace( "/admin/users" );
-	}, [ initialCreate, router ] );
+	const hasInitialFilters = Boolean( initialFilters && ( initialFilters.onlyWithoutCoach || initialFilters.role !== "ALL" || initialFilters.status !== "ALL" ) );
 
-	const pageState = useAdminUsersPageState( data );
+	// Se limpia la dirección para que recargar o volver atrás no reabra el formulario
+	// ni vuelva a imponer el filtro con el que se llegó.
+	useEffect( () => {
+		if (initialCreate || hasInitialFilters) router.replace( "/admin/users" );
+	}, [ hasInitialFilters, initialCreate, router ] );
+
+	const pageState = useAdminUsersPageState( data, initialFilters );
 	const filteredUsers = pageState.filteredUsers;
 	const breadcrumbs = [
 		{ href: "/admin/dashboard", label: "Inicio" },
@@ -201,17 +206,37 @@ export default function AdminUsersPageContent( { initialCreate = null }: AdminUs
 						</Select>
 					</div>
 
-					<div className={ "flex items-center justify-between gap-2" }>
-						<Chip size={ "sm" } variant={ "soft" }>
-							{ filteredUsers.length === 1 ? "1 usuario" : `${ filteredUsers.length } usuarios` }
-						</Chip>
+					<div className={ "flex flex-wrap items-center justify-between gap-2" }>
+						<div className={ "flex flex-wrap items-center gap-2" }>
+							<Chip size={ "sm" } variant={ "soft" }>
+								{ filteredUsers.length === 1 ? "1 usuario" : `${ filteredUsers.length } usuarios` }
+							</Chip>
+							{ pageState.withoutCoachCount > 0 || pageState.onlyWithoutCoach ? (
+								<Button
+									aria-pressed={ pageState.onlyWithoutCoach }
+									className={ pageState.onlyWithoutCoach ? "bg-warning text-warning-foreground" : "text-warning" }
+									size={ "sm" }
+									variant={ "secondary" }
+									onPress={ pageState.toggleOnlyWithoutCoach }
+								>
+									<UserX className={ "size-4" }/>
+									{ pageState.onlyWithoutCoach ? "Ver todos" : `${ pageState.withoutCoachCount } sin entrenador` }
+								</Button>
+							) : null }
+						</div>
 						<Button isDisabled={ isRefreshing } size={ "sm" } variant={ "ghost" } onPress={ () => void refetch() }>
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 					</div>
 
-					<div className={ "hidden lg:block" }>
+					{ filteredUsers.length === 0 ? (
+						<p className={ "rounded-xl border border-dashed border-border px-4 py-6 text-center text-sm text-muted" }>
+							{ pageState.onlyWithoutCoach ? "Todos los estudiantes activos tienen entrenador." : "No hay usuarios que coincidan con los filtros." }
+						</p>
+					) : null }
+
+					<div className={ filteredUsers.length === 0 ? "hidden" : "hidden lg:block" }>
 						<DataGrid
 							aria-label={ "Listado de usuarios" }
 							columns={ columns }
