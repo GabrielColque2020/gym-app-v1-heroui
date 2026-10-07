@@ -27,7 +27,7 @@ export function AdminExerciseGlobalMobileCard( {
 					src={ exercise.imageUrl }
 				/>
 				<div className={ "min-w-0 flex-1 space-y-0.5" }>
-					<p className={ "line-clamp-2 text-sm font-semibold leading-snug text-foreground" }>{ exercise.name }</p>
+					<p className={ "line-clamp-3 text-sm font-semibold leading-snug text-foreground" }>{ exercise.name }</p>
 					<p className={ "truncate text-xs text-muted" }>{ details }</p>
 					<p className={ exercise.sameNameCount > 1 ? "truncate text-xs font-medium text-warning" : "truncate text-xs text-muted" }>
 						{ exercise.sameNameCount > 1 ? `Hay ${ exercise.sameNameCount } con este nombre · ` : "" }
