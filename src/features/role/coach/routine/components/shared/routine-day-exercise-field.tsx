@@ -34,7 +34,7 @@ export function RoutineDayExerciseField( {
 			value={ value }
 			onChange={ onChange }
 		>
-			{ label ? <Label className={ "text-xs text-muted" }>{ label }</Label> : null }
+			{ label ? <Label className={ "text-center text-[11px] leading-4 text-muted" }>{ label }</Label> : null }
 			{ isMultiline ? (
 				<TextArea className={ twMerge( "border border-border", inputClassName ) } placeholder={ placeholder } rows={ 2 }/>
 			) : (

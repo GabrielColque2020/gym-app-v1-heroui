@@ -45,8 +45,14 @@ function RoutineDayExerciseRow( {
 	return (
 		<li className={ "min-w-0 space-y-2 rounded-xl border border-border bg-surface-secondary px-2.5 py-2.5" }>
 			<div className={ "flex flex-col gap-2 @xl:flex-row @xl:items-center @xl:gap-3" }>
-				<div className={ "flex min-w-0 flex-1 items-center gap-3" }>
-					<span className={ "w-5 shrink-0 text-center text-sm font-semibold text-muted" }>{ position }</span>
+				<div className={ "flex min-w-0 flex-1 items-center gap-2" }>
+					<RoutineDayExerciseMoveButtons
+						clientId={ routine.clientId }
+						exerciseName={ exerciseName }
+						isFirst={ isFirst }
+						isLast={ isLast }
+						position={ position }
+					/>
 					<AsyncMedia
 						alt={ `Imagen de ${ exerciseName }` }
 						className={ "h-12 w-12 shrink-0 rounded-lg border border-border object-cover" }
@@ -60,32 +66,31 @@ function RoutineDayExerciseRow( {
 					</div>
 				</div>
 
-				{ /* Series y repeticiones siempre a la vista: son lo unico obligatorio. */ }
-				<div className={ "flex min-w-0 items-center justify-between gap-1 @xl:shrink-0 @xl:justify-end @xl:gap-2" }>
-					<RoutineDayExerciseMoveButtons
-						clientId={ routine.clientId }
-						exerciseName={ exerciseName }
-						isFirst={ isFirst }
-						isLast={ isLast }
-					/>
-					<div className={ "flex items-center gap-1.5" }>
+				{ /* Series y repeticiones siempre a la vista: son lo unico obligatorio. Cada
+				     campo lleva su rotulo: con un numero cargado ya no se ve el texto
+				     de ayuda y no se sabia cual era cual. */ }
+				<div className={ "flex min-w-0 items-end justify-between gap-1 ps-9 @xl:shrink-0 @xl:justify-end @xl:gap-3 @xl:ps-0" }>
+					<div className={ "flex items-end gap-1.5" }>
 						<RoutineDayExerciseField
 							ariaLabel={ `Series de ${ exerciseName }` }
-							className={ "w-12 @xl:w-14" }
+							className={ "w-14 gap-0.5" }
+							label={ "Series" }
 							inputClassName={ `w-full px-1 text-center ${ routine.sets.trim() ? "" : missingClassName }` }
 							inputMode={ "numeric" }
 							name={ `series-${ routine.clientId }` }
-							placeholder={ "Series" }
+							placeholder={ "3" }
 							value={ routine.sets }
-							onChange={ ( value ) => onUpdateField( routine.clientId, "sets", value ) }
+							// Las series son un numero: en escritorio el teclado dejaba escribir letras.
+							onChange={ ( value ) => onUpdateField( routine.clientId, "sets", value.replace( /\D/g, "" ).slice( 0, 2 ) ) }
 						/>
-						<span aria-hidden className={ "text-sm text-muted" }>×</span>
+						<span aria-hidden className={ "pb-2 text-sm text-muted" }>×</span>
 						<RoutineDayExerciseField
 							ariaLabel={ `Repeticiones de ${ exerciseName }` }
-							className={ "w-16 @xl:w-20" }
+							className={ "w-20 gap-0.5" }
+							label={ "Repeticiones" }
 							inputClassName={ `w-full px-1 text-center ${ routine.reps.trim() ? "" : missingClassName }` }
 							name={ `reps-${ routine.clientId }` }
-							placeholder={ "Reps" }
+							placeholder={ "10-12" }
 							value={ routine.reps }
 							onChange={ ( value ) => onUpdateField( routine.clientId, "reps", value ) }
 						/>

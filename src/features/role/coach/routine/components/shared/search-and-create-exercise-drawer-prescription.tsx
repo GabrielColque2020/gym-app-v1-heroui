@@ -32,7 +32,7 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 			{ /* En el telefono va todo en un solo renglon que se desliza: envolviendo
 			     en dos renglones le sacaba lugar a la lista de ejercicios. */ }
 			<div className={ "flex items-center gap-2 overflow-x-auto [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden" }>
-				<TextField className={ "w-16 shrink-0 sm:w-20" } name={ "exercise-sets" } value={ setsValue } onChange={ onSetsChange }>
+				<TextField className={ "w-16 shrink-0 sm:w-20" } name={ "exercise-sets" } value={ setsValue } onChange={ ( value ) => onSetsChange( value.replace( /\D/g, "" ).slice( 0, 2 ) ) }>
 					<Input
 						aria-label={ "Series para los ejercicios que agregues" }
 						className={ "border border-border" }

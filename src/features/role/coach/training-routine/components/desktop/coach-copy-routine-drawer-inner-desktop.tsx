@@ -134,10 +134,10 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 										<div className={ "flex items-start justify-between gap-3" }>
 											<div className={ "min-w-0" }>
 												<Typography className={ "text-sm font-semibold" }>Rutina completa</Typography>
-												<Description className={ "mt-1 line-clamp-1 text-xs sm:text-sm" }>
-													Se copiará la rutina completa de { sourceLabel }.
+												<Description className={ "mt-1 block text-xs sm:text-sm" }>
+													Se copia de { sourceLabel } a { destLabel }.
 												</Description>
-												<Description className={ "mt-1 text-xs sm:text-sm" }>
+												<Description className={ "mt-1 block text-xs sm:text-sm" }>
 													{ source.weekCount } semanas · { source.dayCount } días · { source.exerciseCount } ejercicios
 												</Description>
 											</div>
