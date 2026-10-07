@@ -33,6 +33,30 @@ export type RoutineDayDetail = Omit<FetchedRoutineDayDetail, "trainingRoutineWee
 
 export type RoutineDayExercise = RoutineDayDetail[ "routines" ][ number ];
 
+// Lo minimo para guardar un dia: confirmar que es de un estudiante del coach y
+// saber que ejercicios ya tenia. Evita traer el dia entero (ejercicios, variantes,
+// instrucciones) solo para eso.
+export async function getRoutineDaySaveTarget( input: GetRoutineDayDetailInput ) {
+	const normalizedInput = normalizeRoutineDayDetailInput( input );
+	const routineDay = ( await prisma.routineDay.findFirst( {
+		select: {
+			id: true,
+			routines: {
+				select: {
+					exerciseId: true,
+				},
+			},
+		},
+		where: buildRoutineDayDetailWhere( normalizedInput ),
+	} ) ) as { id: string; routines: Array<{ exerciseId: string | null }> } | null;
+
+	if (!routineDay) {
+		throw new Error( "No se encontró el día de rutina seleccionado." );
+	}
+
+	return routineDay;
+}
+
 export async function getRoutineDayDetailBase( {
 												   coachId,
 												   routineDayId,

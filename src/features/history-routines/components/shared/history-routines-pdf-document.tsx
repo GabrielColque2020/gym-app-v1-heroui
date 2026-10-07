@@ -153,15 +153,8 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-function getSummaryStatusLabel( status: HistoryRoutineMonthSummary["status"] ) {
-	switch (status) {
-		case "complete":
-			return "Completo";
-		case "partial":
-			return "Parcial";
-		default:
-			return "Sin datos";
-	}
+function pluralize( count: number, singular: string, plural: string ) {
+	return `${ count } ${ count === 1 ? singular : plural }`;
 }
 
 function getSetStatusLabel( completed: boolean, planned: boolean ) {
@@ -203,11 +196,13 @@ export function HistoryRoutinesPdfDocument( {
 				</View>
 
 				<View style={ styles.summaryBar }>
-					<Text style={ styles.summaryItem }>{ getSummaryStatusLabel( summary.status ) }</Text>
-					<Text style={ styles.summaryItem }>{ `${ summary.weeks } semanas` }</Text>
-					<Text style={ styles.summaryItem }>{ `${ summary.days } días` }</Text>
-					<Text style={ styles.summaryItem }>{ `${ summary.exercises } ejercicios` }</Text>
-					<Text style={ styles.summaryItem }>{ `${ summary.sets } series` }</Text>
+					<Text style={ styles.summaryItem }>{ pluralize( summary.weeks, "semana", "semanas" ) }</Text>
+					<Text style={ styles.summaryItem }>{ pluralize( summary.days, "día", "días" ) }</Text>
+					<Text style={ styles.summaryItem }>{ pluralize( summary.exercises, "ejercicio", "ejercicios" ) }</Text>
+					{ /* Antes decia "Parcial / Completo" sin aclarar respecto de que. */ }
+					<Text style={ styles.summaryItem }>
+						{ `${ summary.completedSets } de ${ pluralize( summary.sets, "serie hecha", "series hechas" ) }` }
+					</Text>
 				</View>
 
 				{ weekGroups.map( ( weekGroup ) => (

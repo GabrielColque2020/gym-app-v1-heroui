@@ -1,7 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query";
 
 import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routine-day";
-import type { SaveRoutineDayExercisesActionInput } from "@/features/routine/actions/routine-day-mutations";
+import type { SaveRoutineDayExercisesActionInput, SavedRoutineRow } from "@/features/routine/actions/routine-day-mutations";
 import { routineDayQueryKey } from "@/features/routine/services/routine-day-query";
 import { getRoutineDayDraft, routineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
 
@@ -38,6 +38,37 @@ function alignDraftWithSavedExercises(
 	} );
 
 	if (hasChanges) routineDayDraftStore.getState().setDraft( input.routineDayId, nextDraft );
+}
+
+// Arma el dia guardado a partir del que la pantalla ya tiene, cuando el guardado
+// solo cambio series, repeticiones, orden u observaciones. Devuelve `null` si lo
+// que hay en pantalla no coincide con las filas guardadas: ahi hay que pedirlo.
+export function applySavedRoutineRows(
+	queryClient: QueryClient,
+	input: SaveRoutineDayExercisesActionInput,
+	savedRows: SavedRoutineRow[],
+): RoutineDayDetailBase | null {
+	const cachedRoutineDay = queryClient.getQueryData<RoutineDayDetailBase>(
+		routineDayQueryKey( input.routineDayId, input.studentId ),
+	);
+
+	if (!cachedRoutineDay || cachedRoutineDay.routines.length !== savedRows.length) return null;
+
+	const cachedById = new Map( cachedRoutineDay.routines.map( ( routine ) => [ routine.id, routine ] ) );
+	const routines: RoutineDayDetailBase["routines"] = [];
+
+	for (const savedRow of savedRows) {
+		const cachedRoutine = cachedById.get( savedRow.id );
+
+		if (!cachedRoutine) return null;
+
+		routines.push( { ...cachedRoutine, ...savedRow } );
+	}
+
+	return {
+		...cachedRoutineDay,
+		routines: routines.sort( ( left, right ) => left.order - right.order ),
+	};
 }
 
 export async function syncRoutineDayAfterSave(

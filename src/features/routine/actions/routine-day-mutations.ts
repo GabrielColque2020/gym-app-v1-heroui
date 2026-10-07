@@ -8,7 +8,7 @@ import {
 	persistRoutineDayExercises,
 	validateNormalizedRoutineDayExercises,
 } from "@/features/routine/actions/routine-day-mutations.utils";
-import { getRoutineDayDetailBase } from "@/features/routine/services/routine-day-detail";
+import { getRoutineDaySaveTarget, type RoutineDayDetail } from "@/features/routine/services/routine-day-detail";
 import type { SaveRoutineDayExerciseInput } from "@/features/routine/services/routine-day-editor";
 
 export type SaveRoutineDayExercisesActionInput = {
@@ -18,7 +18,24 @@ export type SaveRoutineDayExercisesActionInput = {
 	coachId?: string | null;
 };
 
-export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExercisesActionInput ) {
+// Como quedo cada fila despues de guardar, sin los datos del ejercicio.
+export type SavedRoutineRow = {
+	id: string;
+	observation: string | null;
+	order: number;
+	reps: string;
+	sets: string;
+};
+
+// Si se agregaron o quitaron ejercicios vuelve el dia entero, porque hay filas
+// nuevas que la pantalla no conoce. Si solo cambiaron series, repeticiones, orden
+// u observaciones (lo mas comun con el guardado automatico) vuelven solo esas
+// filas y la pantalla las aplica sobre lo que ya tiene.
+export type SaveRoutineDayExercisesResult =
+	| { routineDay: RoutineDayDetail; routines: null }
+	| { routineDay: null; routines: SavedRoutineRow[] };
+
+export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExercisesActionInput ): Promise<SaveRoutineDayExercisesResult> {
 	try {
 		const session = await requireCoachSession( "guardar el día de rutina" );
 		const {
@@ -35,7 +52,7 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 
 		validateNormalizedRoutineDayExercises( exercises );
 
-		const routineDay = await getRoutineDayDetailBase( {
+		const routineDay = await getRoutineDaySaveTarget( {
 			coachId: resolvedCoachId,
 			routineDayId,
 			studentId,
@@ -46,13 +63,20 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 			exercises,
 			routineDay.routines.flatMap( ( routine ) => routine.exerciseId ? [ routine.exerciseId ] : [] ),
 		);
-		await persistRoutineDayExercises( routineDay.id, resolvedExercises );
+		const savedRoutines = await persistRoutineDayExercises( routineDay.id, resolvedExercises );
 
-		return await getRoutineDayAction( {
-			coachId: resolvedCoachId,
-			routineDayId: routineDay.id,
-			studentId,
-		} );
+		if (savedRoutines) {
+			return { routineDay: null, routines: savedRoutines };
+		}
+
+		return {
+			routineDay: await getRoutineDayAction( {
+				coachId: resolvedCoachId,
+				routineDayId: routineDay.id,
+				studentId,
+			} ),
+			routines: null,
+		};
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al guardar la rutina del día.";
 

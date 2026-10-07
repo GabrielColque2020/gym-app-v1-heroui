@@ -81,81 +81,81 @@ export function SearchAndCreateExerciseDrawer({
     return (
         <>
             <FeatureDrawerLayout
-                isOpen={isPickerOpen}
-                placement={placement}
-                trigger={<AddExercisePickerButton onPress={() => setOrderValue(String(suggestedOrder))}/>}
-                onOpenChangeAction={handlePickerOpenChange}
-                rightContentClassName={"w-[38rem]"}
+                isOpen={ isPickerOpen }
+                placement={ placement }
+                trigger={ <AddExercisePickerButton onPress={ () => setOrderValue(String(suggestedOrder)) }/> }
+                onOpenChangeAction={ handlePickerOpenChange }
+                rightContentClassName={ "w-[38rem]" }
             >
-                <Drawer.Header className={"border-default-100 relative border-b pb-4"}>
-                    <div className={"flex min-w-0 items-start gap-3 pe-10"}>
+                <Drawer.Header className={ "border-default-100 relative border-b pb-4" }>
+                    <div className={ "flex min-w-0 items-start gap-3 pe-10" }>
                         <div
-                            className={"flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent"}>
-                            <Plus className={"size-5"}/>
+                            className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
+                            <Plus className={ "size-5" }/>
                         </div>
-                        <div className={"min-w-0 flex-1"}>
+                        <div className={ "min-w-0 flex-1" }>
                             <Drawer.Heading>Agregar ejercicio</Drawer.Heading>
-                            <Description className={"mt-1 hidden text-sm sm:block"}>
+                            <Description className={ "mt-1 hidden text-sm sm:block" }>
                                 Buscá en tu catálogo y sumá todos los ejercicios del día sin cerrar.
                             </Description>
                         </div>
                     </div>
                 </Drawer.Header>
 
-                <Drawer.Body className={"min-h-0 flex-1 space-y-3 overflow-y-auto py-3 sm:space-y-6"}>
+                <Drawer.Body className={ "min-h-0 flex-1 space-y-3 overflow-y-auto py-3 sm:space-y-6" }>
                     <SearchAndCreateExerciseDrawerPrescription
-                        repsValue={repsValue}
-                        setsValue={setsValue}
-                        onRepsChange={setRepsValue}
-                        onSetsChange={setSetsValue}
+                        repsValue={ repsValue }
+                        setsValue={ setsValue }
+                        onRepsChange={ setRepsValue }
+                        onSetsChange={ setSetsValue }
                     />
 
                     <SearchAndCreateExerciseDrawerFilters
-                        addedExerciseIds={addedExerciseIds}
-                        bodyPartFilter={bodyPartFilter}
-                        exercises={pagination.paginatedItems}
-                        exercisesQuery={{
+                        addedExerciseIds={ addedExerciseIds }
+                        bodyPartFilter={ bodyPartFilter }
+                        exercises={ pagination.paginatedItems }
+                        exercisesQuery={ {
                             error: exercisesQuery.error ? {message: exercisesQuery.error.message} : null,
                             isError: exercisesQuery.isError,
                             isLoading: exercisesQuery.isLoading,
-                        }}
-                        isSearching={isSearching}
-                        onAddExerciseAction={handleAddClick}
-                        onBodyPartFilterChangeAction={updateBodyPartFilter}
-                        onOrderChange={setOrderValue}
-                        onRegisterAddButtonRef={registerAddButtonRef}
-                        onSearchValueChangeAction={updateSearchValue}
-                        orderValue={orderValue}
-                        searchValue={searchValue}
-                        selectedExerciseId={selectedExerciseId}
+                        } }
+                        isSearching={ isSearching }
+                        onAddExerciseAction={ handleAddClick }
+                        onBodyPartFilterChangeAction={ updateBodyPartFilter }
+                        onOrderChange={ setOrderValue }
+                        onRegisterAddButtonRef={ registerAddButtonRef }
+                        onSearchValueChangeAction={ updateSearchValue }
+                        orderValue={ orderValue }
+                        searchValue={ searchValue }
+                        selectedExerciseId={ selectedExerciseId }
                     />
 
-                    {!exercisesQuery.isLoading && !exercisesQuery.isError && pagination.totalItems > 0 ? (
-                        <div className={"space-y-3"}>
+                    { !exercisesQuery.isLoading && !exercisesQuery.isError && pagination.totalItems > 0 ? (
+                        <div className={ "space-y-3" }>
                             <ListPagination
-                                currentPage={pagination.currentPage}
-                                itemLabel={"ejercicios"}
-                                onPageChangeAction={changePage}
-                                showingFrom={pagination.showingFrom}
-                                showingTo={pagination.showingTo}
-                                totalItems={pagination.totalItems}
-                                totalPages={pagination.totalPages}
+                                currentPage={ pagination.currentPage }
+                                itemLabel={ "ejercicios" }
+                                onPageChangeAction={ changePage }
+                                showingFrom={ pagination.showingFrom }
+                                showingTo={ pagination.showingTo }
+                                totalItems={ pagination.totalItems }
+                                totalPages={ pagination.totalPages }
                             />
                         </div>
-                    ) : null}
+                    ) : null }
 
                     <Separator/>
 
-                    <SearchAndCreateExerciseDrawerEmptyCta onPress={handleOpenCreateDrawer}/>
+                    <SearchAndCreateExerciseDrawerEmptyCta onPress={ handleOpenCreateDrawer }/>
                 </Drawer.Body>
 
-                <Drawer.Footer className={"border-default-100 flex items-center justify-between gap-3 border-t pt-4"}>
-                    <p className={"text-sm text-muted"} role={"status"}>
-                        {addedCount === 0
+                <Drawer.Footer className={ "border-default-100 flex items-center justify-between gap-3 border-t pt-4" }>
+                    <p className={ "text-sm text-muted" } role={ "status" }>
+                        { addedCount === 0
                             ? "Todavía no agregaste ejercicios"
-                            : `${addedCount} ${addedCount === 1 ? "ejercicio agregado" : "ejercicios agregados"}`}
+                            : `${addedCount} ${addedCount === 1 ? "ejercicio agregado" : "ejercicios agregados"}` }
                     </p>
-                    <Button className={"bg-accent text-accent-foreground"} onPress={() => handlePickerOpenChange(false)}>
+                    <Button className={ "bg-accent text-accent-foreground" } onPress={ () => handlePickerOpenChange(false) }>
                         Listo
                     </Button>
                 </Drawer.Footer>
@@ -163,11 +163,11 @@ export function SearchAndCreateExerciseDrawer({
 
             <ExerciseDrawer
                 hideTrigger
-                isOpen={isCreateDrawerOpen}
-                mode={"create"}
-                onOpenChangeAction={setIsCreateDrawerOpen}
-                onSuccessAction={handleCreatedExercise}
-                placement={placement}
+                isOpen={ isCreateDrawerOpen }
+                mode={ "create" }
+                onOpenChangeAction={ setIsCreateDrawerOpen }
+                onSuccessAction={ handleCreatedExercise }
+                placement={ placement }
             />
         </>
     );

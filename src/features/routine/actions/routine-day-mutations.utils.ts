@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 
 import { emptyToNull } from "@/features/exercises/services/exercise-form";
 import { buildCoachExerciseSearchName, mapCategoryToBodyPart } from "@/features/role/coach/exercises/services/coach-exercise-form";
-import type { SaveRoutineDayExercisesActionInput } from "@/features/routine/actions/routine-day-mutations";
+import type { SaveRoutineDayExercisesActionInput, SavedRoutineRow } from "@/features/routine/actions/routine-day-mutations";
 import { validateRoutineDayDraft, type SaveRoutineDayExerciseInput } from "@/features/routine/services/routine-day-editor";
 
 type NormalizedRoutineDayExerciseInput = SaveRoutineDayExerciseInput;
@@ -207,11 +207,14 @@ export async function assertRoutineCatalogExercisesAvailable(
 // Una fila se reconoce por su ejercicio, que no se repite dentro de un dia. Por
 // eso el coach puede quitar un ejercicio y volver a agregarlo antes de que se
 // guarde sin perder sus variantes.
+//
+// Devuelve como quedaron las filas cuando no se creo ni se borro ninguna, y
+// `null` cuando si: en ese caso quien llama tiene que volver a leer el dia.
 export async function persistRoutineDayExercises(
 	routineDayId: string,
 	exercises: NormalizedRoutineDayExerciseInput[],
-) {
-	await prisma.$transaction( async ( transaction ) => {
+): Promise<SavedRoutineRow[] | null> {
+	return prisma.$transaction( async ( transaction ) => {
 		// Bloquea el dia mientras dura el guardado. Dos guardados a la vez (dos
 		// pestañas, o uno que sale al cambiar de dia mientras otro viaja) leerian las
 		// mismas filas y los dos crearian el mismo ejercicio.
@@ -241,6 +244,7 @@ export async function persistRoutineDayExercises(
 		}
 
 		const keptRoutineIds = new Set<string>();
+		const savedRoutines: SavedRoutineRow[] = [];
 		const routinesToCreate: Array<{
 			exerciseId: string;
 			observation: string | null;
@@ -265,6 +269,7 @@ export async function persistRoutineDayExercises(
 			}
 
 			keptRoutineIds.add( existing.id );
+			savedRoutines.push( { ...data, id: existing.id } );
 
 			const hasChanges = existing.observation !== data.observation
 				|| existing.order !== data.order
@@ -289,6 +294,8 @@ export async function persistRoutineDayExercises(
 		if (routinesToCreate.length > 0) {
 			await transaction.routine.createMany( { data: routinesToCreate } );
 		}
+
+		return routineIdsToDelete.length === 0 && routinesToCreate.length === 0 ? savedRoutines : null;
 	} );
 }
 

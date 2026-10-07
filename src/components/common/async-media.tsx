@@ -2,7 +2,7 @@
 
 import { Spinner } from "@heroui/react";
 import { ImageOff, VideoOff } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { getOptimizedCloudinaryMedia } from "@/lib/cloudinary-media";
 
@@ -53,11 +53,13 @@ export function AsyncMedia( {
 	);
 	const deliverySrc = optimizedMedia.url;
 	const deliveryKind = optimizedMedia.kind === "video" ? "video" : "image";
-	const [ loadState, setLoadState ] = useState<MediaLoadState>( normalizedSrc ? "loading" : "empty" );
-
-	useEffect( () => {
-		setLoadState( normalizedSrc ? "loading" : "empty" );
-	}, [ normalizedSrc ] );
+	// Como termino la carga, y de que archivo: si cambia el archivo, lo anterior
+	// deja de valer y vuelve a mostrarse "cargando" sin tener que reiniciar nada.
+	const [ settled, setSettled ] = useState<{ src: string; state: "error" | "loaded" } | null>( null );
+	const loadState: MediaLoadState = !normalizedSrc
+		? "empty"
+		: settled?.src === normalizedSrc ? settled.state : "loading";
+	const setLoadState = ( state: "error" | "loaded" ) => setSettled( { src: normalizedSrc, state } );
 
 	const placeholderLabel = loadState === "error"
 		? errorLabel ?? (resolvedKind === "video" ? "No se pudo cargar el video." : "No se pudo cargar la imagen.")
