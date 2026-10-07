@@ -45,7 +45,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const [ isDownloading, setIsDownloading ] = useState( false );
 	const crumbs = [
 		{ href: "/student/dashboard", label: "Inicio" },
-		{ label: "Mis planes alimenticios" },
+		{ label: "Plan alimenticio" },
 	];
 
 	function handleDownload() {
@@ -75,7 +75,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 				</div>
 				<Alert className={ "border border-danger/20" } status={ "danger" }>
 					<Alert.Content>
-						<Alert.Title>Error al cargar planes alimenticios</Alert.Title>
+						<Alert.Title>No se pudo cargar tu plan alimenticio</Alert.Title>
 						<Alert.Description>{ error.message }</Alert.Description>
 					</Alert.Content>
 				</Alert>
@@ -85,17 +85,47 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 
 	if (!data) return null;
 
+	const isRefreshing = isFetching && !isLoading;
+	const mealCount = data.mealPlans.length;
+
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs backHref={ "/student/dashboard" } backLabel={ "Volver al inicio" } crumbs={ crumbs }/>
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-3 py-2" }>
-					<div className={ "flex flex-col gap-3 md:flex-row md:items-end md:justify-between" }>
-						<PageHeader description={ "Consulta los planes alimenticios asignados a tu cuenta." } title={ "Mis planes alimenticios" }/>
-						<div className={ "flex w-full flex-col gap-2 md:w-auto md:flex-row" }>
+				<Card.Header className={ "border-b border-border px-3 py-2" }>
+					{ /* El titulo y las acciones en un renglon. Para el estudiante es un
+					     plan con varias comidas, no varios planes. */ }
+					<div className={ "flex items-center justify-between gap-3" }>
+						<PageHeader
+							description={ mealCount === 0 ? "Todavía sin comidas cargadas." : `${ mealCount } ${ mealCount === 1 ? "comida" : "comidas" }` }
+							title={ "Plan alimenticio" }
+						/>
+						{ /* En el telefono, solo los iconos. */ }
+						<div className={ "flex shrink-0 items-center gap-2 md:hidden" }>
 							<Button
-								className={ "w-full shadow-sm md:w-auto" }
-								isDisabled={ data.mealPlans.length === 0 || isDownloading }
+								isIconOnly
+								aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
+								isDisabled={ isRefreshing }
+								variant={ "secondary" }
+								onPress={ () => {
+									void refetch();
+								} }
+							>
+								<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+							</Button>
+							<Button
+								isIconOnly
+								aria-label={ isDownloading ? "Descargando" : "Descargar el plan en PDF" }
+								isDisabled={ mealCount === 0 || isDownloading }
+								variant={ "secondary" }
+								onPress={ handleDownload }
+							>
+								{ isDownloading ? <RotateCw className={ "size-4 animate-spin" }/> : <Download className={ "size-4" }/> }
+							</Button>
+						</div>
+						<div className={ "hidden shrink-0 items-center gap-2 md:flex" }>
+							<Button
+								isDisabled={ mealCount === 0 || isDownloading }
 								variant={ "secondary" }
 								onPress={ handleDownload }
 							>
@@ -103,15 +133,14 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 								{ isDownloading ? "Descargando..." : "Descargar PDF" }
 							</Button>
 							<Button
-								className={ "w-full shadow-sm md:w-auto" }
-								isDisabled={ isFetching && !isLoading }
+								isDisabled={ isRefreshing }
 								variant={ "secondary" }
 								onPress={ () => {
 									void refetch();
 								} }
 							>
-								<RotateCw className={ isFetching && !isLoading ? "size-4 animate-spin" : "size-4" }/>
-								{ isFetching && !isLoading ? "Actualizando" : "Actualizar" }
+								<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+								{ isRefreshing ? "Actualizando" : "Actualizar" }
 							</Button>
 						</div>
 					</div>
@@ -120,8 +149,8 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 					{ data.mealPlans.length === 0 ? (
 						<Card className={ "border border-border" } variant={ "default" }>
 							<Card.Content className={ "py-10 text-center" }>
-								<p className={ "text-base font-semibold text-foreground" }>No hay planes alimenticios cargados</p>
-								<p className={ "mt-1 text-sm text-muted" }>No tienes planes alimenticios asignados en este momento.</p>
+								<p className={ "text-base font-semibold text-foreground" }>Todavía no tenés un plan alimenticio</p>
+								<p className={ "mt-1 text-sm text-muted" }>Cuando tu entrenador lo cargue, lo vas a ver acá.</p>
 							</Card.Content>
 						</Card>
 					) : (
@@ -141,7 +170,7 @@ export default function StudentMealPlansPageContent( { studentId }: StudentMealP
 			<Alert className={ "border border-warning/20" } status={ "warning" }>
 				<Alert.Content>
 					<Alert.Title>Debes iniciar sesión</Alert.Title>
-					<Alert.Description>No se pudo identificar tu cuenta para mostrar tus planes alimenticios.</Alert.Description>
+					<Alert.Description>No se pudo identificar tu cuenta para mostrar tu plan alimenticio.</Alert.Description>
 				</Alert.Content>
 			</Alert>
 		);

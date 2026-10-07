@@ -4,7 +4,7 @@ import { getAuthenticatedSession } from "@/features/auth/session";
 import StudentMealPlansPageContent from "@/features/role/student/meal-plans/views/student-meal-plans-page-content";
 
 export const metadata: Metadata = {
-	title: "Mis planes alimenticios",
+	title: "Plan alimenticio",
 	description: "Planes alimenticios del estudiante autenticado",
 };
 

@@ -4,7 +4,7 @@ import { getAuthenticatedSession } from "@/features/auth/session";
 import StudentHistoryRoutinesPageContent from "@/features/role/student/history-routines/views/student-history-routines-page-content";
 
 export const metadata: Metadata = {
-	title: "Mi historial de rutinas",
+	title: "Historial de rutina",
 	description: "Historial de rutinas del estudiante autenticado",
 };
 

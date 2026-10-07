@@ -55,7 +55,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 
 	const breadcrumbs = [
 		{ href: "/student/dashboard", label: "Inicio" },
-		{ label: "Mi historial de rutinas" },
+		{ label: "Historial de rutina" },
 	];
 
 	return (
@@ -90,12 +90,12 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 
 			{ !isLoading && !isError && data ? (
 				<HistoryRoutinesReportsIndex
-					description={ "Consulta los meses con registro y descarga el reporte PDF completo de cada periodo." }
+					description={ "Los meses en los que cargaste series, con su reporte en PDF." }
 					emptyMessage={ "Todavía no hay meses con historial de rutinas disponible." }
 					isDownloadingPeriodKey={ pendingPeriodKey }
 					isRefreshing={ isFetching && !isLoading }
 					reports={ data.reports }
-					title={ "Reportes mensuales" }
+					title={ "Historial de rutina" }
 					onDownloadAction={ handleDownloadReport }
 					onRefreshAction={ () => {
 						void refetch();

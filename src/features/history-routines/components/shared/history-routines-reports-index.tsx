@@ -42,6 +42,20 @@ function getStatusLabel( status: HistoryRoutineReportRow["summary"]["status"] ) 
 	}
 }
 
+function pluralize( count: number, singular: string, plural: string ) {
+	return `${ count } ${ count === 1 ? singular : plural }`;
+}
+
+// "1 semana · 1 día · 1 ejercicio · 4 series": cada numero con su singular o plural.
+function formatSummary( summary: HistoryRoutineReportRow["summary"] ) {
+	return [
+		pluralize( summary.weeks, "semana", "semanas" ),
+		pluralize( summary.days, "día", "días" ),
+		pluralize( summary.exercises, "ejercicio", "ejercicios" ),
+		pluralize( summary.sets, "serie", "series" ),
+	].join( " · " );
+}
+
 export function HistoryRoutinesReportsIndex( {
 	description,
 	emptyMessage,
@@ -87,7 +101,7 @@ export function HistoryRoutinesReportsIndex( {
 			accessorKey: "summary",
 			cell: ( report ) => (
 				<span className={ "text-sm text-muted" }>
-					{ `${ report.summary.weeks } semanas · ${ report.summary.days } días · ${ report.summary.exercises } ejercicios · ${ report.summary.sets } series` }
+					{ formatSummary( report.summary ) }
 				</span>
 			),
 			header: "Resumen",
@@ -122,24 +136,24 @@ export function HistoryRoutinesReportsIndex( {
 
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
-			<Card.Header className={ "flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between" }>
+			<Card.Header className={ "flex flex-row items-start justify-between gap-3 border-b border-border p-3 sm:items-center" }>
 				<div className={ "min-w-0" }>
 					<PageHeader
 						description={ description }
 						title={ title }
 					/>
 				</div>
-				<div className={ "flex w-full flex-col gap-2 md:hidden" }>
-					<Button
-						className={ "w-full" }
-						isDisabled={ isRefreshing }
-						variant={ "secondary" }
-						onPress={ onRefreshAction }
-					>
-						<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-						{ isRefreshing ? "Actualizando..." : "Actualizar" }
-					</Button>
-				</div>
+				{ /* En el telefono "Actualizar" va como icono junto al titulo. */ }
+				<Button
+					isIconOnly
+					aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
+					className={ "shrink-0 md:hidden" }
+					isDisabled={ isRefreshing }
+					variant={ "secondary" }
+					onPress={ onRefreshAction }
+				>
+					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+				</Button>
 				<div className={ "hidden md:flex" }>
 					<Button
 						isDisabled={ isRefreshing }
@@ -168,27 +182,31 @@ export function HistoryRoutinesReportsIndex( {
 							/>
 						</div>
 
-						<div className={ "space-y-3 md:hidden" }>
+						{ /* Una fila por mes: con un boton a todo el ancho cada mes ocupaba una
+						     tarjeta entera. */ }
+						<div className={ "space-y-2 md:hidden" }>
 							{ pagination.paginatedItems.map( ( report ) => (
-								<Card className={ "border border-divider p-4 shadow-sm" } key={ report.periodKey }>
-									<div className={ "flex items-start justify-between gap-3" }>
-										<div className={ "space-y-1" }>
-											<p className={ "text-base font-semibold text-foreground" }>{ report.monthLabel }</p>
-										</div>
-										<Chip color={ getStatusColor( report.summary.status ) } size={ "sm" } variant={ "soft" }>
-											{ getStatusLabel( report.summary.status ) }
-										</Chip>
+								<div
+									key={ report.periodKey }
+									className={ "flex items-center gap-3 rounded-2xl border border-border bg-surface-secondary px-3 py-2.5" }
+								>
+									<div className={ "min-w-0 flex-1" }>
+										<p className={ "flex flex-wrap items-center gap-2 text-base font-semibold text-foreground" }>
+											{ report.monthLabel }
+											<Chip color={ getStatusColor( report.summary.status ) } size={ "sm" } variant={ "soft" }>
+												{ getStatusLabel( report.summary.status ) }
+											</Chip>
+										</p>
+										<p className={ "mt-0.5 text-xs text-muted" }>{ formatSummary( report.summary ) }</p>
 									</div>
-
-									<div className={ "flex flex-wrap gap-2 text-xs text-muted" }>
-										<span className={ "py-1" }>{ `${ report.summary.weeks } semanas` }</span>
-										<span className={ "py-1" }>{ `${ report.summary.days } días` }</span>
-										<span className={ "py-1" }>{ `${ report.summary.exercises } ejercicios` }</span>
-										<span className={ "py-1" }>{ `${ report.summary.sets } series` }</span>
-									</div>
-
 									<Button
-										className={ "w-full" }
+										isIconOnly
+										aria-label={
+											isDownloadingPeriodKey === report.periodKey
+												? `Descargando el reporte de ${ report.monthLabel }`
+												: `Descargar el reporte de ${ report.monthLabel } en PDF`
+										}
+										className={ "shrink-0" }
 										isDisabled={ isDownloadingPeriodKey === report.periodKey }
 										variant={ "secondary" }
 										onPress={ () => {
@@ -200,9 +218,8 @@ export function HistoryRoutinesReportsIndex( {
 										) : (
 											<Download className={ "size-4" }/>
 										) }
-										{ isDownloadingPeriodKey === report.periodKey ? "Descargando..." : "Descargar PDF" }
 									</Button>
-								</Card>
+								</div>
 							) ) }
 						</div>
 

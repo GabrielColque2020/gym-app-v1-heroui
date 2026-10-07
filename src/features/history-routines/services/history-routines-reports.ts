@@ -1,5 +1,6 @@
 import type { Prisma } from "@/generated/prisma/client";
 
+import { monthYearLabel } from "@/constants/months";
 import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import prisma from "@/lib/prisma";
 
@@ -101,7 +102,8 @@ export async function getHistoryRoutinesReportsByStudentBase( {
 
 			return {
 				month: period.month,
-				monthLabel: `${ String( period.month ).padStart( 2, "0" ) }/${ period.year }`,
+				// "Octubre 2026" y no "10/2026": se lee de un vistazo.
+				monthLabel: monthYearLabel( String( period.month ), String( period.year ) ),
 				periodKey: `${ period.year }-${ String( period.month ).padStart( 2, "0" ) }`,
 				summary: buildHistoryRoutineMonthSummary(
 					groupHistoryRoutinesByWeek( monthData.historyRoutines ),
