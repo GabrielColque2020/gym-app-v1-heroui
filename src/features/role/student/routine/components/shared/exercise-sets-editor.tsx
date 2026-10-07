@@ -155,7 +155,7 @@ function ExerciseSetsEditorContent({
 
     return (
         <div className={ "space-y-3" }>
-            <Card className={ "border border-accent-soft-hover shadow-sm" }>
+            <Card className={ "border border-accent-soft-hover p-0 shadow-sm" }>
                 <Card.Content className={ "space-y-4 p-3" }>
                     <div className={ "flex flex-wrap items-center justify-between gap-2" }>
                         <div className={ "min-w-0" }>

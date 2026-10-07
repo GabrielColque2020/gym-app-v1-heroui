@@ -24,6 +24,53 @@ export function StudentFilters( {
 	const isMobile = layout === "mobile";
 	const fieldNamePrefix = isMobile ? "mobile-" : "";
 
+	// En el telefono los filtros van en dos renglones cortos: el buscador y el
+	// estado como botones. Con etiquetas, un desplegable y "Limpiar" ocupaban
+	// media pantalla antes del primer estudiante.
+	if (isMobile) {
+		const statusOptions = [
+			{ id: ALL_STATUSES, label: "Todos" },
+			{ id: ACTIVE_STATUS, label: "Activos" },
+			{ id: INACTIVE_STATUS, label: "Inactivos" },
+		] as const;
+
+		return (
+			<div className={ "flex w-full min-w-0 flex-col gap-2" }>
+				<SearchField
+					aria-label={ "Buscar estudiante" }
+					className={ "min-w-0" }
+					name={ `${ fieldNamePrefix }student-search-filter` }
+					value={ searchFilter }
+					onChange={ onSearchFilterChange }
+				>
+					<SearchField.Group className={ "w-full min-w-0 border border-border" }>
+						<SearchField.SearchIcon/>
+						<SearchField.Input className={ "min-w-0" } placeholder={ "Nombre, email o DNI..." }/>
+						<SearchField.ClearButton/>
+					</SearchField.Group>
+				</SearchField>
+				<div aria-label={ "Estado" } className={ "grid grid-cols-3 gap-2" } role={ "group" }>
+					{ statusOptions.map( ( option ) => {
+						const isSelected = statusFilter === option.id;
+
+						return (
+							<Button
+								key={ option.id }
+								aria-pressed={ isSelected }
+								className={ isSelected ? "border border-accent bg-accent/10 text-foreground" : "border border-border text-muted" }
+								size={ "sm" }
+								variant={ "ghost" }
+								onPress={ () => onStatusFilterChange( option.id as StudentStatusFilter ) }
+							>
+								{ option.label }
+							</Button>
+						);
+					} ) }
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<Card
 			className={

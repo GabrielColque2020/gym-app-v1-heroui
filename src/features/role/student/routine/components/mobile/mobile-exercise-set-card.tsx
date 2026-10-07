@@ -43,8 +43,17 @@ export function MobileExerciseSetCard( {
 
 	return (
 		<>
-			<Card className={ "flex h-full flex-col border border-accent-soft-hover shadow-sm" }>
+			<Card className={ "flex h-full flex-col border border-accent-soft-hover p-0 shadow-sm" }>
 				<Card.Content className={ "min-h-0 flex-1 divide-y divide-border px-3" }>
+					{ /* Encabezado de columnas: con el campo ya cargado no queda ningun
+					     texto que diga cual numero son las repeticiones y cual el peso. Usa
+					     la misma grilla que las filas para quedar alineado con los campos. */ }
+					<div aria-hidden className={ "grid grid-cols-[auto_1fr_1fr_auto] items-center gap-3 pb-2 pt-3" }>
+						<span className={ "w-12 text-xs font-medium text-muted" }>Serie</span>
+						<span className={ "text-center text-xs font-medium text-muted" }>Reps</span>
+						<span className={ "text-center text-xs font-medium text-muted" }>Peso (kg)</span>
+						<span className={ "w-9" }/>
+					</div>
 					{ /* Una fila por serie: las tres o cuatro series entran en una pantalla. */ }
 					{ sets.map( ( set ) => {
 						const previousSessionSet = previousSessionSetsByNumber.get( set.setNumber );

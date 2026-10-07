@@ -32,7 +32,7 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 	const [ isExecutionOpen, setIsExecutionOpen ] = useState( false );
 
 	return (
-		<Card className={ "flex w-full flex-col border border-border py-2 shadow-sm" }>
+		<Card className={ "flex w-full flex-col border border-border px-1 py-2 shadow-sm" }>
 			<Card.Header className={ "shrink-0 px-3 pt-3" }>
 				<Card.Title className={ "w-full text-xl font-bold text-foreground" }>
 					<div className={ "space-y-3" }>

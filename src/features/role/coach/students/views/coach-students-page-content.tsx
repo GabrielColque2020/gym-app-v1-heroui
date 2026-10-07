@@ -19,6 +19,11 @@ export default function CoachStudentsPageContent() {
 		{ label: "Estudiantes" },
 	];
 	const isRefreshing = isFetching && !isLoading;
+	const activeCount = students.filter( ( student ) => student.active ).length;
+	// Cuantos hay, en vez de una frase que describe la pantalla.
+	const summary = students.length === 0
+		? "Todavía no cargaste estudiantes."
+		: `${ students.length } ${ students.length === 1 ? "estudiante" : "estudiantes" } · ${ activeCount } ${ activeCount === 1 ? "activo" : "activos" }`;
 	const handleRefresh = useCallback( () => {
 		if (isRefreshing) return;
 
@@ -66,23 +71,24 @@ export default function CoachStudentsPageContent() {
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-3 py-2 sm:flex-row sm:items-center sm:justify-between" }>
 					<PageHeader
-						description={ "Listado con DNI, contacto, estado y datos de seguimiento." }
+						description={ summary }
 						title={ "Estudiantes" }
 					/>
-					<div className={ "flex w-full flex-col gap-2 md:hidden" }>
+					{ /* En el telefono, un renglon: actualizar como icono y el alta a lo ancho. */ }
+					<div className={ "flex w-full items-center gap-2 md:hidden" }>
 						<Button
-							className={ "w-full" }
+							isIconOnly
+							aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
 							isDisabled={ isRefreshing }
 							variant={ "secondary" }
 							onPress={ handleRefresh }
 						>
 							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-							{ isRefreshing ? "Actualizando..." : "Actualizar" }
 						</Button>
 						<StudentDrawer
 							mode={ "create" }
 							placement={ "bottom" }
-							triggerClassName={ "w-full bg-accent text-accent-foreground" }
+							triggerClassName={ "flex-1 bg-accent text-accent-foreground" }
 						/>
 					</div>
 					<div className={ "hidden items-center gap-2 md:flex" }>

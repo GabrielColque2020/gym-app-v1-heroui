@@ -38,7 +38,7 @@ export function StudentsContentMobile( { students }: StudentsContentMobileProps 
 	}
 
 	return (
-		<div className={ "flex w-full flex-col gap-4" }>
+		<div className={ "flex w-full flex-col gap-3" }>
 			<StudentFilters
 				hasFilters={ hasFilters }
 				layout={ "mobile" }
@@ -53,7 +53,7 @@ export function StudentsContentMobile( { students }: StudentsContentMobileProps 
 				<StudentsEmptyState message={ "No hay estudiantes que coincidan con los filtros" }/>
 			) : (
 				<>
-					<div className={ "grid gap-3" }>
+					<div className={ "grid gap-2" }>
 						{ paginatedStudents.map( ( student ) => (
 							<StudentMobileCard key={ student.id } student={ student }/>
 						) ) }
