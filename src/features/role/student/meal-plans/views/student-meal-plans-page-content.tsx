@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Alert, Button, Card } from "@heroui/react";
+import { Alert, Button, Card, Chip } from "@heroui/react";
 import { CircleDot, Download, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
@@ -14,14 +14,37 @@ import { downloadFileFromUrl } from "@/features/shared/services/download-file";
 
 type StudentMealPlansPageContentProps = { studentId: string | null };
 
-function MealPlanCard( { mealPlan }: { mealPlan: MealPlan } ) {
+const DAY_MS = 24 * 60 * 60 * 1000;
+// Cuanto tiempo se marca una comida como recien cambiada.
+const RECENT_DAYS = 7;
+
+// "hoy", "ayer", "hace 3 días" y, pasada la semana, la fecha: asi el estudiante
+// sabe de un vistazo si el plan cambio hace poco o es el de siempre.
+function formatUpdatedLabel( updatedAt: Date, now: number ) {
+	const startOfDay = ( time: number ) => new Date( time ).setHours( 0, 0, 0, 0 );
+	const days = Math.round( ( startOfDay( now ) - startOfDay( updatedAt.getTime() ) ) / DAY_MS );
+
+	if (days <= 0) return "hoy";
+	if (days === 1) return "ayer";
+	if (days < RECENT_DAYS) return `hace ${ days } días`;
+
+	return `el ${ new Intl.DateTimeFormat( "es-AR", { day: "numeric", month: "long", year: "numeric" } ).format( updatedAt ) }`;
+}
+
+function MealPlanCard( { isRecent, mealPlan }: { isRecent: boolean; mealPlan: MealPlan } ) {
 	return (
 		<Card className={ "border border-border shadow-sm" } variant={ "default" }>
 			<Card.Header className={ "border-b border-border px-3 py-2" }>
-				<div className={ "min-w-0" }>
+				<div className={ "flex min-w-0 items-center justify-between gap-2" }>
 					<p className={ "truncate text-base font-semibold text-foreground" }>
 						{ formatMealTime( mealPlan.title ) }
 					</p>
+					{ /* Marca la comida que el entrenador cambio en los ultimos dias. */ }
+					{ isRecent ? (
+						<Chip className={ "shrink-0" } color={ "accent" } size={ "sm" } variant={ "soft" }>
+							Actualizada
+						</Chip>
+					) : null }
 				</div>
 			</Card.Header>
 			<Card.Content className={ "p-3" }>
@@ -43,6 +66,8 @@ function MealPlanCard( { mealPlan }: { mealPlan: MealPlan } ) {
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const { data, error, isError, isFetching, isLoading, refetch } = useMealPlans( studentId );
 	const [ isDownloading, setIsDownloading ] = useState( false );
+	// El momento en que se abrio la pantalla, para calcular "hace cuanto".
+	const [ now ] = useState( () => Date.now() );
 	const crumbs = [
 		{ href: "/student/dashboard", label: "Inicio" },
 		{ label: "Plan alimenticio" },
@@ -87,6 +112,12 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 
 	const isRefreshing = isFetching && !isLoading;
 	const mealCount = data.mealPlans.length;
+	// La fecha puede llegar como texto si viene de lo guardado en el telefono.
+	const updatedTimes = data.mealPlans.map( ( mealPlan ) => new Date( mealPlan.updatedAt ).getTime() );
+	const lastUpdatedAt = mealCount > 0 ? new Date( Math.max( ...updatedTimes ) ) : null;
+	const summary = lastUpdatedAt
+		? `${ mealCount } ${ mealCount === 1 ? "comida" : "comidas" } · Actualizado ${ formatUpdatedLabel( lastUpdatedAt, now ) }`
+		: "Todavía sin comidas cargadas.";
 
 	return (
 		<div className={ "flex flex-col gap-4" }>
@@ -97,7 +128,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 					     plan con varias comidas, no varios planes. */ }
 					<div className={ "flex items-center justify-between gap-3" }>
 						<PageHeader
-							description={ mealCount === 0 ? "Todavía sin comidas cargadas." : `${ mealCount } ${ mealCount === 1 ? "comida" : "comidas" }` }
+							description={ summary }
 							title={ "Plan alimenticio" }
 						/>
 						{ /* En el telefono, solo los iconos. */ }
@@ -155,7 +186,13 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 						</Card>
 					) : (
 						<div className={ "grid gap-3 md:grid-cols-2 xl:grid-cols-3" }>
-							{ data.mealPlans.map( ( mealPlan ) => <MealPlanCard key={ mealPlan.id } mealPlan={ mealPlan }/> ) }
+							{ data.mealPlans.map( ( mealPlan, index ) => (
+								<MealPlanCard
+									key={ mealPlan.id }
+									isRecent={ now - updatedTimes[ index ] < RECENT_DAYS * DAY_MS }
+									mealPlan={ mealPlan }
+								/>
+							) ) }
 						</div>
 					) }
 				</Card.Content>
