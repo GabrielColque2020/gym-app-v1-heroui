@@ -11,6 +11,7 @@ import {
 	validateUpdateAdminUserInput,
 	type CreateCoachInput,
 	type DeleteAdminUserInput,
+	type ReassignCoachStudentsInput,
 	type ToggleUserStatusInput,
 	type UpdateAdminUserInput,
 } from "@/features/role/admin/users/services/admin-user-form";
@@ -160,6 +161,44 @@ export async function assignCoachToStudentAction( input: AssignCoachInput ) {
 		const message = error instanceof Error ? error.message : "Error desconocido al asignar el entrenador.";
 
 		throw new Error( `No se pudo asignar el entrenador. ${ message }` );
+	}
+}
+
+// Pasa todos los estudiantes de un entrenador a otro. Las rutinas, el plan y el
+// historial son del estudiante, asi que lo siguen sin tocar nada mas.
+export async function reassignCoachStudentsAction( input: ReassignCoachStudentsInput ) {
+	try {
+		await requireAdminSession( "reasignar estudiantes" );
+		const fromCoachId = input.fromCoachId.trim();
+		const toCoachId = input.toCoachId.trim();
+
+		if (!fromCoachId || !toCoachId) {
+			throw new Error( "Elegí a qué entrenador pasarlos." );
+		}
+
+		if (fromCoachId === toCoachId) {
+			throw new Error( "El entrenador de destino tiene que ser otro." );
+		}
+
+		await assertCoachExists( toCoachId );
+
+		const result = await prisma.user.updateMany( {
+			data: {
+				coachId: toCoachId,
+			},
+			where: {
+				coachId: fromCoachId,
+				role: "STUDENT",
+			},
+		} );
+
+		return {
+			count: result.count,
+		};
+	} catch (error) {
+		const message = error instanceof Error ? error.message : "Error desconocido al reasignar estudiantes.";
+
+		throw new Error( `No se pudieron reasignar los estudiantes. ${ message }` );
 	}
 }
 

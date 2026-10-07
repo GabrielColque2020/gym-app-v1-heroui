@@ -13,6 +13,8 @@ type AdminDeleteUserDrawerProps = {
 	deleteErrorMessage?: string;
 	isOpen: boolean;
 	isDeleting: boolean;
+	// Estudiantes a cargo, cuando se elimina a un entrenador.
+	studentCount?: number;
 	user: AdminUserListItem;
 	onCloseAction: () => void;
 	onConfirmAction: () => void;
@@ -22,6 +24,7 @@ export function AdminDeleteUserDrawer( {
 	deleteErrorMessage,
 	isOpen,
 	isDeleting,
+	studentCount = 0,
 	user,
 	onCloseAction,
 	onConfirmAction,
@@ -29,7 +32,9 @@ export function AdminDeleteUserDrawer( {
 	const placement = useResponsiveDrawerPlacement();
 	const roleLabel = user.role === "COACH" ? "Entrenador" : "Estudiante";
 	const impactLabel = user.role === "COACH"
-		? "Sus estudiantes quedan sin entrenador asignado y sus ejercicios propios dejan de tener dueño."
+		? studentCount > 0
+			? `Tiene ${ studentCount === 1 ? "1 estudiante" : `${ studentCount } estudiantes` } a cargo, que ${ studentCount === 1 ? "queda" : "quedan" } sin entrenador. Si querés pasarlos a otro, cancelá y usá "Reasignar estudiantes" antes de eliminar. Sus ejercicios propios dejan de tener dueño.`
+			: "No tiene estudiantes a cargo. Sus ejercicios propios dejan de tener dueño."
 		: "Se eliminan sus rutinas, su plan alimenticio, todo lo que registró y el resto de sus datos.";
 
 	return (

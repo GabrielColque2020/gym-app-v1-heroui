@@ -23,6 +23,11 @@ export type UpdateAdminUserInput = AdminUserFormValues & {
 	id: string;
 };
 
+export type ReassignCoachStudentsInput = {
+	fromCoachId: string;
+	toCoachId: string;
+};
+
 export type AssignCoachInput = {
 	coachId: string | null;
 	studentId: string;

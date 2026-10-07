@@ -2,10 +2,11 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { assignCoachToStudentAction, createAdminStudentAction, createCoachAction, deleteAdminUserAction, toggleUserStatusAction, updateAdminStudentAction, updateAdminUserAction } from "@/features/role/admin/users/actions/admin-user-mutations";
+import { assignCoachToStudentAction, createAdminStudentAction, createCoachAction, deleteAdminUserAction, reassignCoachStudentsAction, toggleUserStatusAction, updateAdminStudentAction, updateAdminUserAction } from "@/features/role/admin/users/actions/admin-user-mutations";
 import { prependAdminCoachInCache, removeAdminCoachFromCache, replaceAdminCoachInCache } from "@/features/role/admin/users/hooks/admin-coaches-cache";
 import { ADMIN_USERS_QUERY_KEY, adminUsersQueryOptions } from "@/features/role/admin/users/services/admin-users-query";
 import { ADMIN_COACHES_QUERY_KEY } from "@/features/role/admin/users/services/admin-coaches-query";
+import { ADMIN_DASHBOARD_SUMMARY_QUERY_KEY } from "@/features/role/admin/dashboard/services/admin-dashboard-query";
 import { prependAdminUserInCache, removeAdminUserFromCache, replaceAdminUserInCache } from "@/features/role/admin/users/hooks/admin-users-cache";
 
 export function useAdminUsers() {
@@ -104,6 +105,19 @@ export function useAssignCoachToStudent() {
 		onSuccess: ( updatedUser ) => {
 			replaceAdminUserInCache( queryClient, updatedUser );
 			void queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
+		},
+	} );
+}
+
+export function useReassignCoachStudents() {
+	const queryClient = useQueryClient();
+
+	return useMutation( {
+		mutationFn: reassignCoachStudentsAction,
+		// Cambia el entrenador de varios estudiantes a la vez: se vuelve a pedir la lista.
+		onSuccess: async () => {
+			await queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
+			void queryClient.invalidateQueries( { queryKey: ADMIN_DASHBOARD_SUMMARY_QUERY_KEY } );
 		},
 	} );
 }

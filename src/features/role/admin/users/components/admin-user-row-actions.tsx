@@ -4,13 +4,14 @@ import type { Key } from "@heroui/react";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 
 import { Button, Dropdown, Header, Label, Modal, Spinner, toast } from "@heroui/react";
-import { CheckCircle2, CircleSlash, EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
+import { ArrowRightLeft, CheckCircle2, CircleSlash, EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { AdminDeleteUserDrawer } from "@/features/role/admin/users/components/admin-delete-user-drawer";
+import { AdminReassignStudentsModal } from "@/features/role/admin/users/components/admin-reassign-students-modal";
 import { AdminStudentDrawer } from "@/features/role/admin/users/components/admin-student-drawer";
 import { AdminUserDrawer } from "@/features/role/admin/users/components/admin-user-drawer";
-import { useDeleteAdminUser, useToggleUserStatus } from "@/features/role/admin/users/hooks/use-admin-users";
+import { useAdminUsers, useDeleteAdminUser, useToggleUserStatus } from "@/features/role/admin/users/hooks/use-admin-users";
 
 type AdminUserRowActionsProps = {
 	user: AdminUserListItem;
@@ -22,6 +23,14 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
 	const [ isDeactivateOpen, setIsDeactivateOpen ] = useState( false );
+	const [ isReassignOpen, setIsReassignOpen ] = useState( false );
+	const { data: users = [] } = useAdminUsers();
+	// Cuantos estudiantes dependen de este entrenador: es lo que se pierde de vista
+	// al desactivarlo o eliminarlo.
+	const studentCount = user.role === "COACH"
+		? users.filter( ( candidate ) => candidate.role === "STUDENT" && candidate.coach?.id === user.id ).length
+		: 0;
+	const studentCountLabel = studentCount === 1 ? "1 estudiante" : `${ studentCount } estudiantes`;
 	const isProtected = user.role === "ADMIN";
 	const nextActive = !user.active;
 	const canToggle = !isProtected;
@@ -43,6 +52,11 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 			}
 
 			void handleToggle();
+			return;
+		}
+
+		if (key === "reassign") {
+			setIsReassignOpen( true );
 			return;
 		}
 
@@ -117,6 +131,12 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 							<PencilLine className={ "size-4 shrink-0" }/>
 							<Label>Editar</Label>
 						</Dropdown.Item>
+						{ studentCount > 0 ? (
+							<Dropdown.Item id={ "reassign" } textValue={ "Reasignar estudiantes" }>
+								<ArrowRightLeft className={ "size-4 shrink-0" }/>
+								<Label>Reasignar estudiantes</Label>
+							</Dropdown.Item>
+						) : null }
 						{ canToggle ? (
 							<Dropdown.Item id={ "toggle" } textValue={ user.active ? "Desactivar usuario" : "Activar usuario" }>
 								{ /* El tacho queda solo para eliminar: desactivar se puede revertir. */ }
@@ -156,9 +176,9 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 							<p className={ "text-sm leading-6 text-muted" }>
 								No va a poder entrar a la app hasta que vuelvas a activar la cuenta. Sus datos no se borran.
 							</p>
-							{ user.role === "COACH" ? (
+							{ studentCount > 0 ? (
 								<p className={ "text-sm font-medium leading-6 text-warning" }>
-									Sus estudiantes siguen asignados a este entrenador. Si no va a volver, reasignalos a otro.
+									Tiene { studentCountLabel } a cargo, que { studentCount === 1 ? "queda" : "quedan" } sin nadie que { studentCount === 1 ? "le" : "les" } arme la rutina. Si no va a volver, pasalos a otro con "Reasignar estudiantes".
 								</p>
 							) : null }
 						</Modal.Body>
@@ -179,10 +199,14 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 					</Modal.Dialog>
 				</Modal.Container>
 			</Modal.Backdrop>
+			{ user.role === "COACH" ? (
+				<AdminReassignStudentsModal coach={ user } isOpen={ isReassignOpen } onOpenChangeAction={ setIsReassignOpen }/>
+			) : null }
 			<AdminDeleteUserDrawer
 				deleteErrorMessage={ deleteMutation.isError ? deleteMutation.error.message : undefined }
 				isDeleting={ deleteMutation.isPending }
 				isOpen={ isDeleteOpen }
+				studentCount={ studentCount }
 				user={ user }
 				onCloseAction={ () => handleDeleteOpenChange( false ) }
 				onConfirmAction={ handleDelete }
