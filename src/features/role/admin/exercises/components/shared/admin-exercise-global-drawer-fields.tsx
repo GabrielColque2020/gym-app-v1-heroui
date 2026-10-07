@@ -1,6 +1,6 @@
 "use client";
 
-import type { Key } from "react";
+import { useMemo, type Key } from "react";
 import {
 	Checkbox,
 	Description,
@@ -18,12 +18,7 @@ import { AsyncMedia } from "@/components/common";
 import type {
 	AdminExerciseGlobalFormValues
 } from "@/features/role/admin/exercises/services/admin-exercise-global-form";
-import {
-	ADMIN_EXERCISE_GLOBAL_CATEGORY_OPTIONS,
-	ADMIN_EXERCISE_GLOBAL_EQUIPMENT_OPTIONS,
-	ADMIN_EXERCISE_GLOBAL_MUSCLE_GROUP_OPTIONS,
-	ADMIN_EXERCISE_GLOBAL_TARGET_OPTIONS,
-} from "@/features/role/admin/exercises/services/admin-exercise-global-form";
+import { useAdminExerciseGlobals } from "@/features/role/admin/exercises/hooks/use-admin-exercise-globals";
 
 type AdminExerciseGlobalDrawerFieldsProps = {
 	isCategoryInvalid: boolean;
@@ -39,66 +34,50 @@ function normalizeSelectValue( value: Key | null ) {
 	return value === null ? "" : String( value );
 }
 
-// El catalogo guarda las categorias con su propia escritura ("piernas superiores"),
-// que no coincide con la lista de opciones. Sin sumar el valor actual, el campo
-// aparecia vacio al abrir el ejercicio.
-function getCategoryOptions( currentValue: string ) {
-	const normalizedCurrentValue = currentValue.trim();
-	const currentValueIsKnown = ADMIN_EXERCISE_GLOBAL_CATEGORY_OPTIONS.some( ( option ) => option.value === normalizedCurrentValue );
+const OPTION_FIELDS = [ "category", "equipment", "muscleGroup", "target" ] as const;
 
-	if (normalizedCurrentValue.length === 0 || currentValueIsKnown) {
-		return ADMIN_EXERCISE_GLOBAL_CATEGORY_OPTIONS;
+type OptionField = typeof OPTION_FIELDS[ number ];
+
+// Las opciones de cada lista salen de lo que ya usa el catalogo, no de una lista
+// fija: asi el formulario ofrece exactamente las categorias, musculos y equipos
+// que existen, escritos igual, y no se crean duplicados por una mayuscula.
+function useAdminExerciseOptions( values: AdminExerciseGlobalFormValues ) {
+	const { data: exercises = [] } = useAdminExerciseGlobals();
+	const catalogOptions = useMemo( () => {
+		const sets: Record<OptionField, Set<string>> = {
+			category: new Set(),
+			equipment: new Set(),
+			muscleGroup: new Set(),
+			target: new Set(),
+		};
+
+		for (const exercise of exercises) {
+			for (const field of OPTION_FIELDS) {
+				const value = exercise[ field ]?.trim();
+
+				if (value) sets[ field ].add( value );
+			}
+		}
+
+		return sets;
+	}, [ exercises ] );
+
+	function getOptions( field: OptionField ) {
+		const current = values[ field ].trim();
+		const options = new Set( catalogOptions[ field ] );
+
+		// El valor del ejercicio siempre esta, aunque el catalogo todavia no haya cargado.
+		if (current) options.add( current );
+
+		return Array.from( options ).sort( ( left, right ) => left.localeCompare( right, "es" ) );
 	}
 
-	return [
-		{ label: normalizedCurrentValue, value: normalizedCurrentValue },
-		...ADMIN_EXERCISE_GLOBAL_CATEGORY_OPTIONS,
-	];
-}
-
-function getTargetOptions( currentValue: string ) {
-	const normalizedCurrentValue = currentValue.trim();
-	const hasCurrentValue = normalizedCurrentValue.length > 0;
-	const currentValueIsKnown = ADMIN_EXERCISE_GLOBAL_TARGET_OPTIONS.some( ( option ) => option.value === normalizedCurrentValue );
-
-	if (!hasCurrentValue || currentValueIsKnown) {
-		return ADMIN_EXERCISE_GLOBAL_TARGET_OPTIONS;
-	}
-
-	return [
-		{ label: normalizedCurrentValue, value: normalizedCurrentValue },
-		...ADMIN_EXERCISE_GLOBAL_TARGET_OPTIONS,
-	];
-}
-
-function getMuscleGroupOptions( currentValue: string ) {
-	const normalizedCurrentValue = currentValue.trim();
-	const hasCurrentValue = normalizedCurrentValue.length > 0;
-	const currentValueIsKnown = ADMIN_EXERCISE_GLOBAL_MUSCLE_GROUP_OPTIONS.some( ( option ) => option.value === normalizedCurrentValue );
-
-	if (!hasCurrentValue || currentValueIsKnown) {
-		return ADMIN_EXERCISE_GLOBAL_MUSCLE_GROUP_OPTIONS;
-	}
-
-	return [
-		{ label: normalizedCurrentValue, value: normalizedCurrentValue },
-		...ADMIN_EXERCISE_GLOBAL_MUSCLE_GROUP_OPTIONS,
-	];
-}
-
-function getEquipmentOptions( currentValue: string ) {
-	const normalizedCurrentValue = currentValue.trim();
-	const hasCurrentValue = normalizedCurrentValue.length > 0;
-	const currentValueIsKnown = ADMIN_EXERCISE_GLOBAL_EQUIPMENT_OPTIONS.some( ( option ) => option.value === normalizedCurrentValue );
-
-	if (!hasCurrentValue || currentValueIsKnown) {
-		return ADMIN_EXERCISE_GLOBAL_EQUIPMENT_OPTIONS;
-	}
-
-	return [
-		{ label: normalizedCurrentValue, value: normalizedCurrentValue },
-		...ADMIN_EXERCISE_GLOBAL_EQUIPMENT_OPTIONS,
-	];
+	return {
+		category: getOptions( "category" ),
+		equipment: getOptions( "equipment" ),
+		muscleGroup: getOptions( "muscleGroup" ),
+		target: getOptions( "target" ),
+	};
 }
 
 export function AdminExerciseGlobalDrawerFields( {
@@ -110,6 +89,8 @@ export function AdminExerciseGlobalDrawerFields( {
 	updateValue,
 	values,
 }: AdminExerciseGlobalDrawerFieldsProps ) {
+	const options = useAdminExerciseOptions( values );
+
 	return (
 		<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 			<div className={ "grid gap-4 md:grid-cols-1" }>
@@ -142,9 +123,9 @@ export function AdminExerciseGlobalDrawerFields( {
 					</Select.Trigger>
 					<Select.Popover>
 						<ListBox>
-							{ getCategoryOptions( values.category ).map( ( option ) => (
-								<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-									{ option.label }
+							{ options.category.map( ( option ) => (
+								<ListBox.Item key={ option } id={ option } textValue={ option }>
+									{ option }
 									<ListBox.ItemIndicator/>
 								</ListBox.Item>
 							) ) }
@@ -170,9 +151,9 @@ export function AdminExerciseGlobalDrawerFields( {
 						</Select.Trigger>
 						<Select.Popover>
 							<ListBox>
-								{ getTargetOptions( values.target ).map( ( option ) => (
-									<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-										{ option.label }
+								{ options.target.map( ( option ) => (
+									<ListBox.Item key={ option } id={ option } textValue={ option }>
+										{ option }
 										<ListBox.ItemIndicator/>
 									</ListBox.Item>
 								) ) }
@@ -196,9 +177,9 @@ export function AdminExerciseGlobalDrawerFields( {
 						</Select.Trigger>
 						<Select.Popover>
 							<ListBox>
-								{ getMuscleGroupOptions( values.muscleGroup ).map( ( option ) => (
-									<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-										{ option.label }
+								{ options.muscleGroup.map( ( option ) => (
+									<ListBox.Item key={ option } id={ option } textValue={ option }>
+										{ option }
 										<ListBox.ItemIndicator/>
 									</ListBox.Item>
 								) ) }
@@ -224,9 +205,9 @@ export function AdminExerciseGlobalDrawerFields( {
 					</Select.Trigger>
 					<Select.Popover>
 						<ListBox>
-							{ getEquipmentOptions( values.equipment ).map( ( option ) => (
-								<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-									{ option.label }
+							{ options.equipment.map( ( option ) => (
+								<ListBox.Item key={ option } id={ option } textValue={ option }>
+									{ option }
 									<ListBox.ItemIndicator/>
 								</ListBox.Item>
 							) ) }
