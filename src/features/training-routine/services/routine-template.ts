@@ -34,6 +34,27 @@ export type ApplyRoutineTemplateResult =
 	| { ok: true; templateName: string }
 	| { ok: false; reason: "student-not-found" | "template-not-found" };
 
+export type RenameRoutineTemplateResult =
+	| { ok: true; name: string }
+	| { ok: false; reason: "duplicate-name" | "invalid-name" | "template-not-found" };
+
+export type DuplicateRoutineTemplateResult =
+	| { ok: true; name: string }
+	| { ok: false; reason: "template-not-found" };
+
+// Nombre para la copia de una plantilla: "X (copia)", "X (copia 2)"... Si no
+// entra en el largo maximo, se recorta el nombre original y no el sufijo.
+export function buildRoutineTemplateCopyName( name: string, takenNames: string[] ) {
+	const taken = new Set( takenNames.map( ( takenName ) => takenName.toLowerCase() ) );
+
+	for (let copyNumber = 1; ; copyNumber++) {
+		const suffix = copyNumber === 1 ? " (copia)" : ` (copia ${ copyNumber })`;
+		const candidate = `${ name.slice( 0, ROUTINE_TEMPLATE_NAME_MAX_LENGTH - suffix.length ).trimEnd() }${ suffix }`;
+
+		if (!taken.has( candidate.toLowerCase() )) return candidate;
+	}
+}
+
 export function normalizeRoutineTemplateName( name: string ) {
 	return name.trim().replace( /\s+/g, " " );
 }

@@ -4,8 +4,11 @@ import { requireCoachSession } from "@/features/auth/coach-session";
 import {
 	type ApplyRoutineTemplateInput,
 	type ApplyRoutineTemplateResult,
+	buildRoutineTemplateCopyName,
+	type DuplicateRoutineTemplateResult,
 	isRoutineTemplateNameValid,
 	normalizeRoutineTemplateName,
+	type RenameRoutineTemplateResult,
 	type RoutineTemplateListItem,
 	type SaveRoutineAsTemplateInput,
 	type SaveRoutineAsTemplateResult,
@@ -17,6 +20,25 @@ import {
 	routineWeeksCopyInclude,
 } from "@/features/training-routine/services/routine-weeks-copy";
 import prisma from "@/lib/prisma";
+
+// "Fuerza" y "fuerza" son la misma plantilla para quien las busca en una lista.
+async function isRoutineTemplateNameTaken( coachId: string, name: string, exceptTemplateId?: string ) {
+	const sameNameTemplate = await prisma.routineTemplate.findFirst( {
+		select: {
+			id: true,
+		},
+		where: {
+			coachId,
+			id: exceptTemplateId ? { not: exceptTemplateId } : undefined,
+			name: {
+				equals: name,
+				mode: "insensitive",
+			},
+		},
+	} );
+
+	return sameNameTemplate !== null;
+}
 
 // Guarda la rutina de un mes de un estudiante como plantilla del entrenador. Es
 // una copia: despues, cambiar la rutina del estudiante no cambia la plantilla.
@@ -52,21 +74,7 @@ export async function saveRoutineAsTemplateAction( input: SaveRoutineAsTemplateI
 	// Una plantilla sin ejercicios no le ahorra nada a nadie.
 	if (!sourceMonth || summary.exerciseCount === 0) return { ok: false, reason: "empty-routine" };
 
-	// "Fuerza" y "fuerza" son la misma plantilla para quien las busca en una lista.
-	const sameNameTemplate = await prisma.routineTemplate.findFirst( {
-		select: {
-			id: true,
-		},
-		where: {
-			coachId: session.sub,
-			name: {
-				equals: name,
-				mode: "insensitive",
-			},
-		},
-	} );
-
-	if (sameNameTemplate) return { ok: false, reason: "duplicate-name" };
+	if (await isRoutineTemplateNameTaken( session.sub, name )) return { ok: false, reason: "duplicate-name" };
 
 	const template = await prisma.$transaction( async ( tx ) => {
 		const createdTemplate = await tx.routineTemplate.create( {
@@ -204,4 +212,90 @@ export async function applyRoutineTemplateAction( input: ApplyRoutineTemplateInp
 	} );
 
 	return { ok: true, templateName: template.name };
+}
+
+export async function renameRoutineTemplateAction( input: { name: string; templateId: string } ): Promise<RenameRoutineTemplateResult> {
+	const session = await requireCoachSession( "renombrar la plantilla" );
+
+	if (!isRoutineTemplateNameValid( input.name )) return { ok: false, reason: "invalid-name" };
+
+	const name = normalizeRoutineTemplateName( input.name );
+
+	if (await isRoutineTemplateNameTaken( session.sub, name, input.templateId )) return { ok: false, reason: "duplicate-name" };
+
+	// `updateMany` para poder filtrar por entrenador: nadie renombra lo de otro.
+	const updated = await prisma.routineTemplate.updateMany( {
+		data: {
+			name,
+		},
+		where: {
+			coachId: session.sub,
+			id: input.templateId,
+		},
+	} );
+
+	return updated.count === 0 ? { ok: false, reason: "template-not-found" } : { name, ok: true };
+}
+
+// Copia una plantilla entera con otro nombre, para armar una variante sin tocar la original.
+export async function duplicateRoutineTemplateAction( templateId: string ): Promise<DuplicateRoutineTemplateResult> {
+	const session = await requireCoachSession( "duplicar la plantilla" );
+	const template = ( await prisma.routineTemplate.findFirst( {
+		include: {
+			weeks: {
+				include: routineWeeksCopyInclude,
+				orderBy: {
+					week: "asc",
+				},
+			},
+		},
+		where: {
+			coachId: session.sub,
+			id: templateId,
+		},
+	} ) ) as unknown as { name: string; objective: string | null; weeks: RoutineWeekCopySource[] } | null;
+
+	if (!template) return { ok: false, reason: "template-not-found" };
+
+	const takenNames = await prisma.routineTemplate.findMany( {
+		select: {
+			name: true,
+		},
+		where: {
+			coachId: session.sub,
+		},
+	} );
+	const name = buildRoutineTemplateCopyName( template.name, takenNames.map( ( item ) => item.name ) );
+
+	await prisma.$transaction( async ( tx ) => {
+		const copy = await tx.routineTemplate.create( {
+			data: {
+				coachId: session.sub,
+				name,
+				objective: template.objective,
+			},
+			select: {
+				id: true,
+			},
+		} );
+
+		await createRoutineWeeksCopy( tx, template.weeks, { routineTemplateId: copy.id } );
+	} );
+
+	return { name, ok: true };
+}
+
+// Borra la plantilla con todo su contenido. Las rutinas que se armaron con ella
+// no cambian: eran copias.
+export async function deleteRoutineTemplateAction( templateId: string ) {
+	const session = await requireCoachSession( "eliminar la plantilla" );
+
+	await prisma.routineTemplate.deleteMany( {
+		where: {
+			coachId: session.sub,
+			id: templateId,
+		},
+	} );
+
+	return { ok: true };
 }

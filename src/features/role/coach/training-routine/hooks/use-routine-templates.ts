@@ -5,7 +5,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_DEFAULTS } from "@/constants/query";
 import {
 	applyRoutineTemplateAction,
+	deleteRoutineTemplateAction,
+	duplicateRoutineTemplateAction,
 	getRoutineTemplatesAction,
+	renameRoutineTemplateAction,
 	saveRoutineAsTemplateAction,
 } from "@/features/training-routine/actions/routine-templates";
 import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
@@ -50,4 +53,29 @@ export function useApplyRoutineTemplate() {
 			} );
 		},
 	} );
+}
+
+// Renombrar, duplicar y borrar cambian la lista: se vuelve a pedir siempre, aun
+// cuando la accion no se pudo hacer, porque eso suele significar que quedo vieja.
+function useRoutineTemplateListMutation<TInput, TResult>( mutationFn: ( input: TInput ) => Promise<TResult> ) {
+	const queryClient = useQueryClient();
+
+	return useMutation( {
+		mutationFn,
+		onSettled: () => {
+			void queryClient.invalidateQueries( { queryKey: coachRoutineTemplatesQueryKey } );
+		},
+	} );
+}
+
+export function useRenameRoutineTemplate() {
+	return useRoutineTemplateListMutation( renameRoutineTemplateAction );
+}
+
+export function useDuplicateRoutineTemplate() {
+	return useRoutineTemplateListMutation( duplicateRoutineTemplateAction );
+}
+
+export function useDeleteRoutineTemplate() {
+	return useRoutineTemplateListMutation( deleteRoutineTemplateAction );
 }
