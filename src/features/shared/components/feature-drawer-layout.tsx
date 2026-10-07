@@ -25,6 +25,22 @@ type FeatureDrawerLayoutProps = {
 const BOTTOM_DIALOG_CLASS_NAME = "flex max-h-[92dvh] w-full flex-col rounded-t-2xl border-t border-border bg-surface";
 const RIGHT_DIALOG_CLASS_NAME = "w-115 border-l border-border bg-surface";
 
+// De que lado se apoya el drawer y desde donde entra. Se fija aca, con clases
+// propias, porque la libreria a veces recalcula su clase de posicion como "abajo"
+// en un drawer que es "derecha" (pasa cuando se monta otro drawer mientras este
+// esta abierto, por ejemplo al agregar un ejercicio y despues buscar otro): el
+// panel saltaba al borde izquierdo.
+const RIGHT_CONTENT_CLASS_NAME = [
+	"items-stretch justify-end",
+	"[&[data-entering=true]_.drawer__dialog]:translate-x-full [&[data-entering=true]_.drawer__dialog]:translate-y-0",
+	"[&[data-exiting=true]_.drawer__dialog]:translate-x-full [&[data-exiting=true]_.drawer__dialog]:translate-y-0",
+].join( " " );
+const BOTTOM_CONTENT_CLASS_NAME = [
+	"items-end justify-normal",
+	"[&[data-entering=true]_.drawer__dialog]:translate-x-0 [&[data-entering=true]_.drawer__dialog]:translate-y-full",
+	"[&[data-exiting=true]_.drawer__dialog]:translate-x-0 [&[data-exiting=true]_.drawer__dialog]:translate-y-full",
+].join( " " );
+
 // Normaliza la estructura externa de los drawers usados dentro de features.
 export function FeatureDrawerLayout( {
 								 children,
@@ -59,7 +75,10 @@ export function FeatureDrawerLayout( {
 				variant={ "opaque" }
 				onOpenChange={ onOpenChangeAction }
 			>
-				<Drawer.Content placement={ placement }>
+				<Drawer.Content
+					className={ placement === "right" ? RIGHT_CONTENT_CLASS_NAME : BOTTOM_CONTENT_CLASS_NAME }
+					placement={ placement }
+				>
 					<Drawer.Dialog
 						className={ placement === "right"
 							? twMerge( RIGHT_DIALOG_CLASS_NAME, rightContentClassName )

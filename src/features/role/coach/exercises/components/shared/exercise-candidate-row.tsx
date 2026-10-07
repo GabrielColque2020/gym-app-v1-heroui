@@ -1,7 +1,7 @@
 import { Button, Card } from "@heroui/react";
 import { Plus } from "lucide-react";
 
-import { AsyncMedia } from "@/components/common";
+import { MediaPreviewThumbnail } from "@/components/common/media-preview-thumbnail";
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
 
 import type { ExerciseVariantsTarget } from "./exercise-variants-drawer.types";
@@ -35,13 +35,7 @@ export function ExerciseCandidateRow( {
 			<Card.Content className={ "px-1 py-1.5" }>
 				<div className={ "flex items-center justify-between gap-3" }>
 					<div className={ "flex min-w-0 flex-1 items-center gap-3" }>
-						<AsyncMedia
-							alt={ `Imagen de ${ candidate.name }` }
-							className={ "h-14 w-14 shrink-0 rounded-xl border border-border object-cover" }
-							emptyLabel={ "Sin imagen" }
-							spinnerLabel={ `Cargando imagen de ${ candidate.name }` }
-							src={ candidate.imageUrl }
-						/>
+						<MediaPreviewThumbnail imageUrl={ candidate.imageUrl } name={ candidate.name } videoUrl={ candidate.videoUrl }/>
 						<div className={ "min-w-0" }>
 							<p className={ "line-clamp-4 text-sm font-medium leading-5 text-foreground" }>{ candidate.name }</p>
 							<p className={ "truncate text-xs text-muted" }>{ summary }</p>

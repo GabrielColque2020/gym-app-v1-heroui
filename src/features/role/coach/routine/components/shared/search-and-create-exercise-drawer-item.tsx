@@ -1,6 +1,6 @@
 import { Button, Chip } from "@heroui/react";
 
-import { AsyncMedia } from "@/components/common";
+import { MediaPreviewThumbnail } from "@/components/common/media-preview-thumbnail";
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
 import type { RoutineCatalogExercise } from "@/features/routine/hooks/use-routine-day-exercise-catalog";
 
@@ -39,13 +39,9 @@ export function SearchAndCreateExerciseDrawerItem( {
 			}
 		>
 			<div className={ "flex min-w-0 items-center gap-3" }>
-				<AsyncMedia
-					alt={ `Imagen de ${ exercise.name }` }
-					className={ "h-14 w-14 shrink-0 rounded-xl border border-border object-cover" }
-					emptyLabel={ "Sin imagen" }
-					spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
-					src={ exercise.imageUrl }
-				/>
+				{ /* La miniatura no alcanza para distinguir el movimiento: al pasarle el
+				     mouse o tocarla se ve en grande, sin achicar la lista. */ }
+				<MediaPreviewThumbnail imageUrl={ exercise.imageUrl } name={ exercise.name } videoUrl={ exercise.videoUrl }/>
 				<div className={ "min-w-0" }>
 					<p className={ "line-clamp-4 text-sm font-medium text-foreground" }>{ exercise.name }</p>
 					<div className={ "mt-0.5 flex min-w-0 items-center gap-2" }>

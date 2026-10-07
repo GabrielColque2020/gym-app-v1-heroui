@@ -11,6 +11,9 @@ type MediaLoadState = "empty" | "error" | "loaded" | "loading";
 
 type AsyncMediaProps = {
 	alt: string;
+	// Un video que arranca solo, en silencio y en bucle, como una animacion. Para
+	// las vistas previas, donde no hay controles ni un toque que lo ponga a andar.
+	autoPlayLoop?: boolean;
 	className?: string;
 	controls?: boolean;
 	emptyLabel?: string;
@@ -31,6 +34,7 @@ function resolveKind( src: string, kind: AsyncMediaKind ) {
 
 export function AsyncMedia( {
 	alt,
+	autoPlayLoop = false,
 	className = "",
 	controls = true,
 	emptyLabel,
@@ -71,7 +75,12 @@ export function AsyncMedia( {
 			{ deliverySrc ? deliveryKind === "video" ? (
 				<video
 					className={ `h-full w-full bg-content2 object-contain ${ loadState === "loaded" ? "opacity-100" : "opacity-0" } ${ mediaClassName }` }
+					autoPlay={ autoPlayLoop }
 					controls={ controls }
+					loop={ autoPlayLoop }
+					// Sin silencio el navegador no deja que arranque solo.
+					muted={ autoPlayLoop }
+					playsInline={ autoPlayLoop }
 					src={ deliverySrc }
 					onError={ () => setLoadState( "error" ) }
 					onLoadedData={ () => setLoadState( "loaded" ) }
