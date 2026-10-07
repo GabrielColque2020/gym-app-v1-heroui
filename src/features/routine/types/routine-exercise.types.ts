@@ -42,6 +42,9 @@ export interface Exercise {
 	variantExerciseId: string | null;
 	variantSelectionExplicit: boolean;
 	restTime: number;
+	// Descanso entre series que fijo el entrenador, en segundos. Sin valor, el
+	// estudiante usa el que tenga elegido en su telefono.
+	restSeconds?: number | null;
 	sets: ExerciseSet[];
 	notes?: string;
 	lastSession: ExerciseSessionHistory | null;

@@ -101,7 +101,7 @@ export function useEditRoutineDayLoadedState( {
 	function handleAddExercise(
 		exercise: ExerciseListItem,
 		order: number,
-		prescription?: { reps: string; sets: string },
+		prescription?: { reps: string; restSeconds?: number | null; sets: string },
 	) {
 		markEdited();
 
@@ -118,6 +118,7 @@ export function useEditRoutineDayLoadedState( {
 		// Las series y repeticiones elegidas en el drawer ya quedan cargadas.
 		if (prescription?.sets) updateExerciseField( result.routine.clientId, "sets", prescription.sets );
 		if (prescription?.reps) updateExerciseField( result.routine.clientId, "reps", prescription.reps );
+		if (prescription?.restSeconds) updateExerciseField( result.routine.clientId, "restSeconds", prescription.restSeconds );
 	}
 
 	const handleConfirmRefresh = useCallback( async () => {

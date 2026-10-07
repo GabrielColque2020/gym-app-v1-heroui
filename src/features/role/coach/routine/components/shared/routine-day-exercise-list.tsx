@@ -9,9 +9,10 @@ import { formatBodyPartValue, getExerciseName } from "@/features/role/coach/rout
 import { RoutineDayExerciseField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-field";
 import { RoutineDayExerciseMoveButtons } from "@/features/role/coach/routine/components/shared/routine-day-exercise-move-buttons";
 import { RoutineExerciseActions } from "@/features/role/coach/routine/components/shared/routine-exercise-actions";
+import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
-type UpdateField = ( clientId: string, field: "observation" | "order" | "reps" | "sets", value: number | string ) => void;
+type UpdateField = ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "sets", value: number | string | null ) => void;
 
 type RoutineDayExerciseListProps = {
 	onDeleteAction: ( clientId: string ) => void;
@@ -96,6 +97,12 @@ function RoutineDayExerciseRow( {
 						/>
 					</div>
 					<div className={ "flex items-center" }>
+						{ /* Opcional: es el tiempo con el que arranca el reloj del estudiante. */ }
+						<RoutineRestSelect
+							ariaLabel={ `Descanso de ${ exerciseName }` }
+							value={ routine.restSeconds ?? null }
+							onChangeAction={ ( value ) => onUpdateField( routine.clientId, "restSeconds", value ) }
+						/>
 						<Button
 							isIconOnly
 							aria-expanded={ isNoteOpen }

@@ -3,25 +3,40 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { formatRestSeconds, REST_SECONDS_MAX, REST_SECONDS_MIN } from "@/features/routine/services/rest-seconds";
+
 export const REST_TIMER_DEFAULT_SECONDS = 90;
 export const REST_TIMER_STEP_SECONDS = 15;
 
-const REST_TIMER_MIN_SECONDS = 15;
-const REST_TIMER_MAX_SECONDS = 600;
 // Un descanso que termino hace mas que esto ya no se avisa: quedo de otra visita.
 const STALE_FINISH_MS = 5000;
 
+type StartOptions = {
+	// Descanso que el entrenador fijo para el ejercicio en pantalla, si lo hay.
+	prescribedSeconds?: number | null;
+};
+
 type RestTimerState = {
-	// Lo que dura el descanso. Se recuerda en el telefono entre un dia y otro.
-	durationSeconds: number;
+	// El descanso elegido en este telefono. Se usa cuando el entrenador no fijo uno.
+	defaultSeconds: number;
 	// Momento en que termina el descanso en curso. Se guarda la hora de fin y no
 	// los segundos que faltan, para que el reloj siga bien aunque el telefono se
 	// bloquee o la pestaña quede en segundo plano.
 	endsAt: number | null;
+	// Si el descanso en curso arranco con el tiempo del entrenador. Ajustarlo no
+	// cambia entonces el descanso elegido en el telefono.
+	isPrescribedRun: boolean;
+	// Lo que faltaba al pausar. Con valor, el descanso esta en pausa.
+	pausedRemainingMs: number | null;
+	// Lo que dura el descanso en curso, con los ajustes que se le hayan hecho.
+	runSeconds: number;
 	adjust: ( deltaSeconds: number ) => void;
 	finish: () => void;
-	skip: () => void;
-	start: ( seconds?: number ) => void;
+	pause: () => void;
+	restart: () => void;
+	resume: () => void;
+	start: ( options?: StartOptions ) => void;
+	stop: () => void;
 };
 
 let audioContext: AudioContext | null = null;
@@ -70,26 +85,34 @@ function notifyRestFinished() {
 }
 
 function clampSeconds( seconds: number ) {
-	return Math.min( REST_TIMER_MAX_SECONDS, Math.max( REST_TIMER_MIN_SECONDS, Math.round( seconds ) ) );
+	return Math.min( REST_SECONDS_MAX, Math.max( REST_SECONDS_MIN, Math.round( seconds ) ) );
 }
+
+const IDLE = { endsAt: null, pausedRemainingMs: null } as const;
 
 export const useRestTimerStore = create<RestTimerState>()(
 	persist(
 		( set, get ) => ( {
-			durationSeconds: REST_TIMER_DEFAULT_SECONDS,
+			defaultSeconds: REST_TIMER_DEFAULT_SECONDS,
 			endsAt: null,
-			// Sumar o restar tiempo con el descanso en curso tambien cambia lo que dura
-			// el proximo: si alguien siempre agrega 30 segundos, es que necesita mas.
+			isPrescribedRun: false,
+			pausedRemainingMs: null,
+			runSeconds: REST_TIMER_DEFAULT_SECONDS,
+			// Sumar o restar tiempo sirve en curso y en pausa. Si el descanso salio del
+			// telefono, el ajuste queda para el proximo: quien siempre agrega 30
+			// segundos necesita mas descanso.
 			adjust: ( deltaSeconds ) => {
-				const { durationSeconds, endsAt } = get();
-				const nextDuration = clampSeconds( durationSeconds + deltaSeconds );
-				const appliedDelta = nextDuration - durationSeconds;
+				const { defaultSeconds, endsAt, isPrescribedRun, pausedRemainingMs, runSeconds } = get();
+				const nextRunSeconds = clampSeconds( runSeconds + deltaSeconds );
+				const appliedMs = ( nextRunSeconds - runSeconds ) * 1000;
 
-				if (appliedDelta === 0) return;
+				if (appliedMs === 0) return;
 
 				set( {
-					durationSeconds: nextDuration,
-					endsAt: endsAt === null ? null : endsAt + appliedDelta * 1000,
+					defaultSeconds: isPrescribedRun ? defaultSeconds : nextRunSeconds,
+					endsAt: endsAt === null ? null : endsAt + appliedMs,
+					pausedRemainingMs: pausedRemainingMs === null ? null : Math.max( 1000, pausedRemainingMs + appliedMs ),
+					runSeconds: nextRunSeconds,
 				} );
 			},
 			// La llaman todas las pantallas que muestran el reloj; solo la primera avisa.
@@ -98,29 +121,56 @@ export const useRestTimerStore = create<RestTimerState>()(
 
 				if (endsAt === null) return;
 
-				set( { endsAt: null } );
+				set( IDLE );
 
 				if (Date.now() - endsAt <= STALE_FINISH_MS) notifyRestFinished();
 			},
-			skip: () => set( { endsAt: null } ),
-			start: ( seconds ) => {
-				const durationSeconds = clampSeconds( seconds ?? get().durationSeconds );
+			pause: () => {
+				const { endsAt } = get();
+
+				if (endsAt === null) return;
+
+				set( { endsAt: null, pausedRemainingMs: Math.max( 1000, endsAt - Date.now() ) } );
+			},
+			// Vuelve a empezar el mismo descanso desde el principio.
+			restart: () => {
+				prepareSound();
+				set( { endsAt: Date.now() + get().runSeconds * 1000, pausedRemainingMs: null } );
+			},
+			resume: () => {
+				const { pausedRemainingMs } = get();
+
+				if (pausedRemainingMs === null) return;
 
 				prepareSound();
-				set( { durationSeconds, endsAt: Date.now() + durationSeconds * 1000 } );
+				set( { endsAt: Date.now() + pausedRemainingMs, pausedRemainingMs: null } );
 			},
+			start: ( options ) => {
+				const prescribedSeconds = options?.prescribedSeconds ?? null;
+				const runSeconds = clampSeconds( prescribedSeconds ?? get().defaultSeconds );
+
+				prepareSound();
+				set( {
+					endsAt: Date.now() + runSeconds * 1000,
+					isPrescribedRun: prescribedSeconds !== null,
+					pausedRemainingMs: null,
+					runSeconds,
+				} );
+			},
+			stop: () => set( IDLE ),
 		} ),
 		{
 			name: "gym-app-rest-timer",
-			partialize: ( state ) => ( { durationSeconds: state.durationSeconds, endsAt: state.endsAt } ),
+			partialize: ( state ) => ( {
+				defaultSeconds: state.defaultSeconds,
+				endsAt: state.endsAt,
+				isPrescribedRun: state.isPrescribedRun,
+				pausedRemainingMs: state.pausedRemainingMs,
+				runSeconds: state.runSeconds,
+			} ),
 			storage: createJSONStorage( () => localStorage ),
 		},
 	),
 );
 
-export function formatRestTime( totalSeconds: number ) {
-	const minutes = Math.floor( totalSeconds / 60 );
-	const seconds = totalSeconds % 60;
-
-	return `${ minutes }:${ String( seconds ).padStart( 2, "0" ) }`;
-}
+export const formatRestTime = formatRestSeconds;

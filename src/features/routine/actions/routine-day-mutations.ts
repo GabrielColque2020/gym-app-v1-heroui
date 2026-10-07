@@ -24,6 +24,7 @@ export type SavedRoutineRow = {
 	observation: string | null;
 	order: number;
 	reps: string;
+	restSeconds: number | null;
 	sets: string;
 };
 

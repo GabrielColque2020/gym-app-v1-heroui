@@ -56,6 +56,7 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 										hasCompletedSets={ hasCompletedSets }
 										isVariantSelected={ Boolean( selectedVariant ) }
 										label={ exercise.equipment }
+										restSeconds={ exercise.restSeconds }
 										totalSets={ completedSetsSummary.totalSets }
 									/>
 								</div>

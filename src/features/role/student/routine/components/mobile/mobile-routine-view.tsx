@@ -43,7 +43,9 @@ export default function MobileRoutineView( {
 	onVariantChangeAction,
 }: MobileRoutineViewProps ) {
 	const { activeExerciseIndex, api, setApi } = useExerciseCarouselState();
-	const { isRunning: isResting } = useRestTimer();
+	const { isActive: isResting } = useRestTimer();
+	// El descanso que el entrenador fijo para el ejercicio que se esta viendo.
+	const activeRestSeconds = exercises[ activeExerciseIndex - 1 ]?.restSeconds ?? null;
 	const slideRefs = useRef<Array<HTMLDivElement | null>>( [] );
 	const [ carouselHeight, setCarouselHeight ] = useState<number | null>( null );
 
@@ -191,7 +193,7 @@ export default function MobileRoutineView( {
 							// Mientras descansa, el reloj ocupa el lugar de estos botones: en ese
 							// momento no se termina el dia.
 							<div className={ "grid grid-cols-2 gap-2" }>
-								<RestTimerStartButton className={ "min-w-0" }/>
+								<RestTimerStartButton className={ "min-w-0" } prescribedSeconds={ activeRestSeconds }/>
 								<Button className={ "min-w-0 font-semibold" } isDisabled={ !canFinishDay } onPress={ onFinishDayAction }>
 									<Flag className={ "size-4 shrink-0" }/>
 									<span className={ "truncate" }>Terminar día</span>
@@ -199,7 +201,7 @@ export default function MobileRoutineView( {
 							</div>
 						) }
 						{ /* Corrigiendo un dia ya terminado tambien se puede descansar. */ }
-						{ isDayFinished && !isSessionLocked && !isResting ? <RestTimerStartButton className={ "w-full" }/> : null }
+						{ isDayFinished && !isSessionLocked && !isResting ? <RestTimerStartButton className={ "w-full" } prescribedSeconds={ activeRestSeconds }/> : null }
 					</div>
 
 				</>

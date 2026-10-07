@@ -210,6 +210,7 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				variantExerciseId,
 				variantSelectionExplicit: false,
 				restTime: Math.max( setCount * 30, 0 ),
+				restSeconds: routine.restSeconds ?? null,
 				sets: currentSets,
 				videoUrl: pickFirstText(
 					routine.exercise?.videoUrl,

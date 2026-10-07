@@ -65,6 +65,8 @@ export function SearchAndCreateExerciseDrawer({
         setIsCreateDrawerOpen,
         setOrderValue,
         setRepsValue,
+        restValue,
+        setRestValue,
         setSetsValue,
         setsValue,
     } = useSearchAndCreateExerciseDrawerState({
@@ -107,6 +109,8 @@ export function SearchAndCreateExerciseDrawer({
                         repsValue={ repsValue }
                         setsValue={ setsValue }
                         onRepsChange={ setRepsValue }
+                        restValue={ restValue }
+                        onRestChange={ setRestValue }
                         onSetsChange={ setSetsValue }
                     />
 

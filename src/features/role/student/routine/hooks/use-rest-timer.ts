@@ -7,14 +7,19 @@ import { REST_TIMER_STEP_SECONDS, useRestTimerStore } from "@/features/role/stud
 const TICK_MS = 250;
 
 // Estado del descanso entre series para mostrar en pantalla. El reloj en si vive
-// en el store; aca solo se refresca "ahora" mientras hay un descanso en curso.
+// en el store; aca solo se refresca "ahora" mientras hay un descanso corriendo.
 export function useRestTimer() {
-	const durationSeconds = useRestTimerStore( ( state ) => state.durationSeconds );
+	const defaultSeconds = useRestTimerStore( ( state ) => state.defaultSeconds );
 	const endsAt = useRestTimerStore( ( state ) => state.endsAt );
+	const pausedRemainingMs = useRestTimerStore( ( state ) => state.pausedRemainingMs );
+	const runSeconds = useRestTimerStore( ( state ) => state.runSeconds );
 	const adjust = useRestTimerStore( ( state ) => state.adjust );
 	const finish = useRestTimerStore( ( state ) => state.finish );
-	const skip = useRestTimerStore( ( state ) => state.skip );
+	const pause = useRestTimerStore( ( state ) => state.pause );
+	const restart = useRestTimerStore( ( state ) => state.restart );
+	const resume = useRestTimerStore( ( state ) => state.resume );
 	const start = useRestTimerStore( ( state ) => state.start );
+	const stop = useRestTimerStore( ( state ) => state.stop );
 	const [ now, setNow ] = useState( () => Date.now() );
 
 	useEffect( () => {
@@ -42,20 +47,26 @@ export function useRestTimer() {
 		};
 	}, [ endsAt, finish ] );
 
-	const isRunning = endsAt !== null;
+	const isPaused = pausedRemainingMs !== null;
+	const isActive = endsAt !== null || isPaused;
+	const remainingMs = isPaused ? pausedRemainingMs : endsAt !== null ? endsAt - now : 0;
 	// Nunca mas que la duracion: "ahora" puede venir atrasado hasta el primer intervalo.
-	const remainingSeconds = isRunning
-		? Math.min( durationSeconds, Math.max( 0, Math.ceil( ( endsAt - now ) / 1000 ) ) )
+	const remainingSeconds = isActive
+		? Math.min( runSeconds, Math.max( 0, Math.ceil( remainingMs / 1000 ) ) )
 		: 0;
 
 	return {
 		addTime: () => adjust( REST_TIMER_STEP_SECONDS ),
-		durationSeconds,
-		isRunning,
-		progress: isRunning && durationSeconds > 0 ? remainingSeconds / durationSeconds : 0,
+		defaultSeconds,
+		isActive,
+		isPaused,
+		pause,
+		progress: isActive && runSeconds > 0 ? remainingSeconds / runSeconds : 0,
 		remainingSeconds,
 		removeTime: () => adjust( -REST_TIMER_STEP_SECONDS ),
-		skip,
+		restart,
+		resume,
 		start,
+		stop,
 	};
 }

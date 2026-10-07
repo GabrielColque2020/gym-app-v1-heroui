@@ -59,6 +59,7 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 										isCompact
 										isVariantSelected={ Boolean( selectedVariant ) }
 										label={ exercise.equipment }
+										restSeconds={ exercise.restSeconds }
 										totalSets={ completedSetsSummary.totalSets }
 									/>
 								</div>

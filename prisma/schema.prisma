@@ -182,6 +182,8 @@ model Routine {
   observation String?
   reps        String
   sets        String
+  // Descanso entre series que fija el entrenador, en segundos. Opcional.
+  restSeconds Int?
   order       Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -79,6 +79,7 @@ export function serializeSession( session: StudentRoutineSession ): PersistedDra
 			variantSelectionExplicit: exercise.variantSelectionExplicit,
 			notes: exercise.notes,
 			restTime: exercise.restTime,
+			restSeconds: exercise.restSeconds ?? null,
 			sets: exercise.sets.map( ( set ) => ( {
 				completed: set.completed,
 				currentReps: set.currentReps,

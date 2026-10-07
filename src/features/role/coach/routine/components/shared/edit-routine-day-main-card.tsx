@@ -16,7 +16,7 @@ type EditRoutineDayMainCardProps = {
 	onAddExerciseAction: ( exercise: ExerciseListItem, order: number, prescription: ExercisePrescription ) => void;
 	onDeleteExerciseAction: ( clientId: string ) => void;
 	onRefreshAction: () => void;
-	onUpdateExerciseField: ( clientId: string, field: "observation" | "order" | "reps" | "sets", value: number | string ) => void;
+	onUpdateExerciseField: ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "sets", value: number | string | null ) => void;
 };
 
 export function EditRoutineDayMainCard( {
@@ -34,7 +34,7 @@ export function EditRoutineDayMainCard( {
 	// El ultimo ejercicio con series y repeticiones completas: lo nuevo arranca igual.
 	const lastCompleteRoutine = [ ...draftRoutines ].reverse().find( ( routine ) => routine.sets.trim() && routine.reps.trim() );
 	const lastPrescription: ExercisePrescription | null = lastCompleteRoutine
-		? { reps: lastCompleteRoutine.reps, sets: lastCompleteRoutine.sets }
+		? { reps: lastCompleteRoutine.reps, restSeconds: lastCompleteRoutine.restSeconds ?? null, sets: lastCompleteRoutine.sets }
 		: null;
 
 	return (

@@ -13,6 +13,7 @@ import {
 } from "@/features/routine/hooks/use-routine-day-draft.utils";
 import { getRoutineDayDraft, useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
 import { createDraftRoutineExercise } from "@/features/routine/services/routine-day-editor";
+import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
 
 type UseRoutineDayDraftOptions = {
 	// Hay un guardado de este dia viajando al servidor.
@@ -26,6 +27,7 @@ export type RoutineDayCopySource = {
 	exerciseId: string | null;
 	observation: string | null;
 	reps: string;
+	restSeconds?: number | null;
 	sets: string;
 };
 
@@ -106,8 +108,8 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 
 	function updateExerciseField(
 		clientId: string,
-		field: "observation" | "order" | "reps" | "sets",
-		value: number | string,
+		field: "observation" | "order" | "reps" | "restSeconds" | "sets",
+		value: number | string | null,
 	) {
 		hydrateDraftIfNeeded();
 		updateExercise( {
@@ -146,6 +148,7 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 				exerciseId: routine.exerciseId,
 				observation: routine.observation ?? "",
 				reps: routine.reps,
+				restSeconds: normalizeRestSeconds( routine.restSeconds ),
 				sets: routine.sets,
 			} ];
 		} ) );

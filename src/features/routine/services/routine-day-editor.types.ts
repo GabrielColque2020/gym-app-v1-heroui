@@ -9,6 +9,8 @@ export type DraftRoutineDayExercise = {
 	observation: string;
 	order: number;
 	reps: string;
+	// Descanso entre series, en segundos. `null` si el entrenador no lo definio.
+	restSeconds: number | null;
 	sets: string;
 };
 
@@ -19,5 +21,6 @@ export type SaveRoutineDayExerciseInput = {
 	observation: string;
 	order: number;
 	reps: string;
+	restSeconds: number | null;
 	sets: string;
 };

@@ -4,6 +4,7 @@ import type {
 	DraftRoutineDayExercise,
 	SaveRoutineDayExerciseInput,
 } from "@/features/routine/services/routine-day-editor.types";
+import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
 
 export function mapRoutineExerciseToDraft( routine: RoutineDayExerciseBase ): DraftRoutineDayExercise {
 	return {
@@ -14,6 +15,7 @@ export function mapRoutineExerciseToDraft( routine: RoutineDayExerciseBase ): Dr
 		observation: routine.observation ?? "",
 		order: routine.order,
 		reps: routine.reps,
+		restSeconds: normalizeRestSeconds( routine.restSeconds ),
 		sets: routine.sets,
 	};
 }
@@ -34,6 +36,7 @@ export function createDraftRoutineExercise(
 		observation: "",
 		order,
 		reps: "",
+		restSeconds: null,
 		sets: "",
 	};
 }
@@ -99,6 +102,8 @@ export function serializeRoutineDayDraft( routines: DraftRoutineDayExercise[] ) 
 			observation: routine.observation.trim(),
 			order: routine.order,
 			reps: routine.reps.trim(),
+			// Un borrador guardado antes de que existiera el campo no lo trae.
+			restSeconds: normalizeRestSeconds( routine.restSeconds ),
 			sets: routine.sets.trim(),
 		} ) ),
 	);
@@ -109,6 +114,7 @@ type SavedRoutineLike = {
 	observation: string | null;
 	order: number;
 	reps: string;
+	restSeconds?: number | null;
 	sets: string;
 };
 
@@ -128,6 +134,7 @@ export function isRoutineDayDraftDirty(
 				observation: ( routine.observation ?? "" ).trim(),
 				order: routine.order,
 				reps: routine.reps.trim(),
+				restSeconds: normalizeRestSeconds( routine.restSeconds ),
 				sets: routine.sets.trim(),
 			} ) ),
 	);
@@ -141,6 +148,7 @@ export function mapDraftToSaveInput( routines: DraftRoutineDayExercise[] ): Save
 		observation: routine.observation.trim(),
 		order: routine.order,
 		reps: routine.reps.trim(),
+		restSeconds: normalizeRestSeconds( routine.restSeconds ),
 		sets: routine.sets.trim(),
 	} ) );
 }

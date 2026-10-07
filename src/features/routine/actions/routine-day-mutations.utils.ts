@@ -4,6 +4,7 @@ import { emptyToNull } from "@/features/exercises/services/exercise-form";
 import { buildCoachExerciseSearchName, mapCategoryToBodyPart } from "@/features/role/coach/exercises/services/coach-exercise-form";
 import type { SaveRoutineDayExercisesActionInput, SavedRoutineRow } from "@/features/routine/actions/routine-day-mutations";
 import { validateRoutineDayDraft, type SaveRoutineDayExerciseInput } from "@/features/routine/services/routine-day-editor";
+import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
 
 type NormalizedRoutineDayExerciseInput = SaveRoutineDayExerciseInput;
 
@@ -13,6 +14,7 @@ export function normalizeRoutineDayExercises( exercises: SaveRoutineDayExerciseI
 		observation: exercise.observation,
 		order: exercise.order,
 		reps: exercise.reps,
+		restSeconds: normalizeRestSeconds( exercise.restSeconds ),
 		sets: exercise.sets,
 	} ) );
 }
@@ -26,6 +28,7 @@ export function validateNormalizedRoutineDayExercises( exercises: NormalizedRout
 		observation: exercise.observation,
 		order: exercise.order,
 		reps: exercise.reps,
+		restSeconds: exercise.restSeconds,
 		sets: exercise.sets,
 	} ) ) );
 
@@ -228,6 +231,7 @@ export async function persistRoutineDayExercises(
 				observation: true,
 				order: true,
 				reps: true,
+				restSeconds: true,
 				sets: true,
 			},
 			where: {
@@ -250,6 +254,7 @@ export async function persistRoutineDayExercises(
 			observation: string | null;
 			order: number;
 			reps: string;
+			restSeconds: number | null;
 			routineDayId: string;
 			sets: string;
 		}> = [];
@@ -259,6 +264,7 @@ export async function persistRoutineDayExercises(
 				observation: emptyToNull( exercise.observation ),
 				order: exercise.order,
 				reps: exercise.reps.trim(),
+				restSeconds: exercise.restSeconds,
 				sets: exercise.sets.trim(),
 			};
 			const existing = existingByExerciseId.get( exercise.exerciseId );
@@ -274,6 +280,7 @@ export async function persistRoutineDayExercises(
 			const hasChanges = existing.observation !== data.observation
 				|| existing.order !== data.order
 				|| existing.reps !== data.reps
+				|| existing.restSeconds !== data.restSeconds
 				|| existing.sets !== data.sets;
 
 			if (hasChanges) {

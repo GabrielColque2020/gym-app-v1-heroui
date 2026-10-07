@@ -5,6 +5,9 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import DesktopExerciseCard from "@/features/role/student/routine/components/desktop/desktop-exercise-card";
 import { DesktopExerciseSetsGrid } from "@/features/role/student/routine/components/desktop/desktop-exercise-sets-grid";
 import { ExerciseSetsEditor } from "@/features/role/student/routine/components/shared/exercise-sets-editor";
+import { RestTimerPanel, RestTimerStartButton } from "@/features/role/student/routine/components/shared/rest-timer";
+import { useIsRoutineSessionLocked } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
+import { useRestTimer } from "@/features/role/student/routine/hooks/use-rest-timer";
 import {
 	RoutineExerciseEmptyState
 } from "@/features/role/student/routine/components/shared/routine-exercise-empty-state";
@@ -37,6 +40,10 @@ export default function DesktopRoutineView( {
 	onSetUpdate,
 }: DesktopRoutineViewProps ) {
 	const { activeExerciseIndex, api, setApi } = useExerciseCarouselState();
+	const { isActive: isResting } = useRestTimer();
+	const isSessionLocked = useIsRoutineSessionLocked();
+	// El descanso que el entrenador fijo para el ejercicio que se esta viendo.
+	const activeRestSeconds = exercises[ activeExerciseIndex - 1 ]?.restSeconds ?? null;
 
 	return (
 		<div className={ "hidden w-full flex-col gap-4 sm:flex" }>
@@ -47,6 +54,13 @@ export default function DesktopRoutineView( {
 						exercises={ exercises }
 						onSelectAction={ ( index ) => api?.scrollTo( index ) }
 					/>
+					{ /* En escritorio no hay barra fija. El descanso va aca, junto a los
+					     ejercicios y lejos de "Actualizar", que recarga la pantalla. */ }
+					{ isResting ? (
+						<RestTimerPanel className={ "w-full max-w-md self-end" }/>
+					) : isSessionLocked ? null : (
+						<RestTimerStartButton className={ "self-end" } prescribedSeconds={ activeRestSeconds }/>
+					) }
 					<div className={ "min-w-0" }>
 						<Carousel opts={ { loop: false } } setApi={ setApi }>
 							<Carousel.Content>

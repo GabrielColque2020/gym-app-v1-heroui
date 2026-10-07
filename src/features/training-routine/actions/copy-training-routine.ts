@@ -86,6 +86,7 @@ function splitRoutinesForCopy( routines: CopySourceRoutine[], routineDayId: stri
 			observation: routine.observation,
 			order: routine.order,
 			reps: routine.reps,
+			restSeconds: routine.restSeconds,
 			routineDayId,
 			sets: routine.sets,
 		},

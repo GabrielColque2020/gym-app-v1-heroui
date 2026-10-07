@@ -7,7 +7,7 @@ import {
 	validateRoutineDayDraft,
 } from "@/features/routine/services/routine-day-editor";
 
-type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "reps" | "sets">;
+type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "reps" | "restSeconds" | "sets">;
 
 export type AddDraftExerciseResult =
 	| { error: string; routine?: never }
@@ -36,6 +36,8 @@ export function patchDraftExercise(
 				order: patch.order ?? routine.order,
 				observation: patch.observation ?? routine.observation,
 				reps: patch.reps ?? routine.reps,
+				// `null` es un valor valido (sin descanso): solo se conserva si no vino.
+				restSeconds: patch.restSeconds !== undefined ? patch.restSeconds : routine.restSeconds ?? null,
 				sets: patch.sets ?? routine.sets,
 			}
 			: routine

@@ -1,9 +1,13 @@
 import { Button, Input, TextField } from "@heroui/react";
 
+import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
+
 type SearchAndCreateExerciseDrawerPrescriptionProps = {
 	onRepsChange: ( value: string ) => void;
+	onRestChange: ( value: number | null ) => void;
 	onSetsChange: ( value: string ) => void;
 	repsValue: string;
+	restValue: number | null;
 	setsValue: string;
 };
 
@@ -19,8 +23,10 @@ const PRESETS = [
 // tipearlas ejercicio por ejercicio. Se pueden dejar vacias y completar despues.
 export function SearchAndCreateExerciseDrawerPrescription( {
 															   onRepsChange,
+															   onRestChange,
 															   onSetsChange,
 															   repsValue,
+															   restValue,
 															   setsValue,
 														   }: SearchAndCreateExerciseDrawerPrescriptionProps ) {
 	return (
@@ -48,6 +54,12 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 						placeholder={ "Reps" }
 					/>
 				</TextField>
+				<RoutineRestSelect
+					showLabel
+					ariaLabel={ "Descanso para los ejercicios que agregues" }
+					value={ restValue }
+					onChangeAction={ onRestChange }
+				/>
 				{ PRESETS.map( ( preset ) => {
 					const isActive = preset.sets === setsValue.trim() && preset.reps === repsValue.trim();
 

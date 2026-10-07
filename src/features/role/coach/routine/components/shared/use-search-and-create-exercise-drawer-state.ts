@@ -8,6 +8,7 @@ import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-
 
 export type ExercisePrescription = {
 	reps: string;
+	restSeconds: number | null;
 	sets: string;
 };
 
@@ -37,6 +38,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 	const [ addedCount, setAddedCount ] = useState( 0 );
 	const [ setsValue, setSetsValue ] = useState( lastPrescription?.sets ?? "" );
 	const [ repsValue, setRepsValue ] = useState( lastPrescription?.reps ?? "" );
+	const [ restValue, setRestValue ] = useState<number | null>( lastPrescription?.restSeconds ?? null );
 	const addButtonRefs = useRef( new Map<string, HTMLButtonElement>() );
 
 	useEffect( () => {
@@ -84,11 +86,11 @@ export function useSearchAndCreateExerciseDrawerState( {
 			return;
 		}
 
-		onAddExerciseAction( exercise, parsedOrder, { reps: repsValue.trim(), sets: setsValue.trim() } );
+		onAddExerciseAction( exercise, parsedOrder, { reps: repsValue.trim(), restSeconds: restValue, sets: setsValue.trim() } );
 		// El drawer queda abierto para seguir sumando: un dia son varios ejercicios.
 		setAddedCount( ( count ) => count + 1 );
 		setOrderValue( String( Math.max( parsedOrder + 1, suggestedOrder ) ) );
-	}, [ addedExerciseIds, orderValue, onAddExerciseAction, repsValue, setsValue, suggestedOrder ] );
+	}, [ addedExerciseIds, orderValue, onAddExerciseAction, repsValue, restValue, setsValue, suggestedOrder ] );
 
 	const handlePickerOpenChange = useCallback( ( isOpen: boolean ) => {
 		if (isOpen) {
@@ -98,6 +100,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 			if (!setsValue && !repsValue && lastPrescription) {
 				setSetsValue( lastPrescription.sets );
 				setRepsValue( lastPrescription.reps );
+				setRestValue( lastPrescription.restSeconds );
 			}
 		}
 
@@ -115,6 +118,8 @@ export function useSearchAndCreateExerciseDrawerState( {
 		orderValue,
 		registerAddButtonRef,
 		repsValue,
+		restValue,
+		setRestValue,
 		setIsCreateDrawerOpen,
 		setIsPickerOpen,
 		setOrderValue,

@@ -1,5 +1,6 @@
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 import type { RoutineDayExerciseBase } from "@/features/routine/actions/get-routine-day";
+import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
 
 import {
 	getDraftCatalogExerciseIds,
@@ -46,11 +47,15 @@ export function buildActiveDraftState(
 }
 
 export function getRoutineExerciseFieldPatch(
-	field: "observation" | "order" | "reps" | "sets",
-	value: number | string,
+	field: "observation" | "order" | "reps" | "restSeconds" | "sets",
+	value: number | string | null,
 ) {
+	if (field === "restSeconds") {
+		return { restSeconds: normalizeRestSeconds( value ) };
+	}
+
 	return {
-		[ field ]: field === "order" ? Number( value ) || 0 : String( value ),
+		[ field ]: field === "order" ? Number( value ) || 0 : String( value ?? "" ),
 	};
 }
 
