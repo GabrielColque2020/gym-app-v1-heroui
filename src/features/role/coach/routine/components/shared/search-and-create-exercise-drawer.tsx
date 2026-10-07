@@ -27,14 +27,12 @@ import {Plus} from "lucide-react";
 
 type AddExercisePickerDrawerContentProps = {
     addedExerciseIds: Set<string>;
-    lastPrescription: ExercisePrescription | null;
     onAddExerciseAction: (exercise: ExerciseListItem, order: number, prescription: ExercisePrescription) => void;
     suggestedOrder: number;
 };
 
 export function SearchAndCreateExerciseDrawer({
                                                   addedExerciseIds,
-                                                  lastPrescription,
                                                   onAddExerciseAction,
                                                   suggestedOrder,
                                               }: AddExercisePickerDrawerContentProps) {
@@ -51,6 +49,8 @@ export function SearchAndCreateExerciseDrawer({
         updateBodyPartFilter,
         updateSearchValue,
     } = useRoutineDayExerciseCatalog();
+    // Despues de agregar un ejercicio la busqueda vuelve a quedar vacia.
+    const clearSearch = () => updateSearchValue( "" );
     const {
         addedCount,
         handleAddClick,
@@ -72,7 +72,7 @@ export function SearchAndCreateExerciseDrawer({
     } = useSearchAndCreateExerciseDrawerState({
         addedExerciseIds,
         currentPage: pagination.currentPage,
-        lastPrescription,
+        onAddedAction: clearSearch,
         onAddExerciseAction,
         selectedExerciseId,
         suggestedOrder,

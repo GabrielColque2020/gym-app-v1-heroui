@@ -15,8 +15,8 @@ export type ExercisePrescription = {
 type UseSearchAndCreateExerciseDrawerStateParams = {
 	addedExerciseIds: Set<string>;
 	suggestedOrder: number;
-	// Series y repeticiones del ultimo ejercicio del dia, para arrancar igual.
-	lastPrescription: ExercisePrescription | null;
+	// Se llama despues de agregar un ejercicio, para limpiar la busqueda.
+	onAddedAction: () => void;
 	onAddExerciseAction: ( exercise: ExerciseListItem, order: number, prescription: ExercisePrescription ) => void;
 	selectedExerciseId: string | null;
 	currentPage: number;
@@ -26,7 +26,7 @@ type UseSearchAndCreateExerciseDrawerStateParams = {
 export function useSearchAndCreateExerciseDrawerState( {
 	addedExerciseIds,
 	suggestedOrder,
-	lastPrescription,
+	onAddedAction,
 	onAddExerciseAction,
 	selectedExerciseId,
 	currentPage,
@@ -36,9 +36,9 @@ export function useSearchAndCreateExerciseDrawerState( {
 	const [ isCreateDrawerOpen, setIsCreateDrawerOpen ] = useState( false );
 	const [ orderValue, setOrderValue ] = useState( String( suggestedOrder ) );
 	const [ addedCount, setAddedCount ] = useState( 0 );
-	const [ setsValue, setSetsValue ] = useState( lastPrescription?.sets ?? "" );
-	const [ repsValue, setRepsValue ] = useState( lastPrescription?.reps ?? "" );
-	const [ restValue, setRestValue ] = useState<number | null>( lastPrescription?.restSeconds ?? null );
+	const [ setsValue, setSetsValue ] = useState( "" );
+	const [ repsValue, setRepsValue ] = useState( "" );
+	const [ restValue, setRestValue ] = useState<number | null>( null );
 	const addButtonRefs = useRef( new Map<string, HTMLButtonElement>() );
 
 	useEffect( () => {
@@ -90,22 +90,21 @@ export function useSearchAndCreateExerciseDrawerState( {
 		// El drawer queda abierto para seguir sumando: un dia son varios ejercicios.
 		setAddedCount( ( count ) => count + 1 );
 		setOrderValue( String( Math.max( parsedOrder + 1, suggestedOrder ) ) );
-	}, [ addedExerciseIds, orderValue, onAddExerciseAction, repsValue, restValue, setsValue, suggestedOrder ] );
+		// Cada ejercicio arranca de cero: series, repeticiones, descanso y busqueda
+		// se limpian, para que lo del anterior no se cuele en el siguiente sin querer.
+		setSetsValue( "" );
+		setRepsValue( "" );
+		setRestValue( null );
+		onAddedAction();
+	}, [ addedExerciseIds, orderValue, onAddedAction, onAddExerciseAction, repsValue, restValue, setsValue, suggestedOrder ] );
 
 	const handlePickerOpenChange = useCallback( ( isOpen: boolean ) => {
 		if (isOpen) {
 			setAddedCount( 0 );
-
-			// Si no se eligio nada todavia, arranca con lo del ultimo ejercicio cargado.
-			if (!setsValue && !repsValue && lastPrescription) {
-				setSetsValue( lastPrescription.sets );
-				setRepsValue( lastPrescription.reps );
-				setRestValue( lastPrescription.restSeconds );
-			}
 		}
 
 		setIsPickerOpen( isOpen );
-	}, [ lastPrescription, repsValue, setsValue ] );
+	}, [] );
 
 	return {
 		addedCount,

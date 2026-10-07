@@ -10,7 +10,6 @@ type EditRoutineDayMainCardHeaderProps = {
 	getSuggestedOrder: () => number;
 	isRefreshing: boolean;
 	draftCount: number;
-	lastPrescription: ExercisePrescription | null;
 	onAddExerciseAction: ( exercise: ExerciseListItem, order: number, prescription: ExercisePrescription ) => void;
 	onRefreshAction: () => void;
 };
@@ -22,7 +21,6 @@ export function EditRoutineDayMainCardHeader( {
 												  getSuggestedOrder,
 												  isRefreshing,
 												  draftCount,
-												  lastPrescription,
 												  onAddExerciseAction,
 												  onRefreshAction,
 											  }: EditRoutineDayMainCardHeaderProps ) {
@@ -43,7 +41,6 @@ export function EditRoutineDayMainCardHeader( {
 				</Button>
 				<SearchAndCreateExerciseDrawer
 					addedExerciseIds={ addedExerciseIds }
-					lastPrescription={ lastPrescription }
 					onAddExerciseAction={ onAddExerciseAction }
 					suggestedOrder={ getSuggestedOrder() }
 				/>

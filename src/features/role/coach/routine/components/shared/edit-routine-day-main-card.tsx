@@ -31,12 +31,6 @@ export function EditRoutineDayMainCard( {
 											onRefreshAction,
 											onUpdateExerciseField,
 										}: EditRoutineDayMainCardProps ) {
-	// El ultimo ejercicio con series y repeticiones completas: lo nuevo arranca igual.
-	const lastCompleteRoutine = [ ...draftRoutines ].reverse().find( ( routine ) => routine.sets.trim() && routine.reps.trim() );
-	const lastPrescription: ExercisePrescription | null = lastCompleteRoutine
-		? { reps: lastCompleteRoutine.reps, restSeconds: lastCompleteRoutine.restSeconds ?? null, sets: lastCompleteRoutine.sets }
-		: null;
-
 	return (
 		<Card className={ "border border-border bg-surface" } variant={ "default" }>
 			<EditRoutineDayMainCardHeader
@@ -44,7 +38,6 @@ export function EditRoutineDayMainCard( {
 				draftCount={ draftRoutines.length }
 				getSuggestedOrder={ getSuggestedOrder }
 				isRefreshing={ isRefreshing }
-				lastPrescription={ lastPrescription }
 				onAddExerciseAction={ onAddExerciseAction }
 				onRefreshAction={ onRefreshAction }
 			/>
