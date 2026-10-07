@@ -1,13 +1,14 @@
 "use client";
 
 import { Button, Dropdown, Header, Label } from "@heroui/react";
-import { BookmarkPlus, Copy, Download, MoreVertical, RotateCw, Trash2 } from "lucide-react";
+import { BookmarkCheck, BookmarkPlus, Copy, Download, MoreVertical, RotateCw, Trash2 } from "lucide-react";
 
 type CoachDeleteRoutineActionMenuProps = {
 	onDeleteAction: () => void;
 	onCopyAction: () => void;
 	onPrintAction: () => void;
 	onSaveTemplateAction: () => void;
+	onUseTemplateAction: () => void;
 	isDownloading?: boolean;
 };
 
@@ -16,6 +17,7 @@ export function CoachOptionRoutineActionMenu( {
 												  onCopyAction,
 												  onPrintAction,
 												  onSaveTemplateAction,
+												  onUseTemplateAction,
 												  isDownloading = false,
 											  }: CoachDeleteRoutineActionMenuProps ) {
 	return (
@@ -27,6 +29,7 @@ export function CoachOptionRoutineActionMenu( {
 				<Dropdown.Menu
 					onAction={ ( key ) => {
 							if (key === "copy-file") onCopyAction();
+						if (key === "use-template") onUseTemplateAction();
 						if (key === "save-template") onSaveTemplateAction();
 						if (key === "print-file") onPrintAction();
 						if (key === "delete-file") onDeleteAction();
@@ -37,6 +40,10 @@ export function CoachOptionRoutineActionMenu( {
 						<Dropdown.Item id={ "copy-file" } textValue={ "Copiar rutina" }>
 							<Copy className={ "size-4 shrink-0 text-accent" }/>
 							<Label className={ "text-accent" }>Copiar</Label>
+						</Dropdown.Item>
+						<Dropdown.Item id={ "use-template" } textValue={ "Usar una plantilla" }>
+							<BookmarkCheck className={ "size-4 shrink-0 text-accent" }/>
+							<Label className={ "text-accent" }>Usar una plantilla</Label>
 						</Dropdown.Item>
 						<Dropdown.Item id={ "save-template" } textValue={ "Guardar como plantilla" }>
 							<BookmarkPlus className={ "size-4 shrink-0 text-accent" }/>

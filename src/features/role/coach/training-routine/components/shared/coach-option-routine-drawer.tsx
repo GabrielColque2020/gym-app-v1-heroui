@@ -10,6 +10,7 @@ import { CoachOptionRoutineActionMenu } from "@/features/role/coach/training-rou
 import { CoachDeleteRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-delete-routine-drawer";
 import { CoachEditRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-edit-routine-drawer";
 import { CoachSaveTemplateModal } from "@/features/role/coach/training-routine/components/shared/coach-save-template-modal";
+import { CoachUseTemplateModal } from "@/features/role/coach/training-routine/components/shared/coach-use-template-modal";
 import { useDeleteTrainingRoutineStructure } from "@/features/role/coach/training-routine/hooks/use-training-routine-structure";
 import { downloadFileFromUrl } from "@/features/shared/services/download-file";
 import { buildTrainingRoutineReportPdfUrl } from "@/features/training-routine/services/training-routines-report-pdf-url";
@@ -35,6 +36,13 @@ export function CoachOptionRoutineDrawer( {
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
 	const [ isCopyOpen, setIsCopyOpen ] = useState( false );
 	const [ isSaveTemplateOpen, setIsSaveTemplateOpen ] = useState( false );
+	const [ isUseTemplateOpen, setIsUseTemplateOpen ] = useState( false );
+	// Series que el estudiante ya cargo en el mes: copiar o usar una plantilla
+	// encima no las borra, pero hay que avisarlo.
+	const loadedSetCount = routineWeeks.reduce(
+		( count, routineWeek ) => count + routineWeek.routineDays.reduce( ( dayTotal, day ) => dayTotal + ( day.loadedSetCount ?? 0 ), 0 ),
+		0,
+	);
 	const [ isDownloading, setIsDownloading ] = useState( false );
 	const deleteRoutine = useDeleteTrainingRoutineStructure();
 
@@ -110,6 +118,7 @@ export function CoachOptionRoutineDrawer( {
 				onDeleteAction={ handleOpenDeleteConfirm }
 				onPrintAction={ handleDownloadReport }
 				onSaveTemplateAction={ () => setIsSaveTemplateOpen( true ) }
+				onUseTemplateAction={ () => setIsUseTemplateOpen( true ) }
 			/>
 
 			<CoachEditRoutineDrawer
@@ -125,10 +134,7 @@ export function CoachOptionRoutineDrawer( {
 
 			<CoachCopyRoutineDrawer
 				destinationMonth={ String( month ) }
-				destinationLoadedSetCount={ routineWeeks.reduce(
-					( count, routineWeek ) => count + routineWeek.routineDays.reduce( ( dayTotal, day ) => dayTotal + ( day.loadedSetCount ?? 0 ), 0 ),
-					0,
-				) }
+				destinationLoadedSetCount={ loadedSetCount }
 				destinationWeekNumbers={ routineWeeks.map( ( routineWeek ) => routineWeek.week ) }
 				destinationWeeksOccupied={ routineWeeks.length }
 				destinationYear={ String( year ) }
@@ -147,6 +153,17 @@ export function CoachOptionRoutineDrawer( {
 				summary={ summary }
 				year={ year }
 				onOpenChangeAction={ setIsSaveTemplateOpen }
+			/>
+
+			<CoachUseTemplateModal
+				destinationLoadedSetCount={ loadedSetCount }
+				hasActiveRoutine
+				isOpen={ isUseTemplateOpen }
+				month={ month }
+				studentId={ studentId }
+				studentName={ studentName }
+				year={ year }
+				onOpenChangeAction={ setIsUseTemplateOpen }
 			/>
 
 			<CoachDeleteRoutineDrawer

@@ -1,8 +1,14 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { saveRoutineAsTemplateAction } from "@/features/training-routine/actions/routine-templates";
+import { QUERY_DEFAULTS } from "@/constants/query";
+import {
+	applyRoutineTemplateAction,
+	getRoutineTemplatesAction,
+	saveRoutineAsTemplateAction,
+} from "@/features/training-routine/actions/routine-templates";
+import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
 
 export const coachRoutineTemplatesQueryKey = [ "coach-routine-templates" ] as const;
 
@@ -13,6 +19,35 @@ export function useSaveRoutineAsTemplate() {
 		mutationFn: saveRoutineAsTemplateAction,
 		onSuccess: ( result ) => {
 			if (result.ok) void queryClient.invalidateQueries( { queryKey: coachRoutineTemplatesQueryKey } );
+		},
+	} );
+}
+
+// La lista cambia poco y solo desde esta app: guardar una plantilla la invalida.
+export function useRoutineTemplates() {
+	return useQuery( {
+		...QUERY_DEFAULTS.coach,
+		queryFn: getRoutineTemplatesAction,
+		queryKey: coachRoutineTemplatesQueryKey,
+	} );
+}
+
+export function useApplyRoutineTemplate() {
+	const queryClient = useQueryClient();
+
+	return useMutation( {
+		mutationFn: applyRoutineTemplateAction,
+		onSuccess: ( result, input ) => {
+			if (!result.ok) {
+				// La plantilla ya no existe: la lista guardada quedo vieja.
+				void queryClient.invalidateQueries( { queryKey: coachRoutineTemplatesQueryKey } );
+
+				return;
+			}
+
+			void queryClient.invalidateQueries( {
+				queryKey: coachTrainingRoutinesQueryKey( input.studentId, input.month, input.year ),
+			} );
 		},
 	} );
 }

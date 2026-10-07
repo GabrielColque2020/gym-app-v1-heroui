@@ -14,6 +14,26 @@ export type SaveRoutineAsTemplateResult =
 	| { ok: true; template: { dayCount: number; exerciseCount: number; id: string; name: string; weekCount: number } }
 	| { ok: false; reason: "duplicate-name" | "empty-routine" | "invalid-name" };
 
+export type RoutineTemplateListItem = {
+	dayCount: number;
+	exerciseCount: number;
+	id: string;
+	name: string;
+	objective: string | null;
+	weekCount: number;
+};
+
+export type ApplyRoutineTemplateInput = {
+	month: number;
+	studentId: string;
+	templateId: string;
+	year: number;
+};
+
+export type ApplyRoutineTemplateResult =
+	| { ok: true; templateName: string }
+	| { ok: false; reason: "student-not-found" | "template-not-found" };
+
 export function normalizeRoutineTemplateName( name: string ) {
 	return name.trim().replace( /\s+/g, " " );
 }

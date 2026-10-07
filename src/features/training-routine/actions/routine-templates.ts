@@ -2,8 +2,11 @@
 
 import { requireCoachSession } from "@/features/auth/coach-session";
 import {
+	type ApplyRoutineTemplateInput,
+	type ApplyRoutineTemplateResult,
 	isRoutineTemplateNameValid,
 	normalizeRoutineTemplateName,
+	type RoutineTemplateListItem,
 	type SaveRoutineAsTemplateInput,
 	type SaveRoutineAsTemplateResult,
 } from "@/features/training-routine/services/routine-template";
@@ -84,4 +87,121 @@ export async function saveRoutineAsTemplateAction( input: SaveRoutineAsTemplateI
 	} );
 
 	return { ok: true, template: { ...template, ...summary } };
+}
+
+// Las plantillas del entrenador, con lo justo para elegir una: nombre y cuanto
+// tiene adentro. No trae los ejercicios, solo los cuenta.
+export async function getRoutineTemplatesAction(): Promise<RoutineTemplateListItem[]> {
+	const session = await requireCoachSession( "consultar las plantillas" );
+	const templates = ( await prisma.routineTemplate.findMany( {
+		orderBy: {
+			name: "asc",
+		},
+		select: {
+			id: true,
+			name: true,
+			objective: true,
+			weeks: {
+				select: {
+					routineDays: {
+						select: {
+							_count: {
+								select: {
+									routines: true,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		where: {
+			coachId: session.sub,
+		},
+	} ) ) as unknown as Array<{
+		id: string;
+		name: string;
+		objective: string | null;
+		weeks: Array<{ routineDays: Array<{ _count: { routines: number } }> }>;
+	}>;
+
+	return templates.map( ( template ) => ( {
+		dayCount: template.weeks.reduce( ( count, week ) => count + week.routineDays.length, 0 ),
+		exerciseCount: template.weeks.reduce(
+			( count, week ) => count + week.routineDays.reduce( ( dayTotal, day ) => dayTotal + day._count.routines, 0 ),
+			0,
+		),
+		id: template.id,
+		name: template.name,
+		objective: template.objective,
+		weekCount: template.weeks.length,
+	} ) );
+}
+
+// Arma la rutina de un mes de un estudiante a partir de una plantilla. Es una
+// copia: despues, cambiar la plantilla no cambia la rutina del estudiante. Si el
+// mes ya tenia rutina, se reemplaza entera, igual que al copiar un mes completo.
+export async function applyRoutineTemplateAction( input: ApplyRoutineTemplateInput ): Promise<ApplyRoutineTemplateResult> {
+	const session = await requireCoachSession( "usar una plantilla" );
+
+	if (!Number.isInteger( input.month ) || input.month < 1 || input.month > 12) throw new Error( "El mes no es válido." );
+	if (!Number.isInteger( input.year ) || input.year < 2000 || input.year > 2100) throw new Error( "El año no es válido." );
+
+	const student = await prisma.user.findFirst( {
+		select: {
+			id: true,
+		},
+		where: {
+			active: true,
+			coachId: session.sub,
+			id: input.studentId,
+			role: "STUDENT",
+		},
+	} );
+
+	if (!student) return { ok: false, reason: "student-not-found" };
+
+	const template = ( await prisma.routineTemplate.findFirst( {
+		include: {
+			weeks: {
+				include: routineWeeksCopyInclude,
+				orderBy: {
+					week: "asc",
+				},
+			},
+		},
+		where: {
+			coachId: session.sub,
+			id: input.templateId,
+		},
+	} ) ) as unknown as { name: string; objective: string | null; weeks: RoutineWeekCopySource[] } | null;
+
+	// Puede pasar si la borraron desde otra pestaña mientras esta ventana estaba abierta.
+	if (!template) return { ok: false, reason: "template-not-found" };
+
+	await prisma.$transaction( async ( tx ) => {
+		await tx.trainingRoutineMonth.deleteMany( {
+			where: {
+				month: input.month,
+				studentId: input.studentId,
+				year: input.year,
+			},
+		} );
+
+		const routineMonth = await tx.trainingRoutineMonth.create( {
+			data: {
+				month: input.month,
+				objective: template.objective,
+				studentId: input.studentId,
+				year: input.year,
+			},
+			select: {
+				id: true,
+			},
+		} );
+
+		await createRoutineWeeksCopy( tx, template.weeks, { trainingRoutineMonthId: routineMonth.id } );
+	} );
+
+	return { ok: true, templateName: template.name };
 }
