@@ -244,7 +244,9 @@ export function HistoryRoutinesPdfDocument( {
 								     una sola), pero su titulo no queda solo al pie de la anterior. */ }
 								<Text minPresenceAhead={ 60 } style={ styles.dayHeader }>{ `Día ${ day.dayNumber } - ${ formatHistoryDate( day.date ) }` }</Text>
 
-								<View style={ styles.tableHeader } wrap={ false }>
+								{ /* `fixed` repite los titulos de columna en cada pagina por la que pasa
+								     el dia: sin ellos, la continuacion era una tabla sin encabezado. */ }
+								<View fixed style={ styles.tableHeader } wrap={ false }>
 									<Text style={ styles.colExercise }>Ejercicio</Text>
 									<Text style={ styles.colSet }>Serie</Text>
 									<Text style={ styles.colPlan }>Plan</Text>

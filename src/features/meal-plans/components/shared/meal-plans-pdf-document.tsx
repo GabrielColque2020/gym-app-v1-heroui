@@ -122,6 +122,14 @@ const styles = StyleSheet.create( {
 		fontSize: 8.5,
 		lineHeight: 1.45,
 	},
+	// La nota no usa el estilo de las viñetas: su `flex: 1` le hacia calcular
+	// mal el alto y el ultimo renglon quedaba pegado al borde de la tarjeta.
+	note: {
+		color: "#475569",
+		fontSize: 8.5,
+		lineHeight: 1.45,
+		marginTop: 2,
+	},
 	emptyMessage: {
 		border: "1 solid #bfdbfe",
 		borderRadius: 8,
@@ -162,9 +170,12 @@ export function MealPlansPdfDocument( {
 					<Text style={ styles.line }>{ `Estudiante: ${ studentName }` }</Text>
 					{ objective ? <Text style={ [ styles.line, styles.muted ] }>{ `Objetivo: ${ objective }` }</Text> : null }
 					{ observations ? <Text style={ [ styles.line, styles.muted ] }>{ `Observaciones: ${ observations }` }</Text> : null }
-					<View style={ styles.chipRow }>
-						<Text style={ styles.chip }>{ mealPlans.length === 1 ? "1 comida" : `${ mealPlans.length } comidas` }</Text>
-					</View>
+					{ /* Sin comidas no hay cantidad que contar: lo dice el aviso de abajo. */ }
+					{ mealPlans.length > 0 ? (
+						<View style={ styles.chipRow }>
+							<Text style={ styles.chip }>{ mealPlans.length === 1 ? "1 comida" : `${ mealPlans.length } comidas` }</Text>
+						</View>
+					) : null }
 				</View>
 
 				{ mealPlans.length === 0 ? (
@@ -188,7 +199,7 @@ export function MealPlansPdfDocument( {
 									</View>
 								) ) }
 								{ mealPlan.observations?.trim() ? (
-									<Text style={ [ styles.bulletText, styles.muted ] }>{ `Nota: ${ mealPlan.observations.trim() }` }</Text>
+									<Text style={ styles.note }>{ `Nota: ${ mealPlan.observations.trim() }` }</Text>
 								) : null }
 							</View>
 						</View>
