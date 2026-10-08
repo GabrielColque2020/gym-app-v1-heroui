@@ -90,6 +90,28 @@ const STUDENT_FAQ_SECTIONS: FaqSection[] = [
 		],
 		title: "Plan e historial",
 	},
+	{
+		description: "Cómo ver tu avance en cada ejercicio.",
+		id: "student-progress",
+		items: [
+			{
+				answer: "En Progreso, desde el menú. Elegís un ejercicio y ves tu récord, lo que hiciste la última vez, cuánto cambiaste desde la primera sesión y un gráfico. También llegás directo desde la rutina: en cada ejercicio, junto a Sesión anterior, está Ver progreso.",
+				id: "student-progress-where",
+				question: "¿Dónde veo cómo voy mejorando?",
+			},
+			{
+				answer: "El peso más alto que levantaste en cada sesión. Si el ejercicio lo hacés sin peso, muestra las repeticiones más altas. Debajo está la lista de sesiones con cada serie, para ver el detalle.",
+				id: "student-progress-chart",
+				question: "¿Qué muestra el gráfico?",
+			},
+			{
+				answer: "El gráfico necesita al menos dos sesiones del mismo ejercicio. Además, si un día cambiaste el ejercicio por una variante, esa sesión cuenta para la variante y no para el ejercicio original: buscala con su nombre en la lista.",
+				id: "student-progress-missing",
+				question: "¿Por qué no veo el gráfico o me falta una sesión?",
+			},
+		],
+		title: "Progreso",
+	},
 ];
 
 const COACH_FAQ_SECTIONS: FaqSection[] = [
@@ -98,7 +120,7 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 		id: "coach-routine",
 		items: [
 			{
-				answer: "En Estudiantes, tocá al estudiante: se abre su rutina del mes. Con las pestañas de arriba pasás a su Plan alimenticio o a su Historial. Dentro de la rutina elegís la semana y abrís el día que querés editar.",
+				answer: "En Estudiantes, tocá al estudiante: se abre su rutina del mes. Con las pestañas de arriba pasás a su Plan alimenticio, su Historial o su Progreso. Dentro de la rutina elegís la semana y abrís el día que querés editar.",
 				id: "coach-routine-student",
 				question: "¿Cómo entro a la rutina de un estudiante?",
 			},
@@ -178,6 +200,23 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 			},
 		],
 		title: "Plantillas",
+	},
+	{
+		description: "Cómo seguir el avance de cada estudiante.",
+		id: "coach-progress",
+		items: [
+			{
+				answer: "Abrí al estudiante y pasá a la pestaña Progreso. Elegís un ejercicio y ves su récord, lo que hizo la última vez, cuánto cambió desde la primera sesión, un gráfico y la lista de sesiones con cada serie. Es lo mismo que ve el estudiante en su cuenta.",
+				id: "coach-progress-where",
+				question: "¿Cómo veo el progreso de un estudiante?",
+			},
+			{
+				answer: "El peso más alto de cada sesión, o las repeticiones más altas si el ejercicio se hace sin peso. Las sesiones van por la fecha en que el estudiante las cargó. Si un día eligió una variante, esa sesión cuenta para la variante y no para el ejercicio original.",
+				id: "coach-progress-chart",
+				question: "¿Qué muestra el gráfico de progreso?",
+			},
+		],
+		title: "Progreso",
 	},
 	{
 		description: "Carga del plan alimenticio y manejo de tu catálogo de ejercicios.",
