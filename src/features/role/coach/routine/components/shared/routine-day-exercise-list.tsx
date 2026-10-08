@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@heroui/react";
 import { MessageSquarePlus, MessageSquareText } from "lucide-react";
 
-import { AsyncMedia } from "@/components/common";
+import { MediaPreviewThumbnail } from "@/components/common/media-preview-thumbnail";
 import { formatBodyPartValue, getExerciseName } from "@/features/role/coach/routine/components/shared/routine-day-exercise-editor.utils";
 import { RoutineDayExerciseField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-field";
 import { RoutineDayExerciseMoveButtons } from "@/features/role/coach/routine/components/shared/routine-day-exercise-move-buttons";
@@ -54,12 +54,13 @@ function RoutineDayExerciseRow( {
 						isLast={ isLast }
 						position={ position }
 					/>
-					<AsyncMedia
-						alt={ `Imagen de ${ exerciseName }` }
-						className={ "h-12 w-12 shrink-0 rounded-lg border border-border object-cover" }
-						emptyLabel={ "Sin imagen" }
-						spinnerLabel={ `Cargando imagen de ${ exerciseName }` }
-						src={ routine.exercise?.imageUrl }
+					{ /* Igual que al agregar un ejercicio: al pasar el mouse por la imagen
+					     se ve el movimiento en grande, para repasar el dia sin abrir nada. */ }
+					<MediaPreviewThumbnail
+						imageUrl={ routine.exercise?.imageUrl }
+						name={ exerciseName }
+						thumbnailClassName={ "h-12 w-12" }
+						videoUrl={ routine.exercise?.videoUrl }
 					/>
 					<div className={ "min-w-0" }>
 						<p className={ "line-clamp-4 text-sm font-semibold leading-5 text-foreground" }>{ exerciseName }</p>
