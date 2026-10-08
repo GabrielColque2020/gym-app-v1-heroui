@@ -21,13 +21,15 @@ const longDateFormatter = new Intl.DateTimeFormat( "es-AR", { day: "numeric", mo
 // telefono el numero no entraba y se cortaba.
 function StatCard( { hint, label, unit, value }: { hint: string; label: string; unit?: string; value: string } ) {
 	return (
-		<div className={ "min-w-0 rounded-xl border border-border bg-surface px-2.5 py-2.5 sm:px-3" }>
-			<p className={ "truncate text-xs font-medium text-muted" }>{ label }</p>
+		<div className={ "min-w-0 rounded-xl border border-border bg-surface px-2 py-2.5 sm:px-3" }>
+			{ /* Sin cortar con puntos suspensivos: en un telefono angosto el texto
+			     baja de renglon, que se lee mejor que "Ultima v...". */ }
+			<p className={ "text-xs font-medium leading-tight text-muted" }>{ label }</p>
 			<p className={ "flex flex-wrap items-baseline gap-x-1 text-base font-black tabular-nums text-foreground sm:text-lg" }>
 				{ value }
 				{ unit ? <span className={ "text-xs font-semibold text-muted" }>{ unit }</span> : null }
 			</p>
-			<p className={ "truncate text-xs text-muted" }>{ hint }</p>
+			<p className={ "text-xs leading-tight text-muted" }>{ hint }</p>
 		</div>
 	);
 }

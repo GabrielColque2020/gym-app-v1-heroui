@@ -73,8 +73,9 @@ export function ExerciseProgressPanel( {
 							<ListBox.Item key={ exercise.exerciseId } id={ exercise.exerciseId } textValue={ exercise.name }>
 								<span className={ "min-w-0 flex-1" }>{ exercise.name }</span>
 								{ /* El punto separa el nombre de la cantidad cuando se ven en un
-								     solo renglon, en el campo cerrado. */ }
-								<span className={ "shrink-0 text-xs text-muted" }>
+								     solo renglon, en el campo cerrado. El margen le deja lugar a la
+								     marca del elegido, que si no tapaba la cantidad. */ }
+								<span className={ "me-5 shrink-0 text-xs text-muted" }>
 									{ " · " }{ exercise.sessionCount === 1 ? "1 sesión" : `${ exercise.sessionCount } sesiones` }
 								</span>
 								<ListBox.ItemIndicator/>
