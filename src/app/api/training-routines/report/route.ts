@@ -2,6 +2,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { NextResponse } from "next/server";
 
 import { getAuthenticatedSession } from "@/features/auth/session";
+import { buildPdfFileName } from "@/features/shared/services/pdf-file-name";
 import { TrainingRoutinePdfDocument } from "@/features/training-routine/components/shared/training-routine-pdf-document";
 import { getTrainingRoutinesByStudentBase } from "@/features/training-routine/services/training-routines-by-student";
 
@@ -45,7 +46,7 @@ export async function GET( request: Request ) {
 			studentId,
 			year,
 		} );
-		const fileName = `rutina-${ data.student.name.toLowerCase().replaceAll( /\s+/g, "-" ) }-${ year }-${ String( month ).padStart( 2, "0" ) }.pdf`;
+		const fileName = buildPdfFileName( "rutina", data.student.name, year, String( month ).padStart( 2, "0" ) );
 		const pdfDocument = TrainingRoutinePdfDocument( {
 			month,
 			routineObjective: data.routineMonth.objective,

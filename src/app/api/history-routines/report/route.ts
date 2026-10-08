@@ -1,6 +1,9 @@
 import { renderToBuffer } from "@react-pdf/renderer";
 import { NextResponse } from "next/server";
 
+import { monthYearLabel } from "@/constants/months";
+import { buildPdfFileName } from "@/features/shared/services/pdf-file-name";
+
 import { getAuthenticatedSession } from "@/features/auth/session";
 import {
 	HistoryRoutinesPdfDocument
@@ -32,7 +35,7 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const disposition = searchParams.get("disposition") === "attachment" ? "attachment" : "inline";
         const month = parsePositiveInteger(searchParams.get("month"), "Mes");
-        const year = parsePositiveInteger(searchParams.get("year"), "Ano");
+        const year = parsePositiveInteger(searchParams.get("year"), "Año");
         const requestedStudentId = searchParams.get("studentId")?.trim() || null;
 
         if (session.role !== "STUDENT" && session.role !== "COACH") {
@@ -56,8 +59,9 @@ export async function GET(request: Request) {
         });
         const weekGroups = groupHistoryRoutinesByWeek(reportData.historyRoutines);
         const summary = buildHistoryRoutineMonthSummary(weekGroups);
-        const monthLabel = `${String(month).padStart(2, "0")}/${year}`;
-        const fileName = `historial-rutinas-${reportData.student.name.toLowerCase().replaceAll(/\s+/g, "-")}-${year}-${String(month).padStart(2, "0")}.pdf`;
+        // "Julio 2026" y no "07/2026": igual que en la pantalla del historial.
+        const monthLabel = monthYearLabel(String(month), String(year)) || `${String(month).padStart(2, "0")}/${year}`;
+        const fileName = buildPdfFileName("historial-rutinas", reportData.student.name, year, String(month).padStart(2, "0"));
         const pdfDocument = HistoryRoutinesPdfDocument({
             monthLabel,
             objective: reportData.student.DescriptionStudent?.objective,

@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 
-import { Document, Page, StyleSheet, Text, View, } from "@react-pdf/renderer";
+import { Document, Font, Page, StyleSheet, Text, View, } from "@react-pdf/renderer";
 
 import { formatMealPlanDescriptionLines, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
@@ -11,6 +11,9 @@ type MealPlansPdfDocumentProps = {
 	studentObjective?: string | null;
 	studentObservations?: string | null;
 };
+
+// Sin esto, el PDF corta las palabras largas con un guion donde le parece.
+Font.registerHyphenationCallback( ( word ) => [ word ] );
 
 const styles = StyleSheet.create( {
 	page: {
@@ -119,6 +122,15 @@ const styles = StyleSheet.create( {
 		fontSize: 8.5,
 		lineHeight: 1.45,
 	},
+	emptyMessage: {
+		border: "1 solid #bfdbfe",
+		borderRadius: 8,
+		color: "#475569",
+		fontSize: 9,
+		paddingHorizontal: 10,
+		paddingVertical: 14,
+		textAlign: "center",
+	},
 } );
 
 function getPrintableDescription( mealPlan: MealPlan ) {
@@ -133,7 +145,7 @@ export function MealPlansPdfDocument( {
 	studentObjective,
 	studentObservations,
 }: MealPlansPdfDocumentProps ): ReactElement {
-	const objective = studentObjective?.trim() || "Sin objetivo definido";
+	const objective = studentObjective?.trim() || null;
 	const observations = studentObservations?.trim() || null;
 
 	return (
@@ -148,12 +160,16 @@ export function MealPlansPdfDocument( {
 				<View style={ styles.header }>
 					<Text style={ styles.title }>Plan alimenticio</Text>
 					<Text style={ styles.line }>{ `Estudiante: ${ studentName }` }</Text>
-					<Text style={ [ styles.line, styles.muted ] }>{ `Objetivo: ${ objective }` }</Text>
+					{ objective ? <Text style={ [ styles.line, styles.muted ] }>{ `Objetivo: ${ objective }` }</Text> : null }
 					{ observations ? <Text style={ [ styles.line, styles.muted ] }>{ `Observaciones: ${ observations }` }</Text> : null }
 					<View style={ styles.chipRow }>
-						<Text style={ styles.chip }>{ `${ mealPlans.length } comidas` }</Text>
+						<Text style={ styles.chip }>{ mealPlans.length === 1 ? "1 comida" : `${ mealPlans.length } comidas` }</Text>
 					</View>
 				</View>
+
+				{ mealPlans.length === 0 ? (
+					<Text style={ styles.emptyMessage }>Todavía no hay comidas cargadas en este plan.</Text>
+				) : null }
 
 				<View style={ styles.grid }>
 					{ mealPlans.map((mealPlan) => (

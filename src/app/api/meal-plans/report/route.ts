@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import { MealPlansPdfDocument } from "@/features/meal-plans/components/shared/meal-plans-pdf-document";
 import { getMealPlansByStudentAction } from "@/features/meal-plans/actions/get-meal-plans-by-student";
+import { buildPdfFileName } from "@/features/shared/services/pdf-file-name";
 
 export async function GET( request: Request ) {
 	try {
@@ -15,7 +16,7 @@ export async function GET( request: Request ) {
 		}
 
 		const data = await getMealPlansByStudentAction( { studentId } );
-		const fileName = `planes-alimenticios-${ data.student.name.toLowerCase().replaceAll( /\s+/g, "-" ) }.pdf`;
+		const fileName = buildPdfFileName( "plan-alimenticio", data.student.name );
 		const pdfDocument = MealPlansPdfDocument( {
 			mealPlans: data.mealPlans,
 			studentName: data.student.name,

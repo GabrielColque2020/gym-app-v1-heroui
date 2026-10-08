@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 
 import {
 	Document,
+	Font,
 	Page,
 	StyleSheet,
 	Text,
@@ -21,6 +22,9 @@ type HistoryRoutinesPdfDocumentProps = {
 	summary: HistoryRoutineMonthSummary;
 	weekGroups: HistoryRoutineWeekGroup[];
 };
+
+// Sin esto, el PDF corta las palabras largas con un guion donde le parece.
+Font.registerHyphenationCallback( ( word ) => [ word ] );
 
 const styles = StyleSheet.create( {
 	page: {
@@ -151,10 +155,27 @@ const styles = StyleSheet.create( {
 		color: "#0a3499",
 		fontFamily: "Helvetica-Bold",
 	},
+	emptyMessage: {
+		border: "1 solid #bfdbfe",
+		borderRadius: 4,
+		color: "#475569",
+		fontSize: 9,
+		paddingHorizontal: 10,
+		paddingVertical: 14,
+		textAlign: "center",
+	},
 } );
 
 function pluralize( count: number, singular: string, plural: string ) {
 	return `${ count } ${ count === 1 ? singular : plural }`;
+}
+
+// Sin dato va una raya sola: "- kg" parecia un valor. Los decimales van con
+// coma, como en el resto de la app.
+function formatMeasure( value: number | string | null | undefined, unit: string ) {
+	const text = value === null || value === undefined ? "" : String( value ).trim();
+
+	return text ? `${ /^\d+\.\d+$/.test( text ) ? text.replace( ".", "," ) : text } ${ unit }` : "—";
 }
 
 function getSetStatusLabel( completed: boolean, planned: boolean ) {
@@ -178,7 +199,7 @@ export function HistoryRoutinesPdfDocument( {
 	summary,
 	weekGroups,
 }: HistoryRoutinesPdfDocumentProps ): ReactElement {
-	const resolvedObjective = objective?.trim() || "Sin objetivo definido";
+	const resolvedObjective = objective?.trim() || null;
 
 	return (
 		<Document
@@ -192,28 +213,38 @@ export function HistoryRoutinesPdfDocument( {
 				<View style={ styles.header }>
 					<Text style={ styles.title }>Reporte de historial de rutina</Text>
 					<Text style={ styles.subtitle }>{ `Estudiante: ${ studentName }` }</Text>
-					<Text style={ styles.meta }>{ `Periodo: ${ monthLabel } | Objetivo: ${ resolvedObjective }` }</Text>
-				</View>
-
-				<View style={ styles.summaryBar }>
-					<Text style={ styles.summaryItem }>{ pluralize( summary.weeks, "semana", "semanas" ) }</Text>
-					<Text style={ styles.summaryItem }>{ pluralize( summary.days, "día", "días" ) }</Text>
-					<Text style={ styles.summaryItem }>{ pluralize( summary.exercises, "ejercicio", "ejercicios" ) }</Text>
-					{ /* Antes decia "Parcial / Completo" sin aclarar respecto de que. */ }
-					<Text style={ styles.summaryItem }>
-						{ `${ summary.completedSets } de ${ pluralize( summary.sets, "serie hecha", "series hechas" ) }` }
+					<Text style={ styles.meta }>
+						{ resolvedObjective ? `Periodo: ${ monthLabel } | Objetivo: ${ resolvedObjective }` : `Periodo: ${ monthLabel }` }
 					</Text>
 				</View>
 
+				{ weekGroups.length === 0 ? (
+					<Text style={ styles.emptyMessage }>No hay series registradas en este mes.</Text>
+				) : null }
+
+				{ weekGroups.length > 0 ? (
+					<View style={ styles.summaryBar }>
+						<Text style={ styles.summaryItem }>{ pluralize( summary.weeks, "semana", "semanas" ) }</Text>
+						<Text style={ styles.summaryItem }>{ pluralize( summary.days, "día", "días" ) }</Text>
+						<Text style={ styles.summaryItem }>{ pluralize( summary.exercises, "ejercicio", "ejercicios" ) }</Text>
+						{ /* Antes decia "Parcial / Completo" sin aclarar respecto de que. */ }
+						<Text style={ styles.summaryItem }>
+							{ `${ summary.completedSets } de ${ pluralize( summary.sets, "serie hecha", "series hechas" ) }` }
+						</Text>
+					</View>
+				) : null }
+
 				{ weekGroups.map( ( weekGroup ) => (
 					<View key={ weekGroup.week } style={ styles.weekSection }>
-						<Text style={ styles.weekHeader }>{ `Semana ${ weekGroup.week } (${ weekGroup.days.length } días)` }</Text>
+						<Text style={ styles.weekHeader }>{ `Semana ${ weekGroup.week } (${ pluralize( weekGroup.days.length, "día", "días" ) })` }</Text>
 
 						{ weekGroup.days.map( ( day ) => (
-							<View key={ day.id } style={ styles.dayCard } wrap={ false }>
-								<Text style={ styles.dayHeader }>{ `Día ${ day.dayNumber } - ${ formatHistoryDate( day.date ) }` }</Text>
+							<View key={ day.id } style={ styles.dayCard }>
+								{ /* El dia puede seguir en la pagina siguiente (uno largo no entra en
+								     una sola), pero su titulo no queda solo al pie de la anterior. */ }
+								<Text minPresenceAhead={ 60 } style={ styles.dayHeader }>{ `Día ${ day.dayNumber } - ${ formatHistoryDate( day.date ) }` }</Text>
 
-								<View style={ styles.tableHeader }>
+								<View style={ styles.tableHeader } wrap={ false }>
 									<Text style={ styles.colExercise }>Ejercicio</Text>
 									<Text style={ styles.colSet }>Serie</Text>
 									<Text style={ styles.colPlan }>Plan</Text>
@@ -222,28 +253,32 @@ export function HistoryRoutinesPdfDocument( {
 									<Text style={ styles.colStatus }>Estado</Text>
 								</View>
 
-								{ day.exercises.flatMap( ( exercise ) =>
-									exercise.sets.map( ( set, setIndex ) => (
-										<View
-											key={ set.id }
-											style={ [
-												styles.tableRow,
-												...(setIndex % 2 === 1 ? [ styles.tableRowAlt ] : []),
-											] }
-										>
-											<Text style={ styles.colExercise }>
-												{ setIndex === 0 ? <Text style={ styles.exerciseName }>{ exercise.name }</Text> : " " }
-											</Text>
-											<Text style={ styles.colSet }>{ String( set.setNumber ) }</Text>
-											<Text style={ styles.colPlan }>{ `${ set.plannedReps } reps` }</Text>
-											<Text style={ styles.colReal }>{ `${ set.repsCompleted ?? "-" } reps` }</Text>
-											<Text style={ styles.colWeight }>{ `${ set.weightUsed ?? "-" } kg` }</Text>
-											<Text style={ [ styles.colStatus, getSetStatusStyle( set.completed, set.planned ) ] }>
-												{ getSetStatusLabel( set.completed, set.planned ) }
-											</Text>
-										</View>
-									) ),
-								) }
+								{ /* Las series de un ejercicio no se separan entre dos paginas: si
+								     no, la pagina siguiente arrancaba con filas sin nombre. */ }
+								{ day.exercises.map( ( exercise ) => (
+									<View key={ exercise.id } wrap={ false }>
+										{ exercise.sets.map( ( set, setIndex ) => (
+											<View
+												key={ set.id }
+												style={ [
+													styles.tableRow,
+													...(setIndex % 2 === 1 ? [ styles.tableRowAlt ] : []),
+												] }
+											>
+												<Text style={ styles.colExercise }>
+													{ setIndex === 0 ? <Text style={ styles.exerciseName }>{ exercise.name }</Text> : " " }
+												</Text>
+												<Text style={ styles.colSet }>{ String( set.setNumber ) }</Text>
+												<Text style={ styles.colPlan }>{ formatMeasure( set.plannedReps, "reps" ) }</Text>
+												<Text style={ styles.colReal }>{ formatMeasure( set.repsCompleted, "reps" ) }</Text>
+												<Text style={ styles.colWeight }>{ formatMeasure( set.weightUsed, "kg" ) }</Text>
+												<Text style={ [ styles.colStatus, getSetStatusStyle( set.completed, set.planned ) ] }>
+													{ getSetStatusLabel( set.completed, set.planned ) }
+												</Text>
+											</View>
+										) ) }
+									</View>
+								) ) }
 							</View>
 						) ) }
 					</View>
