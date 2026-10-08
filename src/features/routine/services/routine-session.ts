@@ -190,6 +190,7 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 					previousWeight: previousSeriesWeight,
 					setNumber,
 					targetReps: parseInteger( routine.reps ) ?? currentReps ?? 0,
+					targetRepsLabel: routine.reps?.trim() || undefined,
 				};
 			} );
 
@@ -280,6 +281,15 @@ function mergeStudentRoutineSessionSets(
 			notes: draftSet.notes,
 		};
 	} );
+}
+
+// Lo que el estudiante lee como objetivo de una serie. Usa el texto del
+// entrenador y no el numero: de "5-7" el numero es solo 5, y de "al fallo" no
+// hay ninguno. "reps" se agrega solo si el texto es un numero o un rango.
+export function formatTargetReps( set: { targetReps: number; targetRepsLabel?: string } ) {
+	const label = set.targetRepsLabel?.trim() || String( set.targetReps );
+
+	return /^\d+(\s*[-–a]\s*\d+)?$/.test( label ) ? `${ label } reps` : label;
 }
 
 export function mergeStudentRoutineSessionDraft(

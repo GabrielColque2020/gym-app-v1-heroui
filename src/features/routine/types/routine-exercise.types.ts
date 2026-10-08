@@ -4,6 +4,9 @@ export interface ExerciseSet {
 	previousWeight: number | null;
 	previousReps: number | null;
 	targetReps: number;
+	// Las repeticiones tal como las escribio el entrenador: "12", pero tambien
+	// "5-7" o "al fallo". `targetReps` solo guarda el primer numero.
+	targetRepsLabel?: string;
 	currentWeight: number | null;
 	currentReps: number | null;
 	notes: string | null;

@@ -3,6 +3,7 @@ import { DataGrid, type DataGridColumn } from "@heroui-pro/react";
 
 import { useIsRoutineSessionLocked } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
 import { parseWeightInput } from "@/features/role/student/routine/views/routine-page-content.utils";
+import { formatTargetReps } from "@/features/routine/services/routine-session";
 import type { Exercise, ExerciseSessionHistorySet, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
 
 type DesktopExerciseSetsGridProps = {
@@ -77,7 +78,7 @@ export function DesktopExerciseSetsGrid( {
 
 							return (
 								<>
-						<Label className={ "text-xs font-medium text-muted" }>{ `Meta ${ item.targetReps } reps` }</Label>
+						<Label className={ "text-xs font-medium text-muted" }>{ `Meta ${ formatTargetReps( item ) }` }</Label>
 						<Input
 							fullWidth
 							placeholder={ "Reps" }

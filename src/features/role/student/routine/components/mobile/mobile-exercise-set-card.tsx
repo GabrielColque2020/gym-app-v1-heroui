@@ -8,6 +8,7 @@ import { MessageSquarePlus } from "lucide-react";
 import { useIsRoutineSessionLocked } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
 import { parseWeightInput } from "@/features/role/student/routine/views/routine-page-content.utils";
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
+import { formatTargetReps } from "@/features/routine/services/routine-session";
 import type { ExerciseSessionHistory, ExerciseSet } from "@/features/routine/types/routine-exercise.types";
 
 type MobileExerciseSetCardProps = {
@@ -83,7 +84,7 @@ export function MobileExerciseSetCard( {
 										className={ `min-w-0 border px-1 text-center ${ !set.completed && set.currentReps === null && set.currentWeight !== null ? "border-warning" : "border-border" }` }
 										disabled={ isLocked }
 										inputMode={ "numeric" }
-										placeholder={ `${ set.targetReps } reps` }
+										placeholder={ formatTargetReps( set ) }
 										type={ "number" }
 										value={ set.currentReps?.toString() || "" }
 										onChange={ ( e ) => onSetUpdate( exerciseId, set.id, { reps: parseNumericInput( e.target.value ) } ) }

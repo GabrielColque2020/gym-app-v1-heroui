@@ -7,6 +7,7 @@ import { ChevronDown, ChevronUp, History, MessageSquarePlus, Minus, Plus } from 
 
 import { useIsRoutineSessionLocked } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
 import { getExerciseLastSession, parseWeightInput } from "@/features/role/student/routine/views/routine-page-content.utils";
+import { formatTargetReps } from "@/features/routine/services/routine-session";
 import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 
 type SetUpdates = Partial<{ weight: number | null; reps: number | null; notes: string | null }>;
@@ -41,11 +42,11 @@ function getSharedValue<T>(values: T[], emptyValue: T) {
 function buildTargetSummary(exercise: Exercise) {
     if (exercise.sets.length === 0) return "Sin series configuradas";
 
-    const targetRepsValues = exercise.sets.map((set) => set.targetReps);
-    const sharedTargetReps = getSharedValue<number | null>(targetRepsValues, null);
+    const targetRepsValues = exercise.sets.map((set) => formatTargetReps(set));
+    const sharedTargetReps = getSharedValue<string | null>(targetRepsValues, null);
 
     if (sharedTargetReps !== null) {
-        return `${exercise.sets.length} x ${sharedTargetReps} reps`;
+        return `${exercise.sets.length} x ${sharedTargetReps}`;
     }
 
     return `${exercise.sets.length} series`;
