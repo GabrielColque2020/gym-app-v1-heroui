@@ -28,7 +28,7 @@ export function RoutineRestSelect( { ariaLabel, onChangeAction, showLabel = fals
 		<Dropdown>
 			<Button
 				aria-label={ value === null ? `${ ariaLabel }: sin definir` : `${ ariaLabel }: ${ formatRestSeconds( value ) }` }
-				className={ `h-8 min-w-0 shrink-0 gap-1 px-2 tabular-nums ${ value === null ? "text-muted" : "text-accent" }` }
+				className={ `h-8 min-w-0 shrink-0 gap-1 px-1.5 tabular-nums ${ value === null ? "text-muted" : "text-accent" }` }
 				size={ "sm" }
 				variant={ "ghost" }
 			>

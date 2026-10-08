@@ -70,8 +70,10 @@ function RoutineDayExerciseRow( {
 				{ /* Series y repeticiones siempre a la vista: son lo unico obligatorio. Cada
 				     campo lleva su rotulo: con un numero cargado ya no se ve el texto
 				     de ayuda y no se sabia cual era cual. */ }
-				<div className={ "flex min-w-0 items-end justify-between gap-1 ps-9 @xl:shrink-0 @xl:justify-end @xl:gap-3 @xl:ps-0" }>
-					<div className={ "flex items-end gap-1.5" }>
+				{ /* En angosto arranca desde el borde y no debajo de la imagen: con la sangria,
+				     el descanso con su tiempo empujaba las acciones afuera de la tarjeta. */ }
+				<div className={ "flex min-w-0 items-end justify-between gap-1 @xl:shrink-0 @xl:justify-end @xl:gap-3" }>
+					<div className={ "flex min-w-0 items-end gap-1.5" }>
 						<RoutineDayExerciseField
 							ariaLabel={ `Series de ${ exerciseName }` }
 							className={ "w-14 gap-0.5" }
@@ -87,7 +89,7 @@ function RoutineDayExerciseRow( {
 						<span aria-hidden className={ "pb-2 text-sm text-muted" }>×</span>
 						<RoutineDayExerciseField
 							ariaLabel={ `Repeticiones de ${ exerciseName }` }
-							className={ "w-20 gap-0.5" }
+							className={ "w-20 min-w-14 shrink gap-0.5" }
 							label={ "Repeticiones" }
 							inputClassName={ `w-full px-1 text-center ${ routine.reps.trim() ? "" : missingClassName }` }
 							name={ `reps-${ routine.clientId }` }
@@ -96,7 +98,7 @@ function RoutineDayExerciseRow( {
 							onChange={ ( value ) => onUpdateField( routine.clientId, "reps", value ) }
 						/>
 					</div>
-					<div className={ "flex items-center" }>
+					<div className={ "flex shrink-0 items-center" }>
 						{ /* Opcional: es el tiempo con el que arranca el reloj del estudiante. */ }
 						<RoutineRestSelect
 							ariaLabel={ `Descanso de ${ exerciseName }` }
