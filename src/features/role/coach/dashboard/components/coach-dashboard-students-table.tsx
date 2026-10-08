@@ -79,23 +79,28 @@ export function CoachDashboardStudentsTable( {
 					/>
 				) : (
 					<>
-						<div className={ "hidden md:block" }>
-							<DataGrid
-								aria-label={ "Listado operativo de estudiantes del coach" }
-								columns={ columns }
-								contentClassName={ "min-w-full sm:min-w-[1100px]" }
-								data={ pagination.paginatedItems }
-								getRowId={ ( student ) => student.id }
-							/>
-						</div>
-						<div className={ "space-y-3 md:hidden" }>
-							{ pagination.paginatedItems.map( ( student ) => (
-								<CoachDashboardStudentMobileCard
-									key={ student.id }
-									currentPeriodLabel={ currentPeriodLabel }
-									student={ student }
+						{ /* Tabla o tarjetas segun el ancho de este bloque y no el de la ventana:
+						     la tabla pedia 1100 px fijos y, con el menu lateral, no entraba ni en
+						     una pantalla de 1440. Ahora entra desde 896 y, por debajo, van tarjetas. */ }
+						<div className={ "@container" }>
+							<div className={ "hidden @4xl:block" }>
+								<DataGrid
+									aria-label={ "Listado de estudiantes del entrenador" }
+									columns={ columns }
+									contentClassName={ "min-w-full" }
+									data={ pagination.paginatedItems }
+									getRowId={ ( student ) => student.id }
 								/>
-							) ) }
+							</div>
+							<div className={ "grid gap-3 @2xl:grid-cols-2 @4xl:hidden" }>
+								{ pagination.paginatedItems.map( ( student ) => (
+									<CoachDashboardStudentMobileCard
+										key={ student.id }
+										currentPeriodLabel={ currentPeriodLabel }
+										student={ student }
+									/>
+								) ) }
+							</div>
 						</div>
 						<ListPagination
 							currentPage={ pagination.currentPage }

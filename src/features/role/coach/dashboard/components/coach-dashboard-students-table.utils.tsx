@@ -59,7 +59,8 @@ export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string )
 			header: "Estudiante",
 			id: "name",
 			isRowHeader: true,
-			minWidth: 240,
+			// Los anchos minimos suman 870: la tabla se muestra desde 896 y entra entera.
+			minWidth: 220,
 		},
 		{
 			accessorKey: "active",
@@ -71,7 +72,7 @@ export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string )
 			),
 			header: "Estado",
 			id: "active",
-			minWidth: 120,
+			minWidth: 100,
 		},
 		{
 			accessorKey: "hasRoutineThisMonth",
@@ -88,7 +89,7 @@ export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string )
 			),
 			header: "Rutina del mes",
 			id: "routine",
-			minWidth: 180,
+			minWidth: 150,
 		},
 		{
 			accessorKey: "hasMealPlan",
@@ -107,7 +108,7 @@ export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string )
 			),
 			header: "Plan alimenticio",
 			id: "meal-plan",
-			minWidth: 180,
+			minWidth: 160,
 		},
 		{
 			accessorKey: "lastProgressAt",
@@ -122,13 +123,13 @@ export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string )
 			),
 			header: "Última actividad",
 			id: "last-progress",
-			minWidth: 180,
+			minWidth: 150,
 		},
 		{
 			cell: ( student ) => <CoachDashboardStudentRowActions student={ student }/>,
 			header: "Acciones",
 			id: "actions",
-			minWidth: 220,
+			minWidth: 90,
 		},
 	];
 }

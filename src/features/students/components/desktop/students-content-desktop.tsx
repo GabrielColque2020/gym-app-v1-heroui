@@ -21,14 +21,8 @@ type StudentsContentDesktopProps = {
 
 export function StudentsContentDesktop( { students }: StudentsContentDesktopProps ) {
 	const columns = useMemo<DataGridColumn<StudentListItem>[]>( () => [
-		{
-			accessorKey: "dni",
-			allowsSorting: true,
-			cell: ( student ) => <span className={ "font-medium text-foreground" }>{ student.dni }</span>,
-			header: "DNI",
-			id: "dni",
-			minWidth: 130,
-		},
+		// Primero el nombre, que es por lo que se reconoce a alguien. Los anchos
+		// minimos suman 670: la tabla se muestra desde 672 de ancho y entra entera.
 		{
 			accessorKey: "name",
 			allowsSorting: true,
@@ -53,7 +47,7 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 			header: "Nombre",
 			id: "name",
 			isRowHeader: true,
-			minWidth: 240,
+			minWidth: 190,
 		},
 		{
 			accessorKey: "email",
@@ -61,7 +55,15 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 			cell: ( student ) => <span className={ "truncate" }>{ student.email }</span>,
 			header: "Email",
 			id: "email",
-			minWidth: 240,
+			minWidth: 180,
+		},
+		{
+			accessorKey: "dni",
+			allowsSorting: true,
+			cell: ( student ) => <span className={ "tabular-nums" }>{ student.dni }</span>,
+			header: "DNI",
+			id: "dni",
+			minWidth: 90,
 		},
 		{
 			accessorKey: "active",
@@ -73,13 +75,13 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 			),
 			header: "Estado",
 			id: "active",
-			minWidth: 140,
+			minWidth: 90,
 		},
 		{
 			cell: ( student ) => <StudentRowActions student={ student }/>,
 			header: "Acciones",
 			id: "actions",
-			minWidth: 170,
+			minWidth: 120,
 		},
 	], [] );
 	const {
@@ -125,7 +127,7 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 					<DataGrid
 						aria-label={ "Listado de estudiantes" }
 						columns={ columns }
-						contentClassName={ "min-w-full sm:min-w-[860px]" }
+						contentClassName={ "min-w-full" }
 						data={ paginatedStudents }
 						getRowId={ ( student ) => student.id }
 					/>

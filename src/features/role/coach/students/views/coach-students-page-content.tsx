@@ -107,11 +107,14 @@ export default function CoachStudentsPageContent() {
 						/>
 					</div>
 				</Card.Header>
-				<Card.Content className={ "p-3" }>
-					<div className={ "hidden w-full md:flex" }>
+				{ /* Tabla o tarjetas segun el ancho de este bloque y no el de la ventana: con
+				     el menu lateral abierto, una ventana mediana le deja a la tabla menos
+				     lugar del que necesita y "Abrir" quedaba escondido a la derecha. */ }
+				<Card.Content className={ "@container p-3" }>
+					<div className={ "hidden w-full @2xl:flex" }>
 						<StudentsContentDesktop students={ students }/>
 					</div>
-					<div className={ "w-full md:hidden" }>
+					<div className={ "w-full @2xl:hidden" }>
 						<StudentsContentMobile students={ students }/>
 					</div>
 				</Card.Content>
