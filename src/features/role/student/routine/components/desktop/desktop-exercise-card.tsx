@@ -5,6 +5,7 @@ import ExerciseChangeDrawer from "@/features/role/student/routine/components/sha
 import { ExerciseCoachNote } from "@/features/role/student/routine/components/shared/exercise-coach-note";
 import { ExerciseExecutionTrigger } from "@/features/role/student/routine/components/shared/exercise-execution-trigger";
 import { ExerciseCardSessionHistory } from "@/features/role/student/routine/components/shared/exercise-card-session-history";
+import { ExerciseProgressLink } from "@/features/role/student/routine/components/shared/exercise-progress-link";
 import { ExerciseCardStatusChips } from "@/features/role/student/routine/components/shared/exercise-card-status-chips";
 import { useExerciseCardState } from "@/features/role/student/routine/components/shared/use-exercise-card-state";
 import type { Exercise } from "@/features/routine/types/routine-exercise.types";
@@ -64,9 +65,16 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 								<ExerciseCoachNote note={ exercise.coachNote }/>
 
 								<div className={ "flex flex-col gap-2 rounded-2xl bg-surface/50 px-3 py-3 sm:flex-row sm:items-start" }>
-									<p className={ "shrink-0 text-sm font-semibold tracking-wide text-foreground" }>
-										Sesión anterior
-									</p>
+									{ /* El enlace va bajo el titulo y no al final: al lado de las series
+									     les sacaba lugar y las partia en varios renglones. */ }
+									<div className={ "flex shrink-0 items-center justify-between gap-2 sm:flex-col sm:items-start sm:justify-start sm:gap-1" }>
+										<p className={ "text-sm font-semibold tracking-wide text-foreground" }>
+											Sesión anterior
+										</p>
+										{ hasSessionHistory ? (
+											<ExerciseProgressLink exerciseId={ selectedVariant?.id ?? exercise.id } exerciseName={ displayedExerciseName }/>
+										) : null }
+									</div>
 									<ExerciseCardSessionHistory
 										history={ hasSessionHistory ? displayedSessionHistory : null }
 										isHighlighted={ isVariantOverridden }

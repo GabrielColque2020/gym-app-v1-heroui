@@ -8,11 +8,16 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-	searchParams: Promise<{ exerciseId?: string }>;
+	searchParams: Promise<{ exerciseId?: string; routineDayId?: string }>;
 };
 
 export default async function StudentExerciseProgressPage( { searchParams }: Props ) {
-	const { exerciseId } = await searchParams;
+	const { exerciseId, routineDayId } = await searchParams;
 
-	return <StudentExerciseProgressPageContent exerciseId={ exerciseId?.trim() || null }/>;
+	return (
+		<StudentExerciseProgressPageContent
+			exerciseId={ exerciseId?.trim() || null }
+			routineDayId={ routineDayId?.trim() || null }
+		/>
+	);
 }

@@ -5,6 +5,7 @@ import ExerciseChangeDrawer from "@/features/role/student/routine/components/sha
 import { ExerciseCoachNote } from "@/features/role/student/routine/components/shared/exercise-coach-note";
 import { ExerciseExecutionTrigger } from "@/features/role/student/routine/components/shared/exercise-execution-trigger";
 import { ExerciseCardSessionHistory } from "@/features/role/student/routine/components/shared/exercise-card-session-history";
+import { ExerciseProgressLink } from "@/features/role/student/routine/components/shared/exercise-progress-link";
 import { ExerciseCardStatusChips } from "@/features/role/student/routine/components/shared/exercise-card-status-chips";
 import { useExerciseCardState } from "@/features/role/student/routine/components/shared/use-exercise-card-state";
 import type { Exercise } from "@/features/routine/types/routine-exercise.types";
@@ -81,7 +82,12 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 						<ExerciseCoachNote note={ exercise.coachNote }/>
 
 						<div className={ "space-y-1" }>
-							<p className={ "text-xs font-semibold tracking-wide text-foreground" }>Sesión anterior</p>
+							<div className={ "flex items-center justify-between gap-2" }>
+								<p className={ "text-xs font-semibold tracking-wide text-foreground" }>Sesión anterior</p>
+								{ hasSessionHistory ? (
+									<ExerciseProgressLink exerciseId={ selectedVariant?.id ?? exercise.id } exerciseName={ displayedExerciseName }/>
+								) : null }
+							</div>
 							<ExerciseCardSessionHistory
 								history={ hasSessionHistory ? displayedSessionHistory : null }
 								isCompact

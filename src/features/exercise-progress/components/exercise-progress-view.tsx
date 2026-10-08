@@ -17,11 +17,16 @@ type ExerciseProgressViewProps = {
 const shortDateFormatter = new Intl.DateTimeFormat( "es-AR", { day: "numeric", month: "short" } );
 const longDateFormatter = new Intl.DateTimeFormat( "es-AR", { day: "numeric", month: "long", year: "numeric" } );
 
-function StatCard( { hint, label, value }: { hint: string; label: string; value: string } ) {
+// La unidad va aparte y mas chica: con "152,5 kg" en un solo tamaño, en el
+// telefono el numero no entraba y se cortaba.
+function StatCard( { hint, label, unit, value }: { hint: string; label: string; unit?: string; value: string } ) {
 	return (
 		<div className={ "min-w-0 rounded-xl border border-border bg-surface px-2.5 py-2.5 sm:px-3" }>
 			<p className={ "truncate text-xs font-medium text-muted" }>{ label }</p>
-			<p className={ "truncate text-base font-black tabular-nums text-foreground sm:text-lg" }>{ value }</p>
+			<p className={ "flex flex-wrap items-baseline gap-x-1 text-base font-black tabular-nums text-foreground sm:text-lg" }>
+				{ value }
+				{ unit ? <span className={ "text-xs font-semibold text-muted" }>{ unit }</span> : null }
+			</p>
 			<p className={ "truncate text-xs text-muted" }>{ hint }</p>
 		</div>
 	);
@@ -40,7 +45,7 @@ export function ExerciseProgressView( { detail }: ExerciseProgressViewProps ) {
 	} ) );
 	const changeLabel = summary.change === null
 		? "—"
-		: `${ summary.change > 0 ? "+" : "" }${ formatProgressNumber( summary.change ) } ${ unit }`;
+		: `${ summary.change > 0 ? "+" : "" }${ formatProgressNumber( summary.change ) }`;
 
 	if (sessions.length === 0) {
 		return (
@@ -59,16 +64,19 @@ export function ExerciseProgressView( { detail }: ExerciseProgressViewProps ) {
 					// Textos cortos: en el telefono cada columna mide menos de 90 px.
 					hint={ summary.best ? shortDateFormatter.format( new Date( summary.best.date ) ) : "Sin datos" }
 					label={ "Récord" }
-					value={ summary.best ? formatValue( summary.best.value ) : "—" }
+					unit={ summary.best ? unit : undefined }
+					value={ summary.best ? formatProgressNumber( summary.best.value ) : "—" }
 				/>
 				<StatCard
 					hint={ summary.last ? shortDateFormatter.format( new Date( summary.last.date ) ) : "Sin datos" }
 					label={ "Última vez" }
-					value={ summary.last ? formatValue( summary.last.value ) : "—" }
+					unit={ summary.last ? unit : undefined }
+					value={ summary.last ? formatProgressNumber( summary.last.value ) : "—" }
 				/>
 				<StatCard
 					hint={ summary.first && summary.change !== null ? `de ${ formatValue( summary.first.value ) }` : "Falta otra sesión" }
 					label={ "Cambio" }
+					unit={ summary.change !== null ? unit : undefined }
 					value={ changeLabel }
 				/>
 			</div>

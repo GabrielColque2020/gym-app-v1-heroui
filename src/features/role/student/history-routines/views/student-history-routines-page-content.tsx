@@ -95,6 +95,7 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 					emptyMessage={ "Todavía no hay meses con historial de rutinas disponible." }
 					isDownloadingPeriodKey={ pendingPeriodKey }
 					isRefreshing={ isFetching && !isLoading }
+					progressHref={ "/student/progress" }
 					reports={ data.reports }
 					title={ "Historial de rutina" }
 					onDownloadAction={ handleDownloadReport }

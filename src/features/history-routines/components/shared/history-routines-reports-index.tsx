@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
 import { Button, Card, Chip } from "@heroui/react";
-import { ChevronRight, Download, RotateCw } from "lucide-react";
+import { ChevronRight, Download, RotateCw, TrendingUp } from "lucide-react";
 
 import { ListPagination, PageHeader, usePagination } from "@/components/common";
 import type { HistoryRoutineReportRow } from "@/features/history-routines/services/history-routines-reports";
@@ -18,6 +18,8 @@ type HistoryRoutinesReportsIndexProps = {
 	emptyMessage: string;
 	isDownloadingPeriodKey?: string | null;
 	isRefreshing?: boolean;
+	// Adonde se ve el progreso por ejercicio. Sin valor, no se ofrece.
+	progressHref?: string;
 	reports: HistoryRoutineReportRow[];
 	title: string;
 	onDownloadAction: ( report: HistoryRoutineReportRow ) => void;
@@ -61,6 +63,7 @@ export function HistoryRoutinesReportsIndex( {
 	emptyMessage,
 	isDownloadingPeriodKey = null,
 	isRefreshing = false,
+	progressHref,
 	reports,
 	title,
 	onDownloadAction,
@@ -163,7 +166,18 @@ export function HistoryRoutinesReportsIndex( {
 						title={ title }
 					/>
 				</div>
-				{ /* En el telefono "Actualizar" va como icono junto al titulo. */ }
+				{ /* En el telefono las acciones van como iconos junto al titulo. */ }
+				{ progressHref ? (
+					<Button
+						isIconOnly
+						aria-label={ "Progreso por ejercicio" }
+						className={ "shrink-0 md:hidden" }
+						variant={ "secondary" }
+						onPress={ () => router.push( progressHref ) }
+					>
+						<TrendingUp className={ "size-4" }/>
+					</Button>
+				) : null }
 				<Button
 					isIconOnly
 					aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
@@ -174,7 +188,13 @@ export function HistoryRoutinesReportsIndex( {
 				>
 					<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 				</Button>
-				<div className={ "hidden md:flex" }>
+				<div className={ "hidden gap-2 md:flex" }>
+					{ progressHref ? (
+						<Button variant={ "secondary" } onPress={ () => router.push( progressHref ) }>
+							<TrendingUp className={ "size-4" }/>
+							Progreso por ejercicio
+						</Button>
+					) : null }
 					<Button
 						isDisabled={ isRefreshing }
 						variant={ "secondary" }
