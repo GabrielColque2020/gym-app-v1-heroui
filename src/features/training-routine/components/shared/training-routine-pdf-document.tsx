@@ -1,10 +1,15 @@
 import type { ReactElement } from "react";
 
-import { Document, Page, StyleSheet, Text, View, } from "@react-pdf/renderer";
+import { Document, Font, Page, StyleSheet, Text, View, } from "@react-pdf/renderer";
 
+import { monthYearLabel } from "@/constants/months";
 import { formatRestSeconds } from "@/features/routine/services/rest-seconds";
 import { getTrainingRoutineDayTitle } from "@/features/training-routine/services/training-routine-day-formatters";
 import type { TrainingRoutineWeek } from "@/features/training-routine/services/training-routines-by-student";
+
+// Las palabras pasan enteras al renglon siguiente. Por defecto se cortan con
+// guion segun reglas del ingles, y en español quedaba "segun-dos".
+Font.registerHyphenationCallback( ( word ) => [ word ] );
 
 type TrainingRoutinePdfDocumentProps = {
 	month: number;
@@ -15,7 +20,8 @@ type TrainingRoutinePdfDocumentProps = {
 };
 
 type PrintableWeekCell = {
-	notes: string;
+	// Observacion del entrenador. Sin texto, no se imprime nada.
+	notes: string | null;
 	reps: string;
 	// Descanso entre series que fijo el entrenador, ya con formato. Sin valor, no se imprime.
 	rest: string | null;
@@ -163,7 +169,8 @@ function formatNotes( observation: string | null | undefined, tips: string | nul
 		tips?.trim() ? `Tips: ${ tips.trim() }` : null,
 	].filter( Boolean );
 
-	return parts.length > 0 ? parts.join( " | " ) : "Sin notas";
+	// Sin notas no se imprime nada: "Sin notas" repetido en cada celda era puro ruido.
+	return parts.length > 0 ? parts.join( " | " ) : null;
 }
 
 function getDayRows( dayNumber: number, routineWeeks: TrainingRoutineWeek[] ): PrintableWeekRow[] {
@@ -200,14 +207,15 @@ export function TrainingRoutinePdfDocument( {
 }: TrainingRoutinePdfDocumentProps ): ReactElement {
 	const referenceDays = routineWeeks[ 0 ]?.routineDays ?? [];
 	const objective = routineObjective?.trim() || "Sin objetivo definido";
+	const periodLabel = monthYearLabel( String( month ), String( year ) ) || `${ month }/${ year }`;
 
 	return (
 		<Document
 			author={ "Gym App" }
 			creator={ "Gym App" }
 			producer={ "Gym App" }
-			subject={ `Rutina ${ month }/${ year } de ${ studentName }` }
-			title={ `Rutina - ${ studentName } - ${ month }/${ year }` }
+			subject={ `Rutina de ${ periodLabel } de ${ studentName }` }
+			title={ `Rutina - ${ studentName } - ${ periodLabel }` }
 		>
 			<Page size={ "A4" } style={ styles.page }>
 				<View style={ styles.header }>
@@ -216,7 +224,7 @@ export function TrainingRoutinePdfDocument( {
 					<Text style={ [ styles.line, styles.muted ] }>{ `Objetivo del mes: ${ objective }` }</Text>
 					<Text style={ [ styles.line, styles.muted ] }>Resumen por día con semanas, ejercicios, series, repeticiones, descanso entre series y observaciones.</Text>
 					<View style={ styles.chips }>
-						<Text style={ styles.chip }>{ `Mes ${ month } / ${ year }` }</Text>
+						<Text style={ styles.chip }>{ periodLabel }</Text>
 						<Text style={ styles.chip }>{ `${ routineWeeks.length } semanas` }</Text>
 					</View>
 				</View>
@@ -259,7 +267,7 @@ export function TrainingRoutinePdfDocument( {
 													<>
 														<Text style={ styles.weekValue }>{ `${ cell.sets } x ${ cell.reps }` }</Text>
 														{ cell.rest ? <Text style={ styles.rest }>{ `Descanso ${ cell.rest }` }</Text> : null }
-														<Text style={ styles.notes }>{ cell.notes }</Text>
+														{ cell.notes ? <Text style={ styles.notes }>{ cell.notes }</Text> : null }
 													</>
 												) : (
 													<Text style={ styles.notes }>--</Text>
