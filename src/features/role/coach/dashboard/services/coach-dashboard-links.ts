@@ -9,3 +9,7 @@ export function buildStudentMealPlanHref( studentId: string ) {
 export function buildStudentHistoryHref( studentId: string ) {
 	return `/coach/history-routines?studentId=${ studentId }`;
 }
+
+export function buildStudentProgressHref( studentId: string ) {
+	return `/coach/progress?studentId=${ studentId }`;
+}

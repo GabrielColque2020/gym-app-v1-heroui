@@ -2,10 +2,10 @@
 
 import { Button, Dropdown, Header, Label } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { CalendarClock, Dumbbell, MoreVertical, UtensilsCrossed } from "lucide-react";
+import { CalendarClock, Dumbbell, MoreVertical, TrendingUp, UtensilsCrossed } from "lucide-react";
 
 import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary";
-import { buildStudentHistoryHref, buildStudentMealPlanHref, buildStudentTrainingRoutineHref, } from "@/features/role/coach/dashboard/services/coach-dashboard-links";
+import { buildStudentHistoryHref, buildStudentMealPlanHref, buildStudentProgressHref, buildStudentTrainingRoutineHref, } from "@/features/role/coach/dashboard/services/coach-dashboard-links";
 
 type CoachDashboardStudentRowActionsProps = {
 	student: CoachDashboardStudentSummary;
@@ -38,6 +38,10 @@ export function CoachDashboardStudentRowActions( { student }: CoachDashboardStud
 					if (key === "history") {
 						router.push( buildStudentHistoryHref( student.id ) );
 					}
+
+					if (key === "progress") {
+						router.push( buildStudentProgressHref( student.id ) );
+					}
 				} }>
 					<Header>Opciones</Header>
 					<Dropdown.Item id={ "routine" } textValue={ "Rutina" }>
@@ -51,6 +55,10 @@ export function CoachDashboardStudentRowActions( { student }: CoachDashboardStud
 					<Dropdown.Item id={ "history" } textValue={ "Historial" }>
 						<CalendarClock className={ "size-4 shrink-0 text-warning" }/>
 						<Label className={ "text-warning" }>Historial</Label>
+					</Dropdown.Item>
+					<Dropdown.Item id={ "progress" } textValue={ "Progreso" }>
+						<TrendingUp className={ "size-4 shrink-0 text-foreground" }/>
+						<Label>Progreso</Label>
 					</Dropdown.Item>
 				</Dropdown.Menu>
 			</Dropdown.Popover>
