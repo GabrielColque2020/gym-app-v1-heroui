@@ -1,5 +1,5 @@
 import { DashboardSkeleton } from "@/components/common/skeletons";
 
 export function CoachDashboardLoadingState() {
-	return <DashboardSkeleton title={ "Cargando dashboard coach" } variant={ "coach" }/>;
+	return <DashboardSkeleton title={ "Cargando el inicio" } variant={ "coach" }/>;
 }

@@ -7,7 +7,7 @@ import { CoachDashboardStudentRowActions } from "@/features/role/coach/dashboard
 
 export function formatCoachDashboardDateLabel( date: string | null ) {
 	if (!date) {
-		return "Sin registros";
+		return "Sin actividad todavía";
 	}
 
 	return new Intl.DateTimeFormat( "es-AR", {
@@ -15,9 +15,10 @@ export function formatCoachDashboardDateLabel( date: string | null ) {
 	} ).format( new Date( date ) );
 }
 
-export function buildCoachDashboardRoutineStatusLabel( student: CoachDashboardStudentSummary, currentPeriodLabel: string ) {
+export function buildCoachDashboardRoutineStatusLabel( student: CoachDashboardStudentSummary ) {
 	if (student.hasRoutineThisMonth) {
-		return `Cargada ${ currentPeriodLabel }`;
+		// El mes ya lo dice el titulo de la columna o de la tarjeta.
+		return "Cargada este mes";
 	}
 
 	if (student.lastRoutineMonthLabel) {
@@ -43,7 +44,7 @@ export function filterCoachDashboardStudents( students: CoachDashboardStudentSum
 	);
 }
 
-export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string ): DataGridColumn<CoachDashboardStudentSummary>[] {
+export function buildCoachDashboardStudentsColumns(): DataGridColumn<CoachDashboardStudentSummary>[] {
 	return [
 		{
 			accessorKey: "name",
@@ -80,10 +81,10 @@ export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string )
 			cell: ( student ) => (
 				<div className={ "flex min-w-0 flex-col gap-1" }>
 					<Chip color={ student.hasRoutineThisMonth ? "success" : "warning" } size={ "sm" } variant={ "soft" }>
-						{ student.hasRoutineThisMonth ? "Si" : "No" }
+						{ student.hasRoutineThisMonth ? "Sí" : "No" }
 					</Chip>
 					<span className={ "text-xs text-muted" }>
-						{ buildCoachDashboardRoutineStatusLabel( student, currentPeriodLabel ) }
+						{ buildCoachDashboardRoutineStatusLabel( student ) }
 					</span>
 				</div>
 			),
@@ -97,7 +98,7 @@ export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string )
 			cell: ( student ) => (
 				<div className={ "flex min-w-0 flex-col gap-1" }>
 					<Chip color={ student.hasMealPlan ? "success" : "warning" } size={ "sm" } variant={ "soft" }>
-						{ student.hasMealPlan ? "Si" : "No" }
+						{ student.hasMealPlan ? "Sí" : "No" }
 					</Chip>
 					<span className={ "text-xs text-muted" }>
 						{ student.hasMealPlan
@@ -116,9 +117,12 @@ export function buildCoachDashboardStudentsColumns( currentPeriodLabel: string )
 			cell: ( student ) => (
 				<div className={ "flex min-w-0 flex-col gap-1" }>
 					<span className={ "text-sm text-foreground" }>{ formatCoachDashboardDateLabel( student.lastProgressAt ) }</span>
-					<span className={ "text-xs text-muted" }>
-						{ student.needsRecentActivityAttention ? "Requiere revisión" : "Actividad al día" }
-					</span>
+					{ /* Quien nunca entreno ya lo dice arriba: no hace falta repetirlo. */ }
+					{ student.lastProgressAt ? (
+						<span className={ "text-xs text-muted" }>
+							{ student.needsRecentActivityAttention ? "Hace rato que no entrena" : "Actividad al día" }
+						</span>
+					) : null }
 				</div>
 			),
 			header: "Última actividad",

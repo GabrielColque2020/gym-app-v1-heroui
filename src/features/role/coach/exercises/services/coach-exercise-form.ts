@@ -15,54 +15,6 @@ export type CoachExerciseFormValues = {
 
 export type CoachExerciseSourceType = "coach" | "global";
 
-export const COACH_EXERCISE_EQUIPMENT_OPTIONS = [
-	{ label: "Peso corporal", value: "Peso corporal" },
-	{ label: "Mancuerna", value: "Mancuerna" },
-	{ label: "Barra", value: "Barra" },
-	{ label: "Barra EZ", value: "Barra EZ" },
-	{ label: "Polea", value: "Polea" },
-	{ label: "Maquina", value: "Maquina" },
-	{ label: "Kettlebell", value: "Kettlebell" },
-	{ label: "Banda elastica", value: "Banda elastica" },
-	{ label: "Balon medicinal", value: "Balon medicinal" },
-	{ label: "Pelota de estabilidad", value: "Pelota de estabilidad" },
-	{ label: "Pelota suiza", value: "Pelota suiza" },
-	{ label: "Con peso", value: "Con peso" },
-	{ label: "Asistido", value: "Asistido" },
-] as const;
-
-export const COACH_EXERCISE_TARGET_OPTIONS = [
-	{ label: "Abdomen", value: "Abdomen" },
-	{ label: "Antebrazos", value: "Antebrazos" },
-	{ label: "Biceps", value: "Biceps" },
-	{ label: "Brazos", value: "Brazos" },
-	{ label: "Espalda", value: "Espalda" },
-	{ label: "Gluteos", value: "Gluteos" },
-	{ label: "Hombros", value: "Hombros" },
-	{ label: "Pecho", value: "Pecho" },
-	{ label: "Piernas", value: "Piernas" },
-	{ label: "Triceps", value: "Triceps" },
-	{ label: "Core", value: "Core" },
-	{ label: "Cardio", value: "Cardio" },
-	{ label: "Cuello", value: "Cuello" },
-] as const;
-
-export const COACH_EXERCISE_MUSCLE_GROUP_OPTIONS = [
-	{ label: "Abdomen", value: "Abdomen" },
-	{ label: "Antebrazos", value: "Antebrazos" },
-	{ label: "Biceps", value: "Biceps" },
-	{ label: "Brazos", value: "Brazos" },
-	{ label: "Espalda", value: "Espalda" },
-	{ label: "Gluteos", value: "Gluteos" },
-	{ label: "Hombros", value: "Hombros" },
-	{ label: "Pecho", value: "Pecho" },
-	{ label: "Piernas", value: "Piernas" },
-	{ label: "Triceps", value: "Triceps" },
-	{ label: "Core", value: "Core" },
-	{ label: "Cuello", value: "Cuello" },
-	{ label: "Cardio", value: "Cardio" },
-] as const;
-
 // Las categorias del catalogo global estan en español ("brazos", "core",
 // "antebrazos"); las de ejercicios viejos pueden estar en ingles. El orden
 // importa: "antebrazos" contiene "brazos" y "lower arm" contiene "arm".

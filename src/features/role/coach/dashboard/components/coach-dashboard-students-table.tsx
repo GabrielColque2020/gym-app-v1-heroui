@@ -12,12 +12,10 @@ import { CoachDashboardStudentMobileCard } from "@/features/role/coach/dashboard
 import { buildCoachDashboardStudentsColumns, filterCoachDashboardStudents, } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table.utils";
 
 type CoachDashboardStudentsTableProps = {
-	currentPeriodLabel: string;
 	students: CoachDashboardStudentSummary[];
 };
 
 export function CoachDashboardStudentsTable( {
-												 currentPeriodLabel,
 												 students,
 											 }: CoachDashboardStudentsTableProps ) {
 	const [ searchFilter, setSearchFilter ] = useState( "" );
@@ -32,15 +30,15 @@ export function CoachDashboardStudentsTable( {
 		page,
 	} );
 	const columns = useMemo<DataGridColumn<CoachDashboardStudentSummary>[]>(
-		() => buildCoachDashboardStudentsColumns( currentPeriodLabel ),
-		[ currentPeriodLabel ],
+		() => buildCoachDashboardStudentsColumns(),
+		[],
 	);
 
 	if (students.length === 0) {
 		return (
 			<CoachDashboardEmptyState
-				description={ "Primero necesitas cargar estudiantes para usar el dashboard operativo." }
-				title={ "Todavía no hay estudiantes vinculados al coach" }
+				description={ "Cargá el primero desde Estudiantes, en el menú, para empezar." }
+				title={ "Todavía no tenés estudiantes" }
 			/>
 		);
 	}
@@ -74,7 +72,7 @@ export function CoachDashboardStudentsTable( {
 
 				{ filteredStudents.length === 0 ? (
 					<CoachDashboardEmptyState
-						description={ "No encontramos estudiantes que coincidan con la busqueda cargada." }
+						description={ "No encontramos estudiantes que coincidan con la búsqueda." }
 						title={ "Sin resultados" }
 					/>
 				) : (
@@ -96,7 +94,6 @@ export function CoachDashboardStudentsTable( {
 								{ pagination.paginatedItems.map( ( student ) => (
 									<CoachDashboardStudentMobileCard
 										key={ student.id }
-										currentPeriodLabel={ currentPeriodLabel }
 										student={ student }
 									/>
 								) ) }

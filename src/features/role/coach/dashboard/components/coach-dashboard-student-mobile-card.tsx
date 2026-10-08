@@ -6,12 +6,10 @@ import { CoachDashboardStudentRowActions } from "@/features/role/coach/dashboard
 import { buildCoachDashboardRoutineStatusLabel, formatCoachDashboardDateLabel, } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table.utils";
 
 type CoachDashboardStudentMobileCardProps = {
-	currentPeriodLabel: string;
 	student: CoachDashboardStudentSummary;
 };
 
 export function CoachDashboardStudentMobileCard( {
-													 currentPeriodLabel,
 													 student,
 												 }: CoachDashboardStudentMobileCardProps ) {
 	return (
@@ -30,7 +28,7 @@ export function CoachDashboardStudentMobileCard( {
 				<div className={ "grid gap-2 sm:grid-cols-2" }>
 					<div className={ "rounded-lg border border-border bg-surface px-3 py-2" }>
 						<p className={ "text-xs font-medium text-muted" }>Rutina del mes</p>
-						<p className={ "text-sm text-foreground" }>{ buildCoachDashboardRoutineStatusLabel( student, currentPeriodLabel ) }</p>
+						<p className={ "text-sm text-foreground" }>{ buildCoachDashboardRoutineStatusLabel( student ) }</p>
 					</div>
 					<div className={ "rounded-lg border border-border bg-surface px-3 py-2" }>
 						<p className={ "text-xs font-medium text-muted" }>Plan alimenticio</p>

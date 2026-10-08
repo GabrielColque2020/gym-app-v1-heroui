@@ -3,7 +3,7 @@ import type { CoachDashboardSummary } from "@/features/role/coach/dashboard/acti
 export function buildCoachDashboardQuickStats( summary: CoachDashboardSummary ) {
 	return [
 		{
-			description: "Alumnos activos vinculados al coach.",
+			description: "Estudiantes activos a tu cargo.",
 			label: "Estudiantes activos",
 			value: summary.totals.activeStudents,
 		},

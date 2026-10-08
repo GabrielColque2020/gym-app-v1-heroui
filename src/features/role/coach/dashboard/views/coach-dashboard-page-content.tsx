@@ -26,12 +26,12 @@ export default function CoachDashboardPageContent() {
 
 	if (shouldShowLoading) {
 		return (
-			<DashboardSkeleton title={ "Cargando dashboard coach" } variant={ "coach" }/>
+			<DashboardSkeleton title={ "Cargando el inicio" } variant={ "coach" }/>
 		);
 	}
 
 	if (isError || !data) {
-		return <CoachDashboardErrorState message={ error?.message ?? "No pudimos cargar el resumen operativo del coach." }/>;
+		return <CoachDashboardErrorState message={ error?.message ?? "No pudimos cargar el resumen." }/>;
 	}
 
 	return (
@@ -46,7 +46,6 @@ export default function CoachDashboardPageContent() {
 				students={ data.students }
 			/>
 			<CoachDashboardStudentsTable
-				currentPeriodLabel={ data.currentPeriod.label }
 				students={ data.students }
 			/>
 			<CoachDashboardQuickStats items={ buildCoachDashboardQuickStats( data ) }/>

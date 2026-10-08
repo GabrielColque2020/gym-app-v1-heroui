@@ -1,6 +1,7 @@
 "use client";
 
 import type { Key } from "react";
+import { useMemo } from "react";
 import {
 	Checkbox,
 	Description,
@@ -17,11 +18,7 @@ import {
 import { AsyncMedia } from "@/components/common";
 import { BODY_PART_OPTIONS, formatBodyPart } from "@/features/exercises/services/exercise-formatters";
 import type { CoachExerciseFormValues } from "@/features/role/coach/exercises/services/coach-exercise-form";
-import {
-	COACH_EXERCISE_EQUIPMENT_OPTIONS,
-	COACH_EXERCISE_MUSCLE_GROUP_OPTIONS,
-	COACH_EXERCISE_TARGET_OPTIONS,
-} from "@/features/role/coach/exercises/services/coach-exercise-form";
+import { useCoachExercises } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 
 type ExerciseDrawerFieldsProps = {
 	isCategoryInvalid: boolean;
@@ -33,22 +30,119 @@ type ExerciseDrawerFieldsProps = {
 	values: CoachExerciseFormValues;
 };
 
-function getOptionsWithCurrentValue( currentValue: string, options: readonly { label: string; value: string }[] ) {
-	const normalizedCurrentValue = currentValue.trim();
-	const currentValueIsKnown = options.some( ( option ) => option.value === normalizedCurrentValue );
+const OPTION_FIELDS = [ "equipment", "muscleGroup", "target" ] as const;
 
-	if (!normalizedCurrentValue || currentValueIsKnown) {
-		return options;
-	}
+type OptionField = ( typeof OPTION_FIELDS )[ number ];
 
-	return [
-		{ label: normalizedCurrentValue, value: normalizedCurrentValue },
-		...options,
-	];
+// El id de la opcion que deja el campo vacio: un desplegable no admite un id vacio.
+const NONE_KEY = "__none__";
+
+function capitalize( value: string ) {
+	return value.charAt( 0 ).toLocaleUpperCase( "es" ) + value.slice( 1 );
 }
 
 function normalizeSelectValue( value: Key | null ) {
 	return value === null ? "" : String( value );
+}
+
+// Las opciones salen del catalogo que el entrenador ya tiene cargado y no de una
+// lista fija: asi el formulario ofrece los musculos y equipos que existen,
+// escritos igual que en el resto de los ejercicios (con sus acentos), y un
+// ejercicio propio se puede filtrar junto con los del catalogo general.
+function useCoachExerciseOptions( values: CoachExerciseFormValues ) {
+	const { data: exercises } = useCoachExercises();
+	const catalogValues = useMemo( () => {
+		const byField: Record<OptionField, Map<string, string>> = {
+			equipment: new Map(),
+			muscleGroup: new Map(),
+			target: new Map(),
+		};
+
+		for (const exercise of exercises ?? []) {
+			for (const field of OPTION_FIELDS) {
+				const value = exercise[ field ]?.trim();
+
+				// Sin distinguir mayusculas: "Polea" y "polea" son la misma opcion.
+				if (value && !byField[ field ].has( value.toLocaleLowerCase( "es" ) )) {
+					byField[ field ].set( value.toLocaleLowerCase( "es" ), value );
+				}
+			}
+		}
+
+		return byField;
+	}, [ exercises ] );
+
+	function buildOptions( field: OptionField ) {
+		const stored = new Map( catalogValues[ field ] );
+		const currentValue = values[ field ].trim();
+
+		// Lo que el ejercicio ya tiene guardado se ofrece aunque no este en el catalogo.
+		if (currentValue && !stored.has( currentValue.toLocaleLowerCase( "es" ) )) {
+			stored.set( currentValue.toLocaleLowerCase( "es" ), currentValue );
+		}
+
+		return [ ...stored.values() ]
+			.sort( ( left, right ) => left.localeCompare( right, "es", { sensitivity: "base" } ) )
+			.map( ( value ) => ( { label: capitalize( value ), value } ) );
+	}
+
+	return {
+		equipment: buildOptions( "equipment" ),
+		muscleGroup: buildOptions( "muscleGroup" ),
+		target: buildOptions( "target" ),
+	};
+}
+
+type OptionalSelectProps = {
+	label: string;
+	name: string;
+	onChangeAction: ( value: string ) => void;
+	options: Array<{ label: string; value: string }>;
+	value: string;
+};
+
+// Desplegable de un dato opcional: se puede dejar sin elegir y volver a vaciarlo.
+function OptionalSelect( { label, name, onChangeAction, options, value }: OptionalSelectProps ) {
+	// El valor guardado puede diferir en mayusculas del de la lista.
+	const selectedValue = options.find(
+		( option ) => option.value.toLocaleLowerCase( "es" ) === value.trim().toLocaleLowerCase( "es" ),
+	)?.value ?? null;
+
+	return (
+		<div className={ "grid gap-2" }>
+			<Label>{ label } <span className={ "font-normal text-muted" }>(opcional)</span></Label>
+			<Select
+				fullWidth
+				aria-label={ label }
+				name={ name }
+				placeholder={ "Sin especificar" }
+				value={ selectedValue }
+				onChange={ ( key ) => {
+					const nextValue = normalizeSelectValue( key );
+
+					onChangeAction( nextValue === NONE_KEY ? "" : nextValue );
+				} }
+			>
+				<Select.Trigger className={ "border border-border" }>
+					<Select.Value/>
+					<Select.Indicator/>
+				</Select.Trigger>
+				<Select.Popover>
+					<ListBox>
+						<ListBox.Item id={ NONE_KEY } textValue={ "Sin especificar" }>
+							<span className={ "text-muted" }>Sin especificar</span>
+						</ListBox.Item>
+						{ options.map( ( option ) => (
+							<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
+								{ option.label }
+								<ListBox.ItemIndicator/>
+							</ListBox.Item>
+						) ) }
+					</ListBox>
+				</Select.Popover>
+			</Select>
+		</div>
+	);
 }
 
 export function ExerciseDrawerFields( {
@@ -60,6 +154,8 @@ export function ExerciseDrawerFields( {
 	updateValue,
 	values,
 }: ExerciseDrawerFieldsProps ) {
+	const options = useCoachExerciseOptions( values );
+
 	return (
 		<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 			<div className={ "grid gap-2" }>
@@ -109,82 +205,31 @@ export function ExerciseDrawerFields( {
 				{ isCategoryInvalid ? <FieldError>Debe tener al menos 2 caracteres.</FieldError> : null }
 			</div>
 
+			{ /* Primero el musculo que mas trabaja y despues el que acompaña. */ }
 			<div className={ "grid gap-4 md:grid-cols-2" }>
-				<div className={ "grid gap-2" }>
-					<Label>Tipo de equipamiento</Label>
-					<Select
-						fullWidth
-						name={ "equipment" }
-						value={ values.equipment }
-						onChange={ ( value ) => updateValue( "equipment", normalizeSelectValue( value ) ) }
-					>
-						<Select.Trigger className={ "border border-border" }>
-							<Select.Value/>
-							<Select.Indicator/>
-						</Select.Trigger>
-						<Select.Popover>
-							<ListBox>
-								{ getOptionsWithCurrentValue( values.equipment, COACH_EXERCISE_EQUIPMENT_OPTIONS ).map( ( option ) => (
-									<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-										{ option.label }
-										<ListBox.ItemIndicator/>
-									</ListBox.Item>
-								) ) }
-							</ListBox>
-						</Select.Popover>
-					</Select>
-				</div>
-
-				<div className={ "grid gap-2" }>
-					<Label>Músculo secundario</Label>
-					<Select
-						fullWidth
-						name={ "muscleGroup" }
-						value={ values.muscleGroup }
-						onChange={ ( value ) => updateValue( "muscleGroup", normalizeSelectValue( value ) ) }
-					>
-						<Select.Trigger className={ "border border-border" }>
-							<Select.Value/>
-							<Select.Indicator/>
-						</Select.Trigger>
-						<Select.Popover>
-							<ListBox>
-								{ getOptionsWithCurrentValue( values.muscleGroup, COACH_EXERCISE_MUSCLE_GROUP_OPTIONS ).map( ( option ) => (
-									<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-										{ option.label }
-										<ListBox.ItemIndicator/>
-									</ListBox.Item>
-								) ) }
-							</ListBox>
-						</Select.Popover>
-					</Select>
-				</div>
-			</div>
-
-			<div className={ "grid gap-2" }>
-				<Label>Músculo objetivo</Label>
-				<Select
-					fullWidth
+				<OptionalSelect
+					label={ "Músculo objetivo" }
 					name={ "target" }
+					options={ options.target }
 					value={ values.target }
-					onChange={ ( value ) => updateValue( "target", normalizeSelectValue( value ) ) }
-				>
-					<Select.Trigger className={ "border border-border" }>
-						<Select.Value/>
-						<Select.Indicator/>
-					</Select.Trigger>
-					<Select.Popover>
-						<ListBox>
-							{ getOptionsWithCurrentValue( values.target, COACH_EXERCISE_TARGET_OPTIONS ).map( ( option ) => (
-								<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-									{ option.label }
-									<ListBox.ItemIndicator/>
-								</ListBox.Item>
-							) ) }
-						</ListBox>
-					</Select.Popover>
-				</Select>
+					onChangeAction={ ( value ) => updateValue( "target", value ) }
+				/>
+				<OptionalSelect
+					label={ "Músculo secundario" }
+					name={ "muscleGroup" }
+					options={ options.muscleGroup }
+					value={ values.muscleGroup }
+					onChangeAction={ ( value ) => updateValue( "muscleGroup", value ) }
+				/>
 			</div>
+
+			<OptionalSelect
+				label={ "Equipamiento" }
+				name={ "equipment" }
+				options={ options.equipment }
+				value={ values.equipment }
+				onChangeAction={ ( value ) => updateValue( "equipment", value ) }
+			/>
 
 			<TextField
 				fullWidth
