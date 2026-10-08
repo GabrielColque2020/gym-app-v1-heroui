@@ -101,6 +101,11 @@ export function useSearchAndCreateExerciseDrawerState( {
 	const handlePickerOpenChange = useCallback( ( isOpen: boolean ) => {
 		if (isOpen) {
 			setAddedCount( 0 );
+			// Cada vez que se abre arranca vacio: lo que se escribio y no se uso la
+			// vez anterior no debe aplicarse, sin que se note, al proximo ejercicio.
+			setSetsValue( "" );
+			setRepsValue( "" );
+			setRestValue( null );
 		}
 
 		setIsPickerOpen( isOpen );

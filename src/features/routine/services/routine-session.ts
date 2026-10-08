@@ -141,7 +141,11 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 		.map( ( routine ) => {
 			const exercise = routine.exercise;
 			const exerciseId = routine.exerciseId ?? routine.exercise?.id ?? routine.id;
-			const progressEntries = getProgressEntriesBySlot( detail, routine );
+			// La variante vale solo para el dia en que se eligio: se mira lo cargado
+			// en este dia y no la ultima vez que se hizo el ejercicio. Si no, un
+			// cambio de un solo dia tapaba para siempre el ejercicio del entrenador.
+			const progressEntries = getProgressEntriesBySlot( detail, routine )
+				.filter( ( entry ) => getSessionKey( entry ) === ownSessionKey );
 			const variantExerciseId = getVariantExerciseId( routine, progressEntries );
 			const selectedVariant = variantExerciseId
 				? routine.variants.find( ( variant ) => variant.variantExercise.id === variantExerciseId )?.variantExercise ?? null
