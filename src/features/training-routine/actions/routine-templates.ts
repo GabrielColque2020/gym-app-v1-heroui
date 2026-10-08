@@ -144,7 +144,11 @@ export async function getRoutineTemplatesAction(): Promise<RoutineTemplateListIt
 		weeks: Array<{ routineDays: Array<{ _count: { routines: number } }> }>;
 	}>;
 
-	return templates.map( ( template ) => ( {
+	// Orden natural: "copia 2" va antes que "copia 10", y sin distinguir mayusculas.
+	const sortedTemplates = [ ...templates ].sort( ( left, right ) =>
+		left.name.localeCompare( right.name, "es", { numeric: true, sensitivity: "base" } ) );
+
+	return sortedTemplates.map( ( template ) => ( {
 		dayCount: template.weeks.reduce( ( count, week ) => count + week.routineDays.length, 0 ),
 		exerciseCount: template.weeks.reduce(
 			( count, week ) => count + week.routineDays.reduce( ( dayTotal, day ) => dayTotal + day._count.routines, 0 ),

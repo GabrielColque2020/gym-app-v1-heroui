@@ -49,7 +49,9 @@ export function RoutineTemplateCard( { template }: RoutineTemplateCardProps ) {
 				className={ "min-w-0 flex-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent" }
 				href={ buildRoutineTemplateHref( template.id ) }
 			>
-				<p className={ "line-clamp-2 text-sm font-semibold text-foreground" }>{ template.name }</p>
+				{ /* Tres renglones: en dos, un nombre largo perdia el final, y las copias
+				     ("... (copia 2)") se veian todas iguales. */ }
+				<p className={ "line-clamp-3 text-sm font-semibold text-foreground" }>{ template.name }</p>
 				<p className={ "mt-0.5 text-xs text-muted" }>
 					{ pluralize( template.weekCount, "semana", "semanas" ) } · { pluralize( template.dayCount, "día", "días" ) } · { pluralize( template.exerciseCount, "ejercicio", "ejercicios" ) }
 				</p>
