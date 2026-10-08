@@ -11,6 +11,12 @@ import {
 	useLatestTrainingRoutineMonth,
 	useTrainingRoutineCopySource,
 } from "@/features/training-routine/hooks/use-training-routine-copy-source";
+import {
+	useApplyRoutineTemplate,
+	useCopyRoutineTemplateWeeks,
+	useRoutineTemplateDetail,
+	useRoutineTemplates,
+} from "@/features/role/coach/training-routine/hooks/use-routine-templates";
 import { useTrainingRoutinesStudents } from "@/features/role/coach/training-routines-students/hooks/use-training-routines-students";
 import { buildYearOptions, monthYearLabel, padMonth, weekListLabel } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer-utils";
 
@@ -25,8 +31,14 @@ export type CoachCopyRoutineDrawerProps = {
 	hasActiveRoutine?: boolean;
 	// Se llama cuando la copia termino bien, para cerrar el drawer.
 	onCopiedAction?: () => void;
+	// Abre con una plantilla elegida como origen, si el entrenador tiene alguna.
+	preferTemplateSource?: boolean;
 	studentId: string;
 };
+
+// En el desplegable "Copiar de" conviven estudiantes y plantillas: las
+// plantillas llevan este prefijo para distinguirlas de un estudiante.
+const TEMPLATE_SOURCE_PREFIX = "template:";
 
 const NO_WEEKS: number[] = [];
 
@@ -39,6 +51,7 @@ export function useCoachCopyRoutineDrawerState( {
 													destinationWeeksOccupied = 0,
 													destinationYear,
 													onCopiedAction,
+													preferTemplateSource = false,
 													studentId,
 												}: CoachCopyRoutineDrawerProps ) {
 	const yearOptions = useMemo( () => buildYearOptions(), [] );
@@ -49,9 +62,25 @@ export function useCoachCopyRoutineDrawerState( {
 	// Lo que eligio el coach a mano. Mientras no elija, el origen es el ultimo mes
 	// con rutina, y si no hay ninguno, el mes calendario anterior.
 	const [ selectedSource, setSelectedSource ] = useState<{ month: string; year: string } | null>( null );
-	// De quien se copia: por defecto el mismo estudiante, o cualquier otro del coach.
-	const [ sourceStudentId, setSourceStudentId ] = useState( studentId );
-	const isOtherStudent = sourceStudentId !== studentId;
+	const templates = useRoutineTemplates().data;
+	const templateOptions = useMemo(
+		() => ( templates ?? [] ).map( ( template ) => ( { label: template.name, value: `${ TEMPLATE_SOURCE_PREFIX }${ template.id }` } ) ),
+		[ templates ],
+	);
+	// De donde se copia: por defecto el mismo estudiante. Puede ser otro estudiante
+	// del entrenador o una de sus plantillas. Mientras no se elija a mano, si se
+	// pidio abrir con plantilla, es la primera.
+	const [ chosenSourceId, setSourceStudentId ] = useState<string | null>( null );
+	const sourceStudentId = chosenSourceId
+		?? ( preferTemplateSource && templateOptions[ 0 ] ? templateOptions[ 0 ].value : studentId );
+	const templateId = sourceStudentId.startsWith( TEMPLATE_SOURCE_PREFIX )
+		? sourceStudentId.slice( TEMPLATE_SOURCE_PREFIX.length )
+		: null;
+	const isTemplateSource = templateId !== null;
+	// El estudiante origen, vacio si el origen es una plantilla: con eso las
+	// consultas por estudiante no se hacen.
+	const sourceOwnerStudentId = isTemplateSource ? "" : sourceStudentId;
+	const isOtherStudent = !isTemplateSource && sourceStudentId !== studentId;
 	const studentsQuery = useTrainingRoutinesStudents();
 	const studentOptions = useMemo( () => {
 		const students = studentsQuery.data ?? [];
@@ -69,7 +98,7 @@ export function useCoachCopyRoutineDrawerState( {
 	const latestRoutineMonthQuery = useLatestTrainingRoutineMonth( {
 		inclusive: isOtherStudent,
 		month: destinationMonthNumber,
-		studentId: sourceStudentId,
+		studentId: sourceOwnerStudentId,
 		year: destinationYearNumber,
 	} );
 	const defaultSource = latestRoutineMonthQuery.data
@@ -92,20 +121,50 @@ export function useCoachCopyRoutineDrawerState( {
 	const sourceMonthNumber = Number( sourceMonth );
 	const sourceYearNumber = Number( sourceYear );
 	const sameMonth =
+		!isTemplateSource &&
 		!isOtherStudent &&
 		sourceMonthNumber === destinationMonthNumber &&
 		sourceYearNumber === destinationYearNumber;
-	const sourceQuery = useTrainingRoutineCopySource( {
+	const studentSourceQuery = useTrainingRoutineCopySource( {
 		month: sourceMonthNumber,
-		studentId: sourceStudentId,
+		studentId: sourceOwnerStudentId,
 		year: sourceYearNumber,
 	} );
-	const copyMonth = useCopyTrainingRoutineMonth();
-	const copyWeeks = useCopyTrainingRoutineWeeks();
-	const source = sourceQuery.data;
-	const sourceLabel = isOtherStudent && sourceStudentName
-		? `${ monthYearLabel( sourceMonth, sourceYear ) } de ${ sourceStudentName }`
-		: monthYearLabel( sourceMonth, sourceYear );
+	const templateSourceQuery = useRoutineTemplateDetail( { templateId } );
+	// La plantilla, resumida igual que la rutina de un mes: cuanto tiene cada semana.
+	const templateSource = useMemo( () => {
+		if (!templateId || templateSourceQuery.isLoading) return undefined;
+
+		const routineWeeks = ( templateSourceQuery.data?.weeks ?? [] ).map( ( week ) => ( {
+			dayCount: week.routineDays.length,
+			exerciseCount: week.routineDays.reduce( ( count, day ) => count + day.routines.length, 0 ),
+			id: week.id,
+			week: week.week,
+		} ) );
+
+		return {
+			dayCount: routineWeeks.reduce( ( count, week ) => count + week.dayCount, 0 ),
+			exerciseCount: routineWeeks.reduce( ( count, week ) => count + week.exerciseCount, 0 ),
+			hasRoutine: routineWeeks.length > 0,
+			routineWeeks,
+			weekCount: routineWeeks.length,
+		};
+	}, [ templateId, templateSourceQuery.data, templateSourceQuery.isLoading ] );
+	const sourceQuery = isTemplateSource ? templateSourceQuery : studentSourceQuery;
+	const copyStudentMonth = useCopyTrainingRoutineMonth();
+	const copyStudentWeeks = useCopyTrainingRoutineWeeks();
+	const applyTemplate = useApplyRoutineTemplate();
+	const copyTemplateWeeks = useCopyRoutineTemplateWeeks();
+	// Las pantallas solo miran si la copia esta en curso: reciben la que corresponde al origen.
+	const copyMonth = isTemplateSource ? applyTemplate : copyStudentMonth;
+	const copyWeeks = isTemplateSource ? copyTemplateWeeks : copyStudentWeeks;
+	const source = isTemplateSource ? templateSource : studentSourceQuery.data;
+	const templateName = templates?.find( ( template ) => template.id === templateId )?.name;
+	const sourceLabel = isTemplateSource
+		? `la plantilla "${ templateName ?? "elegida" }"`
+		: isOtherStudent && sourceStudentName
+			? `${ monthYearLabel( sourceMonth, sourceYear ) } de ${ sourceStudentName }`
+			: monthYearLabel( sourceMonth, sourceYear );
 	const sourceWeeks = source?.routineWeeks ?? [];
 	const selectedSorted = useMemo(
 		() => [ ...selectedSourceWeeks ].sort( ( a, b ) => Number( a ) - Number( b ) ),
@@ -279,8 +338,27 @@ export function useCoachCopyRoutineDrawerState( {
 
 	async function handleCopy() {
 		try {
-			if (mode === "month") {
-				await copyMonth.mutateAsync( {
+			if (templateId) {
+				const templateInput = {
+					month: destinationMonthNumber,
+					studentId,
+					templateId,
+					year: destinationYearNumber,
+				};
+				const result = mode === "month"
+					? await applyTemplate.mutateAsync( templateInput )
+					: await copyTemplateWeeks.mutateAsync( { ...templateInput, weekMappings } );
+
+				if (!result.ok) {
+					toast.danger( result.reason === "template-not-found" ? "Esa plantilla ya no existe" : "No se encontró al estudiante", {
+						description: "La rutina quedó como estaba.",
+					} );
+					setConfirmedKey( null );
+
+					return;
+				}
+			} else if (mode === "month") {
+				await copyStudentMonth.mutateAsync( {
 					destinationMonth: destinationMonthNumber,
 					destinationYear: destinationYearNumber,
 					sourceMonth: sourceMonthNumber,
@@ -289,7 +367,7 @@ export function useCoachCopyRoutineDrawerState( {
 					studentId,
 				} );
 			} else {
-				await copyWeeks.mutateAsync( {
+				await copyStudentWeeks.mutateAsync( {
 					destinationMonth: destinationMonthNumber,
 					destinationYear: destinationYearNumber,
 					sourceMonth: sourceMonthNumber,
@@ -300,7 +378,7 @@ export function useCoachCopyRoutineDrawerState( {
 				} );
 			}
 
-			toast.success( "Rutina copiada", {
+			toast.success( isTemplateSource ? "Rutina armada con la plantilla" : "Rutina copiada", {
 				description: `Ya está en ${ destLabel }.`,
 			} );
 			setConfirmedKey( null );
@@ -339,6 +417,7 @@ export function useCoachCopyRoutineDrawerState( {
 		handleSourceStudentChange,
 		handleSourceYearChange,
 		isSingleWeek,
+		isTemplateSource,
 		mode,
 		padMonth,
 		primaryDisabled,
@@ -362,6 +441,7 @@ export function useCoachCopyRoutineDrawerState( {
 		sourceWeeks,
 		studentOptions,
 		sourceYear,
+		templateOptions,
 		weekMappings,
 		willReplace,
 		yearOptions,

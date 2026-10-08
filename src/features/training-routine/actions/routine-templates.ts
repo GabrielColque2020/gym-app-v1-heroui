@@ -5,6 +5,7 @@ import {
 	type ApplyRoutineTemplateInput,
 	type ApplyRoutineTemplateResult,
 	buildRoutineTemplateCopyName,
+	type CopyRoutineTemplateWeeksInput,
 	type CreateRoutineTemplateInput,
 	type CreateRoutineTemplateResult,
 	type DuplicateRoutineTemplateResult,
@@ -17,7 +18,7 @@ import {
 	type SaveRoutineAsTemplateResult,
 	type UpdateRoutineTemplateStructureInput,
 } from "@/features/training-routine/services/routine-template";
-import { validateRoutineStructureContent } from "@/features/training-routine/services/routine-structure";
+import { MAX_ROUTINE_WEEKS, validateRoutineStructureContent } from "@/features/training-routine/services/routine-structure";
 import { syncRoutineWeeksStructure } from "@/features/training-routine/services/routine-structure-sync";
 import {
 	countRoutineWeeksContent,
@@ -444,4 +445,100 @@ export async function repeatRoutineTemplateWeekAction( input: { sourceWeek: numb
 	} );
 
 	return { ok: true };
+}
+
+// Copia algunas semanas de una plantilla en el mes de un estudiante. Solo
+// reemplaza las semanas elegidas como destino; el resto del mes queda como esta.
+export async function copyRoutineTemplateWeeksAction( input: CopyRoutineTemplateWeeksInput ): Promise<ApplyRoutineTemplateResult> {
+	const session = await requireCoachSession( "copiar semanas de una plantilla" );
+
+	if (!Number.isInteger( input.month ) || input.month < 1 || input.month > 12) throw new Error( "El mes no es válido." );
+	if (!Number.isInteger( input.year ) || input.year < 2000 || input.year > 2100) throw new Error( "El año no es válido." );
+
+	const isValidWeek = ( week: number ) => Number.isInteger( week ) && week >= 1 && week <= MAX_ROUTINE_WEEKS;
+	const destinationWeeks = input.weekMappings.map( ( mapping ) => mapping.destinationWeek );
+
+	if (
+		input.weekMappings.length === 0
+		|| input.weekMappings.some( ( mapping ) => !isValidWeek( mapping.sourceWeek ) || !isValidWeek( mapping.destinationWeek ) )
+		|| new Set( destinationWeeks ).size !== destinationWeeks.length
+	) {
+		throw new Error( "Las semanas elegidas no son válidas." );
+	}
+
+	const student = await prisma.user.findFirst( {
+		select: {
+			id: true,
+		},
+		where: {
+			active: true,
+			coachId: session.sub,
+			id: input.studentId,
+			role: "STUDENT",
+		},
+	} );
+
+	if (!student) return { ok: false, reason: "student-not-found" };
+
+	const template = ( await prisma.routineTemplate.findFirst( {
+		include: {
+			weeks: {
+				include: routineWeeksCopyInclude,
+				orderBy: {
+					week: "asc",
+				},
+			},
+		},
+		where: {
+			coachId: session.sub,
+			id: input.templateId,
+		},
+	} ) ) as unknown as { name: string; objective: string | null; weeks: RoutineWeekCopySource[] } | null;
+
+	if (!template) return { ok: false, reason: "template-not-found" };
+
+	const sourceWeekByNumber = new Map( template.weeks.map( ( week ) => [ week.week, week ] ) );
+	const weeksToCreate = input.weekMappings.map( ( mapping ) => {
+		const sourceWeek = sourceWeekByNumber.get( mapping.sourceWeek );
+
+		if (!sourceWeek) throw new Error( `La semana ${ mapping.sourceWeek } no existe en la plantilla.` );
+
+		return { ...sourceWeek, name: `Semana ${ mapping.destinationWeek }`, week: mapping.destinationWeek };
+	} );
+
+	await prisma.$transaction( async ( tx ) => {
+		// Si el mes todavia no existe se crea con el objetivo de la plantilla; si
+		// existe, conserva el suyo.
+		const routineMonth = await tx.trainingRoutineMonth.upsert( {
+			create: {
+				month: input.month,
+				objective: template.objective,
+				studentId: input.studentId,
+				year: input.year,
+			},
+			select: {
+				id: true,
+			},
+			update: {},
+			where: {
+				studentId_month_year: {
+					month: input.month,
+					studentId: input.studentId,
+					year: input.year,
+				},
+			},
+		} );
+
+		await tx.trainingRoutineWeek.deleteMany( {
+			where: {
+				trainingRoutineMonthId: routineMonth.id,
+				week: {
+					in: destinationWeeks,
+				},
+			},
+		} );
+		await createRoutineWeeksCopy( tx, weeksToCreate, { trainingRoutineMonthId: routineMonth.id } );
+	} );
+
+	return { ok: true, templateName: template.name };
 }

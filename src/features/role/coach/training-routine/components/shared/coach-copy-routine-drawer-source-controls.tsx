@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Label, ListBox, Select } from "@heroui/react";
+import { Header, Label, ListBox, Select } from "@heroui/react";
 import { Segment } from "@heroui-pro/react";
 import { CalendarClock, Layers3 } from "lucide-react";
 
@@ -15,6 +15,8 @@ type CoachCopyRoutineDrawerSourceControlsProps = {
 	sourceStudentId: string;
 	studentOptions: Option[];
 	handleSourceYearChangeAction: ( value: string ) => void;
+	// El origen elegido es una plantilla: no tiene mes ni año.
+	isTemplateSource: boolean;
 	mode: "month" | "weeks";
 	onModeChangeAction: ( mode: "month" | "weeks" ) => void;
 	padMonthAction: ( month: string ) => string;
@@ -22,6 +24,7 @@ type CoachCopyRoutineDrawerSourceControlsProps = {
 	sourceYear: string;
 	yearOptions: Option[];
 	monthOptions: Option[];
+	templateOptions: Option[];
 };
 
 export function CoachCopyRoutineDrawerSourceControls( {
@@ -30,6 +33,7 @@ export function CoachCopyRoutineDrawerSourceControls( {
 														  sourceStudentId,
 														  studentOptions,
 														  handleSourceYearChangeAction,
+														  isTemplateSource,
 														  mode,
 														  onModeChangeAction,
 														  padMonthAction,
@@ -37,11 +41,12 @@ export function CoachCopyRoutineDrawerSourceControls( {
 														  sourceYear,
 														  yearOptions,
 														  monthOptions,
+														  templateOptions,
 													  }: CoachCopyRoutineDrawerSourceControlsProps ) {
 	return (
 		<div className={ "grid gap-3" }>
-		{ /* Con un solo estudiante no hay de quien mas copiar. */ }
-		{ studentOptions.length > 1 ? (
+		{ /* Con un solo estudiante y sin plantillas no hay de donde mas copiar. */ }
+		{ studentOptions.length + templateOptions.length > 1 ? (
 			<Select value={ sourceStudentId } variant={ "secondary" } onChange={ ( key ) => handleSourceStudentChangeAction( key as string ) }>
 				<Label>Copiar de</Label>
 				<Select.Trigger className={ "h-10 rounded-xl shadow-sm" }>
@@ -50,12 +55,26 @@ export function CoachCopyRoutineDrawerSourceControls( {
 				</Select.Trigger>
 				<Select.Popover>
 					<ListBox>
-						{ studentOptions.map( ( student ) => (
-							<ListBox.Item key={ student.value } id={ student.value } textValue={ student.label }>
-								{ student.label }
-								<ListBox.ItemIndicator/>
-							</ListBox.Item>
-						) ) }
+						<ListBox.Section>
+							<Header>Estudiantes</Header>
+							{ studentOptions.map( ( student ) => (
+								<ListBox.Item key={ student.value } id={ student.value } textValue={ student.label }>
+									{ student.label }
+									<ListBox.ItemIndicator/>
+								</ListBox.Item>
+							) ) }
+						</ListBox.Section>
+						{ templateOptions.length > 0 ? (
+							<ListBox.Section>
+								<Header>Plantillas</Header>
+								{ templateOptions.map( ( template ) => (
+									<ListBox.Item key={ template.value } id={ template.value } textValue={ template.label }>
+										{ template.label }
+										<ListBox.ItemIndicator/>
+									</ListBox.Item>
+								) ) }
+							</ListBox.Section>
+						) : null }
 					</ListBox>
 				</Select.Popover>
 			</Select>
@@ -89,6 +108,11 @@ export function CoachCopyRoutineDrawerSourceControls( {
 				</Segment>
 			</div>
 
+			{ isTemplateSource ? (
+				<p className={ "self-end pb-2 text-sm leading-5 text-muted" }>
+					Una plantilla no tiene mes: se copia su contenido, entero o por semanas.
+				</p>
+			) : (
 			<div className={ "grid grid-cols-2 gap-3" }>
 				<Select value={ sourceYear } variant={ "secondary" } onChange={ ( key ) => handleSourceYearChangeAction( key as string ) }>
 					<Label>Año origen</Label>
@@ -126,6 +150,7 @@ export function CoachCopyRoutineDrawerSourceControls( {
 					</Select.Popover>
 				</Select>
 			</div>
+			) }
 		</div>
 		</div>
 	);

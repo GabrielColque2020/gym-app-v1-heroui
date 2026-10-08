@@ -10,7 +10,6 @@ import { CoachOptionRoutineActionMenu } from "@/features/role/coach/training-rou
 import { CoachDeleteRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-delete-routine-drawer";
 import { CoachEditRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-edit-routine-drawer";
 import { CoachSaveTemplateModal } from "@/features/role/coach/training-routine/components/shared/coach-save-template-modal";
-import { CoachUseTemplateModal } from "@/features/role/coach/training-routine/components/shared/coach-use-template-modal";
 import { useDeleteTrainingRoutineStructure } from "@/features/role/coach/training-routine/hooks/use-training-routine-structure";
 import { downloadFileFromUrl } from "@/features/shared/services/download-file";
 import { buildTrainingRoutineReportPdfUrl } from "@/features/training-routine/services/training-routines-report-pdf-url";
@@ -34,9 +33,16 @@ export function CoachOptionRoutineDrawer( {
 }: CoachDeleteRoutineActionProps ) {
 	const [ isConfirmOpen, setIsConfirmOpen ] = useState( false );
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
+	// El drawer de copiar se abre con el origen por defecto (otro mes del
+	// estudiante) o ya parado en una plantilla, segun desde donde se pidio.
+	const [ copySource, setCopySource ] = useState<"student" | "template">( "student" );
 	const [ isCopyOpen, setIsCopyOpen ] = useState( false );
+
+	function openCopy( source: "student" | "template" ) {
+		setCopySource( source );
+		setIsCopyOpen( true );
+	}
 	const [ isSaveTemplateOpen, setIsSaveTemplateOpen ] = useState( false );
-	const [ isUseTemplateOpen, setIsUseTemplateOpen ] = useState( false );
 	// Series que el estudiante ya cargo en el mes: copiar o usar una plantilla
 	// encima no las borra, pero hay que avisarlo.
 	const loadedSetCount = routineWeeks.reduce(
@@ -114,11 +120,11 @@ export function CoachOptionRoutineDrawer( {
 			</Button>
 			<CoachOptionRoutineActionMenu
 				isDownloading={ isDownloading }
-				onCopyAction={ () => setIsCopyOpen( true ) }
+				onCopyAction={ () => openCopy( "student" ) }
 				onDeleteAction={ handleOpenDeleteConfirm }
 				onPrintAction={ handleDownloadReport }
 				onSaveTemplateAction={ () => setIsSaveTemplateOpen( true ) }
-				onUseTemplateAction={ () => setIsUseTemplateOpen( true ) }
+				onUseTemplateAction={ () => openCopy( "template" ) }
 			/>
 
 			<CoachEditRoutineDrawer
@@ -133,6 +139,9 @@ export function CoachOptionRoutineDrawer( {
 			/>
 
 			<CoachCopyRoutineDrawer
+				// Al cambiar de origen arranca limpio. La clave no cambia al cerrar, para
+				// que el drawer se vaya con su animacion.
+				key={ copySource }
 				destinationMonth={ String( month ) }
 				destinationLoadedSetCount={ loadedSetCount }
 				destinationWeekNumbers={ routineWeeks.map( ( routineWeek ) => routineWeek.week ) }
@@ -141,6 +150,7 @@ export function CoachOptionRoutineDrawer( {
 				hasActiveRoutine
 				hideTrigger
 				isOpen={ isCopyOpen }
+				preferTemplateSource={ copySource === "template" }
 				studentId={ studentId }
 				onOpenChangeAction={ setIsCopyOpen }
 			/>
@@ -153,17 +163,6 @@ export function CoachOptionRoutineDrawer( {
 				summary={ summary }
 				year={ year }
 				onOpenChangeAction={ setIsSaveTemplateOpen }
-			/>
-
-			<CoachUseTemplateModal
-				destinationLoadedSetCount={ loadedSetCount }
-				hasActiveRoutine
-				isOpen={ isUseTemplateOpen }
-				month={ month }
-				studentId={ studentId }
-				studentName={ studentName }
-				year={ year }
-				onOpenChangeAction={ setIsUseTemplateOpen }
 			/>
 
 			<CoachDeleteRoutineDrawer

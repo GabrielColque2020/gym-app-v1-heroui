@@ -38,6 +38,11 @@ export type ApplyRoutineTemplateInput = {
 	year: number;
 };
 
+export type CopyRoutineTemplateWeeksInput = ApplyRoutineTemplateInput & {
+	// Que semana de la plantilla va a que semana del mes del estudiante.
+	weekMappings: Array<{ destinationWeek: number; sourceWeek: number }>;
+};
+
 export type ApplyRoutineTemplateResult =
 	| { ok: true; templateName: string }
 	| { ok: false; reason: "student-not-found" | "template-not-found" };

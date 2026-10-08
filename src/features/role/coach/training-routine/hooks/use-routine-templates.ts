@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_DEFAULTS } from "@/constants/query";
 import {
 	applyRoutineTemplateAction,
+	copyRoutineTemplateWeeksAction,
 	createRoutineTemplateAction,
 	deleteRoutineTemplateAction,
 	duplicateRoutineTemplateAction,
@@ -62,10 +63,22 @@ export function useRoutineTemplates( { alwaysFresh = false }: { alwaysFresh?: bo
 }
 
 export function useApplyRoutineTemplate() {
+	return useRoutineTemplateIntoMonthMutation( applyRoutineTemplateAction );
+}
+
+export function useCopyRoutineTemplateWeeks() {
+	return useRoutineTemplateIntoMonthMutation( copyRoutineTemplateWeeksAction );
+}
+
+// Usar una plantilla, entera o por semanas, cambia la rutina del mes del estudiante.
+function useRoutineTemplateIntoMonthMutation<
+	TInput extends { month: number; studentId: string; year: number },
+	TResult extends { ok: boolean },
+>( mutationFn: ( input: TInput ) => Promise<TResult> ) {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: applyRoutineTemplateAction,
+		mutationFn,
 		onSuccess: ( result, input ) => {
 			if (!result.ok) {
 				// La plantilla ya no existe: la lista guardada quedo vieja.

@@ -33,6 +33,8 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 		handleSourceStudentChange,
 		handleSourceYearChange,
 		isSingleWeek,
+		isTemplateSource,
+		templateOptions,
 		mode,
 		padMonth,
 		primaryDisabled,
@@ -92,6 +94,8 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 					sourceStudentId={ sourceStudentId }
 					studentOptions={ studentOptions }
 					handleSourceYearChangeAction={ handleSourceYearChange }
+					isTemplateSource={ isTemplateSource }
+					templateOptions={ templateOptions }
 					mode={ mode }
 					onModeChangeAction={ setMode }
 					padMonthAction={ padMonth }
@@ -123,7 +127,7 @@ export function CoachCopyRoutineDrawerInnerDesktop( {
 				) : source && !source.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<EmptyState className={ "flex min-h-48 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-default-hover px-4 text-center" }>
 						<Typography className={ "text-sm font-medium" }>No hay rutina en este origen.</Typography>
-						<Description className={ "text-sm" }>Probá con otro mes u otro estudiante.</Description>
+						<Description className={ "text-sm" }>{ isTemplateSource ? "Esta plantilla todavía no tiene semanas." : "Probá con otro mes u otro estudiante." }</Description>
 					</EmptyState>
 				) : source?.hasRoutine && !( mode === "month" && sameMonth ) ? (
 					<div className={ "grid min-h-0 gap-3 md:flex-1 md:grid-cols-[1fr_260px] md:gap-4" }>

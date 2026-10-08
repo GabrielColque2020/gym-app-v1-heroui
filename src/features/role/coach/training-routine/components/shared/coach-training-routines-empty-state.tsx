@@ -7,7 +7,6 @@ import { BookmarkCheck, Copy, Plus } from "lucide-react";
 import { monthYearLabel } from "@/constants/months";
 import { CoachCopyRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer";
 import { CoachCreateRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-create-routine-drawer";
-import { CoachUseTemplateModal } from "@/features/role/coach/training-routine/components/shared/coach-use-template-modal";
 import { useRoutineTemplates } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
 import { useTrainingRoutinesStudents } from "@/features/role/coach/training-routines-students/hooks/use-training-routines-students";
 import { useLatestTrainingRoutineMonth } from "@/features/training-routine/hooks/use-training-routine-copy-source";
@@ -26,8 +25,14 @@ export function CoachTrainingRoutinesEmptyState( {
 	year,
 }: CoachTrainingRoutinesEmptyStateProps ) {
 	const [ isCreateOpen, setIsCreateOpen ] = useState( false );
+	// El drawer de copiar se abre parado en otro mes o estudiante, o en una plantilla.
+	const [ copySource, setCopySource ] = useState<"student" | "template">( "student" );
 	const [ isCopyOpen, setIsCopyOpen ] = useState( false );
-	const [ isTemplateOpen, setIsTemplateOpen ] = useState( false );
+
+	function openCopy( source: "student" | "template" ) {
+		setCopySource( source );
+		setIsCopyOpen( true );
+	}
 	const hasTemplates = ( useRoutineTemplates().data ?? [] ).length > 0;
 	const latestRoutineMonth = useLatestTrainingRoutineMonth( { month, studentId, year } ).data;
 	const hasOtherStudents = ( useTrainingRoutinesStudents().data ?? [] ).some( ( student ) => student.id !== studentId );
@@ -63,7 +68,7 @@ export function CoachTrainingRoutinesEmptyState( {
 						<Button
 							className={ primaryAction === "copy" ? primaryClassName : "w-full sm:w-auto" }
 							variant={ primaryAction === "copy" ? undefined : "secondary" }
-							onPress={ () => setIsCopyOpen( true ) }
+							onPress={ () => openCopy( "student" ) }
 						>
 							<Copy className={ "size-4" }/>
 							{ latestLabel ? `Copiar de ${ latestLabel }` : "Copiar de otro estudiante" }
@@ -73,7 +78,7 @@ export function CoachTrainingRoutinesEmptyState( {
 						<Button
 							className={ primaryAction === "template" ? primaryClassName : "w-full sm:w-auto" }
 							variant={ primaryAction === "template" ? undefined : "secondary" }
-							onPress={ () => setIsTemplateOpen( true ) }
+							onPress={ () => openCopy( "template" ) }
 						>
 							<BookmarkCheck className={ "size-4" }/>
 							Usar una plantilla
@@ -98,21 +103,16 @@ export function CoachTrainingRoutinesEmptyState( {
 				year={ year }
 				onOpenChangeAction={ setIsCreateOpen }
 			/>
-			<CoachUseTemplateModal
-				hasActiveRoutine={ false }
-				isOpen={ isTemplateOpen }
-				month={ month }
-				studentId={ studentId }
-				studentName={ studentName }
-				year={ year }
-				onOpenChangeAction={ setIsTemplateOpen }
-			/>
 			<CoachCopyRoutineDrawer
+				// Al cambiar de origen arranca limpio. La clave no cambia al cerrar, para
+				// que el drawer se vaya con su animacion.
+				key={ copySource }
 				hideTrigger
 				destinationMonth={ String( month ) }
 				destinationYear={ String( year ) }
 				hasActiveRoutine={ false }
 				isOpen={ isCopyOpen }
+				preferTemplateSource={ copySource === "template" }
 				studentId={ studentId }
 				onOpenChangeAction={ setIsCopyOpen }
 			/>

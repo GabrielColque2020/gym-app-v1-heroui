@@ -162,7 +162,7 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Cómo creo una plantilla?",
 			},
 			{
-				answer: "En la rutina de un estudiante elegí Usar una plantilla: aparece en el aviso de un mes sin rutina y en los tres puntos de un mes que ya tiene. Elegís cuál y se copia entera. Si el mes ya tenía rutina, la reemplaza: la pantalla lo avisa y te pide confirmar.",
+				answer: "En la rutina de un estudiante elegí Usar una plantilla: aparece en el aviso de un mes sin rutina y en los tres puntos de un mes que ya tiene. Se abre la pantalla de copiar con tus plantillas en Copiar de: elegís cuál y la copiás entera o solo algunas semanas. Si pisa rutina que ya estaba, la pantalla lo avisa y te pide confirmar.",
 				id: "coach-templates-use",
 				question: "¿Cómo uso una plantilla con un estudiante?",
 			},
