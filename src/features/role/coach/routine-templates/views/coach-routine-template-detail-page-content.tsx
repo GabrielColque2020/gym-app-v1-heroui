@@ -66,14 +66,16 @@ export default function CoachRoutineTemplateDetailPageContent( { templateId }: C
 				<>
 					<Card className={ "border border-border py-2" } variant={ "default" }>
 						<Card.Content className={ "flex flex-row flex-wrap items-center justify-between gap-3 p-3" }>
-							<div className={ "min-w-0 flex-1" }>
+							{ /* En el telefono el nombre ocupa todo el renglon y las acciones bajan:
+							     al lado no entran sin partir el nombre letra por letra. */ }
+							<div className={ "w-full min-w-0 sm:w-auto sm:flex-1" }>
 								<p className={ "text-xs font-medium text-accent" }>Plantilla</p>
 								<h1 className={ "line-clamp-2 text-xl font-black leading-tight text-foreground" }>{ data.template.name }</h1>
 								<p className={ "mt-0.5 text-xs text-muted" }>
 									{ pluralize( weeks.length, "semana", "semanas" ) } · { pluralize( dayCount, "día", "días" ) } · { pluralize( exerciseCount, "ejercicio", "ejercicios" ) }
 								</p>
 							</div>
-							<div className={ "flex shrink-0 items-center gap-2" }>
+							<div className={ "flex w-full shrink-0 items-center gap-2 sm:w-auto" }>
 								<Button
 									isIconOnly
 									aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
@@ -83,7 +85,7 @@ export default function CoachRoutineTemplateDetailPageContent( { templateId }: C
 								>
 									<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 								</Button>
-								<Button variant={ "secondary" } onPress={ () => setIsStructureOpen( true ) }>
+								<Button className={ "flex-1 sm:flex-none" } variant={ "secondary" } onPress={ () => setIsStructureOpen( true ) }>
 									<CalendarRange className={ "size-4" }/>
 									Semanas y días
 								</Button>

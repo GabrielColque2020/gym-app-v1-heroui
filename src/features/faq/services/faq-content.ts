@@ -140,12 +140,44 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Cómo copio una rutina de otro mes o de otro estudiante?",
 			},
 			{
-				answer: "En la rutina del mes, con Repetir semana copiás una semana ya armada en las demás del mismo mes. Si alguna ya tenía ejercicios, se reemplazan: la pantalla lo avisa antes de confirmar.",
+				answer: "En la rutina del mes, con Repetir en las demás copiás una semana ya armada en las demás del mismo mes. Si alguna ya tenía ejercicios, se reemplazan: la pantalla lo avisa antes de confirmar.",
 				id: "coach-routine-repeat-week",
 				question: "¿Cómo repito una semana en las siguientes?",
 			},
 		],
 		title: "Variantes y copias",
+	},
+	{
+		description: "Rutinas guardadas con nombre para armar más rápido la de cualquier estudiante.",
+		id: "coach-templates",
+		items: [
+			{
+				answer: "Es una rutina guardada con un nombre, que no es de ningún estudiante. Sirve como punto de partida: la usás para armar la rutina de un mes y después la ajustás a esa persona. Las tenés todas en Plantillas, en el menú.",
+				id: "coach-templates-what",
+				question: "¿Qué es una plantilla?",
+			},
+			{
+				answer: "Hay dos formas. Si ya armaste una rutina que te gusta, abrila, tocá los tres puntos y elegí Guardar como plantilla: solo te pide un nombre. O en Plantillas tocá Nueva plantilla, elegí semanas y días, y cargá los ejercicios de cada día.",
+				id: "coach-templates-create",
+				question: "¿Cómo creo una plantilla?",
+			},
+			{
+				answer: "En la rutina de un estudiante elegí Usar una plantilla: aparece en el aviso de un mes sin rutina y en los tres puntos de un mes que ya tiene. Elegís cuál y se copia entera. Si el mes ya tenía rutina, la reemplaza: la pantalla lo avisa y te pide confirmar.",
+				id: "coach-templates-use",
+				question: "¿Cómo uso una plantilla con un estudiante?",
+			},
+			{
+				answer: "No. Usar una plantilla hace una copia. Podés cambiar, renombrar o eliminar la plantilla sin tocar las rutinas que ya armaste con ella, y cambiar la rutina de un estudiante tampoco cambia la plantilla.",
+				id: "coach-templates-independent",
+				question: "Si cambio una plantilla, ¿cambian las rutinas de mis estudiantes?",
+			},
+			{
+				answer: "En Plantillas, abrí la que quieras. Se edita igual que la rutina de un estudiante: cada día abre el editor de ejercicios, Semanas y días agrega o quita días, y Repetir en las demás copia una semana en el resto. Desde los tres puntos de cada tarjeta podés cambiarle el nombre, duplicarla o eliminarla.",
+				id: "coach-templates-edit",
+				question: "¿Cómo edito, duplico o elimino una plantilla?",
+			},
+		],
+		title: "Plantillas",
 	},
 	{
 		description: "Carga del plan alimenticio y manejo de tu catálogo de ejercicios.",
