@@ -191,10 +191,11 @@ export default function MobileRoutineView( {
 							</div>
 						) : isResting ? null : (
 							// Mientras descansa, el reloj ocupa el lugar de estos botones: en ese
-							// momento no se termina el dia.
+							// momento no se termina el dia. Cada boton ocupa su mitad entera: sin
+							// eso quedaban del ancho de su texto, corridos y sin alinear con las flechas.
 							<div className={ "grid grid-cols-2 gap-2" }>
-								<RestTimerStartButton className={ "min-w-0" } prescribedSeconds={ activeRestSeconds }/>
-								<Button className={ "min-w-0 font-semibold" } isDisabled={ !canFinishDay } onPress={ onFinishDayAction }>
+								<RestTimerStartButton className={ "w-full min-w-0" } prescribedSeconds={ activeRestSeconds }/>
+								<Button className={ "w-full min-w-0 font-semibold" } isDisabled={ !canFinishDay } onPress={ onFinishDayAction }>
 									<Flag className={ "size-4 shrink-0" }/>
 									<span className={ "truncate" }>Terminar día</span>
 								</Button>

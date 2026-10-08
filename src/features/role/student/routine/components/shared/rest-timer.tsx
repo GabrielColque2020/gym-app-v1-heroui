@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@heroui/react";
-import { Pause, Play, SkipBack, Square, Timer } from "lucide-react";
+import { Pause, Play, Square, Timer, TimerReset } from "lucide-react";
 
 import { useRestTimer } from "@/features/role/student/routine/hooks/use-rest-timer";
 import { formatRestTime, REST_TIMER_STEP_SECONDS } from "@/features/role/student/routine/stores/use-rest-timer-store";
@@ -36,80 +36,99 @@ type RestTimerPanelProps = {
 	className?: string;
 };
 
-// La cuenta regresiva del descanso, con sus controles. Arriba, el tiempo y lo
-// que se hace con el reloj (pausar, reiniciar, detener); abajo, el avance con
-// los ajustes de tiempo a los lados.
+// Cuando faltan estos segundos o menos, el reloj cambia de color: es hora de
+// ir preparandose para la serie que sigue.
+const ALMOST_DONE_SECONDS = 10;
+const RING_RADIUS = 30;
+const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
+
+// La cuenta regresiva del descanso, con sus controles. Arriba, el tiempo dentro
+// de un anillo que se va vaciando y los ajustes de tiempo; abajo, lo que se
+// hace con el reloj, con nombre y no solo con un icono.
 export function RestTimerPanel( { className = "" }: RestTimerPanelProps ) {
-	const { addTime, isPaused, pause, progress, remainingSeconds, removeTime, restart, resume, stop } = useRestTimer();
+	const { addTime, isPaused, pause, progress, remainingSeconds, removeTime, restart, resume, runSeconds, stop } = useRestTimer();
+	const isAlmostDone = !isPaused && remainingSeconds <= ALMOST_DONE_SECONDS;
+	const toneClassName = isPaused ? "text-muted" : isAlmostDone ? "text-warning" : "text-accent";
 
 	return (
-		<div className={ `space-y-2 rounded-2xl border border-accent/40 bg-accent-soft/50 p-2.5 ${ className }` }>
-			<div className={ "flex items-center gap-1.5" }>
-				<div className={ "min-w-0 flex-1" }>
-					<p className={ "text-xs font-medium text-accent" }>{ isPaused ? "Descanso en pausa" : "Descanso" }</p>
+		<div className={ `space-y-2.5 rounded-2xl border border-border bg-surface p-3 shadow-sm ${ className }` }>
+			<div className={ "flex items-center gap-3" }>
+				<div className={ "relative size-[4.5rem] shrink-0" }>
+					<svg aria-hidden className={ "size-full -rotate-90" } viewBox={ "0 0 72 72" }>
+						<circle className={ "text-border" } cx={ 36 } cy={ 36 } fill={ "none" } r={ RING_RADIUS } stroke={ "currentColor" } strokeWidth={ 6 }/>
+						<circle
+							className={ `transition-[stroke-dashoffset] duration-300 ease-linear ${ toneClassName }` }
+							cx={ 36 }
+							cy={ 36 }
+							fill={ "none" }
+							r={ RING_RADIUS }
+							stroke={ "currentColor" }
+							strokeDasharray={ RING_LENGTH }
+							strokeDashoffset={ RING_LENGTH * ( 1 - progress ) }
+							strokeLinecap={ "round" }
+							strokeWidth={ 6 }
+						/>
+					</svg>
 					{ /* Lo lee un lector de pantalla como temporizador, sin anunciar cada segundo. */ }
 					<p
 						aria-live={ "off" }
-						className={ `text-3xl font-black leading-none tabular-nums ${ isPaused ? "text-muted" : "text-foreground" }` }
+						className={ `absolute inset-0 flex items-center justify-center text-lg font-black tabular-nums ${ isPaused ? "text-muted" : "text-foreground" }` }
 						role={ "timer" }
 					>
 						{ formatRestTime( remainingSeconds ) }
 					</p>
 				</div>
-				<Button
-					isIconOnly
-					aria-label={ isPaused ? "Continuar el descanso" : "Pausar el descanso" }
-					className={ "size-10 shrink-0" }
-					variant={ "secondary" }
-					onPress={ isPaused ? resume : pause }
-				>
-					{ isPaused ? <Play className={ "size-4" }/> : <Pause className={ "size-4" }/> }
+				<div className={ "min-w-0 flex-1" }>
+					<p className={ `text-sm font-semibold ${ toneClassName }` }>
+						{ isPaused ? "Descanso en pausa" : isAlmostDone ? "Ya casi" : "Descansando" }
+					</p>
+					<p className={ "text-xs text-muted" }>de { formatRestTime( runSeconds ) }</p>
+				</div>
+				<div className={ "flex shrink-0 items-center gap-1" }>
+					<Button
+						aria-label={ `Restar ${ REST_TIMER_STEP_SECONDS } segundos` }
+						className={ "h-9 min-w-0 px-2.5 tabular-nums" }
+						size={ "sm" }
+						variant={ "secondary" }
+						onPress={ removeTime }
+					>
+						−{ REST_TIMER_STEP_SECONDS } s
+					</Button>
+					<Button
+						aria-label={ `Sumar ${ REST_TIMER_STEP_SECONDS } segundos` }
+						className={ "h-9 min-w-0 px-2.5 tabular-nums" }
+						size={ "sm" }
+						variant={ "secondary" }
+						onPress={ addTime }
+					>
+						+{ REST_TIMER_STEP_SECONDS } s
+					</Button>
+				</div>
+			</div>
+			<div className={ "grid grid-cols-3 gap-2" }>
+				<Button className={ "w-full min-w-0 bg-accent px-2 font-semibold text-accent-foreground" } onPress={ isPaused ? resume : pause }>
+					{ isPaused ? <Play className={ "size-4 shrink-0" }/> : <Pause className={ "size-4 shrink-0" }/> }
+					<span className={ "truncate" }>{ isPaused ? "Seguir" : "Pausar" }</span>
 				</Button>
-				{ /* "Volver al principio", no una flecha circular: esa es la de "Actualizar"
-				     la pantalla y se confundirian. */ }
+				{ /* Un reloj con flecha, y con su nombre al lado: la flecha circular sola
+				     es la de "Actualizar" la pantalla y se confundirian. */ }
 				<Button
-					isIconOnly
 					aria-label={ "Reiniciar el descanso desde el principio" }
-					className={ "size-10 shrink-0" }
+					className={ "w-full min-w-0 px-2" }
 					variant={ "secondary" }
 					onPress={ restart }
 				>
-					<SkipBack className={ "size-4" }/>
+					<TimerReset className={ "size-4 shrink-0" }/>
+					<span className={ "truncate" }>Reiniciar</span>
 				</Button>
 				<Button
-					isIconOnly
-					aria-label={ "Detener el descanso" }
-					className={ "size-10 shrink-0 text-danger" }
+					aria-label={ "Terminar el descanso" }
+					className={ "w-full min-w-0 px-2 text-danger" }
 					variant={ "secondary" }
 					onPress={ stop }
 				>
-					<Square className={ "size-4" }/>
-				</Button>
-			</div>
-			<div className={ "flex items-center gap-2" }>
-				<Button
-					aria-label={ `Restar ${ REST_TIMER_STEP_SECONDS } segundos` }
-					className={ "h-8 min-w-0 shrink-0 px-2.5 tabular-nums" }
-					size={ "sm" }
-					variant={ "ghost" }
-					onPress={ removeTime }
-				>
-					−{ REST_TIMER_STEP_SECONDS } s
-				</Button>
-				<div aria-hidden className={ "h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-border" }>
-					<div
-						className={ `h-full rounded-full transition-[width] duration-300 ease-linear ${ isPaused ? "bg-muted" : "bg-accent" }` }
-						style={ { width: `${ Math.round( progress * 100 ) }%` } }
-					/>
-				</div>
-				<Button
-					aria-label={ `Sumar ${ REST_TIMER_STEP_SECONDS } segundos` }
-					className={ "h-8 min-w-0 shrink-0 px-2.5 tabular-nums" }
-					size={ "sm" }
-					variant={ "ghost" }
-					onPress={ addTime }
-				>
-					+{ REST_TIMER_STEP_SECONDS } s
+					<Square className={ "size-3.5 shrink-0 fill-current" }/>
+					<span className={ "truncate" }>Terminar</span>
 				</Button>
 			</div>
 		</div>

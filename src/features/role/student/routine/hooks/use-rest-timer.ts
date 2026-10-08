@@ -66,6 +66,8 @@ export function useRestTimer() {
 		removeTime: () => adjust( -REST_TIMER_STEP_SECONDS ),
 		restart,
 		resume,
+		// Lo que dura el descanso en curso, con los ajustes que se le hicieron.
+		runSeconds,
 		start,
 		stop,
 	};
