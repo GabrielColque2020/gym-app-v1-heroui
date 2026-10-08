@@ -3,7 +3,7 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import { Alert, Button, Card, FieldError, Input, Label, Spinner, TextField, Typography, } from "@heroui/react";
 import { Eye, EyeOff, LogIn } from "lucide-react";
@@ -12,16 +12,17 @@ import { useLogin } from "@/features/login/hooks/use-login";
 import { persistThemePreference, themePreferenceToUiThemePreference, } from "@/features/theme/theme-preference";
 
 export default function LoginPageContent() {
-	const router = useRouter();
 	const searchParams = useSearchParams();
 	const loginMutation = useLogin();
 	const [ credential, setCredential ] = useState( "" );
 	const [ password, setPassword ] = useState( "" );
 	const [ isPasswordVisible, setIsPasswordVisible ] = useState( false );
+	// Entre que el ingreso se acepta y carga la pantalla siguiente.
+	const [ isRedirecting, setIsRedirecting ] = useState( false );
 
 	const isCredentialInvalid = credential.trim().length > 0 && credential.trim().length < 3;
 	const isPasswordInvalid = password.length === 0;
-	const isSubmitDisabled = isCredentialInvalid || isPasswordInvalid || loginMutation.isPending;
+	const isSubmitDisabled = isCredentialInvalid || isPasswordInvalid || loginMutation.isPending || isRedirecting;
 
 	function getDefaultRedirectPath( role: string ) {
 		if (role === "ADMIN") {
@@ -29,6 +30,16 @@ export default function LoginPageContent() {
 		}
 
 		return role === "COACH" ? "/coach/dashboard" : "/student/dashboard";
+	}
+
+	// La seccion de cada rol. Volver a "donde estabas" solo vale dentro de la
+	// propia: si en este navegador la ultima cuenta fue de otro rol (un
+	// entrenador que presta el telefono a un estudiante), esa direccion no es
+	// de quien entra ahora.
+	function isPathAllowedForRole( pathname: string, role: string ) {
+		const ownSection = role === "ADMIN" ? "/admin" : role === "COACH" ? "/coach" : "/student";
+
+		return pathname === ownSection || pathname.startsWith( `${ ownSection }/` ) || pathname === "/faq";
 	}
 
 	function getSafeRedirectPath( nextPath: string | null, role: string ) {
@@ -47,7 +58,7 @@ export default function LoginPageContent() {
 				return getDefaultRedirectPath( role );
 			}
 
-			if (url.pathname === "/dashboard") {
+			if (url.pathname === "/dashboard" || !isPathAllowedForRole( url.pathname, role )) {
 				return getDefaultRedirectPath( role );
 			}
 
@@ -69,7 +80,11 @@ export default function LoginPageContent() {
 			} );
 
 			persistThemePreference( themePreferenceToUiThemePreference( result.user.themePreference ) );
-			router.replace( getSafeRedirectPath( searchParams.get( "next" ), result.user.role ) );
+			// Carga completa: si queda algo de la sesion anterior en memoria, una
+			// navegacion interna podia fallar en silencio y dejar esta pantalla
+			// como si el boton no hubiera hecho nada.
+			setIsRedirecting( true );
+			window.location.replace( getSafeRedirectPath( searchParams.get( "next" ), result.user.role ) );
 		} catch {
 			// La UI ya lee el estado de error de la mutacion.
 		}
@@ -191,7 +206,7 @@ export default function LoginPageContent() {
 						<Button
 							className={ "w-full bg-accent text-accent-foreground" }
 							isDisabled={ isSubmitDisabled }
-							isPending={ loginMutation.isPending }
+							isPending={ loginMutation.isPending || isRedirecting }
 							size={ "lg" }
 							type={ "submit" }
 						>

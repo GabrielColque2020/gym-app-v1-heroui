@@ -2,7 +2,7 @@
 
 import type {ExerciseListItem} from "@/features/exercises/types/exercise-list-item";
 
-import {Button, Description, Drawer, Separator} from "@heroui/react";
+import {Button, Description, Drawer} from "@heroui/react";
 
 import {ListPagination} from "@/components/common";
 import {ExerciseDrawer} from "@/features/role/coach/exercises/components/shared/exercise-drawer";
@@ -10,9 +10,6 @@ import {useRoutineDayExerciseCatalog} from "@/features/routine/hooks/use-routine
 import {FeatureDrawerLayout} from "@/features/shared/components/feature-drawer-layout";
 import {useResponsiveDrawerPlacement} from "@/features/shared/hooks/use-responsive-drawer-placement";
 import {AddExercisePickerButton} from "@/features/role/coach/routine/components/shared/add-exercise-picker-button";
-import {
-    SearchAndCreateExerciseDrawerEmptyCta
-} from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-empty-cta";
 import {
     SearchAndCreateExerciseDrawerFilters
 } from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-filters";
@@ -125,6 +122,7 @@ export function SearchAndCreateExerciseDrawer({
                         } }
                         isSearching={ isSearching }
                         onAddExerciseAction={ handleAddClick }
+                        onCreateExerciseAction={ handleOpenCreateDrawer }
                         onBodyPartFilterChangeAction={ updateBodyPartFilter }
                         onOrderChange={ setOrderValue }
                         onRegisterAddButtonRef={ registerAddButtonRef }
@@ -147,10 +145,6 @@ export function SearchAndCreateExerciseDrawer({
                             />
                         </div>
                     ) : null }
-
-                    <Separator/>
-
-                    <SearchAndCreateExerciseDrawerEmptyCta onPress={ handleOpenCreateDrawer }/>
                 </Drawer.Body>
 
                 <Drawer.Footer className={ "border-default-100 flex items-center justify-between gap-3 border-t pt-4" }>

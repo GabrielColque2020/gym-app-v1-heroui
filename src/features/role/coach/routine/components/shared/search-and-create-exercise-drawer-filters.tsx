@@ -22,6 +22,7 @@ type SearchAndCreateExerciseDrawerFiltersProps = {
 	searchValue: string;
 	selectedExerciseId: string | null;
 	onAddExerciseAction: ( exercise: ExerciseListItem ) => void;
+	onCreateExerciseAction: () => void;
 	exercises: RoutineCatalogExercise[];
 };
 
@@ -38,6 +39,7 @@ export function SearchAndCreateExerciseDrawerFilters( {
 	searchValue,
 	selectedExerciseId,
 	onAddExerciseAction,
+	onCreateExerciseAction,
 	exercises,
 }: SearchAndCreateExerciseDrawerFiltersProps ) {
 	return (
@@ -56,8 +58,10 @@ export function SearchAndCreateExerciseDrawerFilters( {
 				exercises={ exercises }
 				exercisesQuery={ exercisesQuery }
 				isSearching={ isSearching }
+				searchValue={ searchValue }
 				selectedExerciseId={ selectedExerciseId }
 				onAddExerciseAction={ onAddExerciseAction }
+				onCreateExerciseAction={ onCreateExerciseAction }
 				onRegisterAddButtonRef={ onRegisterAddButtonRef }
 			/>
 		</>

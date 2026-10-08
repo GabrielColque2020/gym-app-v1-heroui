@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Button, Modal, Spinner, Typography } from "@heroui/react";
@@ -19,13 +18,8 @@ export function LogoutConfirmModal( {
 	isOpen,
 	onOpenChangeAction,
 }: LogoutConfirmModalProps ) {
-	const router = useRouter();
 	const queryClient = useQueryClient();
 	const [ isLoggingOut, setIsLoggingOut ] = useState( false );
-
-	useEffect( () => {
-		router.prefetch( "/" );
-	}, [ router ] );
 
 	async function handleLogout() {
 		if (isLoggingOut) return;
@@ -41,8 +35,11 @@ export function LogoutConfirmModal( {
 			clearAppliedThemePreference();
 			queryClient.clear();
 			window.sessionStorage.clear();
-			router.replace( "/" );
-			router.refresh();
+			// Carga completa y no una navegacion interna: asi no queda viva la
+			// pantalla anterior, con sus consultas y reintentos. Esos pedidos
+			// seguian saliendo despues de cerrar sesion y, al entrar otra cuenta,
+			// podian dejar la pantalla de ingreso trabada.
+			window.location.replace( "/login" );
 		}
 	}
 
