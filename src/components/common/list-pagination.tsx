@@ -41,6 +41,21 @@ type PaginationControlsProps = {
 	totalPages: number;
 };
 
+// En el telefono entran cinco casilleros entre las dos flechas. Con siete, la
+// barra se salia del ancho de la tarjeta y quedaba corrida hacia la derecha.
+function getCompactPageItems( currentPage: number, totalPages: number ): PageItem[] {
+	if (totalPages <= 5) {
+		return Array.from( { length: totalPages }, ( _, index ) => index + 1 );
+	}
+
+	// Cerca del principio o del final se muestran tres paginas seguidas; en el
+	// medio, la primera, la actual y la ultima.
+	if (currentPage <= 2) return [ 1, 2, 3, "ellipsis", totalPages ];
+	if (currentPage >= totalPages - 1) return [ 1, "ellipsis", totalPages - 2, totalPages - 1, totalPages ];
+
+	return [ 1, "ellipsis", currentPage, "ellipsis", totalPages ];
+}
+
 function getPageItems( currentPage: number, totalPages: number ): PageItem[] {
 	if (totalPages <= 7) {
 		return Array.from( { length: totalPages }, ( _, index ) => index + 1 );
@@ -157,16 +172,19 @@ export function ListPagination( {
 									totalItems,
 									totalPages,
 								}: ListPaginationProps ) {
-	const pageItems = useMemo( () => getPageItems( currentPage, totalPages ), [ currentPage, totalPages ] );
 	const placement = useResponsiveDrawerPlacement();
 	const isCompact = placement === "bottom";
+	const pageItems = useMemo(
+		() => ( isCompact ? getCompactPageItems( currentPage, totalPages ) : getPageItems( currentPage, totalPages ) ),
+		[ currentPage, isCompact, totalPages ],
+	);
 	const summaryContent = summary ?? ( `Mostrando ${ showingFrom }-${ showingTo } de ${ totalItems }${ itemLabel ? ` ${ itemLabel }` : "" }` );
 
 	if (isCompact) {
 		return (
 			<div className={ "flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" }>
 				<span className={ "block w-full text-center text-sm text-muted sm:w-auto sm:text-left" }>{ summaryContent }</span>
-				<Pagination className={ "mx-auto w-fit sm:mx-0" } size={ size }>
+				<Pagination className={ "mx-auto w-fit max-w-full sm:mx-0" } size={ size }>
 					<PaginationControls
 						isCompact
 						currentPage={ currentPage }
