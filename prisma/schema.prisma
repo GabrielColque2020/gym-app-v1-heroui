@@ -87,6 +87,19 @@ model User {
   @@index([dni, active])
 }
 
+// Intentos de entrada fallidos, para frenar a quien prueba contraseñas. Se guarda
+// lo que se escribio como usuario (y no la cuenta), asi tambien cuenta para
+// correos o DNI que no existen. Las filas viejas se borran solas.
+model LoginAttempt {
+  id         String   @id @default(uuid())
+  credential String
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([credential, createdAt])
+  @@index([ip, createdAt])
+}
+
 model UserLoginHistory {
   id        String   @id @default(uuid())
   userId    String

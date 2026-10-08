@@ -1,6 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import {
+	clearFailedLogins,
+	isLoginBlocked,
+	LOGIN_TOO_MANY_ATTEMPTS_MESSAGE,
+	recordFailedLogin,
+} from "@/features/login/services/login-attempts";
+import {
 	AUTH_SESSION_COOKIE_NAME,
 	AUTH_SESSION_TTL_SECONDS,
 	LOGIN_INACTIVE_ACCOUNT_MESSAGE,
@@ -47,15 +53,23 @@ export async function POST( request: NextRequest ) {
 		return toErrorResponse( "Credenciales inválidas.", 400 );
 	}
 
+	const attemptScope = { credential: body.credential, ip: getClientIp( request ) };
+
 	try {
+		if (await isLoginBlocked( attemptScope )) {
+			return toErrorResponse( LOGIN_TOO_MANY_ATTEMPTS_MESSAGE, 429 );
+		}
+
 		const loginResponse = await loginUser( {
 			credential: body.credential,
 			password: body.password,
 		}, {
-			ip: getClientIp( request ),
+			ip: attemptScope.ip,
 			prismaClient: prisma as unknown as LoginPrismaClient,
 			userAgent: request.headers.get( "user-agent" ),
 		} );
+
+		await clearFailedLogins( body.credential );
 
 		// La sesion viaja solo en la cookie, que el codigo de la pagina no puede leer.
 		// Mandarla tambien en la respuesta la dejaba al alcance de cualquier script.
@@ -84,6 +98,11 @@ export async function POST( request: NextRequest ) {
 		}
 
 		if (message === LOGIN_INVALID_CREDENTIALS_MESSAGE) {
+			// Solo cuentan los intentos con usuario o contraseña equivocados. Si no
+			// se puede anotar, el login responde igual: el limite no puede dejar
+			// afuera a quien entra bien.
+			await recordFailedLogin( attemptScope ).catch( ( recordError ) => console.error( "[login]", recordError ) );
+
 			return toErrorResponse( message, 401 );
 		}
 
