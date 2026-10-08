@@ -5,6 +5,8 @@ import {
 	type ApplyRoutineTemplateInput,
 	type ApplyRoutineTemplateResult,
 	buildRoutineTemplateCopyName,
+	type CreateRoutineTemplateInput,
+	type CreateRoutineTemplateResult,
 	type DuplicateRoutineTemplateResult,
 	isRoutineTemplateNameValid,
 	normalizeRoutineTemplateName,
@@ -13,7 +15,10 @@ import {
 	type RoutineTemplateListItem,
 	type SaveRoutineAsTemplateInput,
 	type SaveRoutineAsTemplateResult,
+	type UpdateRoutineTemplateStructureInput,
 } from "@/features/training-routine/services/routine-template";
+import { validateRoutineStructureContent } from "@/features/training-routine/services/routine-structure";
+import { syncRoutineWeeksStructure } from "@/features/training-routine/services/routine-structure-sync";
 import {
 	countRoutineWeeksContent,
 	createRoutineWeeksCopy,
@@ -332,4 +337,107 @@ export async function getRoutineTemplateDetailAction( templateId: string ): Prom
 		template: { id: template.id, name: template.name, objective: template.objective },
 		weeks: resolveTrainingRoutineWeeks( template.weeks ),
 	};
+}
+
+// Crea una plantilla vacia, con sus semanas y dias, para cargarle los ejercicios
+// a mano en vez de partir de la rutina de un estudiante.
+export async function createRoutineTemplateAction( input: CreateRoutineTemplateInput ): Promise<CreateRoutineTemplateResult> {
+	const session = await requireCoachSession( "crear la plantilla" );
+
+	if (!isRoutineTemplateNameValid( input.name )) return { ok: false, reason: "invalid-name" };
+
+	validateRoutineStructureContent( input );
+
+	const name = normalizeRoutineTemplateName( input.name );
+
+	if (await isRoutineTemplateNameTaken( session.sub, name )) return { ok: false, reason: "duplicate-name" };
+
+	const template = await prisma.$transaction( async ( tx ) => {
+		const createdTemplate = await tx.routineTemplate.create( {
+			data: {
+				coachId: session.sub,
+				name,
+				objective: input.objective.trim() || null,
+			},
+			select: {
+				id: true,
+			},
+		} );
+
+		await syncRoutineWeeksStructure( tx, { routineTemplateId: createdTemplate.id }, input.weeks );
+
+		return createdTemplate;
+	} );
+
+	return { id: template.id, ok: true };
+}
+
+// Agrega o quita semanas y dias de una plantilla y cambia su objetivo. Los dias
+// que ya estaban conservan sus ejercicios.
+export async function updateRoutineTemplateStructureAction( input: UpdateRoutineTemplateStructureInput ) {
+	const session = await requireCoachSession( "modificar la plantilla" );
+
+	validateRoutineStructureContent( input );
+
+	const updated = await prisma.$transaction( async ( tx ) => {
+		const result = await tx.routineTemplate.updateMany( {
+			data: {
+				objective: input.objective.trim() || null,
+			},
+			where: {
+				coachId: session.sub,
+				id: input.templateId,
+			},
+		} );
+
+		if (result.count === 0) return false;
+
+		await syncRoutineWeeksStructure( tx, { routineTemplateId: input.templateId }, input.weeks );
+
+		return true;
+	} );
+
+	return { ok: updated };
+}
+
+// Deja las demas semanas de la plantilla iguales a la elegida.
+export async function repeatRoutineTemplateWeekAction( input: { sourceWeek: number; templateId: string } ) {
+	const session = await requireCoachSession( "repetir la semana de la plantilla" );
+	const template = ( await prisma.routineTemplate.findFirst( {
+		include: {
+			weeks: {
+				include: routineWeeksCopyInclude,
+				orderBy: {
+					week: "asc",
+				},
+			},
+		},
+		where: {
+			coachId: session.sub,
+			id: input.templateId,
+		},
+	} ) ) as unknown as { weeks: RoutineWeekCopySource[] } | null;
+	const sourceWeek = template?.weeks.find( ( week ) => week.week === input.sourceWeek );
+
+	if (!template || !sourceWeek) return { ok: false };
+
+	const destinationWeeks = template.weeks.filter( ( week ) => week.week !== input.sourceWeek ).map( ( week ) => week.week );
+
+	await prisma.$transaction( async ( tx ) => {
+		await tx.trainingRoutineWeek.deleteMany( {
+			where: {
+				routineTemplateId: input.templateId,
+				week: {
+					in: destinationWeeks,
+				},
+			},
+		} );
+		await createRoutineWeeksCopy(
+			tx,
+			destinationWeeks.map( ( week ) => ( { ...sourceWeek, name: `Semana ${ week }`, week } ) ),
+			{ routineTemplateId: input.templateId },
+		);
+	} );
+
+	return { ok: true };
 }

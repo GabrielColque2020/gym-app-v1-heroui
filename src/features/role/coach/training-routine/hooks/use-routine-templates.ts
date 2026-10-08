@@ -5,12 +5,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_DEFAULTS } from "@/constants/query";
 import {
 	applyRoutineTemplateAction,
+	createRoutineTemplateAction,
 	deleteRoutineTemplateAction,
 	duplicateRoutineTemplateAction,
 	getRoutineTemplateDetailAction,
 	getRoutineTemplatesAction,
 	renameRoutineTemplateAction,
+	repeatRoutineTemplateWeekAction,
 	saveRoutineAsTemplateAction,
+	updateRoutineTemplateStructureAction,
 } from "@/features/training-routine/actions/routine-templates";
 import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
 
@@ -87,8 +90,22 @@ function useRoutineTemplateListMutation<TInput, TResult>( mutationFn: ( input: T
 		mutationFn,
 		onSettled: () => {
 			void queryClient.invalidateQueries( { queryKey: coachRoutineTemplatesQueryKey } );
+			// Tambien el contenido de cada plantilla que este abierta o guardada.
+			void queryClient.invalidateQueries( { queryKey: [ "coach-routine-template" ] } );
 		},
 	} );
+}
+
+export function useCreateRoutineTemplate() {
+	return useRoutineTemplateListMutation( createRoutineTemplateAction );
+}
+
+export function useUpdateRoutineTemplateStructure() {
+	return useRoutineTemplateListMutation( updateRoutineTemplateStructureAction );
+}
+
+export function useRepeatRoutineTemplateWeek() {
+	return useRoutineTemplateListMutation( repeatRoutineTemplateWeekAction );
 }
 
 export function useRenameRoutineTemplate() {

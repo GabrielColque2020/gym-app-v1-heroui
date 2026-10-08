@@ -16,6 +16,14 @@ type CoachRepeatWeekActionProps = {
 	year: number;
 };
 
+type RepeatWeekButtonProps = {
+	isPending: boolean;
+	// Copia la semana elegida en las demas. Si falla, tiene que lanzar un error.
+	onRepeatAction: ( sourceWeek: number, destinationWeeks: number[] ) => Promise<void>;
+	routineWeeks: CoachTrainingRoutine[];
+	selectedRoutine: CoachTrainingRoutine | null;
+};
+
 function countExercises( routineWeek: CoachTrainingRoutine ) {
 	return routineWeek.routineDays.reduce( ( count, day ) => count + day.routines.length, 0 );
 }
@@ -26,8 +34,7 @@ function formatWeekList( weeks: number[] ) {
 	return `las Semanas ${ weeks.slice( 0, -1 ).join( ", " ) } y ${ weeks[ weeks.length - 1 ] }`;
 }
 
-// Lo habitual es que las demas semanas del mes sean la primera con ajustes: esto
-// las deja iguales a la semana elegida en un paso, sin pasar por el drawer de copia.
+// "Repetir en las demas" para la rutina del mes de un estudiante.
 export function CoachRepeatWeekAction( {
 										  month,
 										  routineWeeks,
@@ -35,8 +42,40 @@ export function CoachRepeatWeekAction( {
 										  studentId,
 										  year,
 									  }: CoachRepeatWeekActionProps ) {
-	const [ isConfirmOpen, setIsConfirmOpen ] = useState( false );
 	const copyWeeks = useCopyTrainingRoutineWeeks();
+
+	return (
+		<RepeatWeekButton
+			isPending={ copyWeeks.isPending }
+			routineWeeks={ routineWeeks }
+			selectedRoutine={ selectedRoutine }
+			onRepeatAction={ async ( sourceWeek, destinationWeeks ) => {
+				await copyWeeks.mutateAsync( {
+					destinationMonth: month,
+					destinationYear: year,
+					sourceMonth: month,
+					sourceYear: year,
+					studentId,
+					weekMappings: destinationWeeks.map( ( destinationWeek ) => ( {
+						destinationWeek,
+						sourceWeek,
+					} ) ),
+				} );
+			} }
+		/>
+	);
+}
+
+// Lo habitual es que las demas semanas sean la primera con ajustes: esto las deja
+// iguales a la semana elegida en un paso, sin pasar por el drawer de copia. Sirve
+// para la rutina de un estudiante y para una plantilla; quien lo usa pone la copia.
+export function RepeatWeekButton( {
+									 isPending,
+									 onRepeatAction,
+									 routineWeeks,
+									 selectedRoutine,
+								 }: RepeatWeekButtonProps ) {
+	const [ isConfirmOpen, setIsConfirmOpen ] = useState( false );
 
 	if (!selectedRoutine) return null;
 
@@ -51,17 +90,7 @@ export function CoachRepeatWeekAction( {
 
 	async function handleRepeat() {
 		try {
-			await copyWeeks.mutateAsync( {
-				destinationMonth: month,
-				destinationYear: year,
-				sourceMonth: month,
-				sourceYear: year,
-				studentId,
-				weekMappings: otherWeekNumbers.map( ( destinationWeek ) => ( {
-					destinationWeek,
-					sourceWeek,
-				} ) ),
-			} );
+			await onRepeatAction( sourceWeek, otherWeekNumbers );
 
 			toast.success( "Semana repetida", {
 				description: `La Semana ${ sourceWeek } se copió en ${ formatWeekList( otherWeekNumbers ) }.`,
@@ -115,7 +144,7 @@ export function CoachRepeatWeekAction( {
 						</Modal.Body>
 						<Modal.Footer className={ "gap-2" }>
 							<Button
-								isDisabled={ copyWeeks.isPending }
+								isDisabled={ isPending }
 								variant={ "secondary" }
 								onPress={ () => setIsConfirmOpen( false ) }
 							>
@@ -123,12 +152,12 @@ export function CoachRepeatWeekAction( {
 							</Button>
 							<Button
 								className={ "bg-accent text-accent-foreground" }
-								isDisabled={ copyWeeks.isPending }
-								isPending={ copyWeeks.isPending }
+								isDisabled={ isPending }
+								isPending={ isPending }
 								onPress={ handleRepeat }
 							>
-								{ copyWeeks.isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CopyPlus className={ "size-4" }/> }
-								{ copyWeeks.isPending ? "Copiando..." : "Repetir semana" }
+								{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CopyPlus className={ "size-4" }/> }
+								{ isPending ? "Copiando..." : "Repetir semana" }
 							</Button>
 						</Modal.Footer>
 					</Modal.Dialog>

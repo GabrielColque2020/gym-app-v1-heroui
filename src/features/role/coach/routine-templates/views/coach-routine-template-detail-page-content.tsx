@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { Button, Card, Spinner } from "@heroui/react";
-import { RotateCw } from "lucide-react";
+import { CalendarRange, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs } from "@/components/common";
+import { RoutineTemplateStructureDrawer } from "@/features/role/coach/routine-templates/components/routine-template-structure-drawer";
 import { buildEditTemplateDayHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
+import { RepeatWeekButton } from "@/features/role/coach/training-routine/components/shared/coach-repeat-week-action";
 import { CoachTrainingRoutineMonthGrid } from "@/features/role/coach/training-routine/components/shared/coach-training-routine-month-grid";
-import { useRoutineTemplateDetail } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
+import { useRepeatRoutineTemplateWeek, useRoutineTemplateDetail } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
 
 type CoachRoutineTemplateDetailPageContentProps = {
 	templateId: string;
@@ -21,6 +24,8 @@ function pluralize( count: number, singular: string, plural: string ) {
 export default function CoachRoutineTemplateDetailPageContent( { templateId }: CoachRoutineTemplateDetailPageContentProps ) {
 	const { data, isError, isFetching, isLoading, refetch } = useRoutineTemplateDetail( { alwaysFresh: true, templateId } );
 	const isRefreshing = isFetching && !isLoading;
+	const [ isStructureOpen, setIsStructureOpen ] = useState( false );
+	const repeatWeek = useRepeatRoutineTemplateWeek();
 	const weeks = data?.weeks ?? [];
 	const dayCount = weeks.reduce( ( count, week ) => count + week.routineDays.length, 0 );
 	const exerciseCount = weeks.reduce(
@@ -68,16 +73,21 @@ export default function CoachRoutineTemplateDetailPageContent( { templateId }: C
 									{ pluralize( weeks.length, "semana", "semanas" ) } · { pluralize( dayCount, "día", "días" ) } · { pluralize( exerciseCount, "ejercicio", "ejercicios" ) }
 								</p>
 							</div>
-							<Button
-								isIconOnly
-								aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
-								className={ "shrink-0" }
-								isDisabled={ isRefreshing }
-								variant={ "secondary" }
-								onPress={ () => void refetch() }
-							>
-								<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-							</Button>
+							<div className={ "flex shrink-0 items-center gap-2" }>
+								<Button
+									isIconOnly
+									aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
+									isDisabled={ isRefreshing }
+									variant={ "secondary" }
+									onPress={ () => void refetch() }
+								>
+									<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+								</Button>
+								<Button variant={ "secondary" } onPress={ () => setIsStructureOpen( true ) }>
+									<CalendarRange className={ "size-4" }/>
+									Semanas y días
+								</Button>
+							</div>
 							{ data.template.objective?.trim() ? (
 								<p className={ "w-full text-sm text-muted" }>
 									<span className={ "font-medium text-foreground" }>Objetivo:</span> { data.template.objective }
@@ -89,18 +99,31 @@ export default function CoachRoutineTemplateDetailPageContent( { templateId }: C
 					{ weeks.length === 0 ? (
 						<Card className={ "border border-dashed border-border" } variant={ "default" }>
 							<Card.Content className={ "py-10 text-center text-sm text-muted" }>
-								Esta plantilla todavía no tiene semanas.
+								Esta plantilla todavía no tiene semanas. Agregalas desde &quot;Semanas y días&quot;.
 							</Card.Content>
 						</Card>
 					) : (
 						<CoachTrainingRoutineMonthGrid
 							buildDayHrefAction={ ( routineDayId ) => buildEditTemplateDayHref( routineDayId, templateId ) }
+							renderWeekAction={ ( routineWeek ) => (
+								<RepeatWeekButton
+									isPending={ repeatWeek.isPending }
+									routineWeeks={ weeks }
+									selectedRoutine={ routineWeek }
+									onRepeatAction={ async ( sourceWeek ) => {
+										const result = await repeatWeek.mutateAsync( { sourceWeek, templateId } );
+
+										if (!result.ok) throw new Error( "No se pudo repetir la semana." );
+									} }
+								/>
+							) }
 							routineWeeks={ weeks }
 						/>
 					) }
 					<p className={ "px-1 text-xs leading-5 text-muted" }>
 						Los cambios quedan en la plantilla. Las rutinas que ya armaste con ella no cambian.
 					</p>
+					<RoutineTemplateStructureDrawer detail={ data } isOpen={ isStructureOpen } onOpenChangeAction={ setIsStructureOpen }/>
 				</>
 			) }
 		</div>

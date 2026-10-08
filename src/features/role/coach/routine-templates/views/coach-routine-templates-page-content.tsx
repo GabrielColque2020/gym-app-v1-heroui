@@ -1,9 +1,13 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button, Card, Spinner } from "@heroui/react";
-import { RotateCw } from "lucide-react";
+import { Plus, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { RoutineTemplateStructureDrawer } from "@/features/role/coach/routine-templates/components/routine-template-structure-drawer";
+import { buildRoutineTemplateHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
 import { RoutineTemplateCard } from "@/features/role/coach/routine-templates/components/routine-template-card";
 import { useRoutineTemplates } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
 
@@ -17,6 +21,8 @@ const BREADCRUMBS = [
 export default function CoachRoutineTemplatesPageContent() {
 	const { data: templates = [], isError, isFetching, isLoading, refetch } = useRoutineTemplates( { alwaysFresh: true } );
 	const isRefreshing = isFetching && !isLoading;
+	const router = useRouter();
+	const [ isCreateOpen, setIsCreateOpen ] = useState( false );
 
 	return (
 		<div className={ "flex flex-col gap-4" }>
@@ -33,16 +39,26 @@ export default function CoachRoutineTemplatesPageContent() {
 							description={ "Rutinas guardadas para armar más rápido la de cualquier estudiante." }
 						/>
 					</div>
-					<Button
-						isIconOnly
-						aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
-						className={ "shrink-0" }
-						isDisabled={ isRefreshing || isLoading }
-						variant={ "secondary" }
-						onPress={ () => void refetch() }
-					>
-						<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
-					</Button>
+					<div className={ "flex shrink-0 items-center gap-2" }>
+						<Button
+							isIconOnly
+							aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
+							isDisabled={ isRefreshing || isLoading }
+							variant={ "secondary" }
+							onPress={ () => void refetch() }
+						>
+							<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
+						</Button>
+						{ /* En el telefono va solo el icono, para que el titulo no se parta. */ }
+						<Button
+							aria-label={ "Nueva plantilla" }
+							className={ "bg-accent px-3 text-accent-foreground" }
+							onPress={ () => setIsCreateOpen( true ) }
+						>
+							<Plus className={ "size-4" }/>
+							<span className={ "hidden sm:inline" }>Nueva plantilla</span>
+						</Button>
+					</div>
 				</Card.Header>
 				<Card.Content className={ "p-3" }>
 					{ isLoading ? (
@@ -57,7 +73,7 @@ export default function CoachRoutineTemplatesPageContent() {
 						<div className={ "mx-auto max-w-md py-10 text-center" }>
 							<p className={ "text-base font-semibold text-foreground" }>Todavía no tenés plantillas</p>
 							<p className={ "mt-1 text-sm leading-6 text-muted" }>
-								Para crear una, abrí la rutina de un estudiante que te guste, tocá los tres puntos y elegí &quot;Guardar como plantilla&quot;.
+								Creá una con &quot;Nueva plantilla&quot;, o abrí la rutina de un estudiante que te guste, tocá los tres puntos y elegí &quot;Guardar como plantilla&quot;.
 							</p>
 						</div>
 					) : (
@@ -74,6 +90,11 @@ export default function CoachRoutineTemplatesPageContent() {
 					</div>
 				</Card.Footer>
 			</Card>
+			<RoutineTemplateStructureDrawer
+				isOpen={ isCreateOpen }
+				onCreatedAction={ ( templateId ) => router.push( buildRoutineTemplateHref( templateId ) ) }
+				onOpenChangeAction={ setIsCreateOpen }
+			/>
 		</div>
 	);
 }

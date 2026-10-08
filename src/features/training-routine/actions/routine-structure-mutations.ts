@@ -8,6 +8,7 @@ import {
 	type RoutineStructureInput,
 	type RoutineStructureScopeInput,
 } from "@/features/training-routine/services/routine-structure";
+import { syncRoutineWeeksStructure } from "@/features/training-routine/services/routine-structure-sync";
 
 async function assertStudentExists( studentId: string, coachId: string ) {
 	const student = await prisma.user.findFirst( {
@@ -33,7 +34,6 @@ async function upsertRoutineStructure( input: RoutineStructureInput ) {
 
 	await assertStudentExists( input.studentId, session.sub );
 
-	const selectedWeeks = input.weeks.map( ( week ) => week.week );
 	const normalizedObjective = input.objective.trim() || null;
 
 	await prisma.$transaction( async ( tx ) => {
@@ -46,12 +46,6 @@ async function upsertRoutineStructure( input: RoutineStructureInput ) {
 			},
 			select: {
 				id: true,
-				weeks: {
-					select: {
-						id: true,
-						week: true,
-					},
-				},
 			},
 			update: {
 				objective: normalizedObjective,
@@ -65,97 +59,7 @@ async function upsertRoutineStructure( input: RoutineStructureInput ) {
 			},
 		} );
 
-		const existingRoutineByWeek = new Map( routineMonth.weeks.map( ( routineWeek ) => [ routineWeek.week, routineWeek ] ) );
-
-		await tx.trainingRoutineWeek.deleteMany( {
-			where: {
-				trainingRoutineMonthId: routineMonth.id,
-				week: {
-					notIn: selectedWeeks,
-				},
-			},
-		} );
-
-		for (const weekInput of input.weeks) {
-			const existingRoutine = existingRoutineByWeek.get( weekInput.week );
-
-			if (existingRoutine) {
-				await tx.trainingRoutineWeek.update( {
-					data: {
-						name: `Semana ${ weekInput.week }`,
-					},
-					where: {
-						id: existingRoutine.id,
-					},
-				} );
-				continue;
-			}
-
-			await tx.trainingRoutineWeek.create( {
-				data: {
-					name: `Semana ${ weekInput.week }`,
-					trainingRoutineMonthId: routineMonth.id,
-					week: weekInput.week,
-				},
-			} );
-		}
-
-		const routineWeeks = await tx.trainingRoutineWeek.findMany( {
-			select: {
-				id: true,
-				week: true,
-			},
-			where: {
-				trainingRoutineMonthId: routineMonth.id,
-				week: {
-					in: selectedWeeks,
-				},
-			},
-		} );
-
-		const routineWeekIdByWeek = new Map( routineWeeks.map( ( routineWeek ) => [ routineWeek.week, routineWeek.id ] ) );
-		const existingDays = await tx.routineDay.findMany( {
-			select: {
-				dayNumber: true,
-				trainingRoutineWeekId: true,
-			},
-			where: {
-				trainingRoutineWeekId: {
-					in: routineWeeks.map( ( routineWeek ) => routineWeek.id ),
-				},
-			},
-		} );
-		const existingDayKeys = new Set(
-			existingDays.map( ( day ) => `${ day.trainingRoutineWeekId }:${ day.dayNumber }` ),
-		);
-
-		for (const weekInput of input.weeks) {
-			const routineWeekId = routineWeekIdByWeek.get( weekInput.week );
-
-			if (!routineWeekId) continue;
-
-			await tx.routineDay.deleteMany( {
-				where: {
-					dayNumber: {
-						notIn: weekInput.days,
-					},
-					trainingRoutineWeekId: routineWeekId,
-				},
-			} );
-
-			for (const dayNumber of weekInput.days) {
-				if (existingDayKeys.has( `${ routineWeekId }:${ dayNumber }` )) {
-					continue;
-				}
-
-				await tx.routineDay.create( {
-					data: {
-						dayNumber,
-						trainingRoutineWeekId: routineWeekId,
-					},
-				} );
-			}
-		}
+		await syncRoutineWeeksStructure( tx, { trainingRoutineMonthId: routineMonth.id }, input.weeks );
 	} );
 }
 

@@ -1,3 +1,4 @@
+import type { RoutineStructureWeekInput } from "@/features/training-routine/services/routine-structure";
 import type { TrainingRoutineWeek } from "@/features/training-routine/services/training-routines-by-student";
 
 export const ROUTINE_TEMPLATE_NAME_MAX_LENGTH = 60;
@@ -40,6 +41,22 @@ export type ApplyRoutineTemplateInput = {
 export type ApplyRoutineTemplateResult =
 	| { ok: true; templateName: string }
 	| { ok: false; reason: "student-not-found" | "template-not-found" };
+
+export type CreateRoutineTemplateInput = {
+	name: string;
+	objective: string;
+	weeks: RoutineStructureWeekInput[];
+};
+
+export type CreateRoutineTemplateResult =
+	| { id: string; ok: true }
+	| { ok: false; reason: "duplicate-name" | "invalid-name" };
+
+export type UpdateRoutineTemplateStructureInput = {
+	objective: string;
+	templateId: string;
+	weeks: RoutineStructureWeekInput[];
+};
 
 export type RenameRoutineTemplateResult =
 	| { ok: true; name: string }

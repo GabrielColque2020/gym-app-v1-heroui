@@ -58,6 +58,12 @@ export function validateRoutineStructureScopeInput( input: RoutineStructureScope
 
 export function validateRoutineStructureInput( input: RoutineStructureInput ) {
 	validateRoutineStructureScopeInput( input );
+	validateRoutineStructureContent( input );
+}
+
+// Lo que vale igual para la rutina de un estudiante y para una plantilla: el
+// objetivo y las semanas con sus dias.
+export function validateRoutineStructureContent( input: Pick<RoutineStructureInput, "objective" | "weeks"> ) {
 	if (input.objective.trim().length > 180) {
 		throw new Error( "El objetivo mensual no puede superar los 180 caracteres." );
 	}
