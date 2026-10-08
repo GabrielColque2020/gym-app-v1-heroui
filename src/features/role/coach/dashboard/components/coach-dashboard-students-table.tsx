@@ -90,7 +90,9 @@ export function CoachDashboardStudentsTable( {
 									getRowId={ ( student ) => student.id }
 								/>
 							</div>
-							<div className={ "grid gap-3 @2xl:grid-cols-2 @4xl:hidden" }>
+							{ /* `grid-cols-1` fija el ancho de la columna: sin eso, una tarjeta con
+							     un correo largo se salia del bloque en el telefono. */ }
+							<div className={ "grid grid-cols-1 gap-3 @2xl:grid-cols-2 @4xl:hidden" }>
 								{ pagination.paginatedItems.map( ( student ) => (
 									<CoachDashboardStudentMobileCard
 										key={ student.id }

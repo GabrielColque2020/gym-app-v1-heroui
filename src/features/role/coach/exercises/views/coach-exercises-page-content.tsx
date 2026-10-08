@@ -59,11 +59,13 @@ export default function CoachExercisesPageContent() {
 			/>
 			<Card className={ "border border-border py-2" } variant={ "default" }>
 				<CoachExercisesPageHeader isRefreshing={ isRefreshing } onRefreshAction={ handleRefresh }/>
-				<Card.Content className={ "p-3" }>
-					<div className={ "hidden w-full md:flex" }>
+				{ /* Tabla o tarjetas segun el ancho de este bloque y no el de la ventana:
+				     con el menu lateral, una ventana mediana no le deja lugar a la tabla. */ }
+				<Card.Content className={ "@container p-3" }>
+					<div className={ "hidden w-full @3xl:flex" }>
 						<ExercisesContentDesktop exercises={ exercises }/>
 					</div>
-					<div className={ "w-full md:hidden" }>
+					<div className={ "w-full @3xl:hidden" }>
 						<ExercisesContentMobile exercises={ exercises }/>
 					</div>
 				</Card.Content>

@@ -169,8 +169,10 @@ export default function AdminUsersPageContent( { initialCreate = null, initialFi
 			</Card>
 
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Content className={ "space-y-4 p-3" }>
-					<div className={ "grid gap-3 md:grid-cols-3" }>
+				{ /* La tabla se muestra cuando este bloque tiene lugar para ella (896 px);
+				     por debajo van las tarjetas. No depende del ancho de la ventana. */ }
+				<Card.Content className={ "@container space-y-4 p-3" }>
+					<div className={ "grid gap-3 @3xl:grid-cols-3" }>
 						<SearchField name={ "admin-user-search" } value={ pageState.search } onChange={ pageState.setSearch }>
 							<Label>Buscar</Label>
 							<SearchField.Group className={ "border border-border" }>
@@ -236,16 +238,16 @@ export default function AdminUsersPageContent( { initialCreate = null, initialFi
 						</p>
 					) : null }
 
-					<div className={ filteredUsers.length === 0 ? "hidden" : "hidden lg:block" }>
+					<div className={ filteredUsers.length === 0 ? "hidden" : "hidden @4xl:block" }>
 						<DataGrid
 							aria-label={ "Listado de usuarios" }
 							columns={ columns }
-							contentClassName={ "min-w-full sm:min-w-[900px]" }
+							contentClassName={ "min-w-full" }
 							data={ filteredUsers }
 							getRowId={ ( user ) => user.id }
 						/>
 					</div>
-					<div className={ "space-y-2 lg:hidden" }>
+					<div className={ "space-y-2 @4xl:hidden" }>
 						{ filteredUsers.map( ( user ) => (
 							<AdminUserMobileCard key={ user.id } user={ user }/>
 						) ) }

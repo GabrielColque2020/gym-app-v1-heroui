@@ -145,8 +145,10 @@ export default function AdminExercisesPageContent() {
 			</Card>
 
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Content className={ "space-y-4 p-3" }>
-					<div className={ "grid gap-3 lg:grid-cols-3" }>
+				{ /* La tabla se muestra cuando este bloque tiene lugar para ella (768 px);
+				     por debajo van las tarjetas. No depende del ancho de la ventana. */ }
+				<Card.Content className={ "@container space-y-4 p-3" }>
+					<div className={ "grid gap-3 @3xl:grid-cols-3" }>
 						<SearchField name={ "admin-exercise-search" } value={ pageState.search } onChange={ pageState.updateNameFilter }>
 							<Label>Buscar</Label>
 							<SearchField.Group className={ "border border-border" }>
@@ -208,16 +210,16 @@ export default function AdminExercisesPageContent() {
 						</Card>
 					) : (
 						<>
-							<div className={ "hidden lg:block" }>
+							<div className={ "hidden @3xl:block" }>
 								<DataGrid
 									aria-label={ "Listado de ejercicios globales" }
 									columns={ columns }
-									contentClassName={ "min-w-full sm:min-w-[720px]" }
+									contentClassName={ "min-w-full" }
 									data={ exercises }
 									getRowId={ ( exercise ) => exercise.id }
 								/>
 							</div>
-							<div className={ "space-y-2 lg:hidden" }>
+							<div className={ "space-y-2 @3xl:hidden" }>
 								{ exercises.map( ( exercise ) => (
 									<AdminExerciseGlobalMobileCard key={ exercise.id } exercise={ exercise }/>
 								) ) }

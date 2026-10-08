@@ -44,9 +44,10 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 					</div>
 				),
 				header: "Nombre",
+				// Los anchos minimos suman 750: la tabla se muestra desde 768 y entra entera.
 				id: "name",
 				isRowHeader: true,
-				minWidth: 280,
+				minWidth: 250,
 			},
 			{
 				accessorKey: "category",
@@ -54,7 +55,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 				cell: ( exercise ) => <span>{ exercise.category }</span>,
 				header: "Categoría",
 				id: "category",
-				minWidth: 180,
+				minWidth: 150,
 			},
 			{
 				accessorKey: "sourceType",
@@ -66,7 +67,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 				),
 				header: "Origen",
 				id: "sourceType",
-				minWidth: 150,
+				minWidth: 110,
 			},
 			{
 				accessorKey: "active",
@@ -78,13 +79,13 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 				),
 				header: "Estado",
 				id: "active",
-				minWidth: 140,
+				minWidth: 100,
 			},
 			{
 				cell: ( exercise ) => <ExerciseRowActions exercise={ exercise }/>,
 				header: "Acciones",
 				id: "actions",
-				minWidth: 180,
+				minWidth: 140,
 			},
 		],
 		[],
@@ -138,7 +139,7 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 					<DataGrid
 						aria-label={ "Listado de ejercicios" }
 						columns={ columns }
-						contentClassName={ "min-w-full sm:min-w-[960px]" }
+						contentClassName={ "min-w-full" }
 						data={ paginatedExercises }
 						getRowId={ ( exercise ) => exercise.id }
 					/>
