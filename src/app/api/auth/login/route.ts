@@ -1,6 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { AUTH_SESSION_COOKIE_NAME, AUTH_SESSION_TTL_SECONDS, loginUser } from "@/features/login/services/login-service";
+import {
+	AUTH_SESSION_COOKIE_NAME,
+	AUTH_SESSION_TTL_SECONDS,
+	LOGIN_INACTIVE_ACCOUNT_MESSAGE,
+	LOGIN_INVALID_CREDENTIALS_MESSAGE,
+	loginUser,
+} from "@/features/login/services/login-service";
 import type { LoginPrismaClient } from "@/features/login/services/login-service";
 import prisma from "@/lib/prisma";
 import type { LoginErrorResponse, LoginRequest, LoginResponse } from "@/types/auth";
@@ -51,7 +57,9 @@ export async function POST( request: NextRequest ) {
 			userAgent: request.headers.get( "user-agent" ),
 		} );
 
-		const response = NextResponse.json<LoginResponse>( loginResponse );
+		// La sesion viaja solo en la cookie, que el codigo de la pagina no puede leer.
+		// Mandarla tambien en la respuesta la dejaba al alcance de cualquier script.
+		const response = NextResponse.json<Pick<LoginResponse, "user">>( { user: loginResponse.user } );
 
 		response.cookies.set( {
 			httpOnly: true,
@@ -67,7 +75,7 @@ export async function POST( request: NextRequest ) {
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "No se pudo iniciar sesión.";
 
-		if (message === "La cuenta se encuentra inactiva.") {
+		if (message === LOGIN_INACTIVE_ACCOUNT_MESSAGE) {
 			return toErrorResponse( message, 403 );
 		}
 
@@ -75,6 +83,14 @@ export async function POST( request: NextRequest ) {
 			return toErrorResponse( message, 400 );
 		}
 
-		return toErrorResponse( message, 401 );
+		if (message === LOGIN_INVALID_CREDENTIALS_MESSAGE) {
+			return toErrorResponse( message, 401 );
+		}
+
+		// Cualquier otra falla es nuestra (la base, la red): no se le muestra el
+		// detalle tecnico a quien esta intentando entrar.
+		console.error( "[login]", error );
+
+		return toErrorResponse( "No pudimos iniciar sesión. Probá de nuevo en un momento.", 500 );
 	}
 }

@@ -2,7 +2,7 @@ import LoginPageContent from "@/features/login/views/login-page-content";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Iniciar Sesión",
+	title: "Iniciar sesión",
 	description: "Iniciar sesión",
 };
 

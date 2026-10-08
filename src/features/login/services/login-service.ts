@@ -150,6 +150,15 @@ export async function recordUserLoginHistory(
 	} );
 }
 
+// Los unicos motivos de rechazo que se le cuentan a quien intenta entrar.
+export const LOGIN_INVALID_CREDENTIALS_MESSAGE = "El DNI, el correo o la contraseña no son correctos.";
+export const LOGIN_INACTIVE_ACCOUNT_MESSAGE = "Tu cuenta está desactivada. Pedile a tu entrenador que la vuelva a activar.";
+
+// Hash de una contraseña que nadie tiene. Cuando la cuenta no existe se compara
+// igual contra este, para que la respuesta tarde lo mismo que con una cuenta real
+// y no se pueda adivinar por el tiempo qué correos o DNI estan registrados.
+const UNKNOWN_ACCOUNT_PASSWORD_HASH = "$2b$10$ggPLTxAyJovD80WdY6g3L.Z9w.pSz5C1zlZbZRiCsh.p5f8oUfYle";
+
 export async function loginUser(
 	input: LoginRequest,
 	dependencies: LoginDependencies = {},
@@ -167,20 +176,19 @@ export async function loginUser(
 
 	const prismaClient = dependencies.prismaClient ?? await getDefaultPrismaClient();
 	const user = await findUserByCredential( prismaClient, credential );
-
-	if (!user) {
-		throw new Error( "No encontramos una cuenta con esas credenciales." );
-	}
-
-	if (!user.active) {
-		throw new Error( "La cuenta se encuentra inactiva." );
-	}
-
 	const comparePassword = dependencies.comparePassword ?? bcrypt.compare;
-	const isPasswordValid = await comparePassword( password, user.password );
+	const isPasswordValid = await comparePassword( password, user?.password ?? UNKNOWN_ACCOUNT_PASSWORD_HASH )
+		.catch( () => false );
 
-	if (!isPasswordValid) {
-		throw new Error( "La contraseña es incorrecta." );
+	// Cuenta inexistente y contraseña equivocada responden lo mismo: distinguirlas
+	// le deja a cualquiera averiguar quien tiene cuenta.
+	if (!user || !isPasswordValid) {
+		throw new Error( LOGIN_INVALID_CREDENTIALS_MESSAGE );
+	}
+
+	// Que la cuenta esta desactivada se dice solo a quien puso bien la contraseña.
+	if (!user.active) {
+		throw new Error( LOGIN_INACTIVE_ACCOUNT_MESSAGE );
 	}
 
 	const authenticatedUser = toAuthenticatedUser( user );

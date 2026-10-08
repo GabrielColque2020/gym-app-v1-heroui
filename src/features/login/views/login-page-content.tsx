@@ -132,8 +132,10 @@ export default function LoginPageContent() {
 					{ loginMutation.isError ? (
 						<Alert className={ "border border-danger/20" } status={ "danger" }>
 							<Alert.Content>
-								<Alert.Title>Error al iniciar sesión</Alert.Title>
-								<Alert.Description>No pudimos iniciar sesión. Revisá los datos ingresados e intentá nuevamente.</Alert.Description>
+								<Alert.Title>No pudimos iniciar sesión</Alert.Title>
+								{ /* El servidor ya manda un texto pensado para mostrar: datos
+								     incorrectos, cuenta desactivada o una falla nuestra. */ }
+								<Alert.Description>{ loginMutation.error.message }</Alert.Description>
 							</Alert.Content>
 						</Alert>
 					) : null }
@@ -197,10 +199,14 @@ export default function LoginPageContent() {
 								<>
 									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : null }
 									{ isPending ? null : <LogIn className={ "size-4" }/> }
-									{ isPending ? "Ingresando..." : "Iniciar Sesión" }
+									{ isPending ? "Ingresando..." : "Iniciar sesión" }
 								</>
 							) }
 						</Button>
+						{ /* No hay recuperacion por correo: la contraseña la cambia el entrenador. */ }
+						<p className={ "text-center text-xs leading-5 text-muted" }>
+							¿Olvidaste tu contraseña? Pedile a tu entrenador que te la cambie.
+						</p>
 					</form>
 				</Card.Content>
 			</Card>
