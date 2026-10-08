@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-import { Bookmark, CalendarClock, CircleHelp, Dumbbell, House, Users, UtensilsCrossed } from "lucide-react";
+import { Bookmark, CalendarClock, CircleHelp, Dumbbell, House, TrendingUp, Users, UtensilsCrossed } from "lucide-react";
 
 import type { Role } from "@/generated/prisma/client";
 
@@ -19,6 +19,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
 	{ href: "/student/training-routine", icon: Dumbbell, label: "Rutina de entrenamiento", roles: [ "STUDENT" ] },
 	{ href: "/student/meal-plans", icon: UtensilsCrossed, label: "Plan alimenticio", roles: [ "STUDENT" ] },
 	{ href: "/student/history-routines", icon: CalendarClock, label: "Historial de rutina", roles: [ "STUDENT" ] },
+	{ href: "/student/progress", icon: TrendingUp, label: "Progreso", roles: [ "STUDENT" ] },
 	// La rutina, el plan y el historial de cada estudiante se abren desde su ficha,
 	// a la que se entra por "Estudiantes".
 	{ href: "/coach/student", icon: Users, label: "Estudiantes", roles: [ "COACH" ] },
