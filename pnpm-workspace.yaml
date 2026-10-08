@@ -5,6 +5,14 @@ allowBuilds:
 
 dangerouslyAllowAllBuilds: true
 
+# tailwind-variants 3.3.0 devuelve el mismo objeto de estilos en cada llamada:
+# al volver a dibujarse, las etiquetas, botones y demas componentes de HeroUI
+# tomaban el color del ultimo que se calculo (todas las etiquetas en verde
+# despues de terminar un dia). 3.3.1 lo corrige; HeroUI 3.2.3 todavia pide la
+# 3.3.0, asi que se fuerza aca. Se puede quitar cuando HeroUI la actualice.
+overrides:
+  tailwind-variants: 3.3.1
+
 minimumReleaseAgeExclude:
   - lucide-react@1.26.0
   - '@next/env@16.3.0'
