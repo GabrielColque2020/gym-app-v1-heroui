@@ -9,8 +9,6 @@ import { Link2 } from "lucide-react";
 type ExerciseChangeDrawerContentProps = {
 	exercise: Exercise;
 	hasVariants: boolean;
-	isVariantOverridden: boolean;
-	originalVariant: ExerciseVariantOption | null;
 	variantOptions: ExerciseVariantOption[];
 	onResetVariant: () => void;
 	onSelectVariant: ( variant: ExerciseVariantOption ) => void;
@@ -19,8 +17,6 @@ type ExerciseChangeDrawerContentProps = {
 export default function ExerciseChangeDrawerContent( {
 	exercise,
 	hasVariants,
-	isVariantOverridden,
-	originalVariant,
 	variantOptions,
 	onResetVariant,
 	onSelectVariant,
@@ -42,10 +38,13 @@ export default function ExerciseChangeDrawerContent( {
 			</Drawer.Header>
 
 			<Drawer.Body className={ "min-h-0 flex flex-1 flex-col space-y-6 overflow-y-auto py-3" }>
-				{ isVariantOverridden ? (
+				{ /* Siempre que haya una variante elegida, y no solo mientras el cambio
+				     esta sin guardar: el dia se guarda solo, y despues de eso ya no
+				     habia forma de volver al ejercicio que puso el entrenador. */ }
+				{ exercise.variantExerciseId ? (
 					<ExerciseChangeDrawerSelectedVariant
-						exerciseBaseName={ originalVariant?.name ?? exercise.baseName }
-						imageUrl={ originalVariant?.imageUrl ?? exercise.imageUrl }
+						exerciseBaseName={ exercise.baseName }
+						imageUrl={ exercise.imageUrl }
 						onResetVariant={ onResetVariant }
 					/>
 				) : null }

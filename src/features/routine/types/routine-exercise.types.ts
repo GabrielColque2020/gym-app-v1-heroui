@@ -48,6 +48,9 @@ export interface Exercise {
 	sets: ExerciseSet[];
 	notes?: string;
 	lastSession: ExerciseSessionHistory | null;
+	// La ultima sesion del ejercicio del entrenador, sin variante. Hace falta
+	// cuando hay una variante elegida y el estudiante vuelve al original.
+	baseLastSession?: ExerciseSessionHistory | null;
 	videoUrl?: string | null;
 	variantOptions: ExerciseVariantOption[];
 }

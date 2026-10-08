@@ -206,6 +206,9 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				name: selectedVariant?.name ?? exercise?.name ?? "Ejercicio",
 				notes: exercise?.tips ?? routine.observation ?? undefined,
 				lastSession,
+				baseLastSession: selectedVariant
+					? buildSessionHistory( getProgressEntriesByExercise( detail, exerciseId ).filter( isEarlierSession ) )
+					: lastSession,
 				originalVariantExerciseId: variantExerciseId,
 				variantExerciseId,
 				variantSelectionExplicit: false,
@@ -293,9 +296,13 @@ export function mergeStudentRoutineSessionDraft(
 			const sourceVariantIds = new Set( sourceVariantOptions.map( ( variant ) => variant.id ) );
 			const draftVariantId = draftExercise?.variantExerciseId ?? null;
 			const sourceVariantId = sourceExercise.variantExerciseId ?? null;
+			// Sin variante en el borrador puede ser "no toque nada" o "volvi al
+			// original". Solo en el segundo caso manda el borrador: si no, quien
+			// ya guardo una variante no podria volver al ejercicio del entrenador.
+			const draftChoseOriginal = draftVariantId === null && Boolean( draftExercise?.variantSelectionExplicit );
 			const resolvedVariantId = draftVariantId && sourceVariantIds.has( draftVariantId )
 				? draftVariantId
-				: sourceVariantId && sourceVariantIds.has( sourceVariantId )
+				: !draftChoseOriginal && sourceVariantId && sourceVariantIds.has( sourceVariantId )
 					? sourceVariantId
 					: null;
 			const resolvedVariant = resolvedVariantId
@@ -309,8 +316,12 @@ export function mergeStudentRoutineSessionDraft(
 			return {
 				...sourceExercise,
 				baseName: draftExercise.baseName ?? sourceExercise.baseName,
-				lastSession: sourceExercise.lastSession ?? draftExercise.lastSession ?? null,
-				name: resolvedVariant?.name ?? sourceExercise.name,
+				// Al volver al original, la sesion anterior guardada es la de la variante.
+				lastSession: draftChoseOriginal
+					? sourceExercise.baseLastSession ?? null
+					: sourceExercise.lastSession ?? draftExercise.lastSession ?? null,
+				// Al volver al original, el nombre guardado todavia es el de la variante.
+				name: resolvedVariant?.name ?? ( draftChoseOriginal ? sourceExercise.baseName : sourceExercise.name ),
 				notes: draftExercise.notes ?? sourceExercise.notes,
 				originalVariantExerciseId: sourceExercise.originalVariantExerciseId ?? null,
 				restTime: draftExercise.restTime ?? sourceExercise.restTime,
@@ -318,7 +329,7 @@ export function mergeStudentRoutineSessionDraft(
 				variantExerciseId: resolvedVariantId,
 				variantSelectionExplicit: resolvedVariantId
 					? draftExercise.variantSelectionExplicit || sourceExercise.variantSelectionExplicit || false
-					: false,
+					: draftChoseOriginal && sourceVariantId !== null,
 				variantOptions: sourceVariantOptions,
 			};
 		} ),

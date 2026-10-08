@@ -33,7 +33,7 @@ export function ExerciseChangeDrawerSelectedVariant( {
 				</div>
 				<div className={ "flex items-center justify-end" }>
 					<Button className={ "shrink-0" } size={ "sm" } variant={ "secondary" } onPress={ onResetVariant }>
-						Restablecer al original
+						Volver al original
 					</Button>
 				</div>
 			</Card.Content>

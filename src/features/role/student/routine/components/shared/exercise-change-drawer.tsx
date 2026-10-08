@@ -2,6 +2,7 @@
 
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
+import { ExerciseChangeConfirmModal } from "@/features/role/student/routine/components/shared/exercise-change-confirm-modal";
 import ExerciseChangeDrawerContent from "@/features/role/student/routine/components/shared/exercise-change-drawer-content";
 import { ExerciseExecutionDrawerContent } from "@/features/role/student/routine/components/shared/exercise-execution-drawer-content";
 import { ExerciseChangeDrawerTrigger } from "@/features/role/student/routine/components/shared/exercise-change-drawer-trigger";
@@ -11,8 +12,6 @@ import type { Exercise, ExerciseVariantOption } from "@/features/routine/types/r
 type ExerciseChangeDrawerProps = {
 	exercise: Exercise;
 	hasVariants: boolean;
-	isVariantOverridden: boolean;
-	originalVariant: ExerciseVariantOption | null;
 	selectedVariant: ExerciseVariantOption | null;
 	variantOptions: ExerciseVariantOption[];
 	// La tarjeta tambien abre la ejecucion al tocar la imagen: el estado es suyo.
@@ -24,24 +23,28 @@ type ExerciseChangeDrawerProps = {
 export default function ExerciseChangeDrawer( {
 	exercise,
 	hasVariants,
-	isVariantOverridden,
-	originalVariant,
 	selectedVariant,
 	variantOptions,
 	isExecutionOpen,
 	onExecutionOpenChangeAction,
 	onVariantChangeAction,
 }: ExerciseChangeDrawerProps ) {
+	const completedSets = exercise.sets.filter( ( set ) => set.completed ).length;
 	const {
+		handleCancelPendingChange,
+		handleConfirmPendingChange,
 		handleOpenVariantDrawer,
 		handleResetVariant,
 		handleSelectVariant,
 		isOpen,
+		pendingChange,
 		setIsOpen,
 	} = useExerciseChangeDrawerState( {
+		completedSets,
+		currentVariantExerciseId: exercise.variantExerciseId,
+		exerciseBaseName: exercise.baseName,
 		exerciseId: exercise.id,
 		hasVariants,
-		originalVariantExerciseId: exercise.originalVariantExerciseId,
 		onVariantChangeAction,
 	} );
 	const placement = useResponsiveDrawerPlacement();
@@ -70,13 +73,19 @@ export default function ExerciseChangeDrawer( {
 				<ExerciseChangeDrawerContent
 					exercise={ exercise }
 					hasVariants={ hasVariants }
-					isVariantOverridden={ isVariantOverridden }
-					originalVariant={ originalVariant }
 					variantOptions={ variantOptions }
 					onResetVariant={ handleResetVariant }
 					onSelectVariant={ handleSelectVariant }
 				/>
 			</FeatureDrawerLayout>
+			<ExerciseChangeConfirmModal
+				completedSets={ completedSets }
+				currentName={ selectedVariant?.name ?? exercise.baseName }
+				isOpen={ pendingChange !== null }
+				targetName={ pendingChange?.name ?? "" }
+				onCloseAction={ handleCancelPendingChange }
+				onConfirmAction={ handleConfirmPendingChange }
+			/>
 			<FeatureDrawerLayout
 				bottomContentClassName={ "max-h-[88dvh]" }
 				isOpen={ isExecutionOpen }

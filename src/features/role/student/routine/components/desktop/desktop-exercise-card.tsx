@@ -25,7 +25,6 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 		hasSessionHistory,
 		hasVariants,
 		isVariantOverridden,
-		originalVariant,
 		selectedVariant,
 		variantOptions,
 	} = useExerciseCardState( exercise );
@@ -86,8 +85,6 @@ export default function DesktopExerciseCard( { exercise, children, onVariantChan
 								exercise={ exercise }
 								hasVariants={ hasVariants }
 								isExecutionOpen={ isExecutionOpen }
-								isVariantOverridden={ isVariantOverridden }
-								originalVariant={ originalVariant }
 								selectedVariant={ selectedVariant }
 								variantOptions={ variantOptions }
 								onExecutionOpenChangeAction={ setIsExecutionOpen }

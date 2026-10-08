@@ -25,7 +25,6 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 		hasSessionHistory,
 		hasVariants,
 		isVariantOverridden,
-		originalVariant,
 		selectedVariant,
 		variantOptions,
 	} = useExerciseCardState( exercise );
@@ -70,8 +69,6 @@ export default function MobileExerciseCard( { exercise, children, onVariantChang
 								exercise={ exercise }
 								hasVariants={ hasVariants }
 								isExecutionOpen={ isExecutionOpen }
-								isVariantOverridden={ isVariantOverridden }
-								originalVariant={ originalVariant }
 								selectedVariant={ selectedVariant }
 								variantOptions={ variantOptions }
 								onExecutionOpenChangeAction={ setIsExecutionOpen }

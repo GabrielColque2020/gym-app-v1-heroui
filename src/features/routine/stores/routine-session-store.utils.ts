@@ -123,6 +123,11 @@ export function hydrateSession( session: PersistedDraftSession ): StudentRoutine
 				...variant,
 				imageUrl: variant.imageUrl ?? null,
 				instructions: variant.instructions ?? null,
+				// La fecha se guardo como texto. Sin volver a armarla, recargar la
+				// pagina con un borrador y una variante con historial la rompia.
+				lastSession: variant.lastSession
+					? { ...variant.lastSession, date: new Date( variant.lastSession.date ) }
+					: null,
 				videoUrl: variant.videoUrl ?? null,
 			} ) ) ?? [],
 		} ) ),
