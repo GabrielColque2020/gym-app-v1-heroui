@@ -30,7 +30,7 @@ export function StudentDrawerDetailsSection( {
 					value={ values.height }
 					onChange={ ( value ) => updateValue( "height", value ) }
 				>
-					<Label>Altura</Label>
+					<Label>Altura (cm)</Label>
 					<Input inputMode={ "decimal" } placeholder={ "175" } className={ "border border-border" }/>
 					{ isHeightInvalid ? <FieldError>Debe ser mayor o igual a 0.</FieldError> : null }
 				</TextField>
@@ -42,7 +42,7 @@ export function StudentDrawerDetailsSection( {
 					value={ values.weight }
 					onChange={ ( value ) => updateValue( "weight", value ) }
 				>
-					<Label>Peso</Label>
+					<Label>Peso (kg)</Label>
 					<Input inputMode={ "decimal" } placeholder={ "72" } className={ "border border-border" }/>
 					{ isWeightInvalid ? <FieldError>Debe ser mayor o igual a 0.</FieldError> : null }
 				</TextField>

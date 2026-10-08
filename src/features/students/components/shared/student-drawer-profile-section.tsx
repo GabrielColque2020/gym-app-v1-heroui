@@ -120,7 +120,7 @@ export function StudentDrawerProfileSection( {
 					<Input
 						autoComplete={ "new-password" }
 						className={ "border border-border pr-11" }
-						placeholder={ isEditMode ? "Dejar vacía para mantener la actual" : "Contraseña inicial" }
+						placeholder={ isEditMode ? "Dejar vacía para conservar la actual" : "Contraseña inicial" }
 						type={ isPasswordVisible ? "text" : "password" }
 					/>
 					<Button

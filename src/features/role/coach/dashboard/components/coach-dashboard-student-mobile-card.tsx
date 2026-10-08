@@ -21,9 +21,13 @@ export function CoachDashboardStudentMobileCard( {
 						<p className={ "truncate text-xs text-muted" }>{ student.email }</p>
 						<p className={ "text-xs text-muted" }>DNI { student.dni }</p>
 					</div>
-					<Chip color={ student.active ? "success" : "danger" } size={ "sm" } variant={ "soft" }>
-						{ student.active ? "Activo" : "Inactivo" }
-					</Chip>
+					{ /* El menu va arriba, junto al estado: abajo quedaba solo en un renglon vacio. */ }
+					<div className={ "flex shrink-0 items-center gap-2" }>
+						<Chip color={ student.active ? "success" : "danger" } size={ "sm" } variant={ "soft" }>
+							{ student.active ? "Activo" : "Inactivo" }
+						</Chip>
+						<CoachDashboardStudentRowActions student={ student }/>
+					</div>
 				</div>
 				<div className={ "grid gap-2 sm:grid-cols-2" }>
 					<div className={ "rounded-lg border border-border bg-surface px-3 py-2" }>
@@ -43,7 +47,6 @@ export function CoachDashboardStudentMobileCard( {
 						<p className={ "text-sm text-foreground" }>{ formatCoachDashboardDateLabel( student.lastProgressAt ) }</p>
 					</div>
 				</div>
-				<CoachDashboardStudentRowActions student={ student }/>
 			</Card.Content>
 		</Card>
 	);
