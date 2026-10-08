@@ -2,6 +2,7 @@
 
 import { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
+import { requireCoachSession } from "@/features/auth/coach-session";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 import { normalizeSearchName } from "@/features/exercises/services/exercise-form";
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
@@ -67,12 +68,16 @@ function normalizeId( value: string ) {
 	return value.trim();
 }
 
-function buildExerciseSearchWhere( { bodyPart, excludedIds, query }: ExerciseVariantSearchInput & { excludedIds: string[] } ) {
+function buildExerciseSearchWhere(
+	{ bodyPart, coachId, excludedIds, query }: ExerciseVariantSearchInput & { coachId: string; excludedIds: string[] },
+) {
 	const normalizedQuery = normalizeSearchName( query ?? "" );
 	const trimmedQuery = query?.trim() ?? "";
 
 	return {
 		active: true,
+		// Solo los ejercicios del entrenador que busca.
+		coachId,
 		id: {
 			notIn: excludedIds,
 		},
@@ -97,14 +102,25 @@ function buildExerciseSearchWhere( { bodyPart, excludedIds, query }: ExerciseVar
 	};
 }
 
-async function assertRoutineExists( routineId: string ) {
-	const routine = await prisma.routine.findUnique( {
+// El ejercicio de rutina tiene que ser de este entrenador: de la rutina de uno
+// de sus estudiantes o de una de sus plantillas. Conocer el identificador no
+// alcanza para ver ni cambiar sus variantes.
+async function assertRoutineExists( routineId: string, coachId: string ) {
+	const routine = await prisma.routine.findFirst( {
 		select: {
 			id: true,
 			exerciseId: true,
 		},
 		where: {
 			id: routineId,
+			RoutineDay: {
+				trainingRoutineWeek: {
+					OR: [
+						{ trainingRoutineMonth: { student: { coachId } } },
+						{ routineTemplate: { coachId } },
+					],
+				},
+			},
 		},
 	} );
 
@@ -165,7 +181,9 @@ export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQ
 			throw new Error( "Seleccioná una rutina valida." );
 		}
 
-		await assertRoutineExists( normalizedRoutineId );
+		const session = await requireCoachSession( "consultar las variantes" );
+
+		await assertRoutineExists( normalizedRoutineId, session.sub );
 
 		const variants = await prisma.routineExerciseVariant.findMany( {
 			orderBy: {
@@ -193,6 +211,7 @@ export async function searchExerciseVariantCandidatesAction( input: ExerciseVari
 			throw new Error( "Seleccioná un ejercicio válido." );
 		}
 
+		const session = await requireCoachSession( "buscar ejercicios para variantes" );
 		const exercises = ( await prisma.exerciseCoach.findMany( {
 			orderBy: {
 				name: "asc",
@@ -200,6 +219,7 @@ export async function searchExerciseVariantCandidatesAction( input: ExerciseVari
 			select: exerciseVariantSelect,
 			where: buildExerciseSearchWhere( {
 				...input,
+				coachId: session.sub,
 				excludedIds: [ normalizedExerciseId ],
 			} ),
 		} ) ) as ExerciseVariantSearchResult[];
@@ -221,17 +241,20 @@ export async function createExerciseVariantAction( input: ExerciseVariantCreateI
 			throw new Error( "Seleccioná una rutina y un ejercicio válidos." );
 		}
 
-		const routine = await assertRoutineExists( routineId );
+		const session = await requireCoachSession( "agregar variantes" );
+		const routine = await assertRoutineExists( routineId, session.sub );
 
 		if (routine.exerciseId === variantExerciseId) {
 			throw new Error( "El ejercicio principal no puede ser variante de si mismo." );
 		}
 
-		const variantExercise = await prisma.exerciseCoach.findUnique( {
+		// La variante tambien tiene que ser un ejercicio de este entrenador.
+		const variantExercise = await prisma.exerciseCoach.findFirst( {
 			select: {
 				id: true,
 			},
 			where: {
+				coachId: session.sub,
 				id: variantExerciseId,
 			},
 		} );
@@ -279,7 +302,8 @@ export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput
 			throw new Error( "Seleccioná una rutina valida." );
 		}
 
-		const routine = await assertRoutineExists( routineId );
+		const session = await requireCoachSession( "guardar las variantes" );
+		const routine = await assertRoutineExists( routineId, session.sub );
 
 		const routineExerciseId = routine.exerciseId;
 
@@ -289,6 +313,20 @@ export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput
 
 		if (variantExerciseIds.includes( routineExerciseId )) {
 			throw new Error( "El ejercicio principal no puede ser variante de si mismo." );
+		}
+
+		// Todas las variantes pedidas tienen que ser ejercicios de este entrenador.
+		const ownVariantCount = await prisma.exerciseCoach.count( {
+			where: {
+				coachId: session.sub,
+				id: {
+					in: variantExerciseIds,
+				},
+			},
+		} );
+
+		if (ownVariantCount !== variantExerciseIds.length) {
+			throw new Error( "Uno de los ejercicios seleccionados no existe." );
 		}
 
 		await prisma.$transaction( async ( tx ) => {
