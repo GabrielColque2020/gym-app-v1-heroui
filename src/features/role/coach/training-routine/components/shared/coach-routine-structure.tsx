@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import { useMemo, useState } from "react";
 
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
@@ -133,11 +134,11 @@ export default function CoachRoutineStructure( {
 			}
 
 			onSavedAction();
-		} catch {
+		} catch (error) {
 			toast.danger( mode === "create" ? "Error al crear rutina" : "Error al editar rutina", {
-				description: mode === "create"
+				description: getErrorMessage( error, mode === "create"
 					? "No se pudo crear la estructura."
-					: "No se pudo guardar la estructura.",
+					: "No se pudo guardar la estructura." ),
 			} );
 		}
 	}

@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import { useEffect, useRef, useState } from "react";
 
 import { Button, Chip, Description, Drawer, Label, ListBox, Select, Spinner, toast } from "@heroui/react";
@@ -155,11 +156,11 @@ export function AdminStudentDrawer( {
 			}
 
 			handleOpenChange( false );
-		} catch {
+		} catch (error) {
 			toast.danger( isEditMode ? "Error al actualizar" : "Error al crear", {
-				description: isEditMode
+				description: getErrorMessage( error, isEditMode
 					? "No se pudieron guardar los cambios."
-					: "No se pudo crear el estudiante.",
+					: "No se pudo crear el estudiante." ),
 			} );
 		}
 	}

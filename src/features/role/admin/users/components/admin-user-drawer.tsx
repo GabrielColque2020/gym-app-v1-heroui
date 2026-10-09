@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import type { DateValue } from "@internationalized/date";
 import type { FormEvent } from "react";
 
@@ -132,9 +133,9 @@ export function AdminUserDrawer( {
 				description: "Los cambios quedaron reflejados en la tabla.",
 			} );
 			handleOpenChange( false );
-		} catch {
+		} catch (error) {
 			toast.danger( "Error al editar usuario", {
-				description: "No se pudieron guardar los cambios.",
+				description: getErrorMessage( error, "No se pudieron guardar los cambios." ),
 			} );
 		}
 	}

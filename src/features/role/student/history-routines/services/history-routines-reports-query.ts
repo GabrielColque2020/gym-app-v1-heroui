@@ -1,3 +1,5 @@
+import type { ActionData } from "@/lib/action-result";
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -6,10 +8,10 @@ import { getHistoryRoutinesReportsByStudentAction } from "@/features/role/studen
 export const historyRoutinesReportsQueryKey = ( studentId: string ) =>
 	[ "student-history-routines-reports", studentId ] as const;
 
-export type HistoryRoutinesReportsByStudent = Awaited<ReturnType<typeof getHistoryRoutinesReportsByStudentAction>>;
+export type HistoryRoutinesReportsByStudent = ActionData<typeof getHistoryRoutinesReportsByStudentAction>;
 
 export async function fetchHistoryRoutinesReportsByStudent( studentId: string ): Promise<HistoryRoutinesReportsByStudent> {
-	return getHistoryRoutinesReportsByStudentAction( { studentId } );
+	return unwrapped( getHistoryRoutinesReportsByStudentAction )( { studentId } );
 }
 
 export const historyRoutinesReportsQueryOptions = ( studentId: string ) => queryOptions( {

@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import type { CoachExercises } from "@/features/role/coach/exercises/services/coach-exercises-query";
@@ -13,6 +14,12 @@ import {
 	saveCoachExerciseAction,
 	toggleCoachExerciseStatusAction,
 } from "@/features/role/coach/exercises/actions/coach-exercises";
+
+// Desenvueltas aca y no dentro de `useMutation`: ahi TypeScript perdia el tipo
+// de lo que devuelven.
+const saveCoachExercise = unwrapped( saveCoachExerciseAction );
+const toggleCoachExerciseStatus = unwrapped( toggleCoachExerciseStatusAction );
+const deleteCoachExercise = unwrapped( deleteCoachExerciseAction );
 
 function invalidateCoachExercises( queryClient: ReturnType<typeof useQueryClient> ) {
 	void queryClient.invalidateQueries( { queryKey: COACH_EXERCISES_QUERY_KEY } );
@@ -34,7 +41,7 @@ export function useSaveCoachExercise() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: saveCoachExerciseAction,
+		mutationFn: saveCoachExercise,
 		onSuccess: () => invalidateCoachExercises( queryClient ),
 	} );
 }
@@ -43,7 +50,7 @@ export function useToggleCoachExerciseStatus() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: toggleCoachExerciseStatusAction,
+		mutationFn: toggleCoachExerciseStatus,
 		onSuccess: () => invalidateCoachExercises( queryClient ),
 	} );
 }
@@ -52,7 +59,7 @@ export function useDeleteCoachExercise() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: deleteCoachExerciseAction,
+		mutationFn: deleteCoachExercise,
 		onSuccess: () => {
 			invalidateCoachExercises( queryClient );
 			invalidateCoachExerciseRelatedQueries( queryClient );

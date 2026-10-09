@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { requireAdminSession } from "@/features/auth/admin-session";
 import prisma from "@/lib/prisma";
@@ -15,8 +17,8 @@ export type AdminDashboardSummary = {
 	};
 };
 
-export async function getAdminDashboardSummaryAction(): Promise<AdminDashboardSummary> {
-	try {
+export async function getAdminDashboardSummaryAction(): Promise<ActionResult<AdminDashboardSummary>> {
+	return runAction( "No se pudo obtener el resumen.", async () => {
 		await requireAdminSession( "consultar el resumen" );
 
 		const [ totalUsers, activeCoaches, activeStudents, inactiveUsers, studentsWithoutCoach ] = await Promise.all( [
@@ -62,9 +64,5 @@ export async function getAdminDashboardSummaryAction(): Promise<AdminDashboardSu
 				totalUsers,
 			},
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudo obtener el resumen. ${ message }` );
-	}
+	} );
 }

@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import { sortMealPlansByMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import prisma from "@/lib/prisma";
@@ -43,8 +45,8 @@ async function assertCoachStudent( studentId: string, coachId: string ) {
 }
 
 // Los otros estudiantes del entrenador que tienen plan cargado: de ellos se puede copiar.
-export async function getMealPlanCopySourcesAction( { studentId }: { studentId: string } ): Promise<MealPlanCopySource[]> {
-	try {
+export async function getMealPlanCopySourcesAction( { studentId }: { studentId: string } ): Promise<ActionResult<MealPlanCopySource[]>> {
+	return runAction( "No se pudieron consultar los planes para copiar.", async () => {
 		const session = await requireCoachSession( "consultar planes para copiar" );
 		const students = ( await prisma.user.findMany( {
 			orderBy: {
@@ -86,18 +88,14 @@ export async function getMealPlanCopySourcesAction( { studentId }: { studentId: 
 				name: student.name,
 			} ) )
 			.filter( ( student ) => student.mealTimes.length > 0 );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudieron consultar los planes para copiar. ${ message }` );
-	}
+	} );
 }
 
 // Copia el plan entero de un estudiante a otro. El destino queda igual al
 // origen: sus comidas anteriores se borran, en la misma transaccion en la que
 // se crean las nuevas, para que nunca quede a medio copiar.
 export async function copyMealPlanAction( input: CopyMealPlanInput ) {
-	try {
+	return runAction( "No se pudo copiar el plan alimenticio.", async () => {
 		const session = await requireCoachSession( "copiar el plan alimenticio" );
 		const studentId = input.studentId.trim();
 		const sourceStudentId = input.sourceStudentId.trim();
@@ -151,9 +149,5 @@ export async function copyMealPlanAction( input: CopyMealPlanInput ) {
 		return {
 			copiedCount: sourceMeals.length,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al copiar el plan alimenticio.";
-
-		throw new Error( `No se pudo copiar el plan alimenticio. ${ message }` );
-	}
+	} );
 }

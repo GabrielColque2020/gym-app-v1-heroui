@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { requireCoachSession } from "@/features/auth/coach-session";
@@ -173,8 +175,8 @@ function mapRoutineExerciseVariant( variant: RoutineExerciseVariantWithExercise 
 	};
 }
 
-export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQueryInput ): Promise<ExerciseVariantListItem[]> {
-	try {
+export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQueryInput ): Promise<ActionResult<ExerciseVariantListItem[]>> {
+	return runAction( "No se pudieron obtener las variantes del ejercicio.", async () => {
 		const normalizedRoutineId = normalizeId( routineId );
 
 		if (!normalizedRoutineId) {
@@ -196,15 +198,11 @@ export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQ
 		} ) as RoutineExerciseVariantWithExercise[];
 
 		return variants.map( mapRoutineExerciseVariant );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudieron obtener las variantes del ejercicio. ${ message }` );
-	}
+	} );
 }
 
-export async function searchExerciseVariantCandidatesAction( input: ExerciseVariantSearchInput ): Promise<ExerciseVariantSearchItem[]> {
-	try {
+export async function searchExerciseVariantCandidatesAction( input: ExerciseVariantSearchInput ): Promise<ActionResult<ExerciseVariantSearchItem[]>> {
+	return runAction( "No se pudieron buscar ejercicios para variantes.", async () => {
 		const normalizedExerciseId = normalizeId( input.exerciseId );
 
 		if (!normalizedExerciseId) {
@@ -225,15 +223,11 @@ export async function searchExerciseVariantCandidatesAction( input: ExerciseVari
 		} ) ) as ExerciseVariantSearchResult[];
 
 		return exercises.map( ( exercise ) => mapExerciseWithGlobalMedia( exercise ) );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudieron buscar ejercicios para variantes. ${ message }` );
-	}
+	} );
 }
 
-export async function createExerciseVariantAction( input: ExerciseVariantCreateInput ): Promise<ExerciseVariantListItem> {
-	try {
+export async function createExerciseVariantAction( input: ExerciseVariantCreateInput ): Promise<ActionResult<ExerciseVariantListItem>> {
+	return runAction( "No se pudo agregar la variante.", async () => {
 		const routineId = normalizeId( input.routineId );
 		const variantExerciseId = normalizeId( input.variantExerciseId );
 
@@ -286,15 +280,11 @@ export async function createExerciseVariantAction( input: ExerciseVariantCreateI
 		} ) ) as RoutineExerciseVariantWithExercise;
 
 		return mapRoutineExerciseVariant( createdVariant );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al crear la variante.";
-
-		throw new Error( `No se pudo agregar la variante. ${ message }` );
-	}
+	} );
 }
 
-export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput ): Promise<ExerciseVariantListItem[]> {
-	try {
+export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput ): Promise<ActionResult<ExerciseVariantListItem[]>> {
+	return runAction( "No se pudieron guardar las variantes.", async () => {
 		const routineId = normalizeId( input.routineId );
 		const variantExerciseIds = normalizeVariantIds( input.variantExerciseIds );
 
@@ -357,9 +347,5 @@ export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput
 		} ) as RoutineExerciseVariantWithExercise[];
 
 		return variants.map( mapRoutineExerciseVariant );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al guardar las variantes.";
-
-		throw new Error( `No se pudieron guardar las variantes. ${ message }` );
-	}
+	} );
 }

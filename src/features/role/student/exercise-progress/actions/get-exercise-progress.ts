@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import { getExerciseProgress, getProgressExercises } from "@/features/exercise-progress/services/exercise-progress-queries";
 
@@ -8,16 +9,20 @@ async function requireStudentId() {
 	const session = await getAuthenticatedSession();
 
 	if (!session || session.role !== "STUDENT") {
-		throw new Error( "Debes iniciar sesión como estudiante para ver tu progreso." );
+		throw new Error( "Tenés que iniciar sesión como estudiante para ver tu progreso." );
 	}
 
 	return session.sub;
 }
 
 export async function getStudentProgressExercisesAction() {
-	return getProgressExercises( await requireStudentId() );
+	return runAction( "No se pudo cargar tu progreso.", async () => {
+		return getProgressExercises( await requireStudentId() );
+	} );
 }
 
 export async function getStudentExerciseProgressAction( exerciseId: string ) {
-	return getExerciseProgress( await requireStudentId(), exerciseId.trim() );
+	return runAction( "No se pudo cargar el progreso del ejercicio.", async () => {
+		return getExerciseProgress( await requireStudentId(), exerciseId.trim() );
+	} );
 }

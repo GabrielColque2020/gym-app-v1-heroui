@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { requireAdminSession } from "@/features/auth/admin-session";
 import { assertExerciseMediaAllowed, removeUnusedExerciseMedia } from "@/features/exercise-media/services/exercise-media-guard";
 import { buildAdminExerciseGlobalSearchName } from "@/features/role/admin/exercises/services/admin-exercise-global-form";
@@ -80,7 +81,7 @@ function validateAdminExerciseGlobalInput( input: AdminExerciseGlobalMutationInp
 }
 
 export async function updateAdminExerciseGlobalAction( input: AdminExerciseGlobalMutationInput ) {
-	try {
+	return runAction( "No se pudo actualizar el ejercicio global.", async () => {
 		const session = await requireAdminSession( "actualizar ejercicios globales" );
 		const owner = { id: session.sub, role: "ADMIN" as const };
 		const currentExercise = await prisma.exerciseGlobal.findUnique( {
@@ -148,9 +149,5 @@ export async function updateAdminExerciseGlobalAction( input: AdminExerciseGloba
 		} );
 
 		return savedExercise;
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al actualizar el ejercicio global.";
-
-		throw new Error( `No se pudo actualizar el ejercicio global. ${ message }` );
-	}
+	} );
 }

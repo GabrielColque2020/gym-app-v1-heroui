@@ -1,3 +1,4 @@
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -14,7 +15,7 @@ export function mealPlansQueryOptions( studentId: string ) {
 		// Se pide al abrir: si el entrenador cambio el plan, el estudiante no sigue
 		// viendo el anterior. Mientras llega se muestra lo que ya tenia el telefono.
 		refetchOnMount: "always",
-		queryFn: () => getMealPlansByStudentAction( { studentId } ),
+		queryFn: () => unwrapped( getMealPlansByStudentAction )( { studentId } ),
 		queryKey: mealPlansQueryKey( studentId ),
 	} );
 }

@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import { requireAdminSession } from "@/features/auth/admin-session";
 import { adminUserSelect } from "@/features/role/admin/users/services/admin-user-select";
 import prisma from "@/lib/prisma";
@@ -9,8 +11,8 @@ export type AdminUserListItem = Prisma.UserGetPayload<{
 	select: typeof adminUserSelect;
 }>;
 
-export async function getAdminUsersAction(): Promise<AdminUserListItem[]> {
-	try {
+export async function getAdminUsersAction(): Promise<ActionResult<AdminUserListItem[]>> {
+	return runAction( "No se pudo obtener la lista de usuarios.", async () => {
 		await requireAdminSession( "consultar usuarios" );
 
 		return await prisma.user.findMany( {
@@ -21,9 +23,5 @@ export async function getAdminUsersAction(): Promise<AdminUserListItem[]> {
 			],
 			select: adminUserSelect,
 		} ) as unknown as AdminUserListItem[];
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudo obtener la lista de usuarios. ${ message }` );
-	}
+	} );
 }

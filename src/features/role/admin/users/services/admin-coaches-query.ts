@@ -1,3 +1,5 @@
+import type { ActionData } from "@/lib/action-result";
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -5,10 +7,10 @@ import { getAdminCoachesAction } from "@/features/role/admin/users/actions/get-a
 
 export const ADMIN_COACHES_QUERY_KEY = [ "admin-coaches" ] as const;
 
-export type AdminCoaches = Awaited<ReturnType<typeof getAdminCoachesAction>>;
+export type AdminCoaches = ActionData<typeof getAdminCoachesAction>;
 
 export async function fetchAdminCoaches(): Promise<AdminCoaches> {
-	return getAdminCoachesAction();
+	return unwrapped( getAdminCoachesAction )();
 }
 
 export const adminCoachesQueryOptions = () => queryOptions( {

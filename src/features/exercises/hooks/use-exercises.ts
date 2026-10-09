@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import type { Exercises } from "@/features/exercises/services/exercises-query";
@@ -13,6 +14,13 @@ import {
 	restoreExerciseAction,
 	updateExerciseAction,
 } from "@/features/exercises/actions/exercise-mutations";
+
+// Desenvueltas aca y no dentro de `useMutation`: ahi TypeScript perdia el tipo
+// de lo que devuelven.
+const createExercise = unwrapped( createExerciseAction );
+const updateExercise = unwrapped( updateExerciseAction );
+const deactivateExercise = unwrapped( deactivateExerciseAction );
+const restoreExercise = unwrapped( restoreExerciseAction );
 
 export function useExercises() {
 	return useQuery( exercisesQueryOptions() );
@@ -36,7 +44,7 @@ export function useCreateExercise() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: createExerciseAction,
+		mutationFn: createExercise,
 		onSuccess: ( exercise ) => {
 			queryClient.setQueryData<Exercises>( EXERCISES_QUERY_KEY, ( currentExercises ) => {
 				if (!currentExercises) return [ exercise ];
@@ -52,7 +60,7 @@ export function useUpdateExercise() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: updateExerciseAction,
+		mutationFn: updateExercise,
 		onSuccess: ( updatedExercise ) => {
 			replaceExerciseInCache( queryClient, updatedExercise );
 			refetchExercisesInBackground( queryClient );
@@ -64,7 +72,7 @@ export function useDeactivateExercise() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: deactivateExerciseAction,
+		mutationFn: deactivateExercise,
 		onSuccess: ( updatedExercise ) => {
 			replaceExerciseInCache( queryClient, updatedExercise );
 			refetchExercisesInBackground( queryClient );
@@ -76,7 +84,7 @@ export function useRestoreExercise() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: restoreExerciseAction,
+		mutationFn: restoreExercise,
 		onSuccess: ( updatedExercise ) => {
 			replaceExerciseInCache( queryClient, updatedExercise );
 			refetchExercisesInBackground( queryClient );

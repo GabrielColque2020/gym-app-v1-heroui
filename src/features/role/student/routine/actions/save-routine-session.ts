@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import prisma from "@/lib/prisma";
 
 import { getAuthenticatedSession } from "@/features/auth/session";
@@ -55,16 +57,16 @@ export async function saveStudentRoutineSessionAction( {
 														   finalize = false,
 														   routineDayId,
 														   studentId,
-													   }: SaveStudentRoutineSessionInput ): Promise<SavedStudentRoutineSession> {
-	try {
+													   }: SaveStudentRoutineSessionInput ): Promise<ActionResult<SavedStudentRoutineSession>> {
+	return runAction( "No se pudo guardar la rutina del estudiante.", async () => {
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesión para guardar tu rutina." );
+			throw new Error( "Tenés que iniciar sesión para guardar tu rutina." );
 		}
 
 		if (session.role !== "STUDENT") {
-			throw new Error( "No tienes permisos para guardar esta rutina." );
+			throw new Error( "No tenés permiso para guardar esta rutina." );
 		}
 
 		const activeStudentId = studentId?.trim() || session.sub;
@@ -238,9 +240,5 @@ export async function saveStudentRoutineSessionAction( {
 			week: routineDay.trainingRoutine.week,
 			year: routineDay.trainingRoutine.year,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al guardar la rutina del estudiante.";
-
-		throw new Error( `No se pudo guardar la rutina del estudiante. ${ message }` );
-	}
+	} );
 }

@@ -48,7 +48,7 @@ export async function getHistoryRoutinesReportsByStudentBase( {
 	studentWhere,
 }: GetHistoryRoutinesReportsByStudentBaseInput ) {
 	if (!studentId.trim()) {
-		throw new Error( "Debes seleccionar un estudiante." );
+		throw new Error( "Tenés que seleccionar un estudiante." );
 	}
 
 	const student = await prisma.user.findFirst( {

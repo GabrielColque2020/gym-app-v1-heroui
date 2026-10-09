@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -18,6 +19,10 @@ import {
 } from "@/features/training-routine/actions/routine-templates";
 import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
 
+// Desenvueltas aca y no dentro de `useMutation`: ahi TypeScript perdia el tipo
+// de lo que devuelven.
+const saveRoutineAsTemplate = unwrapped( saveRoutineAsTemplateAction );
+
 export const coachRoutineTemplatesQueryKey = [ "coach-routine-templates" ] as const;
 
 export const coachRoutineTemplateDetailQueryKey = ( templateId: string ) => [ "coach-routine-template", templateId ] as const;
@@ -26,7 +31,7 @@ export function useSaveRoutineAsTemplate() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: saveRoutineAsTemplateAction,
+		mutationFn: saveRoutineAsTemplate,
 		onSuccess: ( result ) => {
 			if (result.ok) void queryClient.invalidateQueries( { queryKey: coachRoutineTemplatesQueryKey } );
 		},
@@ -44,7 +49,7 @@ export function useRoutineTemplateDetail( { alwaysFresh = false, templateId }: U
 	return useQuery( {
 		...QUERY_DEFAULTS.coach,
 		enabled: Boolean( templateId ),
-		queryFn: () => getRoutineTemplateDetailAction( templateId ?? "" ),
+		queryFn: () => unwrapped( getRoutineTemplateDetailAction )( templateId ?? "" ),
 		queryKey: coachRoutineTemplateDetailQueryKey( templateId ?? "missing-template" ),
 		refetchOnMount: alwaysFresh ? "always" : QUERY_DEFAULTS.coach.refetchOnMount,
 	} );
@@ -57,17 +62,17 @@ export function useRoutineTemplates( { alwaysFresh = false }: { alwaysFresh?: bo
 	return useQuery( {
 		...QUERY_DEFAULTS.coach,
 		refetchOnMount: alwaysFresh ? "always" : QUERY_DEFAULTS.coach.refetchOnMount,
-		queryFn: getRoutineTemplatesAction,
+		queryFn: unwrapped( getRoutineTemplatesAction ),
 		queryKey: coachRoutineTemplatesQueryKey,
 	} );
 }
 
 export function useApplyRoutineTemplate() {
-	return useRoutineTemplateIntoMonthMutation( applyRoutineTemplateAction );
+	return useRoutineTemplateIntoMonthMutation( unwrapped( applyRoutineTemplateAction ) );
 }
 
 export function useCopyRoutineTemplateWeeks() {
-	return useRoutineTemplateIntoMonthMutation( copyRoutineTemplateWeeksAction );
+	return useRoutineTemplateIntoMonthMutation( unwrapped( copyRoutineTemplateWeeksAction ) );
 }
 
 // Usar una plantilla, entera o por semanas, cambia la rutina del mes del estudiante.
@@ -110,25 +115,25 @@ function useRoutineTemplateListMutation<TInput, TResult>( mutationFn: ( input: T
 }
 
 export function useCreateRoutineTemplate() {
-	return useRoutineTemplateListMutation( createRoutineTemplateAction );
+	return useRoutineTemplateListMutation( unwrapped( createRoutineTemplateAction ) );
 }
 
 export function useUpdateRoutineTemplateStructure() {
-	return useRoutineTemplateListMutation( updateRoutineTemplateStructureAction );
+	return useRoutineTemplateListMutation( unwrapped( updateRoutineTemplateStructureAction ) );
 }
 
 export function useRepeatRoutineTemplateWeek() {
-	return useRoutineTemplateListMutation( repeatRoutineTemplateWeekAction );
+	return useRoutineTemplateListMutation( unwrapped( repeatRoutineTemplateWeekAction ) );
 }
 
 export function useRenameRoutineTemplate() {
-	return useRoutineTemplateListMutation( renameRoutineTemplateAction );
+	return useRoutineTemplateListMutation( unwrapped( renameRoutineTemplateAction ) );
 }
 
 export function useDuplicateRoutineTemplate() {
-	return useRoutineTemplateListMutation( duplicateRoutineTemplateAction );
+	return useRoutineTemplateListMutation( unwrapped( duplicateRoutineTemplateAction ) );
 }
 
 export function useDeleteRoutineTemplate() {
-	return useRoutineTemplateListMutation( deleteRoutineTemplateAction );
+	return useRoutineTemplateListMutation( unwrapped( deleteRoutineTemplateAction ) );
 }

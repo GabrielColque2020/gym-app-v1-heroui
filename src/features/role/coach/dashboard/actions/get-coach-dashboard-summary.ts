@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import {
@@ -32,8 +34,8 @@ export type CoachDashboardSummary = {
 	};
 };
 
-export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSummary> {
-	try {
+export async function getCoachDashboardSummaryAction(): Promise<ActionResult<CoachDashboardSummary>> {
+	return runAction( "No se pudo obtener el resumen.", async () => {
 		const session = await requireCoachSession( "consultar el dashboard del coach" );
 		const now = new Date();
 		const currentPeriod = buildCoachDashboardCurrentPeriod( now );
@@ -181,9 +183,5 @@ export async function getCoachDashboardSummaryAction(): Promise<CoachDashboardSu
 			now,
 			students,
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudo obtener el resumen del dashboard coach. ${ message }` );
-	}
+	} );
 }

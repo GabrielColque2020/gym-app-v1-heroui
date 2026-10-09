@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
 import {
@@ -20,7 +21,7 @@ export async function getTrainingRoutinesByStudentAction( {
 	studentId,
 	year,
 }: GetTrainingRoutinesByStudentInput ) {
-	try {
+	return runAction( "No se pudieron obtener las rutinas del estudiante.", async () => {
 		const session = await requireCoachSession( "consultar rutinas del estudiante" );
 		const student = await prisma.user.findFirst( {
 			select: {
@@ -44,11 +45,7 @@ export async function getTrainingRoutinesByStudentAction( {
 			studentId,
 			year,
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudieron obtener las rutinas del estudiante. ${ message }` );
-	}
+	} );
 }
 export type CoachTrainingRoutine = TrainingRoutineWeek;
 export type CoachTrainingRoutineDay = TrainingRoutineDay;

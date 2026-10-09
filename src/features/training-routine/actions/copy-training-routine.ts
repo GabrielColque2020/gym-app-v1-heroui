@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
 import {
@@ -113,7 +114,7 @@ function getSourceRoutineWeeks( routineMonth: TrainingRoutineMonth | null, weeks
 }
 
 export async function getTrainingRoutineCopySourceAction( input: TrainingRoutineCopySourceInput ) {
-	try {
+	return runAction( "No se pudo consultar la rutina origen.", async () => {
 		validateCopySourceInput( input );
 		const session = await requireCoachSession( "consultar la rutina origen" );
 		await assertStudentExists( input.studentId, session.sub );
@@ -141,17 +142,13 @@ export async function getTrainingRoutineCopySourceAction( input: TrainingRoutine
 				} ) ),
 				weekCount: routineWeeks.length,
 			};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la rutina origen.";
-
-		throw new Error( `No se pudo consultar la rutina origen. ${ message }` );
-	}
+	} );
 }
 
 // El ultimo mes con rutina anterior al indicado. Es el origen que casi siempre
 // se quiere copiar, y no siempre es el mes calendario anterior.
 export async function getLatestTrainingRoutineMonthAction( input: LatestTrainingRoutineMonthInput ) {
-	try {
+	return runAction( "No se pudo consultar la última rutina.", async () => {
 		validateCopySourceInput( input );
 		const session = await requireCoachSession( "consultar la última rutina" );
 		await assertStudentExists( input.studentId, session.sub );
@@ -171,15 +168,11 @@ export async function getLatestTrainingRoutineMonthAction( input: LatestTraining
 				weeks: { some: {} },
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la última rutina.";
-
-		throw new Error( `No se pudo consultar la última rutina. ${ message }` );
-	}
+	} );
 }
 
 export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutineMonthInput ) {
-	try {
+	return runAction( "No se pudo copiar la rutina.", async () => {
 		validateCopyMonthInput( input );
 		const session = await requireCoachSession( "copiar la rutina" );
 		const sourceStudentId = getCopySourceStudentId( input );
@@ -255,15 +248,11 @@ export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutine
 		return {
 			ok: true,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al copiar la rutina.";
-
-		throw new Error( `No se pudo copiar la rutina. ${ message }` );
-	}
+	} );
 }
 
 export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutineWeeksInput ) {
-	try {
+	return runAction( "No se pudieron copiar las semanas.", async () => {
 		validateCopyWeeksInput( input );
 		const session = await requireCoachSession( "copiar semanas" );
 		const sourceStudentId = getCopySourceStudentId( input );
@@ -354,9 +343,5 @@ export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutine
 		return {
 			ok: true,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al copiar semanas.";
-
-		throw new Error( `No se pudieron copiar las semanas. ${ message }` );
-	}
+	} );
 }

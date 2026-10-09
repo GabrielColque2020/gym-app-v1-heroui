@@ -1,3 +1,4 @@
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -9,7 +10,7 @@ export const mealPlansQueryKey = ( studentId: string ) => [ "meal-plans", studen
 export function mealPlansQueryOptions( studentId: string ) {
 	return queryOptions( {
 		...QUERY_DEFAULTS.coach,
-		queryFn: () => getMealPlansByStudentAction( { studentId } ),
+		queryFn: () => unwrapped( getMealPlansByStudentAction )( { studentId } ),
 		queryKey: mealPlansQueryKey( studentId ),
 	} );
 }

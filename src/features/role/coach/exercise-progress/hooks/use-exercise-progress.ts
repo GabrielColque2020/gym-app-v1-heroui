@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useQuery } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -13,7 +14,7 @@ import {
 export function useCoachStudentProgressExercises( studentId: string ) {
 	return useQuery( {
 		...QUERY_DEFAULTS.coach,
-		queryFn: () => getCoachStudentProgressExercisesAction( studentId ),
+		queryFn: () => unwrapped( getCoachStudentProgressExercisesAction )( studentId ),
 		queryKey: [ "coach-student-progress-exercises", studentId ] as const,
 		refetchOnMount: "always",
 	} );
@@ -23,7 +24,7 @@ export function useCoachStudentExerciseProgress( studentId: string, exerciseId: 
 	return useQuery( {
 		...QUERY_DEFAULTS.coach,
 		enabled: Boolean( exerciseId ),
-		queryFn: () => getCoachStudentExerciseProgressAction( studentId, exerciseId ?? "" ),
+		queryFn: () => unwrapped( getCoachStudentExerciseProgressAction )( studentId, exerciseId ?? "" ),
 		queryKey: [ "coach-student-exercise-progress", studentId, exerciseId ?? "none" ] as const,
 		refetchOnMount: "always",
 	} );

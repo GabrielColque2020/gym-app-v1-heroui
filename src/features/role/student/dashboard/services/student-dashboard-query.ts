@@ -1,13 +1,15 @@
+import type { ActionData } from "@/lib/action-result";
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { getStudentDashboardSummaryAction } from "@/features/role/student/dashboard/actions/get-student-dashboard-summary";
 
 export const STUDENT_DASHBOARD_SUMMARY_QUERY_KEY = [ "student-dashboard-summary" ] as const;
 
-export type StudentDashboardSummary = Awaited<ReturnType<typeof getStudentDashboardSummaryAction>>;
+export type StudentDashboardSummary = ActionData<typeof getStudentDashboardSummaryAction>;
 
 export async function fetchStudentDashboardSummary(): Promise<StudentDashboardSummary> {
-	return getStudentDashboardSummaryAction();
+	return unwrapped( getStudentDashboardSummaryAction )();
 }
 
 export const studentDashboardSummaryQueryOptions = () => queryOptions( {

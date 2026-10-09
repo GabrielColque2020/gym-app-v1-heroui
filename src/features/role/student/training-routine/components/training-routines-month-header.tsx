@@ -1,3 +1,4 @@
+import { unwrapped } from "@/lib/action-result";
 import { Button, Card } from "@heroui/react";
 import { ChevronLeft, ChevronRight, Download, RotateCw } from "lucide-react";
 
@@ -41,7 +42,7 @@ export function TrainingRoutinesMonthHeader( {
 						<ChevronLeft className={ "size-5" }/>
 					</Button>
 					<MonthJumpPicker
-						loadedMonthsQueryFn={ getRoutineMonthsWithContentAction }
+						loadedMonthsQueryFn={ unwrapped( getRoutineMonthsWithContentAction ) }
 						loadedMonthsQueryKey={ [ "student-routine-months" ] }
 						month={ month }
 						subtitle={ "Tu rutina del mes" }

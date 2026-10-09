@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import {
 	getHistoryRoutinesByStudentBase,
@@ -17,27 +18,29 @@ export async function getHistoryRoutinesByStudentAction( {
 	studentId,
 	year,
 }: GetHistoryRoutinesByStudentInput ) {
-	const session = await getAuthenticatedSession();
+	return runAction( "No se pudo cargar tu historial de rutinas.", async () => {
+		const session = await getAuthenticatedSession();
 
-	if (!session) {
-		throw new Error( "Debes iniciar sesión para ver tu historial de rutinas." );
-	}
+		if (!session) {
+			throw new Error( "Tenés que iniciar sesión para ver tu historial de rutinas." );
+		}
 
-	if (session.role !== "STUDENT") {
-		throw new Error( "No tienes permisos para consultar este historial." );
-	}
+		if (session.role !== "STUDENT") {
+			throw new Error( "No tenés permiso para consultar este historial." );
+		}
 
-	const activeStudentId = studentId?.trim() || session.sub;
+		const activeStudentId = studentId?.trim() || session.sub;
 
-	if (activeStudentId !== session.sub) {
-		throw new Error( "El historial solicitado no pertenece al estudiante autenticado." );
-	}
+		if (activeStudentId !== session.sub) {
+			throw new Error( "El historial solicitado no pertenece al estudiante autenticado." );
+		}
 
-	return getHistoryRoutinesByStudentBase( {
-		month,
-		studentId: activeStudentId,
-		studentNotFoundMessage: "No se encontró un historial activo para el estudiante autenticado.",
-		year,
+		return getHistoryRoutinesByStudentBase( {
+			month,
+			studentId: activeStudentId,
+			studentNotFoundMessage: "No se encontró un historial activo para el estudiante autenticado.",
+			year,
+		} );
 	} );
 }
 

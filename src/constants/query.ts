@@ -9,7 +9,9 @@ const QUERY_ACCELERATE_TTL = {
 
 export const QUERY_PERSIST_STORAGE_KEY = "react-query-cache";
 export const QUERY_PERSIST_MAX_AGE_MS = 4 * 60 * 60 * 1000; // 4 horas
-export const QUERY_PERSIST_BUSTER = "v1";
+// Subirlo descarta la cache guardada en el navegador: hace falta cuando cambia
+// la forma de lo que devuelven las consultas.
+export const QUERY_PERSIST_BUSTER = "v2";
 export const QUERY_NON_PERSISTED_KEY_PREFIXES = [
 	"coach-exercise-variants",
 ] as const;

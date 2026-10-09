@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
 import {
@@ -31,7 +32,7 @@ function validateExerciseInput( input: CreateExerciseInput ) {
 }
 
 export async function createExerciseAction( input: CreateExerciseInput ) {
-	try {
+	return runAction( "No se pudo crear el ejercicio.", async () => {
 		const session = await requireCoachSession( "crear ejercicios" );
 
 		return await prisma.exerciseCoach.create( {
@@ -40,15 +41,11 @@ export async function createExerciseAction( input: CreateExerciseInput ) {
 				coachId: session.sub,
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al crear el ejercicio.";
-
-		throw new Error( `No se pudo crear el ejercicio. ${ message }` );
-	}
+	} );
 }
 
 export async function updateExerciseAction( input: UpdateExerciseInput ) {
-	try {
+	return runAction( "No se pudo actualizar el ejercicio.", async () => {
 		const session = await requireCoachSession( "actualizar ejercicios" );
 		const exercise = await prisma.exerciseCoach.findFirst( {
 			select: {
@@ -70,15 +67,11 @@ export async function updateExerciseAction( input: UpdateExerciseInput ) {
 				id: exercise.id,
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al actualizar el ejercicio.";
-
-		throw new Error( `No se pudo actualizar el ejercicio. ${ message }` );
-	}
+	} );
 }
 
 export async function deactivateExerciseAction( id: string ) {
-	try {
+	return runAction( "No se pudo desactivar el ejercicio.", async () => {
 		const session = await requireCoachSession( "desactivar ejercicios" );
 		const exercise = await prisma.exerciseCoach.findFirst( {
 			select: {
@@ -102,15 +95,11 @@ export async function deactivateExerciseAction( id: string ) {
 				id: exercise.id,
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al desactivar el ejercicio.";
-
-		throw new Error( `No se pudo desactivar el ejercicio. ${ message }` );
-	}
+	} );
 }
 
 export async function restoreExerciseAction( id: string ) {
-	try {
+	return runAction( "No se pudo restaurar el ejercicio.", async () => {
 		const session = await requireCoachSession( "restaurar ejercicios" );
 		const exercise = await prisma.exerciseCoach.findFirst( {
 			select: {
@@ -134,9 +123,5 @@ export async function restoreExerciseAction( id: string ) {
 				id: exercise.id,
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al restaurar el ejercicio.";
-
-		throw new Error( `No se pudo restaurar el ejercicio. ${ message }` );
-	}
+	} );
 }

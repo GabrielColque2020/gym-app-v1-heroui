@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import type { Prisma } from "@/generated/prisma/client";
 import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { requireCoachSession } from "@/features/auth/coach-session";
@@ -30,8 +32,8 @@ export type TrainingRoutinesStudentListItem = Prisma.UserGetPayload<{
 	select: typeof studentListSelect;
 }>;
 
-export async function getTrainingRoutinesStudentsAction(): Promise<TrainingRoutinesStudentListItem[]> {
-	try {
+export async function getTrainingRoutinesStudentsAction(): Promise<ActionResult<TrainingRoutinesStudentListItem[]>> {
+	return runAction( "No se pudo obtener la lista de estudiantes activos.", async () => {
 		const session = await requireCoachSession( "consultar estudiantes" );
 
 		return await prisma.user.findMany( {
@@ -46,9 +48,5 @@ export async function getTrainingRoutinesStudentsAction(): Promise<TrainingRouti
 				role: "STUDENT",
 			},
 		} ) as unknown as TrainingRoutinesStudentListItem[];
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudo obtener la lista de estudiantes activos. ${ message }` );
-	}
+	} );
 }

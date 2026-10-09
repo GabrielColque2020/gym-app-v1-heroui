@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import type React from "react";
 
 import { toast } from "@heroui/react";
@@ -130,11 +131,11 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 			}
 
 			setIsOpen( false );
-		} catch {
+		} catch (error) {
 			toast.danger( isEditMode ? "No se pudo guardar" : "No se pudo agregar", {
-				description: isEditMode
+				description: getErrorMessage( error, isEditMode
 					? "Los cambios de la comida no se guardaron. Probá de nuevo."
-					: "La comida no se agregó. Probá de nuevo.",
+					: "La comida no se agregó. Probá de nuevo." ),
 			} );
 		}
 	}

@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import {
 	getHistoryRoutinesByStudentBase,
@@ -17,24 +18,26 @@ export async function getHistoryRoutinesByStudentAction( {
 	studentId,
 	year,
 }: GetHistoryRoutinesByStudentInput ) {
-	const session = await getAuthenticatedSession();
+	return runAction( "No se pudo cargar el historial de rutinas.", async () => {
+		const session = await getAuthenticatedSession();
 
-	if (!session) {
-		throw new Error( "Debes iniciar sesión para ver el historial de rutinas." );
-	}
+		if (!session) {
+			throw new Error( "Tenés que iniciar sesión para ver el historial de rutinas." );
+		}
 
-	if (session.role !== "COACH") {
-		throw new Error( "No tienes permisos para consultar historial de rutinas." );
-	}
+		if (session.role !== "COACH") {
+			throw new Error( "No tenés permiso para consultar historial de rutinas." );
+		}
 
-	return getHistoryRoutinesByStudentBase( {
-		month,
-		studentId,
-		studentNotFoundMessage: "No se encontró un estudiante activo para consultar su historial.",
-		studentWhere: {
-			coachId: session.sub,
-		},
-		year,
+		return getHistoryRoutinesByStudentBase( {
+			month,
+			studentId,
+			studentNotFoundMessage: "No se encontró un estudiante activo para consultar su historial.",
+			studentWhere: {
+				coachId: session.sub,
+			},
+			year,
+		} );
 	} );
 }
 

@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import bcrypt from "bcryptjs";
 
 import { requireAdminSession } from "@/features/auth/admin-session";
@@ -20,7 +21,7 @@ import prisma from "@/lib/prisma";
 import type { CreateStudentInput, UpdateStudentInput } from "@/features/students/services/student-form";
 
 export async function createCoachAction( input: CreateCoachInput ) {
-	try {
+	return runAction( "No se pudo crear el entrenador.", async () => {
 		await requireAdminSession( "crear entrenadores" );
 		const { birthDate, email, gender, name, password, userData } = validateCreateCoachInput( input );
 
@@ -37,15 +38,11 @@ export async function createCoachAction( input: CreateCoachInput ) {
 			},
 			select: adminUserSelect,
 		} ) as unknown as AdminUserListItem;
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al crear el entrenador.";
-
-		throw new Error( `No se pudo crear el entrenador. ${ message }` );
-	}
+	} );
 }
 
 export async function toggleUserStatusAction( input: ToggleUserStatusInput ) {
-	try {
+	return runAction( "No se pudo actualizar el usuario.", async () => {
 		const session = await requireAdminSession( "actualizar usuarios" );
 
 		if (session.sub === input.id) {
@@ -79,15 +76,11 @@ export async function toggleUserStatusAction( input: ToggleUserStatusInput ) {
 				id: input.id,
 			},
 		} ) as unknown as AdminUserListItem;
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al actualizar el usuario.";
-
-		throw new Error( `No se pudo actualizar el usuario. ${ message }` );
-	}
+	} );
 }
 
 export async function updateAdminUserAction( input: UpdateAdminUserInput ) {
-	try {
+	return runAction( "No se pudo editar el usuario.", async () => {
 		await requireAdminSession( "editar usuarios" );
 		const { birthDate, id, password, userData } = validateUpdateAdminUserInput( input );
 		const passwordData = password.length > 0 ? { password: bcrypt.hashSync( password ) } : {};
@@ -103,15 +96,11 @@ export async function updateAdminUserAction( input: UpdateAdminUserInput ) {
 				id,
 			},
 		} ) as unknown as AdminUserListItem;
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al editar el usuario.";
-
-		throw new Error( `No se pudo editar el usuario. ${ message }` );
-	}
+	} );
 }
 
 export async function assignCoachToStudentAction( input: AssignCoachInput ) {
-	try {
+	return runAction( "No se pudo asignar el entrenador.", async () => {
 		await requireAdminSession( "asignar entrenador a estudiantes" );
 
 		const currentUser = await prisma.user.findUnique( {
@@ -157,17 +146,13 @@ export async function assignCoachToStudentAction( input: AssignCoachInput ) {
 				id: input.studentId,
 			},
 		} ) as unknown as AdminUserListItem;
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al asignar el entrenador.";
-
-		throw new Error( `No se pudo asignar el entrenador. ${ message }` );
-	}
+	} );
 }
 
 // Pasa todos los estudiantes de un entrenador a otro. Las rutinas, el plan y el
 // historial son del estudiante, asi que lo siguen sin tocar nada mas.
 export async function reassignCoachStudentsAction( input: ReassignCoachStudentsInput ) {
-	try {
+	return runAction( "No se pudieron reasignar los estudiantes.", async () => {
 		await requireAdminSession( "reasignar estudiantes" );
 		const fromCoachId = input.fromCoachId.trim();
 		const toCoachId = input.toCoachId.trim();
@@ -195,11 +180,7 @@ export async function reassignCoachStudentsAction( input: ReassignCoachStudentsI
 		return {
 			count: result.count,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al reasignar estudiantes.";
-
-		throw new Error( `No se pudieron reasignar los estudiantes. ${ message }` );
-	}
+	} );
 }
 
 async function assertCoachExists( coachId: string ) {
@@ -220,7 +201,7 @@ async function assertCoachExists( coachId: string ) {
 }
 
 export async function createAdminStudentAction( input: CreateStudentInput ) {
-	try {
+	return runAction( "No se pudo crear el estudiante.", async () => {
 		await requireAdminSession( "crear estudiantes" );
 		const { descriptionData, password, userData } = validateStudentInput( input, "create" );
 		const coachId = input.coachId?.trim() || null;
@@ -240,15 +221,11 @@ export async function createAdminStudentAction( input: CreateStudentInput ) {
 			},
 			select: adminUserSelect,
 		} ) as unknown as AdminUserListItem;
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al crear el estudiante.";
-
-		throw new Error( `No se pudo crear el estudiante. ${ message }` );
-	}
+	} );
 }
 
 export async function updateAdminStudentAction( input: UpdateStudentInput ) {
-	try {
+	return runAction( "No se pudo editar el estudiante.", async () => {
 		await requireAdminSession( "editar estudiantes" );
 		const { descriptionData, password, userData } = validateStudentInput( input, "edit" );
 		const passwordData = password.length > 0 ? { password: bcrypt.hashSync( password ) } : {};
@@ -276,15 +253,11 @@ export async function updateAdminStudentAction( input: UpdateStudentInput ) {
 				role: "STUDENT",
 			},
 		} ) as unknown as AdminUserListItem;
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al editar el estudiante.";
-
-		throw new Error( `No se pudo editar el estudiante. ${ message }` );
-	}
+	} );
 }
 
 export async function deleteAdminUserAction( input: DeleteAdminUserInput ) {
-	try {
+	return runAction( "No se pudo eliminar el usuario.", async () => {
 		const session = await requireAdminSession( "eliminar usuarios" );
 
 		if (session.sub === input.id) {
@@ -372,9 +345,5 @@ export async function deleteAdminUserAction( input: DeleteAdminUserInput ) {
 		return {
 			ok: true,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al eliminar el usuario.";
-
-		throw new Error( `No se pudo eliminar el usuario. ${ message }` );
-	}
+	} );
 }

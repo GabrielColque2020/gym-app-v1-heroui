@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { Alert, Button, Description, Drawer, Spinner, toast } from "@heroui/react";
@@ -204,9 +205,9 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 					: "Se agregó al catálogo personal.",
 			} );
 			setIsOpen( false );
-		} catch {
+		} catch (error) {
 			toast.danger( isEditMode ? "Error al actualizar" : "Error al crear", {
-				description: isEditMode ? "No se pudieron guardar los cambios." : "No se pudo crear el ejercicio.",
+				description: getErrorMessage( error, isEditMode ? "No se pudieron guardar los cambios." : "No se pudo crear el ejercicio." ),
 			} );
 		}
 	}

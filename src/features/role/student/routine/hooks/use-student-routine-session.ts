@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useQuery } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -32,7 +33,7 @@ export function useStudentRoutineSession( {
 		// muestra lo que ya estaba guardado en el telefono.
 		refetchOnMount: "always",
 		queryFn: () =>
-			getStudentRoutineSessionAction( {
+			unwrapped( getStudentRoutineSessionAction )( {
 				routineDayId: routineDayId ?? "",
 				studentId,
 			} ),

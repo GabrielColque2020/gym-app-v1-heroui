@@ -43,7 +43,7 @@ export function validateProfileInput( input: UpdateOwnProfileInput ) {
 	}
 
 	if (!isValidEmail( email )) {
-		throw new Error( "Ingresa un email válido." );
+		throw new Error( "Ingresá un email válido." );
 	}
 
 	const dni = parsePositiveInteger( input.dni, "El DNI" );

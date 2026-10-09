@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useRouter } from "next/navigation";
 
 import { Button, Card } from "@heroui/react";
@@ -66,7 +67,7 @@ export function CoachTrainingRoutineFilter( {
 						<ChevronLeft className={ "size-5" }/>
 					</Button>
 					<MonthJumpPicker
-						loadedMonthsQueryFn={ () => getRoutineMonthsWithContentAction( studentId ) }
+						loadedMonthsQueryFn={ () => unwrapped( getRoutineMonthsWithContentAction )( studentId ) }
 						loadedMonthsQueryKey={ [ "coach-routine-months", studentId ] }
 						month={ month }
 						subtitle={ `Rutina de ${ studentName }` }

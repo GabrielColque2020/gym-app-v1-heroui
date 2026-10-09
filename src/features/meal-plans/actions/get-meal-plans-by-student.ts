@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import type { Prisma } from "@/generated/prisma/client";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import { sortMealPlansByMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
@@ -32,7 +34,7 @@ function assertStudentId( studentId: string ) {
 	const normalizedStudentId = studentId.trim();
 
 	if (!normalizedStudentId) {
-		throw new Error( "Debes seleccionar un estudiante." );
+		throw new Error( "Tenés que seleccionar un estudiante." );
 	}
 
 	return normalizedStudentId;
@@ -64,25 +66,25 @@ async function assertStudentForSession( studentId: string, coachId: string, role
 	}
 
 	if (role === "STUDENT" && coachId !== studentId) {
-		throw new Error( "No puedes consultar los planes alimenticios de otro estudiante." );
+		throw new Error( "No podés consultar los planes alimenticios de otro estudiante." );
 	}
 
 	return student as unknown as MealPlanStudent;
 }
 
-export async function getMealPlansByStudentAction( { studentId }: GetMealPlansByStudentInput ): Promise<{
+export async function getMealPlansByStudentAction( { studentId }: GetMealPlansByStudentInput ): Promise<ActionResult<{
 	mealPlans: MealPlanItem[];
 	student: MealPlanStudent;
-}> {
-	try {
+}>> {
+	return runAction( "No se pudieron obtener los planes alimenticios del estudiante.", async () => {
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesión para ver los planes alimenticios." );
+			throw new Error( "Tenés que iniciar sesión para ver los planes alimenticios." );
 		}
 
 		if (session.role !== "COACH" && session.role !== "STUDENT") {
-			throw new Error( "No tienes permisos para consultar planes alimenticios." );
+			throw new Error( "No tenés permiso para consultar planes alimenticios." );
 		}
 
 		const normalizedStudentId = assertStudentId( studentId );
@@ -107,9 +109,5 @@ export async function getMealPlansByStudentAction( { studentId }: GetMealPlansBy
 			mealPlans: sortMealPlansByMealTime( mealPlans ),
 			student,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudieron obtener los planes alimenticios del estudiante. ${ message }` );
-	}
+	} );
 }

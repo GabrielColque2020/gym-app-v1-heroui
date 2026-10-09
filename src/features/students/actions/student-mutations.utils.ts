@@ -20,11 +20,11 @@ export function validateStudentInput( input: CreateStudentInput | UpdateStudentI
 	}
 
 	if (!isValidEmail( email )) {
-		throw new Error( "Ingresa un email válido." );
+		throw new Error( "Ingresá un email válido." );
 	}
 
 	if (mode === "create" && password.length < 1) {
-		throw new Error( "La contrasenia es obligatoria al crear un estudiante." );
+		throw new Error( "La contraseña es obligatoria al crear un estudiante." );
 	}
 
 	const dni = parsePositiveInteger( input.dni, "El DNI" );

@@ -1,5 +1,7 @@
 ﻿"use server";
 
+import type { ActionData } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import { getTrainingRoutinesByStudentBase } from "@/features/training-routine/services/training-routines-by-student";
 
@@ -9,15 +11,15 @@ type GetTrainingRoutinesByStudentInput = {
 };
 
 export async function getTrainingRoutinesByStudentAction( { month, year }: GetTrainingRoutinesByStudentInput ) {
-	try {
+	return runAction( "No se pudieron obtener tus rutinas.", async () => {
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesión para ver tus rutinas." );
+			throw new Error( "Tenés que iniciar sesión para ver tus rutinas." );
 		}
 
 		if (session.role !== "STUDENT") {
-			throw new Error( "No tienes permisos para consultar rutinas de estudiante." );
+			throw new Error( "No tenés permiso para consultar rutinas de estudiante." );
 		}
 
 		return await getTrainingRoutinesByStudentBase( {
@@ -25,13 +27,9 @@ export async function getTrainingRoutinesByStudentAction( { month, year }: GetTr
 			studentId: session.sub,
 			year,
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudieron obtener tus rutinas. ${ message }` );
-	}
+	} );
 }
 
-export type StudentTrainingRoutines = Awaited<ReturnType<typeof getTrainingRoutinesByStudentAction>>;
+export type StudentTrainingRoutines = ActionData<typeof getTrainingRoutinesByStudentAction>;
 export type StudentTrainingRoutine = StudentTrainingRoutines[ "routineMonth" ][ "weeks" ][ number ];
 export type StudentTrainingRoutineDay = StudentTrainingRoutine[ "routineDays" ][ number ];

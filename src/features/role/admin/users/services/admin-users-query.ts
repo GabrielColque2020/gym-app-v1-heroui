@@ -1,3 +1,5 @@
+import type { ActionData } from "@/lib/action-result";
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import type { Prisma } from "@/generated/prisma/client";
@@ -6,10 +8,10 @@ import { getAdminUsersAction } from "@/features/role/admin/users/actions/get-adm
 
 export const ADMIN_USERS_QUERY_KEY = [ "admin-users" ] as const;
 
-export type AdminUsers = Awaited<ReturnType<typeof getAdminUsersAction>>;
+export type AdminUsers = ActionData<typeof getAdminUsersAction>;
 
 export async function fetchAdminUsers(): Promise<AdminUsers> {
-	return getAdminUsersAction();
+	return unwrapped( getAdminUsersAction )();
 }
 
 export const adminUsersQueryOptions = () => queryOptions( {

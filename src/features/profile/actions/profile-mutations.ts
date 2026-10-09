@@ -12,14 +12,11 @@ import {
 	type UpdateOwnProfileInput,
 } from "@/features/profile/services/profile-form";
 import { Prisma } from "@/generated/prisma/client";
+import type { ActionResult } from "@/lib/action-result";
 import prisma from "@/lib/prisma";
 
-// Devuelven el motivo en vez de tirar un error: en produccion Next esconde el
-// mensaje de los errores de una server action, y aca el motivo ("ese email ya lo
-// usa otra cuenta") es justo lo que la persona tiene que leer.
-export type ProfileActionResult<T = undefined> =
-	| { ok: true; data: T }
-	| { ok: false; reason: string };
+// Devuelven el motivo en vez de tirar un error: ver `ActionResult`.
+type ProfileActionResult<T = undefined> = ActionResult<T>;
 
 // Solo entrenadores y estudiantes: el administrador no tiene "Mi perfil".
 async function requireProfileSession() {

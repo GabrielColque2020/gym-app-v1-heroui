@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import bcryptjs from "bcryptjs";
 
 import { requireCoachSession } from "@/features/auth/coach-session";
@@ -15,7 +16,7 @@ import {
 import { studentListSelect } from "@/features/students/services/student-select";
 
 export async function createStudentAction( input: CreateStudentInput ) {
-	try {
+	return runAction( "No se pudo crear el estudiante.", async () => {
 		const session = await requireCoachSession( "gestionar estudiantes" );
 		const { descriptionData, password, userData } = validateStudentInput( input, "create" );
 
@@ -30,15 +31,11 @@ export async function createStudentAction( input: CreateStudentInput ) {
 			},
 			select: studentListSelect,
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al crear el estudiante.";
-
-		throw new Error( `No se pudo crear el estudiante. ${ message }` );
-	}
+	} );
 }
 
 export async function updateStudentAction( input: UpdateStudentInput ) {
-	try {
+	return runAction( "No se pudo actualizar el estudiante.", async () => {
 		const session = await requireCoachSession( "gestionar estudiantes" );
 		const { descriptionData, password, userData } = validateStudentInput( input, "edit" );
 		const passwordData = password.length > 0 ? { password: bcryptjs.hashSync( password ) } : {};
@@ -61,15 +58,11 @@ export async function updateStudentAction( input: UpdateStudentInput ) {
 				role: "STUDENT",
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al actualizar el estudiante.";
-
-		throw new Error( `No se pudo actualizar el estudiante. ${ message }` );
-	}
+	} );
 }
 
 export async function deactivateStudentAction( id: string ) {
-	try {
+	return runAction( "No se pudo desactivar el estudiante.", async () => {
 		const session = await requireCoachSession( "gestionar estudiantes" );
 		return await prisma.user.update( {
 			data: buildStudentStatusUpdateData( false ),
@@ -80,15 +73,11 @@ export async function deactivateStudentAction( id: string ) {
 				role: "STUDENT",
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al desactivar el estudiante.";
-
-		throw new Error( `No se pudo desactivar el estudiante. ${ message }` );
-	}
+	} );
 }
 
 export async function restoreStudentAction( id: string ) {
-	try {
+	return runAction( "No se pudo restaurar el estudiante.", async () => {
 		const session = await requireCoachSession( "gestionar estudiantes" );
 		return await prisma.user.update( {
 			data: buildStudentStatusUpdateData( true ),
@@ -99,9 +88,5 @@ export async function restoreStudentAction( id: string ) {
 				role: "STUDENT",
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al restaurar el estudiante.";
-
-		throw new Error( `No se pudo restaurar el estudiante. ${ message }` );
-	}
+	} );
 }

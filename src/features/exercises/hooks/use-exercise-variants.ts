@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { setExerciseVariantsAction } from "@/features/exercises/actions/exercise-variants";
@@ -9,6 +10,10 @@ import {
 	exerciseVariantsQueryOptions,
 } from "@/features/exercises/services/exercise-variants-query";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
+
+// Desenvueltas aca y no dentro de `useMutation`: ahi TypeScript perdia el tipo
+// de lo que devuelven.
+const setExerciseVariants = unwrapped( setExerciseVariantsAction );
 
 function invalidateExerciseVariantQueries( queryClient: ReturnType<typeof useQueryClient>, routineId: string ) {
 	void queryClient.invalidateQueries( {
@@ -33,7 +38,7 @@ export function useSaveExerciseVariants( routineId: string ) {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: setExerciseVariantsAction,
+		mutationFn: setExerciseVariants,
 		onSuccess: ( savedVariants ) => {
 			queryClient.setQueryData( exerciseVariantsQueryKey( routineId ), savedVariants );
 			invalidateExerciseVariantQueries( queryClient, routineId );

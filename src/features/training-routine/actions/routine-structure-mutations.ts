@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import prisma from "@/lib/prisma";
 import {
@@ -64,35 +65,27 @@ async function upsertRoutineStructure( input: RoutineStructureInput ) {
 }
 
 export async function createTrainingRoutineStructureAction( input: RoutineStructureInput ) {
-	try {
+	return runAction( "No se pudo crear la rutina.", async () => {
 		await upsertRoutineStructure( input );
 
 		return {
 			ok: true,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al crear la rutina.";
-
-		throw new Error( `No se pudo crear la rutina. ${ message }` );
-	}
+	} );
 }
 
 export async function updateTrainingRoutineStructureAction( input: RoutineStructureInput ) {
-	try {
+	return runAction( "No se pudo editar la estructura.", async () => {
 		await upsertRoutineStructure( input );
 
 		return {
 			ok: true,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al editar la estructura.";
-
-		throw new Error( `No se pudo editar la estructura. ${ message }` );
-	}
+	} );
 }
 
 export async function deleteTrainingRoutineStructureAction( input: RoutineStructureScopeInput ) {
-	try {
+	return runAction( "No se pudo eliminar la rutina.", async () => {
 		validateRoutineStructureScopeInput( input );
 		const session = await requireCoachSession( "eliminar rutinas" );
 		await assertStudentExists( input.studentId, session.sub );
@@ -108,9 +101,5 @@ export async function deleteTrainingRoutineStructureAction( input: RoutineStruct
 		return {
 			ok: true,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al eliminar la rutina.";
-
-		throw new Error( `No se pudo eliminar la rutina. ${ message }` );
-	}
+	} );
 }

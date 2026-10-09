@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import type { StudentFormDrawerProps } from "@/features/students/components/shared/student-drawer.types";
 import type { StudentFormValues } from "@/features/students/services/student-form";
 
@@ -106,11 +107,11 @@ export function useStudentDrawerState( props: StudentFormDrawerProps ) {
 
 			setIsOpen( false );
 			return true;
-		} catch {
+		} catch (error) {
 			toast.danger( isEditMode ? "Error al actualizar" : "Error al crear", {
-				description: isEditMode
+				description: getErrorMessage( error, isEditMode
 					? "No se pudieron guardar los cambios."
-					: "No se pudo crear el estudiante.",
+					: "No se pudo crear el estudiante." ),
 			} );
 
 			return false;

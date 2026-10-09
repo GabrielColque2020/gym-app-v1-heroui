@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import { isMealTimeValue, type MealTimeValue } from "@/features/meal-plans/services/meal-plan-formatters";
 import type { CreateMealPlanInput, DeleteMealPlanInput, UpdateMealPlanInput } from "@/features/meal-plans/services/meal-plans-form";
@@ -24,7 +25,7 @@ function assertStudentId( studentId: string ) {
 	const normalizedStudentId = studentId.trim();
 
 	if (!normalizedStudentId) {
-		throw new Error( "Debes seleccionar un estudiante." );
+		throw new Error( "Tenés que seleccionar un estudiante." );
 	}
 
 	return normalizedStudentId;
@@ -42,11 +43,11 @@ async function assertCoachSession() {
 	const session = await getAuthenticatedSession();
 
 	if (!session) {
-		throw new Error( "Debes iniciar sesión para gestionar planes alimenticios." );
+		throw new Error( "Tenés que iniciar sesión para gestionar planes alimenticios." );
 	}
 
 	if (session.role !== "COACH") {
-		throw new Error( "No tienes permisos para gestionar planes alimenticios." );
+		throw new Error( "No tenés permiso para gestionar planes alimenticios." );
 	}
 
 	return session;
@@ -88,7 +89,7 @@ async function assertMealPlanForStudent( id: string, studentId: string ) {
 }
 
 export async function createMealPlanAction( input: CreateMealPlanInput ) {
-	try {
+	return runAction( "No se pudo crear el plan alimenticio.", async () => {
 		const session = await assertCoachSession();
 		const studentId = assertStudentId( input.studentId );
 		await assertCoachStudent( studentId, session.sub );
@@ -113,15 +114,11 @@ export async function createMealPlanAction( input: CreateMealPlanInput ) {
 				title,
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al crear el plan alimenticio.";
-
-		throw new Error( `No se pudo crear el plan alimenticio. ${ message }` );
-	}
+	} );
 }
 
 export async function updateMealPlanAction( input: UpdateMealPlanInput ) {
-	try {
+	return runAction( "No se pudo editar el plan alimenticio.", async () => {
 		const session = await assertCoachSession();
 		const studentId = assertStudentId( input.studentId );
 		await assertCoachStudent( studentId, session.sub );
@@ -137,15 +134,11 @@ export async function updateMealPlanAction( input: UpdateMealPlanInput ) {
 				id: input.id,
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al editar el plan alimenticio.";
-
-		throw new Error( `No se pudo editar el plan alimenticio. ${ message }` );
-	}
+	} );
 }
 
 export async function deleteMealPlanAction( input: DeleteMealPlanInput ) {
-	try {
+	return runAction( "No se pudo eliminar el plan alimenticio.", async () => {
 		const session = await assertCoachSession();
 		const studentId = assertStudentId( input.studentId );
 		await assertCoachStudent( studentId, session.sub );
@@ -156,9 +149,5 @@ export async function deleteMealPlanAction( input: DeleteMealPlanInput ) {
 				id: input.id,
 			},
 		} );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al eliminar el plan alimenticio.";
-
-		throw new Error( `No se pudo eliminar el plan alimenticio. ${ message }` );
-	}
+	} );
 }

@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { Prisma } from "@/generated/prisma/client";
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import { requireCoachSession } from "@/features/auth/coach-session";
@@ -28,7 +29,7 @@ type ExerciseListQueryResult = Prisma.ExerciseCoachGetPayload<{
 }>;
 
 export async function getExercisesAction() {
-	try {
+	return runAction( "No se pudo obtener la lista de ejercicios.", async () => {
 		const session = await requireCoachSession( "consultar ejercicios" );
 
 		const exercises = ( await prisma.exerciseCoach.findMany( {
@@ -51,9 +52,5 @@ export async function getExercisesAction() {
 			tips: exercise.tips?.trim() || exercise.globalExercise?.instructions || null,
 			videoUrl: exercise.videoUrl?.trim() || exercise.globalExercise?.videoUrl || null,
 		} ) );
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudo obtener la lista de ejercicios. ${ message }` );
-	}
+	} );
 }

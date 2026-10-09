@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import type { DateValue } from "@internationalized/date";
 import type { FormEvent } from "react";
 
@@ -123,9 +124,9 @@ export function AdminCoachDrawer( {
 				description: "La cuenta quedó disponible en el listado de usuarios.",
 			} );
 			handleOpenChange( false );
-		} catch {
+		} catch (error) {
 			toast.danger( "No se pudo crear el entrenador", {
-				description: "No se pudo crear la cuenta.",
+				description: getErrorMessage( error, "No se pudo crear la cuenta." ),
 			} );
 		}
 	}

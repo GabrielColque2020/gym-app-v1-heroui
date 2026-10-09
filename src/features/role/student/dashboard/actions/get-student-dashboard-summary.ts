@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import type { Prisma } from "@/generated/prisma/client";
 
 import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
@@ -75,16 +77,16 @@ export type StudentDashboardSummary = {
 	};
 };
 
-export async function getStudentDashboardSummaryAction(): Promise<StudentDashboardSummary> {
-	try {
+export async function getStudentDashboardSummaryAction(): Promise<ActionResult<StudentDashboardSummary>> {
+	return runAction( "No se pudo obtener tu resumen.", async () => {
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesión para ver tu dashboard." );
+			throw new Error( "Tenés que iniciar sesión para ver tu inicio." );
 		}
 
 		if (session.role !== "STUDENT") {
-			throw new Error( "No tienes permisos para consultar el dashboard de estudiante." );
+			throw new Error( "No tenés permiso para ver este inicio." );
 		}
 
 		const now = new Date();
@@ -159,7 +161,7 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 		] );
 
 		if (!student) {
-			throw new Error( "No se encontró un estudiante activo para mostrar el dashboard." );
+			throw new Error( "No se encontró un estudiante activo para mostrar tu inicio." );
 		}
 
 		const currentMonthRoutines = currentMonthRoutineMonth?.weeks ?? [];
@@ -212,9 +214,5 @@ export async function getStudentDashboardSummaryAction(): Promise<StudentDashboa
 				name: student.name,
 			},
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudo obtener el resumen del dashboard estudiante. ${ message }` );
-	}
+	} );
 }

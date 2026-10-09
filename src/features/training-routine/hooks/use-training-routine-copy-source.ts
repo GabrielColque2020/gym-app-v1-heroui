@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useQuery } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -23,7 +24,7 @@ export function useTrainingRoutineCopySource( {
 	return useQuery( {
 		...QUERY_DEFAULTS.coach,
 		enabled: Boolean( studentId && month && year ),
-		queryFn: () => getTrainingRoutineCopySourceAction( { month, studentId, year } ),
+		queryFn: () => unwrapped( getTrainingRoutineCopySourceAction )( { month, studentId, year } ),
 		queryKey: trainingRoutineCopySourceQueryKey( studentId, month, year ),
 	} );
 }
@@ -39,7 +40,7 @@ export function useLatestTrainingRoutineMonth( {
 }: UseTrainingRoutineCopySourceParams & { inclusive?: boolean } ) {
 	return useQuery( {
 		enabled: Boolean( studentId && month && year ),
-		queryFn: () => getLatestTrainingRoutineMonthAction( { inclusive, month, studentId, year } ),
+		queryFn: () => unwrapped( getLatestTrainingRoutineMonthAction )( { inclusive, month, studentId, year } ),
 		queryKey: [ "training-routine-latest-month", studentId, month, year, inclusive ] as const,
 		staleTime: 0,
 	} );

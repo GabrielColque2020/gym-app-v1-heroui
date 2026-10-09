@@ -1,5 +1,6 @@
 "use server";
 
+import { runAction } from "@/lib/run-action";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import { getExerciseProgress, getProgressExercises } from "@/features/exercise-progress/services/exercise-progress-queries";
 import prisma from "@/lib/prisma";
@@ -11,7 +12,7 @@ async function findOwnStudent( studentId: string ) {
 	const session = await getAuthenticatedSession();
 
 	if (!session || session.role !== "COACH") {
-		throw new Error( "Debes iniciar sesión como entrenador para ver el progreso." );
+		throw new Error( "Tenés que iniciar sesión como entrenador para ver el progreso." );
 	}
 
 	if (!studentId.trim()) return null;
@@ -31,20 +32,24 @@ async function findOwnStudent( studentId: string ) {
 }
 
 export async function getCoachStudentProgressExercisesAction( studentId: string ) {
-	const student = await findOwnStudent( studentId );
+	return runAction( "No se pudo cargar el progreso del estudiante.", async () => {
+		const student = await findOwnStudent( studentId );
 
-	if (!student) return null;
+		if (!student) return null;
 
-	return {
-		exercises: await getProgressExercises( student.id ),
-		student,
-	};
+		return {
+			exercises: await getProgressExercises( student.id ),
+			student,
+		};
+	} );
 }
 
 export async function getCoachStudentExerciseProgressAction( studentId: string, exerciseId: string ) {
-	const student = await findOwnStudent( studentId );
+	return runAction( "No se pudo cargar el progreso del ejercicio.", async () => {
+		const student = await findOwnStudent( studentId );
 
-	if (!student) return null;
+		if (!student) return null;
 
-	return getExerciseProgress( student.id, exerciseId.trim() );
+		return getExerciseProgress( student.id, exerciseId.trim() );
+	} );
 }

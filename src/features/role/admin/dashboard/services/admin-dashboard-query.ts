@@ -1,13 +1,15 @@
+import type { ActionData } from "@/lib/action-result";
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { getAdminDashboardSummaryAction } from "@/features/role/admin/dashboard/actions/get-admin-dashboard-summary";
 
 export const ADMIN_DASHBOARD_SUMMARY_QUERY_KEY = [ "admin-dashboard-summary" ] as const;
 
-export type AdminDashboardSummary = Awaited<ReturnType<typeof getAdminDashboardSummaryAction>>;
+export type AdminDashboardSummary = ActionData<typeof getAdminDashboardSummaryAction>;
 
 export async function fetchAdminDashboardSummary(): Promise<AdminDashboardSummary> {
-	return getAdminDashboardSummaryAction();
+	return unwrapped( getAdminDashboardSummaryAction )();
 }
 
 export const adminDashboardSummaryQueryOptions = () => queryOptions( {

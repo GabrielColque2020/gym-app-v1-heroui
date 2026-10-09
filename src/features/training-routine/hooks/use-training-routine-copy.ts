@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
@@ -12,6 +13,11 @@ import type {
 	CopyTrainingRoutineMonthInput,
 	CopyTrainingRoutineWeeksInput,
 } from "@/features/training-routine/services/training-routine-copy";
+
+// Desenvueltas aca y no dentro de `useMutation`: ahi TypeScript perdia el tipo
+// de lo que devuelven.
+const copyTrainingRoutineMonth = unwrapped( copyTrainingRoutineMonthAction );
+const copyTrainingRoutineWeeks = unwrapped( copyTrainingRoutineWeeksAction );
 
 function invalidateTrainingRoutineCopyQueries(
 	queryClient: ReturnType<typeof useQueryClient>,
@@ -29,7 +35,7 @@ export function useCopyTrainingRoutineMonth() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: copyTrainingRoutineMonthAction,
+		mutationFn: copyTrainingRoutineMonth,
 		onSuccess: ( _, input: CopyTrainingRoutineMonthInput ) => {
 			invalidateTrainingRoutineCopyQueries( queryClient, input );
 		},
@@ -40,7 +46,7 @@ export function useCopyTrainingRoutineWeeks() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: copyTrainingRoutineWeeksAction,
+		mutationFn: copyTrainingRoutineWeeks,
 		onSuccess: ( _, input: CopyTrainingRoutineWeeksInput ) => {
 			invalidateTrainingRoutineCopyQueries( queryClient, input );
 		},

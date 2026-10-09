@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import type { BodyPartFilter } from "@/features/exercises/services/exercise-form";
 
 import { useMemo, useState } from "react";
@@ -44,7 +45,7 @@ export function useRoutineDayExerciseCatalog( { initialSelectedExerciseId }: Use
 	const debouncedSearchValue = useDebouncedValue( searchValue, SEARCH_DEBOUNCE_MS );
 	const exercisesQuery = useCoachExercises();
 	const recentExerciseIdsQuery = useQuery( {
-		queryFn: getRecentRoutineExerciseIdsAction,
+		queryFn: unwrapped( getRecentRoutineExerciseIdsAction ),
 		queryKey: RECENT_ROUTINE_EXERCISES_QUERY_KEY,
 		staleTime: 60 * 1000,
 	} );

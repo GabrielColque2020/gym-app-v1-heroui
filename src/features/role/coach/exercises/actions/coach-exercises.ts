@@ -1,5 +1,7 @@
 ﻿"use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { requireCoachSession } from "@/features/auth/coach-session";
@@ -280,8 +282,8 @@ async function upsertCoachOverrideByGlobalExerciseId( coachId: string, globalExe
 	} );
 }
 
-export async function getCoachExercisesAction(): Promise<CoachExerciseListItem[]> {
-	try {
+export async function getCoachExercisesAction(): Promise<ActionResult<CoachExerciseListItem[]>> {
+	return runAction( "No se pudo obtener el catálogo de ejercicios.", async () => {
 		const session = await requireCoachSession( "consultar ejercicios del coach" );
 
 		const [ globalExercises, coachExercises ] = await Promise.all( [
@@ -334,11 +336,7 @@ export async function getCoachExercisesAction(): Promise<CoachExerciseListItem[]
 			left.name.localeCompare( right.name, "es", { sensitivity: "base" } ) ||
 			left.category.localeCompare( right.category, "es", { sensitivity: "base" } )
 		);
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudo obtener el catálogo de ejercicios. ${ message }` );
-	}
+	} );
 }
 
 async function saveCoachExerciseRecord(
@@ -371,7 +369,7 @@ async function saveCoachExerciseRecord(
 }
 
 export async function saveCoachExerciseAction( input: CoachExerciseMutationInput ) {
-	try {
+	return runAction( "No se pudo guardar el ejercicio.", async () => {
 		const session = await requireCoachSession( "guardar ejercicios" );
 		const normalizedInput = validateCoachExerciseInput( input );
 		const owner = { id: session.sub, role: "COACH" as const };
@@ -406,11 +404,7 @@ export async function saveCoachExerciseAction( input: CoachExerciseMutationInput
 		} );
 
 		return savedExercise;
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al guardar el ejercicio.";
-
-		throw new Error( `No se pudo guardar el ejercicio. ${ message }` );
-	}
+	} );
 }
 
 export async function toggleCoachExerciseStatusAction( input: CoachExerciseMutationInput ) {
@@ -418,12 +412,12 @@ export async function toggleCoachExerciseStatusAction( input: CoachExerciseMutat
 }
 
 export async function deleteCoachExerciseAction( exerciseId: string ) {
-	try {
+	return runAction( "No se pudo eliminar el ejercicio.", async () => {
 		const session = await requireCoachSession( "eliminar ejercicios del coach" );
 		const normalizedExerciseId = normalizeId( exerciseId );
 
 		if (!normalizedExerciseId) {
-			throw new Error( "Debes seleccionar un ejercicio válido antes de eliminar." );
+			throw new Error( "Tenés que seleccionar un ejercicio válido antes de eliminar." );
 		}
 
 		const exercise = await prisma.exerciseCoach.findFirst( {
@@ -484,11 +478,7 @@ export async function deleteCoachExerciseAction( exerciseId: string ) {
 			exerciseId: exercise.id,
 			name: exercise.name,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al eliminar el ejercicio.";
-
-		throw new Error( `No se pudo eliminar el ejercicio. ${ message }` );
-	}
+	} );
 }
 
 

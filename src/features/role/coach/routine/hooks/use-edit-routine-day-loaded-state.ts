@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
@@ -225,10 +226,10 @@ export function useEditRoutineDayLoadedState( {
 			} );
 
 			return true;
-		} catch {
+		} catch (error) {
 			setFailedSignature( draftSignature );
 			toast.danger( "Error al guardar", {
-				description: "No se pudieron guardar los cambios del día.",
+				description: getErrorMessage( error, "No se pudieron guardar los cambios del día." ),
 			} );
 
 			return false;

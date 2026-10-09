@@ -1,5 +1,8 @@
 "use server";
 
+import { unwrapped } from "@/lib/action-result";
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import { requireCoachSession } from "@/features/auth/coach-session";
 import { getRoutineDayAction } from "@/features/routine/actions/get-routine-day";
 import {
@@ -37,8 +40,8 @@ export type SaveRoutineDayExercisesResult =
 	| { routineDay: RoutineDayDetail; routines: null }
 	| { routineDay: null; routines: SavedRoutineRow[] };
 
-export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExercisesActionInput ): Promise<SaveRoutineDayExercisesResult> {
-	try {
+export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExercisesActionInput ): Promise<ActionResult<SaveRoutineDayExercisesResult>> {
+	return runAction( "No se pudo guardar el día de rutina.", async () => {
 		const session = await requireCoachSession( "guardar el día de rutina" );
 		const {
 			exercises,
@@ -74,16 +77,12 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 		}
 
 		return {
-			routineDay: await getRoutineDayAction( {
+			routineDay: await unwrapped( getRoutineDayAction )( {
 				routineDayId: routineDay.id,
 				studentId,
 				templateId,
 			} ),
 			routines: null,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al guardar la rutina del día.";
-
-		throw new Error( `No se pudo guardar el día de rutina. ${ message }` );
-	}
+	} );
 }

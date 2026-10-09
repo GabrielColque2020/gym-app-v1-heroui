@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useQuery } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -22,7 +23,7 @@ export function useTrainingRoutines( { alwaysFresh = false, month, studentId, ye
 		...QUERY_DEFAULTS.coach,
 		refetchOnMount: alwaysFresh ? "always" : QUERY_DEFAULTS.coach.refetchOnMount,
 		enabled: Boolean( studentId ),
-		queryFn: () => getTrainingRoutinesByStudentAction( {
+		queryFn: () => unwrapped( getTrainingRoutinesByStudentAction )( {
 			month,
 			studentId: studentId ?? "",
 			year,

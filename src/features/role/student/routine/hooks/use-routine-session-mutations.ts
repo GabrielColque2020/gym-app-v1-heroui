@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { saveStudentRoutineSessionAction } from "@/features/role/student/routine/actions/save-routine-session";
@@ -20,7 +21,7 @@ export function useSaveStudentRoutineSession() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: ( input: SaveStudentRoutineSessionMutationInput ) => saveStudentRoutineSessionAction( input ),
+		mutationFn: ( input: SaveStudentRoutineSessionMutationInput ) => unwrapped( saveStudentRoutineSessionAction )( input ),
 		onSuccess: async ( saved, input ) => {
 			const sessionQueryKey = studentRoutineSessionQueryKey( input.routineDayId, input.studentId ?? null );
 

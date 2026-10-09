@@ -1,3 +1,4 @@
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_VOLATILE_DEFAULTS } from "@/constants/query";
@@ -18,7 +19,7 @@ export function exerciseVariantsQueryOptions( routineId: string, enabled = true 
 	return queryOptions( {
 		...QUERY_VOLATILE_DEFAULTS,
 		enabled: enabled && Boolean( routineId ),
-		queryFn: () => getExerciseVariantsAction( { routineId } ),
+		queryFn: () => unwrapped( getExerciseVariantsAction )( { routineId } ),
 		queryKey: exerciseVariantsQueryKey( routineId )
 	} );
 }
@@ -32,7 +33,7 @@ export function exerciseVariantCandidatesQueryOptions(
 	return queryOptions( {
 		...QUERY_VOLATILE_DEFAULTS,
 		enabled: enabled && Boolean( exerciseId ),
-		queryFn: () => searchExerciseVariantCandidatesAction( {
+		queryFn: () => unwrapped( searchExerciseVariantCandidatesAction )( {
 			exerciseId,
 			bodyPart,
 			query,

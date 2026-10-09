@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 
 import { Alert, Button, Description, Drawer, Spinner, toast } from "@heroui/react";
@@ -135,9 +136,9 @@ export function AdminExerciseGlobalDrawer( {
 				description: "Los cambios se guardaron correctamente.",
 			} );
 			setIsOpen( false );
-		} catch {
+		} catch (error) {
 			toast.danger( "Error al actualizar", {
-				description: "No se pudieron guardar los cambios del catálogo global.",
+				description: getErrorMessage( error, "No se pudieron guardar los cambios del catálogo global." ),
 			} );
 		}
 	}

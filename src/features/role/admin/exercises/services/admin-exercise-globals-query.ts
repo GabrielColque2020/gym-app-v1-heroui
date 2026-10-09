@@ -1,3 +1,5 @@
+import type { ActionData } from "@/lib/action-result";
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -5,10 +7,10 @@ import { getAdminExerciseGlobalsAction } from "@/features/role/admin/exercises/a
 
 export const ADMIN_EXERCISE_GLOBALS_QUERY_KEY = [ "admin-exercise-globals" ] as const;
 
-export type AdminExerciseGlobals = Awaited<ReturnType<typeof getAdminExerciseGlobalsAction>>;
+export type AdminExerciseGlobals = ActionData<typeof getAdminExerciseGlobalsAction>;
 
 export async function fetchAdminExerciseGlobals(): Promise<AdminExerciseGlobals> {
-	return getAdminExerciseGlobalsAction();
+	return unwrapped( getAdminExerciseGlobalsAction )();
 }
 
 export const adminExerciseGlobalsQueryOptions = () => queryOptions( {

@@ -1,5 +1,8 @@
 ﻿"use server";
 
+import { unwrapped } from "@/lib/action-result";
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import prisma from "@/lib/prisma";
 
 import { getAuthenticatedSession } from "@/features/auth/session";
@@ -18,16 +21,16 @@ type GetStudentRoutineSessionInput = {
 export async function getStudentRoutineSessionAction( {
 	routineDayId,
 	studentId,
-}: GetStudentRoutineSessionInput ): Promise<StudentRoutineSessionDetail> {
-	try {
+}: GetStudentRoutineSessionInput ): Promise<ActionResult<StudentRoutineSessionDetail>> {
+	return runAction( "No se pudo obtener la rutina del estudiante.", async () => {
 		const session = await getAuthenticatedSession();
 
 		if (!session) {
-			throw new Error( "Debes iniciar sesión para ver tu rutina." );
+			throw new Error( "Tenés que iniciar sesión para ver tu rutina." );
 		}
 
 		if (session.role !== "STUDENT") {
-			throw new Error( "No tienes permisos para consultar esta rutina." );
+			throw new Error( "No tenés permiso para consultar esta rutina." );
 		}
 
 		const activeStudentId = studentId?.trim() || session.sub;
@@ -36,7 +39,7 @@ export async function getStudentRoutineSessionAction( {
 			throw new Error( "La rutina solicitada no pertenece al estudiante autenticado." );
 		}
 
-		const routineDay = await getRoutineDayAction( {
+		const routineDay = await unwrapped( getRoutineDayAction )( {
 			routineDayId,
 			studentId: activeStudentId,
 		} );
@@ -142,10 +145,6 @@ export async function getStudentRoutineSessionAction( {
 			...enrichedRoutineDay,
 			progressEntries,
 		};
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la rutina del estudiante.";
-
-		throw new Error( `No se pudo obtener la rutina del estudiante. ${ message }` );
-	}
+	} );
 }
 

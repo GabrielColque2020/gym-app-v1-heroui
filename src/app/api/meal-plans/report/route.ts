@@ -1,3 +1,4 @@
+import { unwrapped } from "@/lib/action-result";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { NextResponse } from "next/server";
 
@@ -15,7 +16,7 @@ export async function GET( request: Request ) {
 			return NextResponse.json( { error: "Debes indicar un estudiante para generar el reporte." }, { status: 400 } );
 		}
 
-		const data = await getMealPlansByStudentAction( { studentId } );
+		const data = await unwrapped( getMealPlansByStudentAction )( { studentId } );
 		const fileName = buildPdfFileName( "plan-alimenticio", data.student.name );
 		const pdfDocument = MealPlansPdfDocument( {
 			mealPlans: data.mealPlans,

@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { assignCoachToStudentAction, createAdminStudentAction, createCoachAction, deleteAdminUserAction, reassignCoachStudentsAction, toggleUserStatusAction, updateAdminStudentAction, updateAdminUserAction } from "@/features/role/admin/users/actions/admin-user-mutations";
@@ -9,6 +10,17 @@ import { ADMIN_COACHES_QUERY_KEY } from "@/features/role/admin/users/services/ad
 import { ADMIN_DASHBOARD_SUMMARY_QUERY_KEY } from "@/features/role/admin/dashboard/services/admin-dashboard-query";
 import { prependAdminUserInCache, removeAdminUserFromCache, replaceAdminUserInCache } from "@/features/role/admin/users/hooks/admin-users-cache";
 
+// Desenvueltas aca y no dentro de `useMutation`: ahi TypeScript perdia el tipo
+// de lo que devuelven.
+const createCoach = unwrapped( createCoachAction );
+const createAdminStudent = unwrapped( createAdminStudentAction );
+const toggleUserStatus = unwrapped( toggleUserStatusAction );
+const updateAdminUser = unwrapped( updateAdminUserAction );
+const updateAdminStudent = unwrapped( updateAdminStudentAction );
+const assignCoachToStudent = unwrapped( assignCoachToStudentAction );
+const reassignCoachStudents = unwrapped( reassignCoachStudentsAction );
+const deleteAdminUser = unwrapped( deleteAdminUserAction );
+
 export function useAdminUsers() {
 	return useQuery( adminUsersQueryOptions() );
 }
@@ -17,7 +29,7 @@ export function useCreateCoach() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: createCoachAction,
+		mutationFn: createCoach,
 		onSuccess: ( createdUser ) => {
 			prependAdminUserInCache( queryClient, createdUser );
 			prependAdminCoachInCache( queryClient, createdUser );
@@ -31,7 +43,7 @@ export function useCreateAdminStudent() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: createAdminStudentAction,
+		mutationFn: createAdminStudent,
 		onSuccess: ( createdStudent ) => {
 			prependAdminUserInCache( queryClient, createdStudent );
 			void queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
@@ -43,7 +55,7 @@ export function useToggleUserStatus() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: toggleUserStatusAction,
+		mutationFn: toggleUserStatus,
 		onSuccess: ( updatedUser ) => {
 			replaceAdminUserInCache( queryClient, updatedUser );
 			if (updatedUser.role === "COACH") {
@@ -66,7 +78,7 @@ export function useUpdateAdminUser() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: updateAdminUserAction,
+		mutationFn: updateAdminUser,
 		onSuccess: ( updatedUser ) => {
 			replaceAdminUserInCache( queryClient, updatedUser );
 			if (updatedUser.role === "COACH") {
@@ -89,7 +101,7 @@ export function useUpdateAdminStudent() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: updateAdminStudentAction,
+		mutationFn: updateAdminStudent,
 		onSuccess: ( updatedStudent ) => {
 			replaceAdminUserInCache( queryClient, updatedStudent );
 			void queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
@@ -101,7 +113,7 @@ export function useAssignCoachToStudent() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: assignCoachToStudentAction,
+		mutationFn: assignCoachToStudent,
 		onSuccess: ( updatedUser ) => {
 			replaceAdminUserInCache( queryClient, updatedUser );
 			void queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
@@ -113,7 +125,7 @@ export function useReassignCoachStudents() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: reassignCoachStudentsAction,
+		mutationFn: reassignCoachStudents,
 		// Cambia el entrenador de varios estudiantes a la vez: se vuelve a pedir la lista.
 		onSuccess: async () => {
 			await queryClient.invalidateQueries( { queryKey: ADMIN_USERS_QUERY_KEY } );
@@ -126,7 +138,7 @@ export function useDeleteAdminUser() {
 	const queryClient = useQueryClient();
 
 	return useMutation( {
-		mutationFn: deleteAdminUserAction,
+		mutationFn: deleteAdminUser,
 		onSuccess: async ( _, input ) => {
 			removeAdminUserFromCache( queryClient, input.id );
 			removeAdminCoachFromCache( queryClient, input.id );

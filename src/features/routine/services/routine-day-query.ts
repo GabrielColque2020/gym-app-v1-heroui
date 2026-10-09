@@ -1,3 +1,4 @@
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -10,7 +11,7 @@ export function routineDayQueryOptions( routineDayId: string, studentId?: string
 	return queryOptions( {
 		...QUERY_DEFAULTS.coach,
 		enabled: Boolean( routineDayId ),
-		queryFn: () => getRoutineDayAction( { routineDayId, studentId, templateId } ),
+		queryFn: () => unwrapped( getRoutineDayAction )( { routineDayId, studentId, templateId } ),
 		queryKey: routineDayQueryKey( routineDayId, studentId, templateId ),
 	} );
 }

@@ -1,10 +1,12 @@
+import type { ActionData } from "@/lib/action-result";
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
 import { getTrainingRoutinesByStudentAction } from "@/features/role/student/training-routine/actions/get-training-routines-by-student";
 import { studentTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
 
-export type TrainingRoutinesByStudent = Awaited<ReturnType<typeof getTrainingRoutinesByStudentAction>>;
+export type TrainingRoutinesByStudent = ActionData<typeof getTrainingRoutinesByStudentAction>;
 
 export function trainingRoutinesQueryOptions( month: number, year: number ) {
 	return queryOptions( {
@@ -12,7 +14,7 @@ export function trainingRoutinesQueryOptions( month: number, year: number ) {
 		// La lista muestra el estado de cada dia (pendiente, en curso, terminado),
 		// que cambia mientras el estudiante entrena.
 		refetchOnMount: "always",
-		queryFn: () => getTrainingRoutinesByStudentAction( { month, year } ),
+		queryFn: () => unwrapped( getTrainingRoutinesByStudentAction )( { month, year } ),
 		queryKey: studentTrainingRoutinesQueryKey( month, year ),
 	} );
 }

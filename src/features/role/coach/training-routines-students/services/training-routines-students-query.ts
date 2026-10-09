@@ -1,3 +1,5 @@
+import type { ActionData } from "@/lib/action-result";
+import { unwrapped } from "@/lib/action-result";
 import { queryOptions } from "@tanstack/react-query";
 
 import { QUERY_DEFAULTS } from "@/constants/query";
@@ -5,10 +7,10 @@ import { getTrainingRoutinesStudentsAction } from "@/features/role/coach/trainin
 
 export const TRAINING_ROUTINES_STUDENTS_QUERY_KEY = [ "training-routines-students" ] as const;
 
-export type TrainingRoutinesStudents = Awaited<ReturnType<typeof getTrainingRoutinesStudentsAction>>;
+export type TrainingRoutinesStudents = ActionData<typeof getTrainingRoutinesStudentsAction>;
 
 export async function fetchTrainingRoutinesStudents(): Promise<TrainingRoutinesStudents> {
-	return getTrainingRoutinesStudentsAction();
+	return unwrapped( getTrainingRoutinesStudentsAction )();
 }
 
 export const trainingRoutinesStudentsQueryOptions = () => queryOptions( {

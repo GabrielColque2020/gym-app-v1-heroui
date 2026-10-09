@@ -1,5 +1,6 @@
 "use client";
 
+import { unwrapped } from "@/lib/action-result";
 import type { QueryClient } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -21,14 +22,14 @@ export function useSaveRoutineDayExercises( options?: UseSaveRoutineDayExercises
 
 	return useMutation( {
 		mutationFn: async ( input: SaveRoutineDayExercisesActionInput ): Promise<RoutineDayDetailBase> => {
-			const result = await saveRoutineDayExercisesAction( input );
+			const result = await unwrapped( saveRoutineDayExercisesAction )( input );
 
 			if (result.routineDay) return result.routineDay;
 
 			// El servidor solo devolvio las filas que cambiaron: se aplican sobre el
 			// dia que ya esta en pantalla. Si no coinciden, se pide el dia entero.
 			return applySavedRoutineRows( queryClient, input, result.routines )
-				?? await getRoutineDayAction( { routineDayId: input.routineDayId, studentId: input.studentId, templateId: input.templateId } );
+				?? await unwrapped( getRoutineDayAction )( { routineDayId: input.routineDayId, studentId: input.studentId, templateId: input.templateId } );
 		},
 		onSuccess: async ( savedRoutineDay, input ) => {
 			await syncRoutineDayAfterSave( queryClient, savedRoutineDay, input );

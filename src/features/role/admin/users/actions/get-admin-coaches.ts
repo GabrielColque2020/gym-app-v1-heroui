@@ -1,5 +1,7 @@
 "use server";
 
+import type { ActionResult } from "@/lib/action-result";
+import { runAction } from "@/lib/run-action";
 import { requireAdminSession } from "@/features/auth/admin-session";
 import { adminCoachSelect } from "@/features/role/admin/users/services/admin-coach-select";
 import prisma from "@/lib/prisma";
@@ -9,8 +11,8 @@ export type AdminCoachListItem = Prisma.UserGetPayload<{
 	select: typeof adminCoachSelect;
 }>;
 
-export async function getAdminCoachesAction(): Promise<AdminCoachListItem[]> {
-	try {
+export async function getAdminCoachesAction(): Promise<ActionResult<AdminCoachListItem[]>> {
+	return runAction( "No se pudo obtener la lista de entrenadores.", async () => {
 		await requireAdminSession( "consultar entrenadores" );
 
 		return await prisma.user.findMany( {
@@ -23,9 +25,5 @@ export async function getAdminCoachesAction(): Promise<AdminCoachListItem[]> {
 				role: "COACH",
 			},
 		} ) as unknown as AdminCoachListItem[];
-	} catch (error) {
-		const message = error instanceof Error ? error.message : "Error desconocido al consultar la base de datos.";
-
-		throw new Error( `No se pudo obtener la lista de entrenadores. ${ message }` );
-	}
+	} );
 }
