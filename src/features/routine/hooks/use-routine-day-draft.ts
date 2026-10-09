@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { RoutineDayExerciseBase } from "@/features/routine/actions/get-routine-day";
@@ -29,6 +29,8 @@ export type RoutineDayCopySource = {
 	reps: string;
 	restSeconds?: number | null;
 	sets: string;
+	// Las variantes del ejercicio en el dia de origen, para copiarlas tambien.
+	variantExerciseIds?: string[];
 };
 
 type DraftMutationResult =
@@ -58,6 +60,14 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 		[draftRoutines, sourceDraftRoutines],
 	);
 	const isDirty = draftSignature !== sourceSignature;
+	// Lo guardado mas reciente, para lo que se ejecuta mas tarde (deshacer desde
+	// un aviso): para entonces el dia pudo haberse guardado y lo que ese codigo
+	// recuerda ya es viejo.
+	const latestSourceRef = useRef( sourceDraftRoutines );
+
+	useEffect( () => {
+		latestSourceRef.current = sourceDraftRoutines;
+	} );
 
 	// El borrador existe solo mientras difiere de lo guardado. Uno igual a lo
 	// guardado no aporta nada y es peligroso: si el dia cambia despues en el
@@ -119,6 +129,21 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 		} );
 	}
 
+	// Devuelve al borrador un ejercicio recien quitado. Si mientras tanto otro
+	// ocupo su lugar, va al final.
+	function restoreExercise( routine: DraftRoutineDayExercise ) {
+		const currentDraft = getRoutineDayDraft( routineDayId ) ?? latestSourceRef.current;
+
+		if (currentDraft.some( ( current ) => current.exerciseId === routine.exerciseId )) return;
+
+		const isOrderTaken = currentDraft.some( ( current ) => current.order === routine.order );
+		const order = isOrderTaken
+			? currentDraft.reduce( ( highest, current ) => Math.max( highest, current.order ), 0 ) + 1
+			: routine.order;
+
+		setDraft( routineDayId, [ ...currentDraft, { ...routine, order } ] );
+	}
+
 	// Las variantes de un ejercicio que todavia no se guardo en el dia.
 	function setExercisePendingVariants( clientId: string, variantExerciseIds: string[] ) {
 		hydrateDraftIfNeeded();
@@ -160,6 +185,8 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 				reps: routine.reps,
 				restSeconds: normalizeRestSeconds( routine.restSeconds ),
 				sets: routine.sets,
+				// Viajan con la fila nueva y se crean cuando el dia se guarda.
+				...( routine.variantExerciseIds?.length ? { pendingVariantExerciseIds: routine.variantExerciseIds } : {} ),
 			} ];
 		} ) );
 	}
@@ -184,6 +211,7 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 		moveExercise,
 		replaceWithCopies,
 		resetDraft,
+		restoreExercise,
 		setExercisePendingVariants,
 		updateExerciseField,
 		validationError,

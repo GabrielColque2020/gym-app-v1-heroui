@@ -4,6 +4,7 @@ import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routin
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { ExerciseVariantsDrawer } from "@/features/role/coach/exercises/components/shared/exercise-variants-drawer";
 import { RoutineDayEditorActionsProvider } from "@/features/role/coach/routine/components/shared/routine-day-editor-actions-context";
@@ -16,6 +17,7 @@ import { EditRoutineDayLoadedHeader } from "@/features/role/coach/routine/compon
 import { EditRoutineDayNavigation } from "@/features/role/coach/routine/components/shared/edit-routine-day-navigation";
 import { EditRoutineDayMainCard } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card";
 import { EditRoutineDayRefreshModal } from "@/features/role/coach/routine/components/shared/edit-routine-day-refresh-modal";
+import { routineDayQueryOptions } from "@/features/routine/services/routine-day-query";
 import { useEditRoutineDayLoadedState } from "@/features/role/coach/routine/hooks/use-edit-routine-day-loaded-state";
 
 const NO_WEEKS: never[] = [];
@@ -78,6 +80,7 @@ export function EditRoutineDayLoadedContent( {
 	// El dia que sigue dentro de la misma semana, para guardar y continuar sin
 	// volver a la pantalla de la rutina.
 	const router = useRouter();
+	const queryClient = useQueryClient();
 	const { month, student, template, year } = data.trainingRoutine;
 	// Las semanas entre las que se mueve el editor: las del mes del estudiante o
 	// las de la plantilla. Solo se pide la que corresponde.
@@ -154,10 +157,27 @@ export function EditRoutineDayLoadedContent( {
 			id: day.id,
 			label: `Semana ${ week } · Día ${ day.dayNumber }`,
 		} ) ),
-		onCopyFromDay: ( sourceDayId: string ) => {
+		onCopyFromDay: async ( sourceDayId: string ) => {
 			const source = daysWithExercises.find( ( { day } ) => day.id === sourceDayId );
 
-			if (source) replaceWithCopies( source.day.routines );
+			if (!source) return;
+
+			// La lista del mes no trae las variantes de cada ejercicio: se pide el
+			// dia de origen completo para copiarlas tambien. Si no se puede, se copia
+			// igual con lo que hay, sin variantes.
+			try {
+				const sourceDay = await queryClient.fetchQuery( {
+					...routineDayQueryOptions( sourceDayId, studentId, template?.id ?? null ),
+					staleTime: 0,
+				} );
+
+				replaceWithCopies( sourceDay.routines.map( ( routine ) => ( {
+					...routine,
+					variantExerciseIds: routine.variants.map( ( variant ) => variant.variantExerciseId ),
+				} ) ) );
+			} catch {
+				replaceWithCopies( source.day.routines );
+			}
 		},
 		onMoveExercise: moveExercise,
 		onRequestVariants: ( clientId: string ) => void requestVariants( clientId ),

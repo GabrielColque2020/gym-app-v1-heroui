@@ -19,6 +19,9 @@ type ExerciseFormDrawerProps =
 	| {
 	exercise?: never;
 	hideTrigger?: boolean;
+	// Nombre con el que arranca el formulario: lo que se estaba buscando cuando
+	// no aparecio y se decidio crearlo, para no escribirlo dos veces.
+	initialName?: string;
 	isOpen?: boolean;
 	mode: "create";
 	onSuccessAction?: ( exercise: ExerciseListItem ) => void;
@@ -86,6 +89,7 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 
 	const isEditMode = props.mode === "edit";
 	const currentExercise = isEditMode ? props.exercise : null;
+	const initialName = props.mode === "create" ? props.initialName?.trim() ?? "" : "";
 	const activeMutation = saveCoachExercise;
 	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
 	const isCategoryInvalid = values.category.trim().length > 0 && values.category.trim().length < 2;
@@ -113,9 +117,14 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 		: "Creá un ejercicio propio. Solo lo vas a ver vos.";
 
 	const resetFormState = useCallback( () => {
-		setValues( getInitialValues( currentExercise ?? undefined ) );
+		const initialValues = getInitialValues( currentExercise ?? undefined );
+
+		// La busqueda se escribe en minuscula; un nombre arranca con mayuscula.
+		setValues( initialName
+			? { ...initialValues, name: initialName.charAt( 0 ).toUpperCase() + initialName.slice( 1 ) }
+			: initialValues );
 		saveCoachExercise.reset();
-	}, [ currentExercise, saveCoachExercise ] );
+	}, [ currentExercise, initialName, saveCoachExercise ] );
 
 	useEffect( () => {
 		if (!isOpen) {

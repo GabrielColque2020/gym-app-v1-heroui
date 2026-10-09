@@ -71,9 +71,34 @@ export function useEditRoutineDayLoadedState( {
 		markEdited();
 		draft.updateExerciseField( ...args );
 	};
-	const deleteExercise: typeof draft.deleteExercise = ( ...args ) => {
+	// Quitar es de un toque, asi que se puede deshacer. Si el dia ya se guardo sin
+	// el ejercicio, sus variantes se borraron con la fila: se anotan antes para que
+	// al deshacer vuelvan con el.
+	const deleteExercise: typeof draft.deleteExercise = ( clientId ) => {
+		const removed = draftRoutines.find( ( routine ) => routine.clientId === clientId );
+		const savedVariantIds = data.routines
+			.find( ( routine ) => routine.id === removed?.id )
+			?.variants.map( ( variant ) => variant.variantExerciseId );
+
 		markEdited();
-		draft.deleteExercise( ...args );
+		draft.deleteExercise( clientId );
+
+		if (!removed) return;
+
+		toast( `Quitaste ${ removed.exercise?.name ?? "el ejercicio" }`, {
+			actionProps: {
+				children: "Deshacer",
+				onPress: () => {
+					markEdited();
+					draft.restoreExercise( {
+						...removed,
+						pendingVariantExerciseIds: savedVariantIds ?? removed.pendingVariantExerciseIds,
+					} );
+				},
+			},
+			// Mas largo que un aviso comun: es la unica forma de volver atras.
+			timeout: 8000,
+		} );
 	};
 	const setExercisePendingVariants: typeof draft.setExercisePendingVariants = ( ...args ) => {
 		markEdited();

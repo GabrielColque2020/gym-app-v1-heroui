@@ -206,6 +206,7 @@ export function SearchAndCreateExerciseDrawer({
 
             <ExerciseDrawer
                 hideTrigger
+                initialName={ searchValue }
                 isOpen={ isCreateDrawerOpen }
                 mode={ "create" }
                 onOpenChangeAction={ setIsCreateDrawerOpen }
