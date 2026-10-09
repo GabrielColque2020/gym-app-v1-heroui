@@ -87,7 +87,7 @@ export default function ExerciseChangeDrawer( {
 				onConfirmAction={ handleConfirmPendingChange }
 			/>
 			<FeatureDrawerLayout
-				bottomContentClassName={ "max-h-[88dvh]" }
+				bottomContentClassName={ "[--feature-drawer-max-height:88dvh]" }
 				isOpen={ isExecutionOpen }
 				placement={ placement }
 				rightContentClassName={ "flex h-full max-h-dvh w-[42rem] flex-col" }

@@ -128,7 +128,7 @@ export function MobileExerciseSetCard( {
 			</Card>
 
 			<FeatureDrawerLayout
-				bottomContentClassName={ "max-h-[82dvh]" }
+				bottomContentClassName={ "[--feature-drawer-max-height:82dvh]" }
 				isOpen={ Boolean( selectedNoteSet ) }
 				placement={ "bottom" }
 				onOpenChangeAction={ ( isOpen ) => {

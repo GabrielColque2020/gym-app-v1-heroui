@@ -22,7 +22,21 @@ type FeatureDrawerLayoutProps = {
 
 // En el telefono el drawer sube desde abajo y ocupa todo el ancho; en escritorio
 // entra desde la derecha como panel lateral.
-const BOTTOM_DIALOG_CLASS_NAME = "flex max-h-[92dvh] w-full flex-col rounded-t-2xl border-t border-border bg-surface";
+//
+// El alto maximo es el que pida cada drawer (92% de la pantalla si no dice
+// nada), pero nunca mas que lo que el teclado deja ver. `dvh` no se entera del
+// teclado: con el abierto, el drawer seguia midiendo casi toda la pantalla en un
+// lugar visible de la mitad, y lo que sobraba —con el campo en el que se estaba
+// escribiendo— quedaba fuera de vista. `--visual-viewport-height` la pone React
+// Aria en el fondo del drawer y la actualiza cuando el teclado abre y cierra.
+//
+// `feature-drawer--bottom` es la marca propia para los estilos de globals.css:
+// la clase de posicion de la libreria no sirve (ver el comentario de abajo).
+const BOTTOM_DIALOG_CLASS_NAME = [
+	"feature-drawer--bottom flex w-full flex-col rounded-t-2xl border-t border-border bg-surface",
+	"[--feature-drawer-max-height:92dvh]",
+	"max-h-[min(var(--feature-drawer-max-height),calc(var(--visual-viewport-height,100dvh)-1.5rem))]",
+].join( " " );
 const RIGHT_DIALOG_CLASS_NAME = "w-115 border-l border-border bg-surface";
 
 // De que lado se apoya el drawer y desde donde entra. Se fija aca, con clases

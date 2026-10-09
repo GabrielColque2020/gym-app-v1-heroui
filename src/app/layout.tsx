@@ -36,6 +36,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  // Que el teclado del telefono ACHIQUE la pantalla en vez de pararsele encima.
+  // Chrome en Android, de fabrica, deja la pagina del mismo alto y dibuja el
+  // teclado arriba: en un drawer, el campo en el que se escribia quedaba tapado.
+  // Safari en iPhone lo ignora; ahi el drawer se ajusta con
+  // `--visual-viewport-height` (ver feature-drawer-layout y globals.css).
+  interactiveWidget: "resizes-content",
   themeColor: [
     { color: "#f1f4fb", media: "(prefers-color-scheme: light)" },
     { color: "#0f172b", media: "(prefers-color-scheme: dark)" },

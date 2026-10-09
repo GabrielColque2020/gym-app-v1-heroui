@@ -14,6 +14,50 @@
             border-radius: 0;
         }
     }
+
+    /* En el drawer que sube desde abajo (el del telefono) se desplaza el drawer
+       entero y no solo su cuerpo: el encabezado tambien sube y deja lugar.
+
+       Con el teclado abierto queda visible menos de la mitad de la pantalla.
+       Con el encabezado y el pie fijos, al formulario le quedaba lugar para un
+       campo o dos, y el que se estaba escribiendo podia quedar tapado.
+       Desplazando todo junto, el encabezado se lee al abrir y despues cede su
+       lugar; React Aria lleva a la vista el campo que recibe el foco.
+
+       El pie con los botones si queda fijo abajo: es lo que cierra el drawer.
+       El `scroll-padding` evita que ese pie tape el campo con foco.
+
+       La marca es propia (`feature-drawer--bottom`, la pone
+       FeatureDrawerLayout) porque la clase de posicion de la libreria a veces
+       dice "abajo" en un drawer que esta al costado. En escritorio no cambia nada. */
+    .feature-drawer--bottom {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scroll-padding-block-end: 6rem;
+    }
+
+    /* Nada adentro se achica para caber: todo mide lo que su contenido y lo
+       que no entra se alcanza desplazando. El contenido cuelga de un envoltorio
+       sin caja (`contents`), y algunos drawers meten cuerpo y pie en un <form>. */
+    .feature-drawer--bottom > div > *,
+    .feature-drawer--bottom > div > form > * {
+        flex: none;
+        min-height: auto;
+    }
+
+    .feature-drawer--bottom .drawer__body {
+        flex: none;
+        overflow: visible;
+    }
+
+    .feature-drawer--bottom .drawer__footer {
+        position: sticky;
+        inset-block-end: calc(-1 * var(--feature-drawer-padding, 1.5rem));
+        z-index: 1;
+        margin-block-end: calc(-1 * var(--feature-drawer-padding, 1.5rem));
+        padding-block-end: var(--feature-drawer-padding, 1.5rem);
+        background-color: var(--surface);
+    }
 }
 
 
