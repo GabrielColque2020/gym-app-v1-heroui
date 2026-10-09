@@ -34,6 +34,11 @@ const STUDENT_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Cómo cargo lo que hice? ¿Tengo que guardar?",
 			},
 			{
+				answer: "En el día, tocá el botón Descanso, que muestra el tiempo: arranca una cuenta regresiva. Mientras corre podés sumarle o restarle tiempo, reiniciarla o terminarla antes. Si tu entrenador fijó un descanso para ese ejercicio, el reloj arranca con ese tiempo.",
+				id: "student-routine-rest",
+				question: "¿Cómo uso el reloj de descanso?",
+			},
+			{
 				answer: "Le avisa a tu entrenador que ese entrenamiento está hecho. Antes de confirmar te muestra un resumen, y podés terminar aunque te hayan quedado series sin cargar. Después el día queda como Día terminado y las series se bloquean para que no las cambies sin querer.",
 				id: "student-routine-finalized",
 				question: "¿Para qué sirve Terminar día?",
@@ -51,12 +56,12 @@ const STUDENT_FAQ_SECTIONS: FaqSection[] = [
 		id: "student-exercises",
 		items: [
 			{
-				answer: "Solo si tu entrenador le cargó variantes. En las opciones del ejercicio tocá Cambiar ejercicio y elegí una. Si la opción aparece deshabilitada, ese ejercicio no tiene variantes: pedile a tu entrenador que las agregue.",
+				answer: "Solo si tu entrenador le cargó variantes. En las opciones del ejercicio tocá Cambiar ejercicio y elegí una. Si ese día ya habías cargado series, la app te avisa que pasan a contar para el otro ejercicio y te pide confirmar. Si la opción aparece deshabilitada, ese ejercicio no tiene variantes: pedile a tu entrenador que las agregue.",
 				id: "student-exercise-change",
 				question: "¿Puedo cambiar un ejercicio por otro?",
 			},
 			{
-				answer: "Que en ese día estás haciendo una variante en lugar del ejercicio original. Lo que cargues queda registrado para la variante. Podés volver al original desde la misma opción Cambiar ejercicio.",
+				answer: "Que en ese día estás haciendo una variante en lugar del ejercicio original. Lo que cargues queda registrado para la variante. El cambio vale solo para ese día: el próximo arranca otra vez con el ejercicio que cargó tu entrenador. Podés volver al original desde la misma opción Cambiar ejercicio.",
 				id: "student-exercise-changed",
 				question: "¿Qué significa Ejercicio cambiado?",
 			},
@@ -120,7 +125,7 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 		id: "coach-routine",
 		items: [
 			{
-				answer: "En Estudiantes, tocá al estudiante: se abre su rutina del mes. Con las pestañas de arriba pasás a su Plan alimenticio, su Historial o su Progreso. Dentro de la rutina elegís la semana y abrís el día que querés editar.",
+				answer: "En Estudiantes, tocá Abrir en la fila del estudiante (en el teléfono, tocá su tarjeta): se abre su rutina del mes. Con las pestañas de arriba pasás a su Plan alimenticio, su Historial o su Progreso. Dentro de la rutina elegís la semana y abrís el día que querés editar.",
 				id: "coach-routine-student",
 				question: "¿Cómo entro a la rutina de un estudiante?",
 			},
@@ -130,17 +135,17 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Tengo que guardar los cambios del día?",
 			},
 			{
-				answer: "Dentro del día tocá Agregar ejercicio. Arriba podés fijar las series y repeticiones con las que se van a agregar (hay atajos como 3×12). Buscá por nombre o filtrá por grupo muscular y tocá Agregar en cada ejercicio: podés sumar varios sin cerrar. Al terminar tocá Listo.",
+				answer: "Dentro del día tocá Agregar ejercicio. Buscá por nombre o filtrá por grupo muscular y tocá Elegir. Se abre la pantalla de ese ejercicio: ahí cargás series, repeticiones y descanso (hay atajos como 3×12) y, si querés, sus variantes. Tocá Agregar ejercicio y volvés a la lista para elegir el siguiente; al terminar tocá Listo. Las series y repeticiones se pueden dejar vacías y completar después. Si el ejercicio no existe, con Crear ejercicio lo cargás en el momento.",
 				id: "coach-routine-add-exercise",
 				question: "¿Cómo agrego ejercicios a un día?",
 			},
 			{
-				answer: "Cada ejercicio tiene sus campos Series y Repeticiones a la vista. El orden se cambia con las flechas que están junto al número del ejercicio. Con el botón de nota le dejás una indicación al estudiante.",
+				answer: "Cada ejercicio tiene sus campos Series y Repeticiones a la vista, y al lado el descanso entre series. El orden se cambia con las flechas que están junto al número del ejercicio. Con el botón de nota le dejás una indicación al estudiante. El tacho quita el ejercicio del día: si fue sin querer, tocá Deshacer en el aviso que aparece arriba.",
 				id: "coach-routine-fields",
 				question: "¿Cómo cambio el orden, las series y las repeticiones?",
 			},
 			{
-				answer: "Sí, mientras el día esté vacío: ahí aparece la opción Copiar ejercicios de otro día. Elegís el día de origen y después ajustás lo que haga falta.",
+				answer: "Sí, mientras el día esté vacío: ahí aparece la opción Copiar ejercicios de otro día. Elegís el día de origen y se copian sus ejercicios con series, repeticiones, descanso y variantes. Después ajustás lo que haga falta.",
 				id: "coach-routine-copy-day",
 				question: "¿Puedo copiar los ejercicios de otro día?",
 			},
@@ -152,12 +157,12 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 		id: "coach-variants",
 		items: [
 			{
-				answer: "En las opciones del ejercicio, dentro del día, tocá Variantes. Se proponen primero los ejercicios del mismo grupo muscular. Cada variante que agregás o quitás se guarda en el momento; al terminar tocá Listo. El estudiante las ve en Cambiar ejercicio.",
+				answer: "Hay dos momentos. Al agregar el ejercicio, en su pantalla desplegá Variantes y elegí las que quieras. Después, en el día, cada ejercicio tiene la etiqueta Variantes, que muestra cuántas tiene: tocala para sumar o quitar. La lista arranca con los ejercicios del mismo músculo y podés buscar cualquier otro. Los cambios se guardan solos. El estudiante las ve en Cambiar ejercicio.",
 				id: "coach-routine-variants",
 				question: "¿Cómo agrego variantes a un ejercicio?",
 			},
 			{
-				answer: "En la rutina del mes tocá Copiar rutina. Elegí de dónde copiar y si querés el Mes completo o Por semanas. Si la copia pisa semanas que ya tenían rutina, la pantalla lo avisa y te pide confirmar. Las series que el estudiante ya cargó no se borran.",
+				answer: "En la rutina del mes tocá los tres puntos y elegí Copiar. Elegí de dónde copiar y si querés el Mes completo o Por semanas. Si la copia pisa semanas que ya tenían rutina, la pantalla lo avisa y te pide confirmar. Las series que el estudiante ya cargó no se borran.",
 				id: "coach-routine-copy",
 				question: "¿Cómo copio una rutina de otro mes o de otro estudiante?",
 			},
@@ -233,9 +238,19 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Puedo copiar el plan de otro estudiante?",
 			},
 			{
-				answer: "Los de Catálogo vienen cargados en la app; los Propios los creaste vos. Si editás uno del catálogo pasa a figurar como Catálogo, editado, y el cambio vale solo para vos. Tocando un ejercicio ves su ficha con la imagen o el video.",
+				answer: "Los de Catálogo vienen cargados en la app; los Propios los creaste vos. Si editás uno del catálogo pasa a figurar como Catálogo, editado, y el cambio vale solo para vos. Con Ver (o tocando el ejercicio, en el teléfono) abrís su ficha con la imagen o el video.",
 				id: "coach-exercises",
 				question: "¿Qué diferencia hay entre un ejercicio de Catálogo y uno Propio?",
+			},
+			{
+				answer: "En Ejercicios tocá Nuevo ejercicio (el + en el teléfono), o Editar en uno que ya existe. Podés subirle una imagen (JPG, PNG o WebP, hasta 5 MB) y un GIF o video corto (hasta 20 MB; los videos, hasta 30 segundos). También podés crear un ejercicio sin salir de la rutina, con Crear ejercicio dentro de Agregar ejercicio.",
+				id: "coach-exercises-create",
+				question: "¿Cómo creo o edito un ejercicio? ¿Puedo ponerle imagen o video?",
+			},
+			{
+				answer: "Tocá Editar en el ejercicio: al final del formulario están Desactivar y Eliminar permanentemente, y las dos piden confirmar. Un ejercicio desactivado deja de aparecer al armar rutinas y al elegir variantes, pero las rutinas que ya lo tienen lo conservan; lo volvés a activar con Restaurar, desde la lista. Eliminar lo borra de tu catálogo para siempre y solo está en los que figuran como Propio o Catálogo, editado.",
+				id: "coach-exercises-deactivate",
+				question: "¿Cómo desactivo o elimino un ejercicio?",
 			},
 		],
 		title: "Plan alimenticio y ejercicios",
@@ -250,9 +265,14 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Qué significa que un día esté terminado?",
 			},
 			{
-				answer: "Si no está en Estudiantes, crealo con Nuevo estudiante. Si está pero su rutina aparece vacía, revisá que estés mirando el mes correcto: cada mes se arma por separado, desde cero o copiando otro.",
+				answer: "Si no está en Estudiantes, crealo con Nuevo estudiante (el + en el teléfono). Si lo desactivaste, filtrá por Inactivos para encontrarlo. Si está pero su rutina aparece vacía, revisá que estés mirando el mes correcto: cada mes se arma por separado, desde cero o copiando otro.",
 				id: "coach-student-missing",
 				question: "¿Qué hago si un estudiante no aparece o no tiene rutina?",
+			},
+			{
+				answer: "En Estudiantes tocá Editar (el lápiz, en el teléfono) para cambiar sus datos. Al final de ese formulario está Desactivar: pide confirmar y le corta el acceso en el momento, aunque tenga la app abierta. Su rutina, su plan y su historial no se borran. Para volver a activarlo, filtrá por Inactivos y tocá Restaurar.",
+				id: "coach-student-edit",
+				question: "¿Cómo edito o desactivo a un estudiante?",
 			},
 		],
 		title: "Problemas comunes",
@@ -265,7 +285,7 @@ const ADMIN_FAQ_SECTIONS: FaqSection[] = [
 		id: "admin-users",
 		items: [
 			{
-				answer: "Entrá en Usuarios y creá la cuenta con el rol que corresponda. Completá los datos obligatorios y, al terminar, confirmá en el listado que la cuenta quedó cargada.",
+				answer: "En Usuarios (o desde Inicio) tocá Nuevo entrenador o Nuevo estudiante. Completá los datos obligatorios y, al terminar, confirmá en el listado que la cuenta quedó cargada. El rol se elige al crear la cuenta y después no se cambia.",
 				id: "admin-create-user",
 				question: "¿Cómo creo un usuario nuevo?",
 			},
@@ -275,7 +295,7 @@ const ADMIN_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Qué diferencia hay entre administrador, entrenador y estudiante?",
 			},
 			{
-				answer: "Desde Usuarios abrí la cuenta para actualizar sus datos o cambiar su estado. Antes de desactivar a un entrenador, revisá si todavía tiene estudiantes a cargo.",
+				answer: "En Usuarios, tocá Editar para cambiar los datos de la cuenta. En los tres puntos están Reasignar estudiantes (si es un entrenador con estudiantes a cargo), Desactivar y Eliminar permanentemente. Desactivar pide confirmar y le corta el acceso en el momento, aunque tenga la app abierta; sus datos no se borran y se vuelve a activar desde el mismo menú. Antes de desactivar a un entrenador, pasale sus estudiantes a otro con Reasignar estudiantes.",
 				id: "admin-edit-user",
 				question: "¿Cómo edito o desactivo un usuario?",
 			},
@@ -287,7 +307,7 @@ const ADMIN_FAQ_SECTIONS: FaqSection[] = [
 		id: "admin-exercises",
 		items: [
 			{
-				answer: "En Ejercicios globales corregís los datos del catálogo base: nombre, categoría, músculos, equipamiento e instrucciones. También podés desactivar un ejercicio para que deje de ofrecerse en rutinas nuevas. Desde esta pantalla no se crean ejercicios nuevos: cada entrenador crea los suyos.",
+				answer: "En Ejercicios globales corregís los datos del catálogo base: nombre, categoría, músculos, equipamiento e instrucciones, y podés subirle una imagen y un GIF o video corto. También podés desactivar un ejercicio para que deje de ofrecerse en rutinas nuevas. Desde esta pantalla no se crean ejercicios nuevos: cada entrenador crea los suyos.",
 				id: "admin-global-exercises",
 				question: "¿Cómo gestiono los ejercicios globales?",
 			},
