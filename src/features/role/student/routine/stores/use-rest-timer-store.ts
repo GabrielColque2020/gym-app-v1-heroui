@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "@heroui/react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -8,8 +9,13 @@ import { formatRestSeconds, REST_SECONDS_MAX, REST_SECONDS_MIN } from "@/feature
 export const REST_TIMER_DEFAULT_SECONDS = 90;
 export const REST_TIMER_STEP_SECONDS = 15;
 
-// Un descanso que termino hace mas que esto ya no se avisa: quedo de otra visita.
-const STALE_FINISH_MS = 5000;
+// Un descanso que termino hace menos que esto se avisa como siempre: el reloj
+// estaba a la vista y llego a tiempo.
+const ON_TIME_FINISH_MS = 5000;
+// Uno que termino mientras la app no estaba a la vista (el telefono se bloqueo o
+// se cambio de app) se avisa igual al volver, si no paso mas que esto. Mas viejo
+// quedo de otra visita y se cierra sin avisar.
+const LATE_FINISH_MS = 10 * 60 * 1000;
 
 type StartOptions = {
 	// Descanso que el entrenador fijo para el ejercicio en pantalla, si lo hay.
@@ -84,6 +90,16 @@ function notifyRestFinished() {
 	}
 }
 
+function formatElapsed( ms: number ) {
+	const seconds = Math.round( ms / 1000 );
+
+	if (seconds < 60) return `hace ${ seconds } segundos`;
+
+	const minutes = Math.round( seconds / 60 );
+
+	return minutes === 1 ? "hace 1 minuto" : `hace ${ minutes } minutos`;
+}
+
 function clampSeconds( seconds: number ) {
 	return Math.min( REST_SECONDS_MAX, Math.max( REST_SECONDS_MIN, Math.round( seconds ) ) );
 }
@@ -123,7 +139,19 @@ export const useRestTimerStore = create<RestTimerState>()(
 
 				set( IDLE );
 
-				if (Date.now() - endsAt <= STALE_FINISH_MS) notifyRestFinished();
+				const lateMs = Date.now() - endsAt;
+
+				if (lateMs > LATE_FINISH_MS) return;
+
+				// El sonido puede haber quedado en pausa con la app en segundo plano.
+				void audioContext?.resume().catch( () => undefined );
+				notifyRestFinished();
+
+				// Volvio tarde: el reloj ya no esta en pantalla y el aviso solo no dice
+				// cuanto hace. Con esto sabe si ya se paso del descanso.
+				if (lateMs > ON_TIME_FINISH_MS) {
+					toast( "Terminó el descanso", { description: `Terminó ${ formatElapsed( lateMs ) }. Seguí con la próxima serie.` } );
+				}
 			},
 			pause: () => {
 				const { endsAt } = get();

@@ -25,8 +25,9 @@ medida que se hace.
   vez de "Guardando…" para siempre, y reintento solo de un guardado que falló
   (`use-autosave-retry.ts`): al volver la red, al volver a la app y cada 10, 20,
   40 y 60 segundos. Los errores de red se avisan en español.
-- [ ] **4. Reloj de descanso.** Pedir Wake Lock para que no se apague la pantalla,
-  y avisar (vibrar o sonar) aunque se vuelva tarde al descanso terminado.
+- [x] **4. Reloj de descanso.** Pide que la pantalla no se apague mientras corre
+  (`use-screen-wake-lock.ts`), y si terminó con la app en segundo plano avisa
+  igual al volver ("Terminó hace 40 segundos"), hasta 10 minutos después.
 - [ ] **5. Eliminar un ejercicio propio borra el progreso de los estudiantes** y lo
   saca de sus rutinas. El aviso tiene que decir cuántos estudiantes y registros
   se pierden y sugerir "Desactivar".

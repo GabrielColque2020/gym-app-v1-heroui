@@ -5,6 +5,7 @@ import { Pause, Play, Square, Timer, TimerReset } from "lucide-react";
 
 import { useRestTimer } from "@/features/role/student/routine/hooks/use-rest-timer";
 import { formatRestTime, REST_TIMER_STEP_SECONDS } from "@/features/role/student/routine/stores/use-rest-timer-store";
+import { useScreenWakeLock } from "@/lib/use-screen-wake-lock";
 
 type RestTimerStartButtonProps = {
 	className?: string;
@@ -46,7 +47,10 @@ const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 // de un anillo que se va vaciando y los ajustes de tiempo; abajo, lo que se
 // hace con el reloj, con nombre y no solo con un icono.
 export function RestTimerPanel( { className = "" }: RestTimerPanelProps ) {
-	const { addTime, isPaused, pause, progress, remainingSeconds, removeTime, restart, resume, runSeconds, stop } = useRestTimer();
+	const { addTime, isActive, isPaused, pause, progress, remainingSeconds, removeTime, restart, resume, runSeconds, stop } = useRestTimer();
+	// Mientras corre, la pantalla no se apaga: con el telefono bloqueado el reloj
+	// se congela y el aviso de fin no llega. En pausa se deja apagar.
+	useScreenWakeLock( isActive && !isPaused );
 	const isAlmostDone = !isPaused && remainingSeconds <= ALMOST_DONE_SECONDS;
 	const toneClassName = isPaused ? "text-muted" : isAlmostDone ? "text-warning" : "text-accent";
 
