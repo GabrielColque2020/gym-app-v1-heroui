@@ -1,20 +1,19 @@
 "use client";
 
-import { Alert } from "@heroui/react";
+import { ErrorAlert } from "@/components/common";
 
 type CoachHistoryRoutinesErrorStateProps = {
+	isRetrying?: boolean;
 	message: string;
+	onRetryAction?: () => void;
 };
 
 export function CoachHistoryRoutinesErrorState( {
+	isRetrying,
 	message,
+	onRetryAction,
 }: CoachHistoryRoutinesErrorStateProps ) {
 	return (
-		<Alert className={ "border border-danger/20" } status={ "danger" }>
-			<Alert.Content>
-				<Alert.Title>Error al cargar historial</Alert.Title>
-				<Alert.Description>{ message }</Alert.Description>
-			</Alert.Content>
-		</Alert>
+		<ErrorAlert isRetrying={ isRetrying } message={ message } title={ "Error al cargar historial" } onRetryAction={ onRetryAction }/>
 	);
 }

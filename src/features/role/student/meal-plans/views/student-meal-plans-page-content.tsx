@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Alert, Button, Card, Chip } from "@heroui/react";
 import { CircleDot, Download, RotateCw } from "lucide-react";
 
-import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { ErrorAlert, PageBreadcrumbs, PageHeader } from "@/components/common";
 import { CardGridSkeleton } from "@/components/common/skeletons";
 import { formatMealPlanDescriptionLines, formatMealPlanUpdatedLabel, formatMealTime } from "@/features/meal-plans/services/meal-plan-formatters";
 import { buildMealPlansReportPdfUrl } from "@/features/meal-plans/services/meal-plans-report-pdf-url";
@@ -92,12 +92,12 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 				<div className={ "mb-0" }>
 					<PageBreadcrumbs backHref={ "/student/dashboard" } backLabel={ "Volver al inicio" } crumbs={ crumbs }/>
 				</div>
-				<Alert className={ "border border-danger/20" } status={ "danger" }>
-					<Alert.Content>
-						<Alert.Title>No se pudo cargar tu plan alimenticio</Alert.Title>
-						<Alert.Description>{ error.message }</Alert.Description>
-					</Alert.Content>
-				</Alert>
+				<ErrorAlert
+					isRetrying={ isFetching }
+					message={ error.message }
+					title={ "No se pudo cargar tu plan alimenticio" }
+					onRetryAction={ () => void refetch() }
+				/>
 			</>
 		);
 	}

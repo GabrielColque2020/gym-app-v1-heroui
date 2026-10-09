@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { RotateCw, UserPlus, UserX } from "lucide-react";
 
-import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { ErrorAlert, PageBreadcrumbs, PageHeader } from "@/components/common";
 import { TableSkeleton } from "@/components/common/skeletons";
 import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { useAdminUsers } from "@/features/role/admin/users/hooks/use-admin-users";
@@ -130,8 +130,12 @@ export default function AdminUsersPageContent( { initialCreate = null, initialFi
 					backLabel={ "Volver al inicio" }
 					crumbs={ breadcrumbs }
 				/>
-				<Card className={ "border border-danger/20 bg-surface" } variant={ "default" }><Card.Content
-					className={ "p-4 text-sm text-danger" }>{ error?.message ?? "No pudimos cargar usuarios." }</Card.Content></Card>
+				<ErrorAlert
+					isRetrying={ isFetching }
+					message={ error?.message ?? "No pudimos cargar usuarios." }
+					title={ "No se pudo cargar la lista de usuarios" }
+					onRetryAction={ () => void refetch() }
+				/>
 			</div>
 		);
 	}

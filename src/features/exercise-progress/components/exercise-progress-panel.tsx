@@ -4,6 +4,7 @@ import type { ExerciseProgressDetail, ExerciseProgressListItem } from "@/feature
 
 import { Label, ListBox, Select, Spinner } from "@heroui/react";
 
+import { ErrorAlert } from "@/components/common";
 import { ExerciseProgressView } from "@/features/exercise-progress/components/exercise-progress-view";
 
 type ExerciseProgressPanelProps = {
@@ -12,12 +13,16 @@ type ExerciseProgressPanelProps = {
 	exercises: ExerciseProgressListItem[];
 	isError: boolean;
 	isLoading: boolean;
+	isRetrying?: boolean;
 	progress: {
 		data: ExerciseProgressDetail | null | undefined;
 		isError: boolean;
+		isFetching?: boolean;
 		isLoading: boolean;
+		refetch?: () => unknown;
 	};
 	selectedExerciseId: string | null;
+	onRetryAction?: () => void;
 	onSelectAction: ( exerciseId: string ) => void;
 };
 
@@ -28,8 +33,10 @@ export function ExerciseProgressPanel( {
 	exercises,
 	isError,
 	isLoading,
+	isRetrying = false,
 	progress,
 	selectedExerciseId,
+	onRetryAction,
 	onSelectAction,
 }: ExerciseProgressPanelProps ) {
 	if (isLoading) {
@@ -41,7 +48,14 @@ export function ExerciseProgressPanel( {
 	}
 
 	if (isError) {
-		return <p className={ "py-10 text-center text-sm text-muted" }>No se pudo cargar el progreso. Probá de nuevo en un momento.</p>;
+		return (
+			<ErrorAlert
+				isRetrying={ isRetrying }
+				message={ "Revisá la conexión y probá de nuevo." }
+				title={ "No se pudo cargar el progreso" }
+				onRetryAction={ onRetryAction }
+			/>
+		);
 	}
 
 	if (exercises.length === 0) {
@@ -90,7 +104,12 @@ export function ExerciseProgressPanel( {
 					<Spinner aria-label={ "Cargando el ejercicio" }/>
 				</div>
 			) : progress.isError ? (
-				<p className={ "py-10 text-center text-sm text-muted" }>No se pudo cargar este ejercicio. Probá de nuevo en un momento.</p>
+				<ErrorAlert
+					isRetrying={ progress.isFetching }
+					message={ "Revisá la conexión y probá de nuevo." }
+					title={ "No se pudo cargar este ejercicio" }
+					onRetryAction={ progress.refetch ? () => void progress.refetch?.() : undefined }
+				/>
 			) : progress.data ? (
 				<ExerciseProgressView detail={ progress.data }/>
 			) : (

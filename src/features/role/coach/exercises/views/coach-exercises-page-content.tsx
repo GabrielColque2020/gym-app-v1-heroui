@@ -45,7 +45,7 @@ export default function CoachExercisesPageContent() {
 					backLabel={ "Volver al inicio" }
 					crumbs={ breadcrumbs }
 				/>
-				<CoachExercisesErrorState message={ error.message }/>
+				<CoachExercisesErrorState isRetrying={ isFetching } message={ error.message } onRetryAction={ () => void refetch() }/>
 			</div>
 		);
 	}

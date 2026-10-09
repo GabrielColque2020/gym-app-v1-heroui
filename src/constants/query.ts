@@ -45,7 +45,9 @@ export const QUERY_DEFAULTS = {
 		gcTime: Infinity,
 		refetchIntervalInBackground: true,
 		refetchOnMount: false,
-		refetchOnReconnect: false,
+		// Al volver la señal se piden de nuevo solo las que estan viejas o fallaron:
+		// con datos de menos de una hora no cambia nada.
+		refetchOnReconnect: true,
 		refetchOnWindowFocus: false,
 		// 1 hora de datos estables en React Query.
 		staleTime: QUERY_TIME_BASE,
@@ -57,7 +59,9 @@ export const QUERY_DEFAULTS = {
 		gcTime: Infinity,
 		refetchIntervalInBackground: true,
 		refetchOnMount: false,
-		refetchOnReconnect: false,
+		// Al volver la señal se piden de nuevo solo las que estan viejas o fallaron:
+		// con datos de menos de una hora no cambia nada.
+		refetchOnReconnect: true,
 		refetchOnWindowFocus: false,
 		// 1 hora de datos estables en React Query.
 		staleTime: QUERY_TIME_BASE,
@@ -69,7 +73,9 @@ export const QUERY_DEFAULTS = {
 		gcTime: Infinity,
 		refetchIntervalInBackground: true,
 		refetchOnMount: false,
-		refetchOnReconnect: false,
+		// Al volver la señal se piden de nuevo solo las que estan viejas o fallaron:
+		// con datos de menos de una hora no cambia nada.
+		refetchOnReconnect: true,
 		refetchOnWindowFocus: false,
 		// 1 hora de datos estables en React Query.
 		staleTime: QUERY_TIME_BASE,

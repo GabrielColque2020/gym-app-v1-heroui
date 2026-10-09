@@ -1,7 +1,8 @@
 "use client";
 
+import { ErrorAlert } from "@/components/common";
 import { useCallback, useMemo } from "react";
-import { Alert } from "@heroui/react";
+import {  } from "@heroui/react";
 
 import { DashboardSkeleton } from "@/components/common/skeletons";
 import { useIsMounted } from "@/components/layout/use-is-mounted";
@@ -54,12 +55,12 @@ export default function StudentDashboardPageContent() {
 
 	if (isError || !data) {
 		return (
-			<Alert className={ "border border-danger/20" } status={ "danger" }>
-				<Alert.Content>
-					<Alert.Title>Error al cargar tu dashboard</Alert.Title>
-					<Alert.Description>{ error?.message ?? "No pudimos cargar tu resumen principal." }</Alert.Description>
-				</Alert.Content>
-			</Alert>
+			<ErrorAlert
+				isRetrying={ isFetching }
+				message={ error?.message ?? "No pudimos cargar tu resumen principal." }
+				title={ "No se pudo cargar tu inicio" }
+				onRetryAction={ () => void refetch() }
+			/>
 		);
 	}
 

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Alert, Button, Card } from "@heroui/react";
 import { ChevronRight, Dumbbell, RotateCw, UserPlus, Users } from "lucide-react";
 
-import { PageHeader } from "@/components/common";
+import { ErrorAlert, PageHeader } from "@/components/common";
 import { DashboardSkeleton } from "@/components/common/skeletons";
 import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { useAdminDashboardSummary } from "@/features/role/admin/dashboard/hooks/use-admin-dashboard-summary";
@@ -29,14 +29,12 @@ export default function AdminDashboardPageContent() {
 
 	if (isError || !data) {
 		return (
-			<Card className={ "border border-danger/20 bg-surface" } variant={ "default" }>
-				<Card.Content className={ "space-y-3 p-4" }>
-					<PageHeader
-						description={ error?.message ?? "No pudimos cargar el resumen." }
-						title={ "No se pudo cargar el inicio" }
-					/>
-				</Card.Content>
-			</Card>
+			<ErrorAlert
+				isRetrying={ isFetching }
+				message={ error?.message ?? "No pudimos cargar el resumen." }
+				title={ "No se pudo cargar el inicio" }
+				onRetryAction={ () => void refetch() }
+			/>
 		);
 	}
 

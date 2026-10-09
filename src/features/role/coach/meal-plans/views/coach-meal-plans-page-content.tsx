@@ -38,7 +38,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	}
 
 	if (isError) {
-		return <CoachMealPlansErrorState breadcrumbs={ breadcrumbs } message={ error?.message ?? "No se pudo cargar el plan alimenticio." }/>;
+		return <CoachMealPlansErrorState breadcrumbs={ breadcrumbs } isRetrying={ isRefreshing } message={ error?.message ?? "No se pudo cargar el plan alimenticio." } onRetryAction={ handleRefresh }/>;
 	}
 
 	if (!data) return null;

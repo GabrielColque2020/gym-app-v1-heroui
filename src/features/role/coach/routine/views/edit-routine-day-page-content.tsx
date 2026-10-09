@@ -55,7 +55,7 @@ export default function EditRoutineDayPageContent( {
 
 	if (routineDayQuery.isError) {
 		return renderState(
-			<EditRoutineDayErrorState message={ routineDayQuery.error?.message ?? "Error al cargar rutina" }/>,
+			<EditRoutineDayErrorState isRetrying={ routineDayQuery.isFetching } message={ routineDayQuery.error?.message ?? "Error al cargar rutina" } onRetryAction={ () => void routineDayQuery.refetch() }/>,
 		);
 	}
 

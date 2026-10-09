@@ -1,15 +1,18 @@
-import { Alert } from "@heroui/react";
 
-import { PageBreadcrumbs } from "@/components/common";
+import { ErrorAlert, PageBreadcrumbs } from "@/components/common";
 
 type CoachMealPlansErrorStateProps = {
+	isRetrying?: boolean;
 	breadcrumbs: Array<{ href?: string; label: string }>;
 	message: string;
+	onRetryAction?: () => void;
 };
 
 export function CoachMealPlansErrorState( {
 	breadcrumbs,
+	isRetrying,
 	message,
+	onRetryAction,
 }: CoachMealPlansErrorStateProps ) {
 	return (
 		<>
@@ -20,12 +23,7 @@ export function CoachMealPlansErrorState( {
 					crumbs={ breadcrumbs }
 				/>
 			</div>
-			<Alert className={ "border border-danger/20" } status={ "danger" }>
-				<Alert.Content>
-					<Alert.Title>No se pudo cargar el plan alimenticio</Alert.Title>
-					<Alert.Description>{ message }</Alert.Description>
-				</Alert.Content>
-			</Alert>
+			<ErrorAlert isRetrying={ isRetrying } message={ message } title={ "No se pudo cargar el plan alimenticio" } onRetryAction={ onRetryAction }/>
 		</>
 	);
 }

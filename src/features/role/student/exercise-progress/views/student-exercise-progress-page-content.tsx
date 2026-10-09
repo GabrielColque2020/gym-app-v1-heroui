@@ -62,6 +62,8 @@ export default function StudentExerciseProgressPageContent( { exerciseId, routin
 						exercises={ exercises }
 						isError={ exercisesQuery.isError }
 						isLoading={ exercisesQuery.isLoading }
+						isRetrying={ exercisesQuery.isFetching }
+						onRetryAction={ () => void exercisesQuery.refetch() }
 						progress={ progressQuery }
 						selectedExerciseId={ selectedExerciseId }
 						onSelectAction={ ( nextExerciseId ) => {

@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback } from "react";
-import { Alert, Button, Card } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
 import { RotateCw } from "lucide-react";
 
-import { PageBreadcrumbs, PageHeader } from "@/components/common";
+import { ErrorAlert, PageBreadcrumbs, PageHeader } from "@/components/common";
 import { TableSkeleton } from "@/components/common/skeletons";
 import { StudentsContentDesktop } from "@/features/students/components/desktop/students-content-desktop";
 import { StudentsContentMobile } from "@/features/students/components/mobile/students-content-mobile";
@@ -47,16 +47,16 @@ export default function CoachStudentsPageContent() {
 		return (
 			<div className={ "flex flex-col gap-4" }>
 				<PageBreadcrumbs
-					backHref={ "/" }
+					backHref={ "/coach/dashboard" }
 					backLabel={ "Volver al inicio" }
 					crumbs={ breadcrumbs }
 				/>
-				<Alert className={ "border border-danger/20" } status={ "danger" }>
-					<Alert.Content>
-						<Alert.Title>Error al cargar estudiantes</Alert.Title>
-						<Alert.Description>{ error.message }</Alert.Description>
-					</Alert.Content>
-				</Alert>
+				<ErrorAlert
+					isRetrying={ isFetching }
+					message={ error.message }
+					title={ "Error al cargar estudiantes" }
+					onRetryAction={ () => void refetch() }
+				/>
 			</div>
 		);
 	}
@@ -64,7 +64,7 @@ export default function CoachStudentsPageContent() {
 	return (
 		<div className={ "flex flex-col gap-4" }>
 			<PageBreadcrumbs
-				backHref={ "/" }
+				backHref={ "/coach/dashboard" }
 				backLabel={ "Volver al inicio" }
 				crumbs={ breadcrumbs }
 			/>

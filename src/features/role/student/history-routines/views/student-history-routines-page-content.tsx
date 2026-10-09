@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Alert } from "@heroui/react";
 
-import { PageBreadcrumbs } from "@/components/common";
+import { ErrorAlert, PageBreadcrumbs } from "@/components/common";
 import { TableSkeleton } from "@/components/common/skeletons";
 import { HistoryRoutinesReportsIndex } from "@/features/history-routines/components/shared/history-routines-reports-index";
 import { buildHistoryRoutinesReportPdfUrl } from "@/features/history-routines/services/history-routines-report-pdf-url";
@@ -71,12 +71,12 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 			) : null }
 
 			{ isError ? (
-				<Alert className={ "border border-danger/20" } status={ "danger" }>
-					<Alert.Content>
-						<Alert.Title>Error al cargar historial</Alert.Title>
-						<Alert.Description>{ error.message }</Alert.Description>
-					</Alert.Content>
-				</Alert>
+				<ErrorAlert
+					isRetrying={ isFetching }
+					message={ error.message }
+					title={ "Error al cargar historial" }
+					onRetryAction={ () => void refetch() }
+				/>
 			) : null }
 
 			{ downloadError ? (

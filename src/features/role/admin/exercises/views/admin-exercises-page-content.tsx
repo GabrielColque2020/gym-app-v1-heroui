@@ -6,7 +6,7 @@ import { Button, Card, Chip, Label, ListBox, SearchField, Select } from "@heroui
 import { useMemo } from "react";
 import { CopyX, RotateCw } from "lucide-react";
 
-import { ListPagination, PageBreadcrumbs, PageHeader } from "@/components/common";
+import { ErrorAlert, ListPagination, PageBreadcrumbs, PageHeader } from "@/components/common";
 import { MediaPreviewThumbnail } from "@/components/common/media-preview-thumbnail";
 import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 import { useAdminExerciseGlobals } from "@/features/role/admin/exercises/hooks/use-admin-exercise-globals";
@@ -116,8 +116,12 @@ export default function AdminExercisesPageContent() {
 					backLabel={ "Volver al inicio" }
 					crumbs={ breadcrumbs }
 				/>
-				<Card className={ "border border-danger/20 bg-surface" } variant={ "default" }><Card.Content
-					className={ "p-4 text-sm text-danger" }>{ error?.message ?? "No pudimos cargar el catálogo global." }</Card.Content></Card>
+				<ErrorAlert
+					isRetrying={ isFetching }
+					message={ error?.message ?? "No pudimos cargar el catálogo global." }
+					title={ "No se pudo cargar el catálogo" }
+					onRetryAction={ () => void refetch() }
+				/>
 			</div>
 		);
 	}

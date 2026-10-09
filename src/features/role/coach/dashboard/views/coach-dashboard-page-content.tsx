@@ -31,7 +31,7 @@ export default function CoachDashboardPageContent() {
 	}
 
 	if (isError || !data) {
-		return <CoachDashboardErrorState message={ error?.message ?? "No pudimos cargar el resumen." }/>;
+		return <CoachDashboardErrorState isRetrying={ isFetching } message={ error?.message ?? "No pudimos cargar el resumen." } onRetryAction={ () => void refetch() }/>;
 	}
 
 	return (

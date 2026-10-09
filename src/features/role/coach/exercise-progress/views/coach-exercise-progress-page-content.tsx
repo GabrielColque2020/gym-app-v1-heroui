@@ -64,6 +64,8 @@ function CoachExerciseProgressPageContentLoaded( { exerciseId, studentId }: { ex
 								exercises={ exercises }
 								isError={ exercisesQuery.isError }
 								isLoading={ exercisesQuery.isLoading }
+								isRetrying={ exercisesQuery.isFetching }
+								onRetryAction={ () => void exercisesQuery.refetch() }
 								progress={ progressQuery }
 								selectedExerciseId={ selectedExerciseId }
 								onSelectAction={ ( nextExerciseId ) => {

@@ -81,7 +81,7 @@ export default function CoachTrainingRoutinesPageContent( {
 						crumbs={ breadcrumbs }
 					/>
 				</div>
-				<CoachTrainingRoutinesErrorState message={ error.message }/>
+				<CoachTrainingRoutinesErrorState isRetrying={ isFetching } message={ error.message } onRetryAction={ () => void refetch() }/>
 			</>
 		);
 	}

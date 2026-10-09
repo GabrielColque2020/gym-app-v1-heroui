@@ -35,8 +35,10 @@ medida que se hace.
 
 ## Prioridad media
 
-- [ ] Agregar `error.tsx` y "Reintentar" en todas las pantallas de error. Para
-  estudiante y admin las consultas no se refrescan solas (`constants/query.ts`).
+- [x] `error.tsx` (en la app y en la raíz) y `global-error.tsx` con "Reintentar" e
+  "Ir al inicio". "Reintentar" en todas las pantallas de error (`ErrorAlert`), con
+  los errores de red en español. Las consultas que fallaron se vuelven a pedir
+  solas al volver la conexión (`refetchOnReconnect`).
 - [ ] Formularios: llevar al primer campo con error al tocar "Crear" (en el
   teléfono el error queda fuera de la vista), explicar por qué el botón está
   desactivado, y preguntar antes de cerrar un panel con cambios sin guardar.

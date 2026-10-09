@@ -73,7 +73,7 @@ function CoachHistoryRoutinesPageContentLoaded( { studentId }: { studentId: stri
 			{ isLoading ? <CoachHistoryRoutinesLoadingState/> : null }
 
 			{ isError ? (
-				<CoachHistoryRoutinesErrorState message={ error?.message ?? "Error al cargar historial" }/>
+				<CoachHistoryRoutinesErrorState isRetrying={ isFetching } message={ error?.message ?? "Error al cargar historial" } onRetryAction={ () => void refetch() }/>
 			) : null }
 
 			{ downloadError ? (
