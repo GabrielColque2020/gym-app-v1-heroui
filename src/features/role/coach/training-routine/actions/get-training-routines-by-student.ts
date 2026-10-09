@@ -27,8 +27,9 @@ export async function getTrainingRoutinesByStudentAction( {
 			select: {
 				id: true,
 			},
+			// Tambien un estudiante inactivo: el entrenador ve su rutina sin
+			// reactivarlo, que le devolveria el acceso a la app.
 			where: {
-				active: true,
 				coachId: session.sub,
 				id: studentId,
 				role: "STUDENT",
@@ -36,7 +37,7 @@ export async function getTrainingRoutinesByStudentAction( {
 		} );
 
 		if (!student) {
-			throw new Error( "No se encontró un estudiante activo para consultar rutinas." );
+			throw new Error( "No se encontró el estudiante para consultar sus rutinas." );
 		}
 
 		return await getTrainingRoutinesByStudentBase( {

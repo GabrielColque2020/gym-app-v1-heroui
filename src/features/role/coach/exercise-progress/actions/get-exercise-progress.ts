@@ -22,8 +22,8 @@ async function findOwnStudent( studentId: string ) {
 			id: true,
 			name: true,
 		},
+		// Tambien un estudiante inactivo: su progreso sigue siendo del entrenador.
 		where: {
-			active: true,
 			coachId: session.sub,
 			id: studentId.trim(),
 			role: "STUDENT",

@@ -58,8 +58,8 @@ async function assertCoachStudent( studentId: string, coachId: string ) {
 		select: {
 			id: true,
 		},
+		// Tambien un estudiante inactivo: el entrenador puede dejarle el plan listo.
 		where: {
-			active: true,
 			coachId,
 			id: studentId,
 			role: "STUDENT",

@@ -54,8 +54,8 @@ export async function getHistoryRoutinesReportsByStudentBase( {
 	const student = await prisma.user.findFirst( {
 		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 		select: historyRoutineReportStudentSelect,
+		// Sin filtrar por activo: ver `history-routines-by-student`.
 		where: {
-			active: true,
 			id: studentId,
 			role: "STUDENT",
 			...studentWhere,

@@ -29,16 +29,12 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 			cell: ( student ) => (
 				<div className={ "flex min-w-0 flex-col" }>
 					{ /* El nombre abre la ficha: la columna de acciones puede quedar fuera de vista. */ }
-					{ student.active ? (
-						<Link
-							className={ "truncate font-medium text-foreground underline-offset-2 hover:text-accent hover:underline" }
-							href={ buildStudentTrainingRoutineHref( student.id ) }
-						>
-							{ student.name }
-						</Link>
-					) : (
-						<span className={ "truncate font-medium text-foreground" }>{ student.name }</span>
-					) }
+					<Link
+						className={ "truncate font-medium text-foreground underline-offset-2 hover:text-accent hover:underline" }
+						href={ buildStudentTrainingRoutineHref( student.id ) }
+					>
+						{ student.name }
+					</Link>
 					<span className={ "truncate text-xs text-muted" }>
 						{ student.DescriptionStudent?.objective?.trim() || "Sin objetivo cargado" }
 					</span>

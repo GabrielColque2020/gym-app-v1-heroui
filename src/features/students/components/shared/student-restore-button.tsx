@@ -13,9 +13,8 @@ type StudentRestoreButtonProps = {
 	student: StudentListItem;
 };
 
-// Para un estudiante inactivo, lo unico que se puede hacer con el es volver a
-// activarlo: ocupa el lugar de "Abrir", que no existe para un inactivo. Es de un
-// toque, sin confirmar, porque no le saca nada a nadie.
+// Vuelve a activar a un estudiante inactivo. Es de un toque, sin confirmar,
+// porque no le saca nada a nadie.
 export function StudentRestoreButton( { showLabel = false, student }: StudentRestoreButtonProps ) {
 	const { changeStatus, isPending } = useStudentStatusAction( { student } );
 

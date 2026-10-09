@@ -24,7 +24,7 @@ export async function getHistoryRoutinesReportsByStudentAction( {
 
 		return getHistoryRoutinesReportsByStudentBase( {
 			studentId,
-			studentNotFoundMessage: "No se encontró un estudiante activo para consultar su historial.",
+			studentNotFoundMessage: "No se encontró el estudiante para consultar su historial.",
 			studentWhere: {
 				coachId: session.sub,
 			},

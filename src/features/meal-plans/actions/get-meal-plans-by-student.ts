@@ -43,9 +43,9 @@ function assertStudentId( studentId: string ) {
 async function assertStudentForSession( studentId: string, coachId: string, role: "COACH" | "STUDENT" ) {
 	const student = await prisma.user.findFirst( {
 		select: mealPlanStudentSelect,
+		// El entrenador tambien ve el plan de un estudiante inactivo.
 		where: role === "COACH"
 			? {
-				active: true,
 				coachId,
 				id: studentId,
 				role: "STUDENT",
@@ -60,7 +60,7 @@ async function assertStudentForSession( studentId: string, coachId: string, role
 	if (!student) {
 		throw new Error(
 			role === "COACH"
-				? "No se encontró un estudiante activo para consultar sus planes alimenticios."
+				? "No se encontró el estudiante para consultar sus planes alimenticios."
 				: "No se encontró un estudiante activo para consultar tus planes alimenticios.",
 		);
 	}

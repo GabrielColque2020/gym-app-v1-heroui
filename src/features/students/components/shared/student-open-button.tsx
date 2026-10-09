@@ -13,12 +13,10 @@ type StudentOpenButtonProps = {
 	student: StudentListItem;
 };
 
-// Entrada a la ficha del estudiante (rutina, plan e historial). Solo para
-// activos: esas pantallas no cargan a un estudiante inactivo.
+// Entrada a la ficha del estudiante (rutina, plan e historial). Tambien para un
+// inactivo: se ve su historial sin reactivarlo.
 export function StudentOpenButton( { className, student }: StudentOpenButtonProps ) {
 	const router = useRouter();
-
-	if (!student.active) return null;
 
 	return (
 		<Button

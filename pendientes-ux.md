@@ -47,7 +47,9 @@ medida que se hace.
 - [x] Ficha del estudiante: arriba de las pestañas (rutina, plan, historial,
   progreso) se ven objetivo, peso, altura, edad y observaciones, con "Editar
   datos" ahí mismo (`coach-student-summary.tsx`).
-- [ ] Poder abrir un estudiante inactivo para ver su historial sin reactivarlo.
+- [x] Un estudiante inactivo se abre como cualquier otro: rutina, plan,
+  historial y progreso, con un aviso de que no puede entrar a la app y
+  "Restaurar" a mano. El entrenador le puede dejar rutina y plan listos.
 - [ ] Guardar filtros y página de las listas en la URL. Subir de 5 la cantidad de
   estudiantes por página.
 - [ ] Calcular el mes actual con la hora de Argentina y no con la del servidor

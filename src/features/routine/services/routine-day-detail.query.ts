@@ -133,7 +133,9 @@ export function buildRoutineDayDetailWhere( {
 		trainingRoutineWeek: {
 			trainingRoutineMonth: {
 				student: {
-					active: true,
+					// El entrenador abre tambien los dias de un estudiante inactivo; el
+					// estudiante, solo con su cuenta activa.
+					active: coachId ? undefined : true,
 					coachId: coachId ?? undefined,
 					id: studentId || undefined,
 					role: "STUDENT",

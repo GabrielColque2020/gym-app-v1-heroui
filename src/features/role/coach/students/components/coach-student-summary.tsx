@@ -3,10 +3,11 @@
 import { useState } from "react";
 
 import { Button, Card, Chip } from "@heroui/react";
-import { PencilLine, Target } from "lucide-react";
+import { PencilLine, Target, UserX } from "lucide-react";
 
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
+import { StudentRestoreButton } from "@/features/students/components/shared/student-restore-button";
 import { useStudents } from "@/features/students/hooks/use-students";
 
 // Mas que esto, las observaciones se muestran cortadas con "Ver todo".
@@ -58,6 +59,20 @@ export function CoachStudentSummary( { studentId }: { studentId: string } ) {
 
 	return (
 		<Card className={ "border border-border" } variant={ "default" }>
+			{ /* Se puede abrir la ficha de un inactivo para ver su historial: que se
+			     sepa que no esta usando la app, y como devolverle el acceso. */ }
+			{ student.active ? null : (
+				<div className={ "flex flex-col gap-2 border-b border-border bg-warning/10 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4" } role={ "status" }>
+					<p className={ "flex items-start gap-2 text-sm text-foreground" }>
+						<UserX className={ "mt-0.5 size-4 shrink-0 text-warning" }/>
+						<span>
+							<span className={ "font-semibold" }>Inactivo.</span>{ " " }
+							No puede entrar a la app. Lo que cargues queda guardado para cuando lo restaures.
+						</span>
+					</p>
+					<StudentRestoreButton showLabel student={ student }/>
+				</div>
+			) }
 			<Card.Content className={ "flex flex-col gap-3 p-3 sm:flex-row sm:items-start sm:justify-between sm:p-4" }>
 				<div className={ "min-w-0 flex-1 space-y-2" }>
 					{ isEmpty ? (

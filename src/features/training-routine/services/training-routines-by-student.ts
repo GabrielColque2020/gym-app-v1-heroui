@@ -147,7 +147,9 @@ export async function getTrainingRoutinesByStudentBase( {
 	const student = await prisma.user.findFirst( {
 		select: trainingRoutineStudentSelect,
 		where: {
-			active: true,
+			// El entrenador ve tambien la rutina de un estudiante inactivo; el
+			// estudiante, solo con su cuenta activa.
+			active: coachId ? undefined : true,
 			coachId: coachId ?? undefined,
 			id: studentId,
 			role: "STUDENT",
@@ -155,7 +157,7 @@ export async function getTrainingRoutinesByStudentBase( {
 	} ) as TrainingRoutineStudent | null;
 
 	if (!student) {
-		throw new Error( "No se encontró un estudiante activo para consultar rutinas." );
+		throw new Error( "No se encontró el estudiante para consultar sus rutinas." );
 	}
 
 	const routineMonth = await prisma.trainingRoutineMonth.findFirst( {

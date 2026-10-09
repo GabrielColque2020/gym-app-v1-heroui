@@ -31,8 +31,8 @@ async function assertCoachStudent( studentId: string, coachId: string ) {
 		select: {
 			id: true,
 		},
+		// Tambien un estudiante inactivo: el entrenador le puede dejar el plan listo.
 		where: {
-			active: true,
 			coachId,
 			id: studentId,
 			role: "STUDENT",
@@ -40,7 +40,7 @@ async function assertCoachStudent( studentId: string, coachId: string ) {
 	} );
 
 	if (!student) {
-		throw new Error( "No se encontró un estudiante activo." );
+		throw new Error( "No se encontró el estudiante." );
 	}
 }
 

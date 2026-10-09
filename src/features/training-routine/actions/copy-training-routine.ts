@@ -24,15 +24,15 @@ async function assertStudentExists( studentId: string, coachId: string ) {
 			id: true,
 		},
 		where: {
-			active: true,
 			coachId,
 			id: studentId,
 			role: "STUDENT",
 		},
 	} );
 
+	// Tambien un estudiante inactivo: el entrenador le puede dejar la rutina lista.
 	if (!student) {
-		throw new Error( "No se encontró un estudiante activo para copiar rutinas." );
+		throw new Error( "No se encontró el estudiante para copiarle la rutina." );
 	}
 }
 

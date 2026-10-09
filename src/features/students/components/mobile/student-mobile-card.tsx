@@ -42,19 +42,15 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 
 	return (
 		<div className={ "flex items-center gap-1 rounded-2xl border border-border/70 bg-surface-secondary py-2 pl-3 pr-1" }>
-			{ /* La ficha solo carga a un estudiante activo: el inactivo no es un enlace. */ }
-			{ student.active ? (
-				<Link
-					aria-label={ `Abrir la ficha de ${ student.name }` }
-					className={ "flex min-w-0 flex-1 items-center gap-3" }
-					href={ buildStudentTrainingRoutineHref( student.id ) }
-				>
-					{ details }
-					<ChevronRight className={ "size-4 shrink-0 text-muted" }/>
-				</Link>
-			) : (
-				<div className={ "flex min-w-0 flex-1 items-center gap-3 opacity-70" }>{ details }</div>
-			) }
+			{ /* Tambien el inactivo abre su ficha: se ve su historial sin reactivarlo. */ }
+			<Link
+				aria-label={ `Abrir la ficha de ${ student.name }` }
+				className={ "flex min-w-0 flex-1 items-center gap-3" }
+				href={ buildStudentTrainingRoutineHref( student.id ) }
+			>
+				{ details }
+				<ChevronRight className={ "size-4 shrink-0 text-muted" }/>
+			</Link>
 			<StudentRestoreButton student={ student }/>
 			<StudentEditButton student={ student }/>
 		</div>

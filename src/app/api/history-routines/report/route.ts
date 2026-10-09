@@ -52,7 +52,7 @@ export async function GET(request: Request) {
             month,
             studentId,
             studentNotFoundMessage: session.role === "COACH"
-                ? "No se encontró un estudiante activo para consultar su historial."
+                ? "No se encontró el estudiante para consultar su historial."
                 : "No se encontró un historial activo para el estudiante autenticado.",
             studentWhere: session.role === "COACH" ? { coachId: session.sub } : undefined,
             year,

@@ -109,8 +109,9 @@ export async function getHistoryRoutinesByStudentBase( {
 	const student = await prisma.user.findFirst( {
 		cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 		select: historyRoutineStudentSelect,
+		// Sin filtrar por activo: el entrenador puede ver el historial de un
+		// estudiante inactivo, y uno inactivo no llega a pedir el suyo.
 		where: {
-			active: true,
 			id: studentId,
 			role: "STUDENT",
 			...studentWhere,
