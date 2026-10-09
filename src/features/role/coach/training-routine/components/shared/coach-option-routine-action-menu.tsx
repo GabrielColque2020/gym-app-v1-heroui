@@ -1,7 +1,8 @@
 "use client";
 
-import { Button, Dropdown, Header, Label } from "@heroui/react";
-import { BookmarkCheck, BookmarkPlus, Copy, Download, MoreVertical, RotateCw, Trash2 } from "lucide-react";
+import { Dropdown, Header, Label } from "@heroui/react";
+import { BookmarkCheck, BookmarkPlus, Copy, Download, RotateCw, Trash2 } from "lucide-react";
+import { MoreActionsButton } from "@/features/shared/components/more-actions-button";
 
 type CoachDeleteRoutineActionMenuProps = {
 	onDeleteAction: () => void;
@@ -22,9 +23,11 @@ export function CoachOptionRoutineActionMenu( {
 											  }: CoachDeleteRoutineActionMenuProps ) {
 	return (
 		<Dropdown>
-			<Button isIconOnly aria-label={ "Más opciones de la rutina" } variant={ "secondary" }>
-				<MoreVertical/>
-			</Button>
+			<MoreActionsButton
+				ariaLabel={ "Más opciones de la rutina" }
+				className={ "h-10 px-3 text-sm" }
+				variant={ "secondary" }
+			/>
 			<Dropdown.Popover>
 				<Dropdown.Menu
 					onAction={ ( key ) => {

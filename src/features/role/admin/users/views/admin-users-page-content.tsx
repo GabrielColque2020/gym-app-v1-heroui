@@ -104,7 +104,7 @@ export default function AdminUsersPageContent( { initialCreate = null, initialFi
 			align: "end",
 			header: "Acciones",
 			id: "actions",
-			minWidth: 120,
+			minWidth: 160,
 			cell: ( user ) => <AdminUserRowActions user={ user }/>,
 		},
 	], [] );

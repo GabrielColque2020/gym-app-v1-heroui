@@ -24,12 +24,12 @@ export function StudentFilters( {
 	const isMobile = layout === "mobile";
 	const fieldNamePrefix = isMobile ? "mobile-" : "";
 
-	// En el telefono los filtros van en dos renglones cortos: el buscador y el
-	// estado como botones. Con etiquetas, un desplegable y "Limpiar" ocupaban
-	// media pantalla antes del primer estudiante.
+	// En el telefono los filtros van en dos renglones cortos, sin etiquetas ni
+	// "Limpiar": el buscador y el estado. Con todo eso ocupaban media pantalla
+	// antes del primer estudiante.
 	if (isMobile) {
 		const statusOptions = [
-			{ id: ALL_STATUSES, label: "Todos" },
+			{ id: ALL_STATUSES, label: "Todos los estados" },
 			{ id: ACTIVE_STATUS, label: "Activos" },
 			{ id: INACTIVE_STATUS, label: "Inactivos" },
 		] as const;
@@ -49,24 +49,30 @@ export function StudentFilters( {
 						<SearchField.ClearButton/>
 					</SearchField.Group>
 				</SearchField>
-				<div aria-label={ "Estado" } className={ "grid grid-cols-3 gap-2" } role={ "group" }>
-					{ statusOptions.map( ( option ) => {
-						const isSelected = statusFilter === option.id;
-
-						return (
-							<Button
-								key={ option.id }
-								aria-pressed={ isSelected }
-								className={ isSelected ? "border border-accent bg-accent/10 text-foreground" : "border border-border text-muted" }
-								size={ "sm" }
-								variant={ "ghost" }
-								onPress={ () => onStatusFilterChange( option.id as StudentStatusFilter ) }
-							>
-								{ option.label }
-							</Button>
-						);
-					} ) }
-				</div>
+				{ /* Un solo desplegable, como en escritorio y como los filtros de
+				     ejercicios: tres botones sueltos no se leian como un filtro. */ }
+				<Select
+					aria-label={ "Filtrar por estado" }
+					className={ "min-w-0" }
+					name={ `${ fieldNamePrefix }student-status-filter` }
+					value={ statusFilter }
+					onChange={ ( key ) => onStatusFilterChange( ( key ?? ALL_STATUSES ) as StudentStatusFilter ) }
+				>
+					<Select.Trigger className={ "w-full min-w-0 border border-border" }>
+						<Select.Value/>
+						<Select.Indicator/>
+					</Select.Trigger>
+					<Select.Popover>
+						<ListBox>
+							{ statusOptions.map( ( option ) => (
+								<ListBox.Item key={ option.id } id={ option.id } textValue={ option.label }>
+									{ option.label }
+									<ListBox.ItemIndicator/>
+								</ListBox.Item>
+							) ) }
+						</ListBox>
+					</Select.Popover>
+				</Select>
 			</div>
 		);
 	}

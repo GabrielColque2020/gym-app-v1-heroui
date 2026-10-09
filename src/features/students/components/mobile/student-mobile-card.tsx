@@ -7,14 +7,15 @@ import { Chip } from "@heroui/react";
 import { ChevronRight, UserRound } from "lucide-react";
 
 import { buildStudentTrainingRoutineHref } from "@/features/role/coach/dashboard/services/coach-dashboard-links";
-import { StudentActionMenu } from "@/features/students/components/shared/student-action-menu";
+import { StudentEditButton } from "@/features/students/components/shared/student-edit-button";
+import { StudentRestoreButton } from "@/features/students/components/shared/student-restore-button";
 
 type StudentMobileCardProps = {
 	student: StudentListItem;
 };
 
 // Una fila por estudiante: asi entran varios en la pantalla del telefono. Tocar
-// los datos abre su ficha (rutina, plan e historial); el menu queda aparte.
+// los datos abre su ficha (rutina, plan e historial); el lapiz edita sus datos.
 export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 	const details = (
 		<>
@@ -54,7 +55,8 @@ export function StudentMobileCard( { student }: StudentMobileCardProps ) {
 			) : (
 				<div className={ "flex min-w-0 flex-1 items-center gap-3 opacity-70" }>{ details }</div>
 			) }
-			<StudentActionMenu student={ student }/>
+			<StudentRestoreButton student={ student }/>
+			<StudentEditButton student={ student }/>
 		</div>
 	);
 }

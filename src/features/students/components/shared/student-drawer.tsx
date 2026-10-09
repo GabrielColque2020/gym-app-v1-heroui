@@ -4,6 +4,7 @@ import React from "react";
 
 import { Alert, Button, Description, Drawer, Spinner } from "@heroui/react";
 import { CheckCircle2, PencilLine, Plus } from "lucide-react";
+import { StudentDrawerDeactivateSection } from "@/features/students/components/shared/student-drawer-deactivate-section";
 import { StudentDrawerDetailsSection } from "@/features/students/components/shared/student-drawer-details-section";
 import { StudentDrawerProfileSection } from "@/features/students/components/shared/student-drawer-profile-section";
 import { StudentDrawerTrigger } from "@/features/students/components/shared/student-drawer-trigger";
@@ -94,6 +95,13 @@ export function StudentDrawer( props: StudentFormDrawerProps ) {
 							updateValue={ updateValue }
 							values={ values }
 						/>
+
+						{ props.mode === "edit" ? (
+							<StudentDrawerDeactivateSection
+								student={ props.student }
+								onDeactivatedAction={ () => handleOpenChange( false ) }
+							/>
+						) : null }
 					</Drawer.Body>
 
 					<Drawer.Footer className={ "border-default-100 shrink-0 justify-end gap-2 border-t pt-4" }>

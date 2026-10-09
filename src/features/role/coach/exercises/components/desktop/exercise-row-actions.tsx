@@ -1,8 +1,7 @@
 "use client";
 
-import type { Key } from "@heroui/react";
-import { Button, Dropdown, Header, Label, Spinner, toast } from "@heroui/react";
-import { CheckCircle2, CircleSlash, EllipsisVertical, Eye, PencilLine, Trash2 } from "lucide-react";
+import { Button, Spinner, toast } from "@heroui/react";
+import { Eye, PencilLine, RotateCcw } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -13,51 +12,37 @@ import { ExerciseDrawer } from "@/features/role/coach/exercises/components/share
 import { useDeleteCoachExercise } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 import { useCoachExerciseStatusAction } from "@/features/role/coach/exercises/hooks/use-coach-exercise-status-action";
 import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
-import { DeactivateConfirmModal } from "@/features/shared/components/deactivate-confirm-modal";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 
 type ExerciseRowActionsProps = {
 	exercise: CoachExerciseListItem;
+	// En la tarjeta del telefono tocar la tarjeta ya abre la ficha: no hace falta
+	// "Ver", y "Editar" va solo con el lapiz para no sacarle lugar al nombre.
+	isCompact?: boolean;
+	// La tarjeta abre la ficha desde afuera (al tocarla): maneja ella el estado.
+	isDetailOpen?: boolean;
+	onDetailOpenChangeAction?: ( isOpen: boolean ) => void;
 };
 
+// Las acciones de un ejercicio a la vista, cada una con su nombre: "Ver" y
+// "Editar", y "Restaurar" si esta inactivo. Desactivar y eliminar estan al final
+// del formulario de edicion: antes compartian un menu de tres puntos con
+// "Editar", lo mas usado al lado de lo mas grave.
 export function ExerciseRowActions( {
 	exercise,
+	isCompact = false,
+	isDetailOpen: controlledIsDetailOpen,
+	onDetailOpenChangeAction,
 }: ExerciseRowActionsProps ) {
-	const [ isDetailOpen, setIsDetailOpen ] = useState( false );
+	const [ internalIsDetailOpen, setInternalIsDetailOpen ] = useState( false );
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
-	const [ isDeactivateOpen, setIsDeactivateOpen ] = useState( false );
 	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
-	const { changeStatus, isPending, statusLabel } = useCoachExerciseStatusAction( { exercise } );
+	const { changeStatus, isPending } = useCoachExerciseStatusAction( { exercise } );
 	const deleteCoachExercise = useDeleteCoachExercise();
 	const placement = useResponsiveDrawerPlacement();
 	const canDeleteExercise = exercise.sourceType === "coach" && Boolean( exercise.coachExerciseId );
-
-	function handleAction( key: Key ) {
-		if (key === "view") {
-			setIsDetailOpen( true );
-			return;
-		}
-
-		if (key === "edit") {
-			setIsEditOpen( true );
-			return;
-		}
-
-		if (key === "status") {
-			// Desactivar pide confirmar; restaurar no, porque no le saca nada a nadie.
-			if (exercise.active) {
-				setIsDeactivateOpen( true );
-				return;
-			}
-
-			void changeStatus();
-			return;
-		}
-
-		if (key === "delete" && canDeleteExercise) {
-			setIsDeleteOpen( true );
-		}
-	}
+	const isDetailOpen = controlledIsDetailOpen ?? internalIsDetailOpen;
+	const setIsDetailOpen = onDetailOpenChangeAction ?? setInternalIsDetailOpen;
 
 	async function handleConfirmDelete() {
 		try {
@@ -75,57 +60,45 @@ export function ExerciseRowActions( {
 
 	return (
 		<>
-			<Dropdown>
-				<div className={ "flex items-center justify-start" }>
+			<div className={ "flex shrink-0 items-center gap-2" }>
+				{ isCompact ? null : (
 					<Button
-						isIconOnly
-						aria-label={ `Opciones de ${ exercise.name }` }
-						className={ "size-8 shrink-0 text-foreground" }
+						aria-label={ `Ver ${ exercise.name }` }
+						className={ "shrink-0" }
+						size={ "sm" }
+						variant={ "secondary" }
+						onPress={ () => setIsDetailOpen( true ) }
+					>
+						<Eye className={ "size-4" }/>
+						Ver
+					</Button>
+				) }
+				{ /* Restaurar es de un toque, sin confirmar: no le saca nada a nadie. */ }
+				{ exercise.active ? null : (
+					<Button
+						aria-label={ `Restaurar ${ exercise.name }` }
+						className={ "shrink-0" }
 						isDisabled={ isPending }
 						size={ "sm" }
-						variant={ "ghost" }
+						variant={ "secondary" }
+						onPress={ () => void changeStatus() }
 					>
-						{ isPending ? (
-							<Spinner color={ "current" } size={ "sm" }/>
-						) : (
-							<EllipsisVertical className={ "size-4" }/>
-						) }
+						{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <RotateCcw className={ "size-4" }/> }
+						Restaurar
 					</Button>
-				</div>
-				<Dropdown.Popover placement={ "bottom end" }>
-					<Dropdown.Menu onAction={ handleAction }>
-						<Header>Opciones</Header>
-						<Dropdown.Item id={ "view" } textValue={ "Ver ejercicio" }>
-							<Eye className={ "size-4 shrink-0" }/>
-							<Label>Ver ejercicio</Label>
-						</Dropdown.Item>
-						<Dropdown.Item id={ "edit" } textValue={ "Editar" }>
-							<PencilLine className={ "size-4 shrink-0 text-foreground" }/>
-							<Label>Editar</Label>
-						</Dropdown.Item>
-						<Dropdown.Item
-							id={ "status" }
-							textValue={ statusLabel }
-							variant={ exercise.active ? "danger" : "default" }
-						>
-							{ /* Desactivar va en rojo porque le corta el acceso a alguien o saca
-							     un ejercicio de uso. El tacho queda solo para eliminar. */ }
-							{ exercise.active ? (
-								<CircleSlash className={ "size-4 shrink-0 text-danger" }/>
-							) : (
-								<CheckCircle2 className={ "size-4 shrink-0 text-foreground" }/>
-							) }
-							<Label className={ exercise.active ? "text-danger" : undefined }>{ statusLabel }</Label>
-						</Dropdown.Item>
-						{ canDeleteExercise ? (
-							<Dropdown.Item id={ "delete" } textValue={ "Eliminar permanentemente" } variant={ "danger" }>
-								<Trash2 className={ "size-4 shrink-0 text-danger" }/>
-								<Label className={ "text-danger" }>Eliminar permanentemente</Label>
-							</Dropdown.Item>
-						) : null }
-					</Dropdown.Menu>
-				</Dropdown.Popover>
-			</Dropdown>
+				) }
+				<Button
+					aria-label={ `Editar ${ exercise.name }` }
+					className={ isCompact ? "size-9 shrink-0" : "shrink-0" }
+					isIconOnly={ isCompact }
+					size={ "sm" }
+					variant={ "secondary" }
+					onPress={ () => setIsEditOpen( true ) }
+				>
+					<PencilLine className={ "size-4" }/>
+					{ isCompact ? null : "Editar" }
+				</Button>
+			</div>
 
 			<ExerciseDetailDrawer
 				exercise={ exercise }
@@ -141,16 +114,15 @@ export function ExerciseRowActions( {
 				exercise={ exercise }
 				isOpen={ isEditOpen }
 				mode={ "edit" }
-				placement={ placement }
+				placement={ isCompact ? "bottom" : placement }
 				onOpenChangeAction={ setIsEditOpen }
-			/>
-			<DeactivateConfirmModal
-				description={ "Deja de aparecer al armar rutinas y al elegir variantes. Las rutinas que ya lo tienen lo conservan. Lo podés restaurar cuando quieras." }
-				isOpen={ isDeactivateOpen }
-				isPending={ isPending }
-				title={ `Desactivar ${ exercise.name }` }
-				onConfirmAction={ changeStatus }
-				onOpenChangeAction={ setIsDeactivateOpen }
+				// Eliminar tiene su propia confirmacion: el formulario se cierra y le deja paso.
+				onRequestDeleteAction={ canDeleteExercise
+					? () => {
+						setIsEditOpen( false );
+						setIsDeleteOpen( true );
+					}
+					: undefined }
 			/>
 			{ canDeleteExercise ? (
 				<CoachDeleteExerciseDrawer

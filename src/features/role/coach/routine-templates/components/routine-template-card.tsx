@@ -3,14 +3,15 @@
 import type { RoutineTemplateListItem } from "@/features/training-routine/services/routine-template";
 
 import Link from "next/link";
-import { Button, Dropdown, Label, toast } from "@heroui/react";
-import { Copy, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { Dropdown, Label, toast } from "@heroui/react";
+import { Copy, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { RoutineTemplateDeleteModal } from "@/features/role/coach/routine-templates/components/routine-template-delete-modal";
 import { RoutineTemplateRenameModal } from "@/features/role/coach/routine-templates/components/routine-template-rename-modal";
 import { buildRoutineTemplateHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
 import { useDuplicateRoutineTemplate } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
+import { MoreActionsButton } from "@/features/shared/components/more-actions-button";
 
 type RoutineTemplateCardProps = {
 	template: RoutineTemplateListItem;
@@ -63,16 +64,10 @@ export function RoutineTemplateCard( { template }: RoutineTemplateCardProps ) {
 				<p className={ "mt-2 text-sm font-medium text-accent" }>Ver y editar</p>
 			</Link>
 			<Dropdown>
-				<Button
-					isIconOnly
-					aria-label={ `Opciones de la plantilla ${ template.name }` }
-					className={ "shrink-0" }
+				<MoreActionsButton
+					ariaLabel={ `Opciones de la plantilla ${ template.name }` }
 					isDisabled={ duplicateTemplate.isPending }
-					size={ "sm" }
-					variant={ "ghost" }
-				>
-					<MoreVertical className={ "size-4" }/>
-				</Button>
+				/>
 				<Dropdown.Popover placement={ "bottom end" }>
 					<Dropdown.Menu
 						onAction={ ( key ) => {

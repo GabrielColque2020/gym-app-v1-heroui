@@ -12,6 +12,7 @@ import { formatBodyPart } from "@/features/exercises/services/exercise-formatter
 import { type CoachExerciseFormValues, createCoachExerciseDefaultValues, mapCategoryToBodyPart, } from "@/features/role/coach/exercises/services/coach-exercise-form";
 import { useSaveCoachExercise } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 
+import { ExerciseDrawerDangerSection } from "./exercise-drawer-danger-section";
 import { ExerciseDrawerFields } from "./exercise-drawer-fields";
 import { ExerciseDrawerTrigger } from "./exercise-drawer-trigger";
 
@@ -33,6 +34,8 @@ type ExerciseFormDrawerProps =
 	| {
 	exercise: CoachExerciseListItem;
 	hideTrigger?: boolean;
+	// Pide eliminar el ejercicio. Sin valor, el formulario no ofrece eliminarlo.
+	onRequestDeleteAction?: () => void;
 	isOpen?: boolean;
 	mode: "edit";
 	onSuccessAction?: ( exercise: ExerciseListItem ) => void;
@@ -250,6 +253,15 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 						isNameInvalid={ isNameInvalid }
 						isFromCatalog={ canShowGlobalMediaPreview }
 						isSaving={ activeMutation.isPending }
+						// Al editar, la casilla "Ejercicio activo" se reemplaza por desactivar
+						// y eliminar, cada uno con su confirmacion.
+						statusSlot={ props.mode === "edit" ? (
+							<ExerciseDrawerDangerSection
+								exercise={ props.exercise }
+								onDeactivatedAction={ () => setIsOpen( false ) }
+								onRequestDeleteAction={ props.onRequestDeleteAction }
+							/>
+						) : undefined }
 						onUploadingChangeAction={ handleUploadingChange }
 						updateValue={ updateValue }
 						values={ values }

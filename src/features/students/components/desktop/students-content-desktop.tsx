@@ -81,7 +81,7 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 			cell: ( student ) => <StudentRowActions student={ student }/>,
 			header: "Acciones",
 			id: "actions",
-			minWidth: 120,
+			minWidth: 190,
 		},
 	], [] );
 	const {

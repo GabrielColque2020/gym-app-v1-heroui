@@ -1,6 +1,6 @@
 "use client";
 
-import type { Key } from "react";
+import type { Key, ReactNode } from "react";
 import { useMemo } from "react";
 import {
 	Checkbox,
@@ -27,6 +27,8 @@ type ExerciseDrawerFieldsProps = {
 	// son los del catalogo hasta que el entrenador suba los suyos.
 	isFromCatalog?: boolean;
 	isSaving?: boolean;
+	// Lo que va al final en lugar de la casilla "Ejercicio activo".
+	statusSlot?: ReactNode;
 	onUploadingChangeAction: ( isUploading: boolean ) => void;
 	updateValue: <Key extends keyof CoachExerciseFormValues>( key: Key, value: CoachExerciseFormValues[ Key ] ) => void;
 	values: CoachExerciseFormValues;
@@ -152,6 +154,7 @@ export function ExerciseDrawerFields( {
 	isNameInvalid,
 	isFromCatalog = false,
 	isSaving = false,
+	statusSlot,
 	onUploadingChangeAction,
 	updateValue,
 	values,
@@ -274,6 +277,7 @@ export function ExerciseDrawerFields( {
 				) : null }
 			</div>
 
+			{ statusSlot !== undefined ? statusSlot : (
 			<div>
 				<Checkbox
 					className={ "flex-1 flex-row" }
@@ -292,6 +296,7 @@ export function ExerciseDrawerFields( {
 				</Description>
 
 			</div>
+			) }
 		</Drawer.Body>
 	);
 }

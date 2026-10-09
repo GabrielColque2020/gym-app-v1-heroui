@@ -228,6 +228,9 @@ export function StudentDrawerProfileSection( {
 				</DatePicker>
 			</div>
 
+			{ /* Solo al crear. Al editar, desactivar tiene su propia seccion al final,
+			     con confirmacion: una casilla lo hacia sin avisar, al guardar. */ }
+			{ isEditMode ? null : (
 			<div>
 				<Checkbox
 					className={ "flex-1 flex-row" }
@@ -245,6 +248,7 @@ export function StudentDrawerProfileSection( {
 					Los estudiantes inactivos se conservan para el historial.
 				</Description>
 			</div>
+			) }
 		</section>
 	);
 }

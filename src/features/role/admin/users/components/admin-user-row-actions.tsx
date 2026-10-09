@@ -4,7 +4,7 @@ import type { Key } from "@heroui/react";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 
 import { Button, Dropdown, Header, Label, Modal, Spinner, toast } from "@heroui/react";
-import { ArrowRightLeft, CheckCircle2, CircleSlash, EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
+import { ArrowRightLeft, CheckCircle2, CircleSlash, PencilLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { AdminDeleteUserDrawer } from "@/features/role/admin/users/components/admin-delete-user-drawer";
@@ -12,6 +12,7 @@ import { AdminReassignStudentsModal } from "@/features/role/admin/users/componen
 import { AdminStudentDrawer } from "@/features/role/admin/users/components/admin-student-drawer";
 import { AdminUserDrawer } from "@/features/role/admin/users/components/admin-user-drawer";
 import { useAdminUsers, useDeleteAdminUser, useToggleUserStatus } from "@/features/role/admin/users/hooks/use-admin-users";
+import { MoreActionsButton } from "@/features/shared/components/more-actions-button";
 
 type AdminUserRowActionsProps = {
 	user: AdminUserListItem;
@@ -36,12 +37,10 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 	const canToggle = !isProtected;
 	const canDelete = user.role === "COACH" || user.role === "STUDENT";
 
-	function handleAction( key: Key ) {
-		if (key === "edit") {
-			setIsEditOpen( true );
-			return;
-		}
+	// Sin nada que mostrar, los tres puntos no aparecen.
+	const hasMenu = studentCount > 0 || canToggle || canDelete;
 
+	function handleAction( key: Key ) {
 		if (key === "toggle") {
 			if (!canToggle) return;
 
@@ -115,22 +114,24 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 
 	return (
 		<>
+			{ /* "Editar" a la vista; en los tres puntos queda lo que se usa poco. */ }
+			<div className={ "flex items-center gap-2" }>
+			<Button
+				aria-label={ `Editar a ${ user.name }` }
+				className={ "shrink-0" }
+				size={ "sm" }
+				variant={ "secondary" }
+				onPress={ () => setIsEditOpen( true ) }
+			>
+				<PencilLine className={ "size-4" }/>
+				Editar
+			</Button>
+			{ hasMenu ? (
 			<Dropdown>
-				<Button
-					isIconOnly
-					aria-label={ `Opciones de ${ user.name }` }
-					className={ "size-8" }
-					variant={ "ghost" }
-				>
-					{ mutation.isPending ? <Spinner color={ "current" } size={ "sm" }/> : <EllipsisVertical className={ "size-4" }/> }
-				</Button>
+				<MoreActionsButton ariaLabel={ `Opciones de ${ user.name }` } isPending={ mutation.isPending }/>
 				<Dropdown.Popover placement={ "bottom end" }>
 					<Dropdown.Menu onAction={ handleAction }>
 						<Header>Opciones</Header>
-						<Dropdown.Item id={ "edit" } textValue={ "Editar usuario" }>
-							<PencilLine className={ "size-4 shrink-0" }/>
-							<Label>Editar</Label>
-						</Dropdown.Item>
 						{ studentCount > 0 ? (
 							<Dropdown.Item id={ "reassign" } textValue={ "Reasignar estudiantes" }>
 								<ArrowRightLeft className={ "size-4 shrink-0" }/>
@@ -156,6 +157,8 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 					</Dropdown.Menu>
 				</Dropdown.Popover>
 			</Dropdown>
+			) : null }
+			</div>
 
 			{ user.role === "STUDENT" ? (
 				<AdminStudentDrawer hideTrigger isOpen={ isEditOpen } mode={ "edit" } student={ user } onOpenChangeAction={ setIsEditOpen }/>

@@ -1,11 +1,12 @@
 "use client";
 
-import { Button, Dropdown, Header, Label } from "@heroui/react";
+import { Dropdown, Header, Label } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { CalendarClock, Dumbbell, MoreVertical, TrendingUp, UtensilsCrossed } from "lucide-react";
+import { CalendarClock, Dumbbell, TrendingUp, UtensilsCrossed } from "lucide-react";
 
 import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary";
 import { buildStudentHistoryHref, buildStudentMealPlanHref, buildStudentProgressHref, buildStudentTrainingRoutineHref, } from "@/features/role/coach/dashboard/services/coach-dashboard-links";
+import { MoreActionsButton } from "@/features/shared/components/more-actions-button";
 
 type CoachDashboardStudentRowActionsProps = {
 	student: CoachDashboardStudentSummary;
@@ -17,13 +18,7 @@ export function CoachDashboardStudentRowActions( { student }: CoachDashboardStud
 	return (
 		<Dropdown>
 			<div className={ "flex items-center justify-end gap-2" }>
-				<Button
-					aria-label={ `Opciones de ${ student.name }` }
-					className={ "size-8 shrink-0 text-foreground" }
-					variant={ "secondary" }
-				>
-					<MoreVertical className={ "size-4" }/>
-				</Button>
+				<MoreActionsButton ariaLabel={ `Opciones de ${ student.name }` } variant={ "secondary" }/>
 			</div>
 			<Dropdown.Popover placement={ "bottom end" }>
 				<Dropdown.Menu onAction={ ( key ) => {
