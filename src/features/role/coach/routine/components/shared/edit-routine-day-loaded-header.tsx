@@ -2,7 +2,7 @@ import { Button, Card, Chip, Spinner } from "@heroui/react";
 
 import { PageBreadcrumbs, PageHeader } from "@/components/common";
 import type { RoutineDaySaveStatus } from "@/features/role/coach/routine/hooks/use-edit-routine-day-loaded-state";
-import { ArrowRight, RotateCw, Save } from "lucide-react";
+import { ArrowRight, RotateCw, Save, WifiOff } from "lucide-react";
 
 type EditRoutineDayLoadedHeaderProps = {
 	backHref: string;
@@ -20,7 +20,9 @@ type EditRoutineDayLoadedHeaderProps = {
 
 const SAVE_STATUS_CHIP = {
 	blocked: { color: "warning", label: "Faltan datos para guardar" },
-	error: { color: "danger", label: "No se pudo guardar" },
+	// Se reintenta solo; "Reintentar" queda para no tener que esperar.
+	error: { color: "danger", label: "No se pudo guardar. Se reintenta solo" },
+	offline: { color: "warning", label: "Sin conexión. Se guarda al volver" },
 	// Todavia no salio el pedido, pero va a salir solo: para el coach ya esta guardando.
 	pending: { color: "accent", label: "Guardando…" },
 	saved: { color: "success", label: "Guardado" },
@@ -63,6 +65,7 @@ export function EditRoutineDayLoadedHeader( {
 						{ showChip ? (
 							<Chip color={ chip.color } role={ "status" } size={ "sm" } variant={ "soft" }>
 								{ saveStatus === "saving" || saveStatus === "pending" ? <Spinner color={ "current" } size={ "sm" }/> : null }
+								{ saveStatus === "offline" ? <WifiOff className={ "size-3" }/> : null }
 								{ chip.label }
 							</Chip>
 						) : null }

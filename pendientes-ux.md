@@ -20,8 +20,11 @@ medida que se hace.
   `middleware.ts` en la raíz que Next no encontraba y nunca corría). Al vencer
   no se borran los borradores y se vuelve a la misma pantalla; si entra otra
   cuenta en el mismo dispositivo, se borran (`claimRoutineDrafts`).
-- [ ] **3. Sin aviso de "sin conexión".** El chip queda en "Guardando…" para
-  siempre o falla sin reintentar. Indicador offline y reintento al volver la red.
+- [x] **3. Sin aviso de "sin conexión".** Franja de "Sin conexión" y "Volvió la
+  conexión" (`offline-banner.tsx`), chip "Sin conexión. Se guarda al volver" en
+  vez de "Guardando…" para siempre, y reintento solo de un guardado que falló
+  (`use-autosave-retry.ts`): al volver la red, al volver a la app y cada 10, 20,
+  40 y 60 segundos. Los errores de red se avisan en español.
 - [ ] **4. Reloj de descanso.** Pedir Wake Lock para que no se apague la pantalla,
   y avisar (vibrar o sonar) aunque se vuelva tarde al descanso terminado.
 - [ ] **5. Eliminar un ejercicio propio borra el progreso de los estudiantes** y lo

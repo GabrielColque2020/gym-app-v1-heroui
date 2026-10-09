@@ -1,12 +1,13 @@
 ﻿"use client";
 
 import { Button, Card, Description, Drawer, Spinner } from "@heroui/react";
-import { Flag, Info } from "lucide-react";
+import { Flag, Info, WifiOff } from "lucide-react";
 
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 import { RoutineSaveDrawerAlerts } from "@/features/role/student/routine/components/shared/routine-save-drawer-alerts";
 import { RoutineSaveDrawerSummaryItem } from "@/features/role/student/routine/components/shared/routine-save-drawer-summary-item";
+import { useIsOnline } from "@/lib/use-is-online";
 
 export type RoutineSaveSummaryItem = {
 	completedSets: number;
@@ -35,7 +36,10 @@ export default function RoutineSaveDrawer( {
 	const placement = useResponsiveDrawerPlacement();
 	const hasCompletedSets = summaryItems.some( ( item ) => item.completedSets > 0 );
 	const hasPendingSets = summaryItems.some( ( item ) => item.completedSets < item.totalSets );
-	const canConfirmSave = hasCompletedSets && !validationError && !isPending;
+	const isOnline = useIsOnline();
+	// Sin conexion no se puede terminar: el pedido quedaria en pausa con el boton
+	// girando. Las series ya cargadas quedan en el telefono.
+	const canConfirmSave = hasCompletedSets && !validationError && !isPending && isOnline;
 
 	return (
 		<FeatureDrawerLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ onOpenChangeAction }>
@@ -53,6 +57,14 @@ export default function RoutineSaveDrawer( {
 				</div>
 			</Drawer.Header>
 			<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
+				{ isOnline ? null : (
+					<div className={ "flex items-start gap-3 rounded-xl border border-warning/20 bg-warning/10 p-4" } role={ "status" }>
+						<WifiOff className={ "mt-0.5 size-4 shrink-0 text-warning" }/>
+						<p className={ "text-sm text-foreground" }>
+							Sin conexión. Lo que cargaste queda en este teléfono: terminá el día cuando vuelva la señal.
+						</p>
+					</div>
+				) }
 				<RoutineSaveDrawerAlerts
 					hasCompletedSets={ hasCompletedSets }
 					hasPendingSets={ hasPendingSets }

@@ -1,6 +1,7 @@
 "use client";
 
-import { getErrorMessage } from "@/lib/action-result";
+import { getErrorMessage, isNetworkError } from "@/lib/action-result";
+import { useAutosaveRetry } from "@/lib/use-autosave-retry";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
@@ -20,7 +21,7 @@ const AUTOSAVE_DELAY_MS = 700;
 // `pending`: hay cambios y se van a guardar solos. `blocked`: hay cambios pero
 // falta algun dato para poder guardarlos. `unsaved`: hay cambios que quedaron de
 // una visita anterior y no se guardan solos; el coach decide guardarlos o descartarlos.
-export type RoutineDaySaveStatus = "blocked" | "error" | "pending" | "saved" | "saving" | "unsaved";
+export type RoutineDaySaveStatus = "blocked" | "error" | "offline" | "pending" | "saved" | "saving" | "unsaved";
 
 function isRequiredRoutineFieldComplete( value: string ) {
 	return value.trim().length > 0;
@@ -129,6 +130,9 @@ export function useEditRoutineDayLoadedState( {
 	// El contenido cuyo guardado automatico fallo: no se reintenta solo, para no
 	// insistir cada segundo con un pedido que vuelve a fallar.
 	const [ failedSignature, setFailedSignature ] = useState<string | null>( null );
+	// El contenido del que ya se aviso que no se pudo guardar: los reintentos
+	// solos no vuelven a avisar lo mismo cada vez.
+	const notifiedFailureRef = useRef<string | null>( null );
 
 	function handleAddExercise(
 		exercise: ExerciseListItem,
@@ -228,9 +232,16 @@ export function useEditRoutineDayLoadedState( {
 			return true;
 		} catch (error) {
 			setFailedSignature( draftSignature );
-			toast.danger( "Error al guardar", {
-				description: getErrorMessage( error, "No se pudieron guardar los cambios del día." ),
-			} );
+
+			// Sin señal el encabezado ya lo dice, y se reintenta solo.
+			const isQuietFailure = silent && ( isNetworkError( error ) || notifiedFailureRef.current === draftSignature );
+
+			if (!isQuietFailure) {
+				notifiedFailureRef.current = draftSignature;
+				toast.danger( "Error al guardar", {
+					description: getErrorMessage( error, "No se pudieron guardar los cambios del día." ),
+				} );
+			}
 
 			return false;
 		}
@@ -269,7 +280,19 @@ export function useEditRoutineDayLoadedState( {
 		latestRef.current = { saveDraft, shouldAutoSave };
 	} );
 
-	const saveStatus: RoutineDaySaveStatus = isSaving
+	const { isOnline } = useAutosaveRetry( {
+		hasFailed,
+		onRetry: () => {
+			if (!saveRoutineDay.isPending) {
+				void saveDraft( { silent: true } );
+			}
+		},
+	} );
+
+	// Sin conexion el pedido queda en pausa hasta que vuelva la señal.
+	const saveStatus: RoutineDaySaveStatus = !isOnline && ( isSaving || ( isDirty && canSave ) )
+		? "offline"
+		: isSaving
 		? "saving"
 		: hasFailed
 			? "error"

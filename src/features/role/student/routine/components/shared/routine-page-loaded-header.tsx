@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button, Card, Chip, Spinner } from "@heroui/react";
-import { ArrowLeft, CheckCircle2, Flag, Pencil, RotateCw, Save } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Flag, Pencil, RotateCw, Save, WifiOff } from "lucide-react";
 
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
 import { PageHeader } from "@/components/common";
@@ -12,7 +12,9 @@ type RoutinePageLoadedHeaderProps = {
 };
 
 const SAVE_STATUS_CHIP = {
-	error: { color: "danger", label: "No se pudo guardar" },
+	// Se reintenta solo; "Reintentar" queda para no tener que esperar.
+	error: { color: "danger", label: "No se pudo guardar. Se reintenta solo" },
+	offline: { color: "warning", label: "Sin conexión. Se guarda al volver" },
 	// Todavia no salio el pedido, pero va a salir solo: para el estudiante ya esta guardando.
 	pending: { color: "accent", label: "Guardando…" },
 	saved: { color: "success", label: "Guardado" },
@@ -60,6 +62,7 @@ export function RoutinePageLoadedHeader( {
 			{ showSaveChip ? (
 				<Chip color={ chip.color } role={ "status" } size={ "sm" } variant={ "soft" }>
 					{ isBusy ? <Spinner color={ "current" } size={ "sm" }/> : null }
+					{ saveStatus === "offline" ? <WifiOff className={ "size-3" }/> : null }
 					{ chip.label }
 				</Chip>
 			) : null }

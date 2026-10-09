@@ -9,6 +9,7 @@ import { useCallback } from "react";
 import type { Role } from "@/generated/prisma/client";
 import { DashboardNavbar } from "./dashboard-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
+import { OfflineBanner } from "./offline-banner";
 
 export interface AppShellProps {
 	children: ReactNode;
@@ -37,6 +38,7 @@ export function AppShell( { basePath = "", children, userName, userRole }: AppSh
 			<DashboardSidebar pathname={ pathname } basePath={ basePath } userName={ userName } userRole={ userRole }/>
 			<Sidebar.Main>
 				<DashboardNavbar userName={ userName } userRole={ userRole }/>
+				<OfflineBanner/>
 				{ children }
 			</Sidebar.Main>
 		</Sidebar.Provider>

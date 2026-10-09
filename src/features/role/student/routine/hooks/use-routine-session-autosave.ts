@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { toast } from "@heroui/react";
 
+import { getErrorMessage, isNetworkError } from "@/lib/action-result";
+import { useAutosaveRetry } from "@/lib/use-autosave-retry";
 import type { useSaveStudentRoutineSession } from "@/features/role/student/routine/hooks/use-routine-session-mutations";
 import {
 	mapStudentRoutineSessionToSaveInput,
@@ -19,8 +21,9 @@ const AUTOSAVE_DELAY_MS = 1500;
 
 // `pending`: hay series por guardar y se van a guardar solas. `unsaved`: quedaron
 // series sin guardar de una visita anterior y no se guardan solas; el estudiante
-// decide guardarlas o descartarlas con "Actualizar".
-export type RoutineSessionSaveStatus = "error" | "pending" | "saved" | "saving" | "unsaved";
+// decide guardarlas o descartarlas con "Actualizar". `offline`: hay series por
+// guardar y no hay conexion; se guardan solas cuando vuelva.
+export type RoutineSessionSaveStatus = "error" | "offline" | "pending" | "saved" | "saving" | "unsaved";
 
 type UseRoutineSessionAutosaveOptions = {
 	activeSession: StudentRoutineSession | null;
@@ -55,6 +58,9 @@ export function useRoutineSessionAutosave( {
 	// El ultimo contenido que el servidor acepto. Si por algun motivo lo que
 	// devuelve no coincide con lo enviado, esto evita guardar lo mismo en bucle.
 	const [ acceptedSignature, setAcceptedSignature ] = useState<string | null>( null );
+	// El contenido del que ya se aviso que no se pudo guardar: los reintentos
+	// solos no vuelven a avisar lo mismo cada vez.
+	const notifiedFailureRef = useRef<string | null>( null );
 	const hasChanges = Boolean( activeSession && sourceSession )
 		&& draftSignature !== savedSignature
 		&& draftSignature !== acceptedSignature;
@@ -91,9 +97,18 @@ export function useRoutineSessionAutosave( {
 			return true;
 		} catch (saveError) {
 			setFailedSignature( sentSignature );
-			toast.danger( "Error al guardar", {
-				description: saveError instanceof Error ? saveError.message : "No se pudieron guardar los cambios.",
-			} );
+
+			// Sin señal el encabezado ya lo dice, y se reintenta solo: un aviso por
+			// cada intento no agrega nada. Se avisa al tocar "Guardar" o "Terminar
+			// día", y una vez por contenido si el problema es otro.
+			const isQuietFailure = silent && ( isNetworkError( saveError ) || notifiedFailureRef.current === sentSignature );
+
+			if (!isQuietFailure) {
+				notifiedFailureRef.current = sentSignature;
+				toast.danger( "Error al guardar", {
+					description: getErrorMessage( saveError, "No se pudieron guardar los cambios." ),
+				} );
+			}
 
 			return false;
 		}
@@ -142,7 +157,20 @@ export function useRoutineSessionAutosave( {
 		latestRef.current = { saveSession, shouldAutoSave };
 	} );
 
-	const saveStatus: RoutineSessionSaveStatus = isSaving
+	const { isOnline } = useAutosaveRetry( {
+		hasFailed,
+		onRetry: () => {
+			if (!saveRoutineSession.isPending) {
+				void saveSession( { finalize: false, silent: true } );
+			}
+		},
+	} );
+
+	// Sin conexion el pedido queda en pausa (React Query lo manda al volver la
+	// señal): decir "Guardando…" todo ese rato era mentir.
+	const saveStatus: RoutineSessionSaveStatus = !isOnline && ( isSaving || hasChanges )
+		? "offline"
+		: isSaving
 		? "saving"
 		: hasFailed
 			? "error"

@@ -22,8 +22,20 @@ export function unwrapAction<T>( result: ActionResult<T> ): T {
 	return result.data;
 }
 
+export const NETWORK_ERROR_MESSAGE = "No hay conexión con el servidor. Revisá la señal y probá de nuevo.";
+
+// Un pedido que no llego al servidor: sin señal, o un Wi-Fi sin internet. El
+// navegador lo cuenta con un `TypeError` en ingles ("Failed to fetch", "Load
+// failed", "NetworkError…") que no le dice nada a nadie.
+export function isNetworkError( error: unknown ) {
+	return error instanceof TypeError
+		|| ( error instanceof Error && /failed to fetch|load failed|networkerror|network request failed/i.test( error.message ) );
+}
+
 // El motivo de un error que vino de `unwrapAction`, para mostrarlo en un aviso.
 export function getErrorMessage( error: unknown, fallback: string ) {
+	if (isNetworkError( error )) return NETWORK_ERROR_MESSAGE;
+
 	return error instanceof Error && error.message ? error.message : fallback;
 }
 
