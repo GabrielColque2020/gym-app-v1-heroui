@@ -29,22 +29,14 @@ type DayCellProps = {
 	href: string;
 };
 
-// Cuantos ejercicios se listan en cada celda antes de resumir el resto.
-const VISIBLE_EXERCISES = 4;
-
-function formatPrescription( sets: string, reps: string ) {
-	return [ sets.trim(), reps.trim() ].filter( Boolean ).join( "×" );
-}
-
 function DayCell( { day, hasUnsavedChanges, href }: DayCellProps ) {
 	const isEmpty = day.routines.length === 0;
-	const hiddenCount = day.routines.length - VISIBLE_EXERCISES;
 
 	return (
 		<Link
 			aria-label={ isEmpty ? `Cargar ejercicios del día ${ day.dayNumber }` : `Editar día ${ day.dayNumber }` }
 			className={
-				`flex min-h-28 flex-col gap-1.5 rounded-xl border p-3 transition-colors hover:border-accent ${
+				`flex min-h-24 flex-col gap-1.5 rounded-xl border p-3 transition-colors hover:border-accent ${
 					isEmpty ? "border-dashed border-border bg-transparent" : "border-border bg-surface-secondary"
 				}`
 			}
@@ -80,19 +72,11 @@ function DayCell( { day, hasUnsavedChanges, href }: DayCellProps ) {
 			) : (
 				<>
 					<p className={ "truncate text-xs font-medium text-accent" }>{ getTrainingRoutineDayTitle( day ) }</p>
-					<ul className={ "space-y-0.5" }>
-						{ day.routines.slice( 0, VISIBLE_EXERCISES ).map( ( routine ) => (
-							<li key={ routine.id } className={ "flex gap-1.5 text-xs text-muted" }>
-								<span className={ "shrink-0 font-medium text-foreground" }>
-									{ formatPrescription( routine.sets, routine.reps ) }
-								</span>
-								<span className={ "truncate" }>{ routine.exercise?.name ?? "Ejercicio sin nombre" }</span>
-							</li>
-						) ) }
-					</ul>
-					{ hiddenCount > 0 ? (
-						<p className={ "text-xs text-muted" }>+{ hiddenCount } más</p>
-					) : null }
+					{ /* Solo el total: el detalle de cada ejercicio hacia la tarjeta larga y
+					     se cortaba igual. Para verlo esta el editor del dia. */ }
+					<p className={ "text-xs text-muted" }>
+						{ day.routines.length } { day.routines.length === 1 ? "ejercicio" : "ejercicios" }
+					</p>
 					{ /* La accion a la vista, igual que "Cargar" en un dia vacio: sin esto no
 					     se nota que la celda entera abre el editor. */ }
 					<p className={ "mt-auto flex items-center gap-1 pt-1 text-sm font-medium text-accent" }>

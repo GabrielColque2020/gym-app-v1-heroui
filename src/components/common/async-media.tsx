@@ -73,7 +73,7 @@ export function AsyncMedia( {
 	const PlaceholderIcon = resolvedKind === "video" ? VideoOff : ImageOff;
 
 	return (
-		<div className={ `relative overflow-hidden bg-muted/30 ${ className }` }>
+		<div className={ `@container relative overflow-hidden bg-muted/30 ${ className }` }>
 			{ deliverySrc ? deliveryKind === "video" ? (
 				<video
 					className={ `h-full w-full bg-content2 object-contain ${ loadState === "loaded" ? "opacity-100" : "opacity-0" } ${ mediaClassName }` }
@@ -104,9 +104,11 @@ export function AsyncMedia( {
 			) : null }
 
 			{ loadState === "empty" || loadState === "error" ? (
-				<div className={ "absolute inset-0 flex flex-col items-center justify-center gap-2 px-3 text-center text-xs text-muted-foreground" }>
+				<div className={ "absolute inset-0 flex flex-col items-center justify-center gap-2 px-1 text-center @[6rem]:px-3 text-xs text-muted-foreground" }>
 					<PlaceholderIcon className={ "size-5" } />
-					<span>{ placeholderLabel }</span>
+					{ /* En una miniatura el texto no entra y se montaba sobre el icono: ahi
+					     queda solo el icono, y el texto sigue para el lector de pantalla. */ }
+					<span className={ "sr-only @[6rem]:not-sr-only" }>{ placeholderLabel }</span>
 				</div>
 			) : null }
 		</div>

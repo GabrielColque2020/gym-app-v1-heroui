@@ -15,7 +15,7 @@ export function StudentRowActions( { student }: StudentRowActionsProps ) {
 	return (
 		<div className={ "flex items-center gap-2" }>
 			<StudentOpenButton student={ student }/>
-			<StudentRestoreButton student={ student }/>
+			<StudentRestoreButton showLabel student={ student }/>
 			<StudentEditButton showLabel student={ student }/>
 		</div>
 	);

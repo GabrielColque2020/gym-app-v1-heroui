@@ -77,14 +77,17 @@ export function ExerciseRowActions( {
 				{ exercise.active ? null : (
 					<Button
 						aria-label={ `Restaurar ${ exercise.name }` }
-						className={ "shrink-0" }
+						// En la tarjeta va solo el icono: con el texto, el nombre del
+						// ejercicio quedaba en una columna de tres letras.
+						className={ isCompact ? "size-9 shrink-0" : "shrink-0" }
 						isDisabled={ isPending }
+						isIconOnly={ isCompact }
 						size={ "sm" }
 						variant={ "secondary" }
 						onPress={ () => void changeStatus() }
 					>
 						{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <RotateCcw className={ "size-4" }/> }
-						Restaurar
+						{ isCompact ? null : "Restaurar" }
 					</Button>
 				) }
 				<Button

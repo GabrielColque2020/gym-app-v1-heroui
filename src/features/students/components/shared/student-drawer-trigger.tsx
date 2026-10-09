@@ -38,10 +38,18 @@ export function StudentDrawerTrigger( {
 		);
 	}
 
+	// En el telefono va solo el "+", junto al titulo, igual que en ejercicios.
+	const isIconOnly = props.triggerVariant === "icon";
+
 	return (
-		<Button className={ props.triggerClassName } onPress={ onPress }>
+		<Button
+			aria-label={ "Nuevo estudiante" }
+			className={ props.triggerClassName }
+			isIconOnly={ isIconOnly }
+			onPress={ onPress }
+		>
 			<Plus className={ "size-4" }/>
-			Nuevo estudiante
+			{ isIconOnly ? null : "Nuevo estudiante" }
 		</Button>
 	);
 }

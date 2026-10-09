@@ -25,7 +25,7 @@ export function CoachOptionRoutineActionMenu( {
 		<Dropdown>
 			<MoreActionsButton
 				ariaLabel={ "Más opciones de la rutina" }
-				className={ "h-10 px-3 text-sm" }
+				className={ "size-10" }
 				variant={ "secondary" }
 			/>
 			<Dropdown.Popover>

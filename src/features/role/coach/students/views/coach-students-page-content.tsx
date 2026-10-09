@@ -69,13 +69,16 @@ export default function CoachStudentsPageContent() {
 				crumbs={ breadcrumbs }
 			/>
 			<Card className={ "border border-border py-2" } variant={ "default" }>
-				<Card.Header className={ "flex flex-col gap-3 border-b border-border px-3 py-2 sm:flex-row sm:items-center sm:justify-between" }>
-					<PageHeader
-						description={ summary }
-						title={ "Estudiantes" }
-					/>
-					{ /* En el telefono, un renglon: actualizar como icono y el alta a lo ancho. */ }
-					<div className={ "flex w-full items-center gap-2 md:hidden" }>
+				<Card.Header className={ "flex flex-row items-start justify-between gap-3 border-b border-border px-3 py-2 sm:items-center" }>
+					<div className={ "min-w-0" }>
+						<PageHeader
+							description={ summary }
+							title={ "Estudiantes" }
+						/>
+					</div>
+					{ /* En el telefono las dos acciones van como iconos junto al titulo, igual
+					     que en ejercicios, para que la lista empiece mas arriba. */ }
+					<div className={ "flex shrink-0 items-center gap-2 md:hidden" }>
 						<Button
 							isIconOnly
 							aria-label={ isRefreshing ? "Actualizando" : "Actualizar" }
@@ -88,7 +91,8 @@ export default function CoachStudentsPageContent() {
 						<StudentDrawer
 							mode={ "create" }
 							placement={ "bottom" }
-							triggerClassName={ "flex-1 bg-accent text-accent-foreground" }
+							triggerClassName={ "bg-accent text-accent-foreground" }
+							triggerVariant={ "icon" }
 						/>
 					</div>
 					<div className={ "hidden items-center gap-2 md:flex" }>
