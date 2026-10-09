@@ -12,6 +12,10 @@ export type DraftRoutineDayExercise = {
 	// Descanso entre series, en segundos. `null` si el entrenador no lo definio.
 	restSeconds: number | null;
 	sets: string;
+	// Variantes elegidas para un ejercicio que todavia no esta guardado en el dia.
+	// Las variantes cuelgan de la fila guardada: hasta que exista, esperan aca y
+	// viajan con el guardado del dia. En una fila ya guardada no se usan.
+	pendingVariantExerciseIds?: string[];
 };
 
 export type DayExercise = DraftRoutineDayExercise;
@@ -23,4 +27,6 @@ export type SaveRoutineDayExerciseInput = {
 	reps: string;
 	restSeconds: number | null;
 	sets: string;
+	// Solo se aplican si el guardado crea la fila; en una que ya existe se ignoran.
+	variantExerciseIds?: string[];
 };

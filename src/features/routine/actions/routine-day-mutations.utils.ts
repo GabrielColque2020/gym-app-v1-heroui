@@ -16,6 +16,9 @@ export function normalizeRoutineDayExercises( exercises: SaveRoutineDayExerciseI
 		reps: exercise.reps,
 		restSeconds: normalizeRestSeconds( exercise.restSeconds ),
 		sets: exercise.sets,
+		variantExerciseIds: Array.from( new Set(
+			( exercise.variantExerciseIds ?? [] ).map( ( variantExerciseId ) => variantExerciseId.trim() ).filter( Boolean ),
+		) ),
 	} ) );
 }
 
@@ -213,9 +216,13 @@ export async function assertRoutineCatalogExercisesAvailable(
 //
 // Devuelve como quedaron las filas cuando no se creo ni se borro ninguna, y
 // `null` cuando si: en ese caso quien llama tiene que volver a leer el dia.
+//
+// Un ejercicio nuevo puede traer sus variantes: se crean junto con la fila, en
+// la misma transaccion. Solo valen ejercicios de `coachId`.
 export async function persistRoutineDayExercises(
 	routineDayId: string,
 	exercises: NormalizedRoutineDayExerciseInput[],
+	coachId: string,
 ): Promise<SavedRoutineRow[] | null> {
 	return prisma.$transaction( async ( transaction ) => {
 		// Bloquea el dia mientras dura el guardado. Dos guardados a la vez (dos
@@ -248,6 +255,7 @@ export async function persistRoutineDayExercises(
 		}
 
 		const keptRoutineIds = new Set<string>();
+		const variantIdsByNewExerciseId = new Map<string, string[]>();
 		const savedRoutines: SavedRoutineRow[] = [];
 		const routinesToCreate: Array<{
 			exerciseId: string;
@@ -271,6 +279,7 @@ export async function persistRoutineDayExercises(
 
 			if (!existing) {
 				routinesToCreate.push( { ...data, exerciseId: exercise.exerciseId, routineDayId } );
+				variantIdsByNewExerciseId.set( exercise.exerciseId, exercise.variantExerciseIds ?? [] );
 				continue;
 			}
 
@@ -299,7 +308,26 @@ export async function persistRoutineDayExercises(
 		}
 
 		if (routinesToCreate.length > 0) {
-			await transaction.routine.createMany( { data: routinesToCreate } );
+			const createdRoutines = await transaction.routine.createManyAndReturn( {
+				data: routinesToCreate,
+				select: { exerciseId: true, id: true },
+			} );
+			const requestedVariantIds = [ ...new Set( [ ...variantIdsByNewExerciseId.values() ].flat() ) ];
+			// Una variante ajena o que ya no existe se descarta sin frenar el guardado
+			// del dia: lo importante, el ejercicio, igual queda.
+			const ownVariantIds = new Set( requestedVariantIds.length === 0 ? [] : ( await transaction.exerciseCoach.findMany( {
+				select: { id: true },
+				where: { coachId, id: { in: requestedVariantIds } },
+			} ) ).map( ( exercise ) => exercise.id ) );
+			const variantsToCreate = createdRoutines.flatMap( ( routine ) => (
+				( variantIdsByNewExerciseId.get( routine.exerciseId ?? "" ) ?? [] )
+					.filter( ( variantExerciseId ) => ownVariantIds.has( variantExerciseId ) && variantExerciseId !== routine.exerciseId )
+					.map( ( variantExerciseId ) => ( { routineId: routine.id, variantExerciseId } ) )
+			) );
+
+			if (variantsToCreate.length > 0) {
+				await transaction.routineExerciseVariant.createMany( { data: variantsToCreate } );
+			}
 		}
 
 		return routineIdsToDelete.length === 0 && routinesToCreate.length === 0 ? savedRoutines : null;

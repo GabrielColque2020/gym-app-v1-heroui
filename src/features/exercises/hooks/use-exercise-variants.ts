@@ -37,6 +37,9 @@ export function useSaveExerciseVariants( routineId: string ) {
 		onSuccess: ( savedVariants ) => {
 			queryClient.setQueryData( exerciseVariantsQueryKey( routineId ), savedVariants );
 			invalidateExerciseVariantQueries( queryClient, routineId );
+			// El dia trae las variantes de cada ejercicio: se vuelve a pedir para que
+			// la fila muestre cuantas tiene ahora.
+			void queryClient.invalidateQueries( { queryKey: [ "routine-day" ] } );
 		},
 	} );
 }

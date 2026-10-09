@@ -14,13 +14,13 @@ import {
     SearchAndCreateExerciseDrawerFilters
 } from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-filters";
 import {
-    SearchAndCreateExerciseDrawerPrescription
-} from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-prescription";
+    SearchAndCreateExerciseDrawerConfig
+} from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-config";
 import {
     type ExercisePrescription,
     useSearchAndCreateExerciseDrawerState
 } from "@/features/role/coach/routine/components/shared/use-search-and-create-exercise-drawer-state";
-import {Plus} from "lucide-react";
+import {CheckCircle2, Plus} from "lucide-react";
 
 type AddExercisePickerDrawerContentProps = {
     addedExerciseIds: Set<string>;
@@ -50,12 +50,16 @@ export function SearchAndCreateExerciseDrawer({
     const clearSearch = () => updateSearchValue( "" );
     const {
         addedCount,
-        handleAddClick,
+        configExercise,
+        handleCancelConfig,
+        handleConfirmAdd,
+        handleSelectExercise,
         handlePickerOpenChange,
         handleCreatedExercise,
         handleOpenCreateDrawer,
         isCreateDrawerOpen,
         isPickerOpen,
+        lastAddedName,
         orderValue,
         registerAddButtonRef,
         repsValue,
@@ -66,6 +70,8 @@ export function SearchAndCreateExerciseDrawer({
         setRestValue,
         setSetsValue,
         setsValue,
+        setVariantItems,
+        variantItems,
     } = useSearchAndCreateExerciseDrawerState({
         addedExerciseIds,
         currentPage: pagination.currentPage,
@@ -95,22 +101,48 @@ export function SearchAndCreateExerciseDrawer({
                         <div className={ "min-w-0 flex-1" }>
                             <Drawer.Heading>Agregar ejercicio</Drawer.Heading>
                             <Description className={ "mt-1 hidden text-sm sm:block" }>
-                                Buscá en tu catálogo y sumá todos los ejercicios del día sin cerrar.
+                                { configExercise
+                                    ? "Cargá series y repeticiones. Las variantes son opcionales."
+                                    : "Elegí un ejercicio de tu catálogo. Podés sumar todos los del día sin cerrar." }
                             </Description>
                         </div>
                     </div>
                 </Drawer.Header>
 
-                <Drawer.Body className={ "min-h-0 flex-1 space-y-3 overflow-y-auto py-3 sm:space-y-6" }>
-                    <SearchAndCreateExerciseDrawerPrescription
-                        repsValue={ repsValue }
-                        setsValue={ setsValue }
-                        onRepsChange={ setRepsValue }
-                        restValue={ restValue }
-                        onRestChange={ setRestValue }
-                        onSetsChange={ setSetsValue }
-                    />
-
+                { /* Dos pantallas: la lista para elegir y la del ejercicio elegido. La
+                     clave distinta hace que cada una arranque arriba de todo. */ }
+                { configExercise ? (
+                    <Drawer.Body key={ "config" } className={ "min-h-0 flex-1 overflow-y-auto py-3" }>
+                        <SearchAndCreateExerciseDrawerConfig
+                            exercise={ configExercise }
+                            repsValue={ repsValue }
+                            restValue={ restValue }
+                            setsValue={ setsValue }
+                            variants={ variantItems }
+                            onBackAction={ handleCancelConfig }
+                            onRepsChange={ setRepsValue }
+                            onRestChange={ setRestValue }
+                            onSetsChange={ setSetsValue }
+                            onVariantsChangeAction={ setVariantItems }
+                        />
+                    </Drawer.Body>
+                ) : (
+                <Drawer.Body key={ "list" } className={ "min-h-0 flex-1 space-y-3 overflow-y-auto py-3 sm:space-y-6" }>
+                    { /* Al agregar se vuelve a la lista: sin este aviso no quedaba claro
+                         si el ejercicio habia entrado ni que se podia seguir sumando. */ }
+                    { lastAddedName ? (
+                        <div
+                            className={ "flex items-start gap-2 rounded-xl border border-success/30 bg-success/10 px-3 py-2 text-sm" }
+                            role={ "status" }
+                        >
+                            <CheckCircle2 aria-hidden className={ "mt-0.5 size-4 shrink-0 text-success" }/>
+                            <p className={ "min-w-0 text-foreground" }>
+                                <span className={ "font-medium" }>Agregaste { lastAddedName }.</span>
+                                { " " }
+                                <span className={ "text-muted" }>Podés elegir otro ejercicio o tocar Listo para terminar.</span>
+                            </p>
+                        </div>
+                    ) : null }
                     <SearchAndCreateExerciseDrawerFilters
                         addedExerciseIds={ addedExerciseIds }
                         bodyPartFilter={ bodyPartFilter }
@@ -121,7 +153,7 @@ export function SearchAndCreateExerciseDrawer({
                             isLoading: exercisesQuery.isLoading,
                         } }
                         isSearching={ isSearching }
-                        onAddExerciseAction={ handleAddClick }
+                        onAddExerciseAction={ handleSelectExercise }
                         onCreateExerciseAction={ handleOpenCreateDrawer }
                         onBodyPartFilterChangeAction={ updateBodyPartFilter }
                         onOrderChange={ setOrderValue }
@@ -146,7 +178,19 @@ export function SearchAndCreateExerciseDrawer({
                         </div>
                     ) : null }
                 </Drawer.Body>
+                ) }
 
+                { configExercise ? (
+                    <Drawer.Footer className={ "border-default-100 flex items-center justify-end gap-2 border-t pt-4" }>
+                        <Button variant={ "secondary" } onPress={ handleCancelConfig }>
+                            Volver
+                        </Button>
+                        <Button className={ "bg-accent text-accent-foreground" } onPress={ handleConfirmAdd }>
+                            <Plus className={ "size-4" }/>
+                            Agregar ejercicio
+                        </Button>
+                    </Drawer.Footer>
+                ) : (
                 <Drawer.Footer className={ "border-default-100 flex items-center justify-between gap-3 border-t pt-4" }>
                     <p className={ "text-sm text-muted" } role={ "status" }>
                         { addedCount === 0
@@ -157,6 +201,7 @@ export function SearchAndCreateExerciseDrawer({
                         Listo
                     </Button>
                 </Drawer.Footer>
+                ) }
             </FeatureDrawerLayout>
 
             <ExerciseDrawer

@@ -28,6 +28,10 @@ export type ExerciseVariantsTarget = {
 export type ExerciseVariantsDrawerProps = {
 	exercise: ExerciseVariantsTarget;
 	routineId: string | null;
+	// Para un ejercicio que todavia no esta guardado en el dia (`routineId` nulo):
+	// las variantes elegidas hasta ahora y a quien avisarle cuando cambian.
+	pendingVariantExerciseIds?: string[];
+	onPendingChangeAction?: ( variantExerciseIds: string[] ) => void;
 	hideTrigger?: boolean;
 	isOpen?: boolean;
 	onOpenChangeAction?: ( isOpen: boolean ) => void;

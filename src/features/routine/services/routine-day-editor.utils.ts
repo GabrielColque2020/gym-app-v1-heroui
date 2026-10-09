@@ -150,5 +150,8 @@ export function mapDraftToSaveInput( routines: DraftRoutineDayExercise[] ): Save
 		reps: routine.reps.trim(),
 		restSeconds: normalizeRestSeconds( routine.restSeconds ),
 		sets: routine.sets.trim(),
+		...( !routine.id && routine.pendingVariantExerciseIds?.length
+			? { variantExerciseIds: routine.pendingVariantExerciseIds }
+			: {} ),
 	} ) );
 }

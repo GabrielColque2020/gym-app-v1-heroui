@@ -119,6 +119,16 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 		} );
 	}
 
+	// Las variantes de un ejercicio que todavia no se guardo en el dia.
+	function setExercisePendingVariants( clientId: string, variantExerciseIds: string[] ) {
+		hydrateDraftIfNeeded();
+		updateExercise( {
+			clientId,
+			patch: { pendingVariantExerciseIds: variantExerciseIds },
+			routineDayId,
+		} );
+	}
+
 	// Sube o baja un ejercicio intercambiando su orden con el vecino. Va en un solo
 	// `setDraft`: cambiar los dos ordenes por separado deja un instante con el
 	// orden repetido, y el borrador rechaza ese estado.
@@ -174,6 +184,7 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 		moveExercise,
 		replaceWithCopies,
 		resetDraft,
+		setExercisePendingVariants,
 		updateExerciseField,
 		validationError,
 	};

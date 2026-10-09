@@ -75,6 +75,10 @@ export function useEditRoutineDayLoadedState( {
 		markEdited();
 		draft.deleteExercise( ...args );
 	};
+	const setExercisePendingVariants: typeof draft.setExercisePendingVariants = ( ...args ) => {
+		markEdited();
+		draft.setExercisePendingVariants( ...args );
+	};
 	const moveExercise: typeof draft.moveExercise = ( ...args ) => {
 		markEdited();
 		draft.moveExercise( ...args );
@@ -103,7 +107,7 @@ export function useEditRoutineDayLoadedState( {
 	function handleAddExercise(
 		exercise: ExerciseListItem,
 		order: number,
-		prescription?: { reps: string; restSeconds?: number | null; sets: string },
+		prescription?: { reps: string; restSeconds?: number | null; sets: string; variantExerciseIds?: string[] },
 	) {
 		markEdited();
 
@@ -121,6 +125,10 @@ export function useEditRoutineDayLoadedState( {
 		if (prescription?.sets) updateExerciseField( result.routine.clientId, "sets", prescription.sets );
 		if (prescription?.reps) updateExerciseField( result.routine.clientId, "reps", prescription.reps );
 		if (prescription?.restSeconds) updateExerciseField( result.routine.clientId, "restSeconds", prescription.restSeconds );
+		// Las variantes elegidas al agregar esperan en el borrador y se guardan con el dia.
+		if (prescription?.variantExerciseIds?.length) {
+			setExercisePendingVariants( result.routine.clientId, prescription.variantExerciseIds );
+		}
 	}
 
 	const handleConfirmRefresh = useCallback( async () => {
@@ -259,6 +267,7 @@ export function useEditRoutineDayLoadedState( {
 		isSaveDisabled,
 		isSaving,
 		saveStatus,
+		setExercisePendingVariants,
 		moveExercise,
 		replaceWithCopies,
 		resetRefreshConfirmOpen: () => setIsRefreshConfirmOpen( false ),

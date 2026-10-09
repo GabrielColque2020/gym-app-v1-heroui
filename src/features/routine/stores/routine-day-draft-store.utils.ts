@@ -7,7 +7,7 @@ import {
 	validateRoutineDayDraft,
 } from "@/features/routine/services/routine-day-editor";
 
-type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "reps" | "restSeconds" | "sets">;
+type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "pendingVariantExerciseIds" | "reps" | "restSeconds" | "sets">;
 
 export type AddDraftExerciseResult =
 	| { error: string; routine?: never }

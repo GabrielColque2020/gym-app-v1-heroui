@@ -9,6 +9,7 @@ import { formatBodyPartValue, getExerciseName } from "@/features/role/coach/rout
 import { RoutineDayExerciseField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-field";
 import { RoutineDayExerciseMoveButtons } from "@/features/role/coach/routine/components/shared/routine-day-exercise-move-buttons";
 import { RoutineExerciseActions } from "@/features/role/coach/routine/components/shared/routine-exercise-actions";
+import { RoutineExerciseVariantsButton } from "@/features/role/coach/routine/components/shared/routine-exercise-variants-button";
 import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
@@ -64,7 +65,17 @@ function RoutineDayExerciseRow( {
 					/>
 					<div className={ "min-w-0" }>
 						<p className={ "line-clamp-4 text-sm font-semibold leading-5 text-foreground" }>{ exerciseName }</p>
-						<p className={ "truncate text-xs text-muted" }>{ formatBodyPartValue( routine.exercise?.bodyPart ) }</p>
+						<div className={ "mt-0.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1" }>
+							<p className={ "truncate text-xs text-muted" }>{ formatBodyPartValue( routine.exercise?.bodyPart ) }</p>
+							{ routine.exercise ? (
+								<RoutineExerciseVariantsButton
+									clientId={ routine.clientId }
+									exerciseName={ exerciseName }
+									pendingCount={ routine.pendingVariantExerciseIds?.length ?? 0 }
+									routineId={ routine.id }
+								/>
+							) : null }
+						</div>
 					</div>
 				</div>
 
@@ -117,10 +128,7 @@ function RoutineDayExerciseRow( {
 							{ hasNote ? <MessageSquareText className={ "size-4" }/> : <MessageSquarePlus className={ "size-4" }/> }
 						</Button>
 						<RoutineExerciseActions
-							clientId={ routine.clientId }
-							exercise={ routine.exercise }
 							exerciseName={ exerciseName }
-							routineId={ routine.id }
 							onDeleteAction={ () => onDeleteAction( routine.clientId ) }
 						/>
 					</div>

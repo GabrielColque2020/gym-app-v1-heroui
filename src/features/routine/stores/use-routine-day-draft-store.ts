@@ -19,7 +19,7 @@ import {
 	sortAndValidateDraft,
 } from "@/features/routine/stores/routine-day-draft-store.utils";
 
-type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "reps" | "restSeconds" | "sets">;
+type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "pendingVariantExerciseIds" | "reps" | "restSeconds" | "sets">;
 
 type SetDraftResult =
 	| { error: string; routine?: never }

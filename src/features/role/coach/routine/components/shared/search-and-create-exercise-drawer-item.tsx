@@ -62,14 +62,16 @@ export function SearchAndCreateExerciseDrawerItem( {
 				aria-label={
 					alreadyAdded
 						? `${ exercise.name } ya agregado`
-						: `Agregar ${ exercise.name } al borrador`
+						: `Elegir ${ exercise.name }`
 				}
 				className={ "shrink-0 bg-accent text-accent-foreground" }
 				isDisabled={ alreadyAdded }
 				size={ "sm" }
 				onPress={ () => onAddExerciseAction( exercise ) }
 			>
-				{ alreadyAdded ? "Agregado" : "Agregar" }
+				{ /* "Elegir" y no "Agregar": lleva a la pantalla del ejercicio, donde se
+				     cargan series, repeticiones y variantes, y recien ahi se agrega. */ }
+				{ alreadyAdded ? "Agregado" : "Elegir" }
 			</Button>
 		</div>
 	);

@@ -5,11 +5,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "@heroui/react";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
+import type { DraftVariantItem } from "@/features/role/coach/exercises/components/shared/exercise-variants-drawer.types";
 
 export type ExercisePrescription = {
 	reps: string;
 	restSeconds: number | null;
 	sets: string;
+	// Variantes elegidas para el ejercicio que se esta agregando.
+	variantExerciseIds: string[];
 };
 
 type UseSearchAndCreateExerciseDrawerStateParams = {
@@ -39,6 +42,12 @@ export function useSearchAndCreateExerciseDrawerState( {
 	const [ setsValue, setSetsValue ] = useState( "" );
 	const [ repsValue, setRepsValue ] = useState( "" );
 	const [ restValue, setRestValue ] = useState<number | null>( null );
+	// El ejercicio elegido en la lista, al que se le estan cargando series,
+	// repeticiones y variantes antes de agregarlo. `null`: se esta en la lista.
+	const [ configExercise, setConfigExercise ] = useState<ExerciseListItem | null>( null );
+	const [ variantItems, setVariantItems ] = useState<DraftVariantItem[]>( [] );
+	// El ultimo ejercicio agregado, para avisarlo al volver a la lista.
+	const [ lastAddedName, setLastAddedName ] = useState<string | null>( null );
 	const addButtonRefs = useRef( new Map<string, HTMLButtonElement>() );
 
 	useEffect( () => {
@@ -69,7 +78,35 @@ export function useSearchAndCreateExerciseDrawerState( {
 		setIsCreateDrawerOpen( true );
 	}, [] );
 
-	const handleAddClick = useCallback( ( exercise: ExerciseListItem ) => {
+	// Vuelve a la lista con todo vacio: lo que se cargo para un ejercicio no debe
+	// colarse, sin que se note, en el siguiente.
+	const resetConfig = useCallback( () => {
+		setConfigExercise( null );
+		setSetsValue( "" );
+		setRepsValue( "" );
+		setRestValue( null );
+		setVariantItems( [] );
+	}, [] );
+
+	// Elegir un ejercicio de la lista no lo agrega todavia: abre su pantalla.
+	const handleSelectExercise = useCallback( ( exercise: ExerciseListItem ) => {
+		if (addedExerciseIds.has( exercise.id )) {
+			toast.danger( "Ejercicio duplicado", {
+				description: "Ese ejercicio ya está cargado en el borrador del día.",
+			} );
+			return;
+		}
+
+		resetConfig();
+		setLastAddedName( null );
+		setConfigExercise( exercise );
+	}, [ addedExerciseIds, resetConfig ] );
+
+	const handleConfirmAdd = useCallback( () => {
+		const exercise = configExercise;
+
+		if (!exercise) return;
+
 		const parsedOrder = Number( orderValue );
 
 		if (!Number.isInteger( parsedOrder ) || parsedOrder < 1) {
@@ -79,46 +116,44 @@ export function useSearchAndCreateExerciseDrawerState( {
 			return;
 		}
 
-		if (addedExerciseIds.has( exercise.id )) {
-			toast.danger( "Ejercicio duplicado", {
-				description: "Ese ejercicio ya está cargado en el borrador del día.",
-			} );
-			return;
-		}
-
-		onAddExerciseAction( exercise, parsedOrder, { reps: repsValue.trim(), restSeconds: restValue, sets: setsValue.trim() } );
+		onAddExerciseAction( exercise, parsedOrder, {
+			reps: repsValue.trim(),
+			restSeconds: restValue,
+			sets: setsValue.trim(),
+			variantExerciseIds: variantItems.map( ( variant ) => variant.exercise.id ),
+		} );
 		// El drawer queda abierto para seguir sumando: un dia son varios ejercicios.
 		setAddedCount( ( count ) => count + 1 );
 		setOrderValue( String( Math.max( parsedOrder + 1, suggestedOrder ) ) );
-		// Cada ejercicio arranca de cero: series, repeticiones, descanso y busqueda
-		// se limpian, para que lo del anterior no se cuele en el siguiente sin querer.
-		setSetsValue( "" );
-		setRepsValue( "" );
-		setRestValue( null );
+		// Vuelve a la lista, con la busqueda vacia, para elegir el siguiente.
+		resetConfig();
+		setLastAddedName( exercise.name );
 		onAddedAction();
-	}, [ addedExerciseIds, orderValue, onAddedAction, onAddExerciseAction, repsValue, restValue, setsValue, suggestedOrder ] );
+	}, [ configExercise, orderValue, onAddedAction, onAddExerciseAction, repsValue, resetConfig, restValue, setsValue, suggestedOrder, variantItems ] );
 
 	const handlePickerOpenChange = useCallback( ( isOpen: boolean ) => {
 		if (isOpen) {
 			setAddedCount( 0 );
-			// Cada vez que se abre arranca vacio: lo que se escribio y no se uso la
-			// vez anterior no debe aplicarse, sin que se note, al proximo ejercicio.
-			setSetsValue( "" );
-			setRepsValue( "" );
-			setRestValue( null );
+			// Cada vez que se abre arranca en la lista y vacio.
+			resetConfig();
+			setLastAddedName( null );
 		}
 
 		setIsPickerOpen( isOpen );
-	}, [] );
+	}, [ resetConfig ] );
 
 	return {
 		addedCount,
-		handleAddClick,
+		configExercise,
+		handleCancelConfig: resetConfig,
+		handleConfirmAdd,
 		handlePickerOpenChange,
 		handleCreatedExercise,
 		handleOpenCreateDrawer,
+		handleSelectExercise,
 		isCreateDrawerOpen,
 		isPickerOpen,
+		lastAddedName,
 		orderValue,
 		registerAddButtonRef,
 		repsValue,
@@ -130,5 +165,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 		setRepsValue,
 		setSetsValue,
 		setsValue,
+		setVariantItems,
+		variantItems,
 	};
 }

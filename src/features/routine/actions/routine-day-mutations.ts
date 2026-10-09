@@ -67,7 +67,7 @@ export async function saveRoutineDayExercisesAction( input: SaveRoutineDayExerci
 			exercises,
 			routineDay.routines.flatMap( ( routine ) => routine.exerciseId ? [ routine.exerciseId ] : [] ),
 		);
-		const savedRoutines = await persistRoutineDayExercises( routineDay.id, resolvedExercises );
+		const savedRoutines = await persistRoutineDayExercises( routineDay.id, resolvedExercises, resolvedCoachId );
 
 		if (savedRoutines) {
 			return { routineDay: null, routines: savedRoutines };

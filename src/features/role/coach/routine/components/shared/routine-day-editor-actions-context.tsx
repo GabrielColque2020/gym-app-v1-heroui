@@ -13,8 +13,10 @@ type RoutineDayEditorActions = {
 	copyOptions: RoutineDayCopyOption[];
 	onCopyFromDay: ( routineDayId: string ) => void;
 	onMoveExercise: ( clientId: string, direction: -1 | 1 ) => void;
-	// Guarda el dia y abre las variantes del ejercicio, que recien existen una vez guardado.
+	// Abre las variantes de una fila del dia.
 	onRequestVariants: ( clientId: string ) => void;
+	// Cuantas variantes tiene cada ejercicio guardado del dia, por id de fila.
+	variantCountByRoutineId: ReadonlyMap<string, number>;
 };
 
 // Acciones del editor del dia que usan las filas y el estado vacio. Van por

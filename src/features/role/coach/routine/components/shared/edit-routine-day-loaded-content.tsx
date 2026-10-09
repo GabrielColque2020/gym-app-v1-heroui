@@ -2,7 +2,7 @@
 
 import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routine-day";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { ExerciseVariantsDrawer } from "@/features/role/coach/exercises/components/shared/exercise-variants-drawer";
@@ -58,6 +58,7 @@ export function EditRoutineDayLoadedContent( {
 		isRefreshConfirmOpen,
 		isSaveDisabled,
 		saveStatus,
+		setExercisePendingVariants,
 		moveExercise,
 		replaceWithCopies,
 		requiredFieldsMessage,
@@ -113,14 +114,34 @@ export function EditRoutineDayLoadedContent( {
 		if (canAdvance) router.push( buildDayHref( nextDay.id ) );
 	}
 
-	// Las variantes cuelgan del ejercicio ya guardado en la rutina. Para uno recien
-	// agregado se guarda el dia y recien ahi se abre el drawer, con la fila guardada.
+	// Un solo drawer de variantes para todo el dia, abierto desde la fila.
+	// Las variantes cuelgan del ejercicio ya guardado en la rutina. Uno recien
+	// agregado que ya se puede guardar se guarda antes de abrir. Si todavia no se
+	// puede (le faltan series o repeticiones), las variantes se eligen igual y
+	// esperan en el borrador hasta que el dia se guarde.
 	// Se recuerda por orden y no por id: la fila nueva recibe su id al guardarse y
 	// un ejercicio del catalogo global pasa a ser uno propio del coach, con otro id.
 	const [ pendingVariantsOrder, setPendingVariantsOrder ] = useState<number | null>( null );
 	const variantsRoutine = pendingVariantsOrder !== null
-		? draftRoutines.find( ( routine ) => routine.order === pendingVariantsOrder && routine.id ) ?? null
+		? draftRoutines.find( ( routine ) => routine.order === pendingVariantsOrder ) ?? null
 		: null;
+	const variantCountByRoutineId = useMemo(
+		() => new Map( data.routines.map( ( routine ) => [ routine.id, routine.variants.length ] ) ),
+		[ data.routines ],
+	);
+
+	async function requestVariants( clientId: string ) {
+		const routine = draftRoutines.find( ( candidate ) => candidate.clientId === clientId );
+
+		if (!routine) return;
+
+		// Guardar antes, cuando se puede, evita tener las variantes en dos lados:
+		// el drawer abre ya sobre la fila guardada. Si el guardado falla, abre
+		// igual y las variantes quedan esperando en el borrador.
+		if (!routine.id && saveStatus === "pending") await handleSave();
+
+		setPendingVariantsOrder( routine.order );
+	}
 
 	const daysWithExercises = ( monthWeeks ?? [] ).flatMap( ( week ) =>
 		week.routineDays
@@ -139,11 +160,8 @@ export function EditRoutineDayLoadedContent( {
 			if (source) replaceWithCopies( source.day.routines );
 		},
 		onMoveExercise: moveExercise,
-		onRequestVariants: async ( clientId: string ) => {
-			const order = draftRoutines.find( ( routine ) => routine.clientId === clientId )?.order;
-
-			if (order !== undefined && await handleSave()) setPendingVariantsOrder( order );
-		},
+		onRequestVariants: ( clientId: string ) => void requestVariants( clientId ),
+		variantCountByRoutineId,
 	};
 
 	if (!hasHydrated) {
@@ -194,6 +212,8 @@ export function EditRoutineDayLoadedContent( {
 					isOpen
 					exercise={ variantsRoutine.exercise }
 					routineId={ variantsRoutine.id }
+					pendingVariantExerciseIds={ variantsRoutine.pendingVariantExerciseIds }
+					onPendingChangeAction={ ( variantExerciseIds ) => setExercisePendingVariants( variantsRoutine.clientId, variantExerciseIds ) }
 					onOpenChangeAction={ ( isOpen ) => {
 						if (!isOpen) setPendingVariantsOrder( null );
 					} }

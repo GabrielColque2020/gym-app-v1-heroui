@@ -5,12 +5,14 @@ import { useState } from "react";
 import { Link2 } from "lucide-react";
 
 import { useExerciseVariants } from "@/features/exercises/hooks/use-exercise-variants";
+import { useCoachExercises } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 
 import { type DraftVariantItem, EMPTY_ARRAY, type ExerciseVariantsDrawerProps, type ExerciseVariantsTarget, } from "./exercise-variants-drawer.types";
 import { ExerciseVariantsDrawerContent } from "./exercise-variants-drawer-content";
+import { mapCoachExerciseToVariantTarget } from "./exercise-variants-picker";
 import { ExerciseVariantsDrawerTrigger } from "./exercise-variants-drawer-trigger";
 
 function buildInitialVariants( variants: Awaited<ReturnType<typeof useExerciseVariants>>["data"] ): DraftVariantItem[] {
@@ -69,9 +71,20 @@ export function ExerciseVariantsDrawer( props: ExerciseVariantsDrawerProps ) {
 	const setIsOpen = props.onOpenChangeAction ?? setInternalIsOpen;
 	const showTriggerLabel = props.triggerVariant === "button";
 	const variantsQuery = useExerciseVariants( props.routineId ?? "", isOpen && Boolean( props.routineId ) );
+	// Ejercicio sin guardar: las variantes esperan en el borrador del dia. Del
+	// borrador solo vienen los ids; el nombre y la imagen salen del catalogo.
+	const isPendingMode = !props.routineId && Boolean( props.onPendingChangeAction );
+	const coachExercisesQuery = useCoachExercises();
+	const pendingVariants: DraftVariantItem[] = isPendingMode
+		? ( props.pendingVariantExerciseIds ?? EMPTY_ARRAY ).flatMap( ( variantExerciseId ) => {
+			const exercise = ( coachExercisesQuery.data ?? EMPTY_ARRAY ).find( ( candidate ) => candidate.id === variantExerciseId );
+
+			return exercise ? [ { exercise: mapCoachExerciseToVariantTarget( exercise ), relationId: null } ] : [];
+		} )
+		: EMPTY_ARRAY;
 
 	function openDrawer() {
-		if (!props.routineId) return;
+		if (!props.routineId && !isPendingMode) return;
 
 		setIsOpen( true );
 	}
@@ -96,7 +109,24 @@ export function ExerciseVariantsDrawer( props: ExerciseVariantsDrawerProps ) {
 			<FeatureDrawerLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange } rightContentClassName={ "w-[38rem]" }>
 				<ExerciseVariantsDrawerHeader exercise={ props.exercise }/>
 
-				{ variantsQuery.isError ? (
+				{ isPendingMode ? (
+					coachExercisesQuery.isLoading ? (
+						<Drawer.Body className={ "min-h-0 flex-1 overflow-y-auto py-3" }>
+							<div className={ "flex min-h-56 items-center justify-center" } role={ "status" }>
+								<Spinner aria-label={ "Cargando catálogo" } size={ "lg" }/>
+							</div>
+						</Drawer.Body>
+					) : (
+						<ExerciseVariantsDrawerContent
+							key={ "pending" }
+							exercise={ props.exercise }
+							routineId={ null }
+							initialVariants={ pendingVariants }
+							onCloseAction={ () => setIsOpen( false ) }
+							onPendingChangeAction={ props.onPendingChangeAction }
+						/>
+					)
+				) : variantsQuery.isError ? (
 					<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 						<Alert className={ "border border-danger/20" } status={ "danger" }>
 							<Alert.Content>
@@ -128,6 +158,7 @@ export function ExerciseVariantsDrawer( props: ExerciseVariantsDrawerProps ) {
 					</Drawer.Body>
 				) : (
 					<ExerciseVariantsDrawerContent
+						key={ props.routineId }
 						exercise={ props.exercise }
 						routineId={ props.routineId }
 						initialVariants={ buildInitialVariants( variantsQuery.data ) }
