@@ -1,39 +1,21 @@
 "use client";
 
-import type { GenderFormValue, StudentFormValues } from "@/features/students/services/student-form";
-import { GENDER_OPTIONS, NO_GENDER } from "@/features/students/services/student-form";
+import type { StudentFormValues } from "@/features/students/services/student-form";
+import { BirthDatePicker } from "@/features/students/components/shared/birth-date-picker";
+import { GenderSelect } from "@/features/students/components/shared/gender-select";
 
-import type { DateValue } from "@internationalized/date";
-import { parseDate } from "@internationalized/date";
 import { useState } from "react";
 
 import {
 	Button,
-	Calendar,
 	Checkbox,
-	DateField,
-	DatePicker,
 	Description,
 	FieldError,
 	Input,
 	Label,
-	ListBox,
-	Select,
 	TextField,
 } from "@heroui/react";
 import { Eye, EyeOff } from "lucide-react";
-
-function getBirthDateValue( value: string ): DateValue | null {
-	const trimmedValue = value.trim();
-
-	if (trimmedValue.length === 0) return null;
-
-	try {
-		return parseDate( trimmedValue );
-	} catch {
-		return null;
-	}
-}
 
 type StudentDrawerProfileSectionProps = {
 	isDniInvalid: boolean;
@@ -55,7 +37,6 @@ export function StudentDrawerProfileSection( {
 												 values,
 											 }: StudentDrawerProfileSectionProps) {
 	const [ isPasswordVisible, setIsPasswordVisible ] = useState(false);
-	const birthDateValue = getBirthDateValue( values.birthDate );
 
 	return (
 		<section className={ "space-y-4" }>
@@ -139,93 +120,15 @@ export function StudentDrawerProfileSection( {
 			</TextField>
 
 			<div className={ "grid gap-4 sm:grid-cols-2" }>
-				<Select
-					autoComplete={ "off" }
-					className={ "w-full" }
-					fullWidth
-					name={ "gender" }
-					placeholder={ "Seleccione género" }
+				<GenderSelect
 					value={ values.gender }
-					onChange={ ( value ) => updateValue( "gender", ( value ?? NO_GENDER ) as GenderFormValue ) }
-				>
-					<Label>Género</Label>
-					<Select.Trigger className={ "border border-border" }>
-						<Select.Value/>
-						<Select.Indicator/>
-					</Select.Trigger>
-					<Select.Popover>
-						<ListBox>
-							<ListBox.Item id={ NO_GENDER } textValue={ "Sin especificar" }>
-								Sin especificar
-								<ListBox.ItemIndicator/>
-							</ListBox.Item>
-							{ GENDER_OPTIONS.map( ( option ) => (
-								<ListBox.Item key={ option.value } id={ option.value } textValue={ option.label }>
-									{ option.label }
-									<ListBox.ItemIndicator/>
-								</ListBox.Item>
-							) ) }
-						</ListBox>
-					</Select.Popover>
-				</Select>
+					onChange={ ( value ) => updateValue( "gender", value ) }
+				/>
 
-				<DatePicker
-					autoComplete={ "off" }
-					className={ "w-full" }
-					granularity={ "day" }
-					name={ "birthDate" }
-					shouldForceLeadingZeros
-					value={ birthDateValue }
-					onChange={ ( value ) => updateValue( "birthDate", value ? value.toString() : "" ) }
-				>
-					<Label>Fecha de nacimiento</Label>
-					<DateField.Group fullWidth className={ "border border-border" }>
-						<DateField.Input>
-							{ (segment) => (
-								<DateField.Segment
-									className={
-										segment.type === "day" || segment.type === "month"
-											? "min-w-[2ch] text-center"
-											: segment.type === "year"
-												? "min-w-[4ch] text-center"
-												: undefined
-									}
-									segment={ segment }
-								/>
-							) }
-						</DateField.Input>
-						<DateField.Suffix>
-							<DatePicker.Trigger type={ "button" }>
-								<DatePicker.TriggerIndicator/>
-							</DatePicker.Trigger>
-						</DateField.Suffix>
-					</DateField.Group>
-					<DatePicker.Popover className={ "min-w-68 overflow-visible" }>
-						<Calendar aria-label={ "Fecha de nacimiento" } className={ "w-68" }>
-							<Calendar.Header>
-								<Calendar.YearPickerTrigger>
-									<Calendar.YearPickerTriggerHeading/>
-									<Calendar.YearPickerTriggerIndicator/>
-								</Calendar.YearPickerTrigger>
-								<Calendar.NavButton slot={ "previous" }/>
-								<Calendar.NavButton slot={ "next" }/>
-							</Calendar.Header>
-							<Calendar.Grid>
-								<Calendar.GridHeader>
-									{ ( day ) => <Calendar.HeaderCell>{ day }</Calendar.HeaderCell> }
-								</Calendar.GridHeader>
-								<Calendar.GridBody>
-									{ ( date ) => <Calendar.Cell date={ date }/> }
-								</Calendar.GridBody>
-							</Calendar.Grid>
-							<Calendar.YearPickerGrid>
-								<Calendar.YearPickerGridBody>
-									{ ( { year } ) => <Calendar.YearPickerCell year={ year }/> }
-								</Calendar.YearPickerGridBody>
-							</Calendar.YearPickerGrid>
-						</Calendar>
-					</DatePicker.Popover>
-				</DatePicker>
+				<BirthDatePicker
+					value={ values.birthDate }
+					onChange={ ( value ) => updateValue( "birthDate", value ) }
+				/>
 			</div>
 
 			{ /* Solo al crear. Al editar, desactivar tiene su propia seccion al final,

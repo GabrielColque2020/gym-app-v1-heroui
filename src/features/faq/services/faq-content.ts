@@ -117,6 +117,23 @@ const STUDENT_FAQ_SECTIONS: FaqSection[] = [
 		],
 		title: "Progreso",
 	},
+	{
+		description: "Cómo corregir tus datos, tus medidas o tu contraseña.",
+		id: "student-profile",
+		items: [
+			{
+				answer: "Tocá tu avatar, arriba a la derecha, y elegí Mi perfil. Ahí corregís tu nombre, email, DNI, género, fecha de nacimiento, altura, peso y objetivo, aunque los haya cargado tu entrenador. Si cambiás el email o el DNI, que son con lo que entrás, te pide tu contraseña actual, y no pueden ser los de otra cuenta.",
+				id: "student-profile-edit",
+				question: "¿Cómo cambio mis datos o mis medidas?",
+			},
+			{
+				answer: "En Mi perfil, en la parte de Contraseña: escribís la actual y la nueva, de al menos 6 caracteres. Si no te acordás de la actual, pedile a tu entrenador que te ponga una nueva.",
+				id: "student-profile-password",
+				question: "¿Cómo cambio mi contraseña?",
+			},
+		],
+		title: "Mi perfil",
+	},
 ];
 
 const COACH_FAQ_SECTIONS: FaqSection[] = [
@@ -273,6 +290,11 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 				answer: "En Estudiantes tocá Editar (el lápiz, en el teléfono) para cambiar sus datos. Al final de ese formulario está Desactivar: pide confirmar y le corta el acceso en el momento, aunque tenga la app abierta. Su rutina, su plan y su historial no se borran. Para volver a activarlo, filtrá por Inactivos y tocá Restaurar.",
 				id: "coach-student-edit",
 				question: "¿Cómo edito o desactivo a un estudiante?",
+			},
+			{
+				answer: "Tocá tu avatar, arriba a la derecha, y elegí Mi perfil. Ahí cambiás tu nombre, email, DNI, género, fecha de nacimiento y tu contraseña. Si cambiás el email o el DNI, que son con lo que entrás, te pide tu contraseña actual, y no pueden ser los de otra cuenta. Tus estudiantes también pueden corregir sus propios datos y medidas desde su perfil; las observaciones siguen siendo solo tuyas.",
+				id: "coach-profile",
+				question: "¿Cómo cambio mis datos o mi contraseña?",
 			},
 		],
 		title: "Problemas comunes",

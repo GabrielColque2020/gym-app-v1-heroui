@@ -36,7 +36,7 @@ export function AppShell( { basePath = "", children, userName, userRole }: AppSh
 		>
 			<DashboardSidebar pathname={ pathname } basePath={ basePath } userName={ userName } userRole={ userRole }/>
 			<Sidebar.Main>
-				<DashboardNavbar/>
+				<DashboardNavbar userName={ userName } userRole={ userRole }/>
 				{ children }
 			</Sidebar.Main>
 		</Sidebar.Provider>

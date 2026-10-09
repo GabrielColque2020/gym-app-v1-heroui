@@ -3,9 +3,10 @@
 import type { NavItem } from "@/constants/nav-items";
 import { NAV_ITEMS } from "@/constants/nav-items";
 
-import { Avatar } from "@heroui/react";
 import { Sidebar, useSidebar, useSidebarPages } from "@heroui-pro/react";
 import { ArrowLeft } from "lucide-react";
+
+import { InitialsAvatar, getRoleLabel } from "@/components/layout/initials-avatar";
 
 import type { Role } from "@/generated/prisma/client";
 
@@ -75,7 +76,7 @@ function SidebarContents( {
 		<>
 			<Sidebar.Header>
 				<div className={ `flex w-full items-center ${ isCollapsed ? "justify-center px-0 py-2" : "gap-3 px-1 py-1" }` }>
-					<GradientInitialsAvatar name={ userName }/>
+					<InitialsAvatar name={ userName }/>
 					<div className={ `${ isCollapsed ? "sr-only" : "flex min-w-0 flex-col" }` } data-sidebar={ "label" }>
 						<span className={ "truncate text-sm font-medium leading-tight text-foreground" }>{ userName }</span>
 						<span className={ "text-xs font-medium leading-tight text-muted" }>{ getRoleLabel( userRole ) }</span>
@@ -268,31 +269,4 @@ function SidebarGroupLink({ id, item, isCurrent }: { id: string; item: NavItem; 
 			<Sidebar.MenuLabel>{ item.label }</Sidebar.MenuLabel>
 		</Sidebar.MenuItem>
 	);
-}
-
-function GradientInitialsAvatar( { name }: { name: string } ) {
-	return (
-		<Avatar
-			className={ "size-10 shrink-0 rounded-full bg-linear-to-br from-accent via-accent/80 to-primary text-accent-foreground shadow-sm" }
-		>
-			<Avatar.Fallback className={ "bg-transparent text-sm font-bold text-accent-foreground" }>
-				{ getInitials( name ) }
-			</Avatar.Fallback>
-		</Avatar>
-	);
-}
-
-function getInitials( name: string ) {
-	const parts = name.trim().split( /\s+/ ).filter( Boolean );
-	const initials = parts.slice( 0, 2 ).map( ( part ) => part[ 0 ]?.toUpperCase() ?? "" ).join( "" );
-
-	return initials || "U";
-}
-
-function getRoleLabel( role: Role ) {
-	if (role === "ADMIN") {
-		return "Administrador";
-	}
-
-	return role === "COACH" ? "Entrenador" : "Estudiante";
 }
