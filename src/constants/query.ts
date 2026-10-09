@@ -14,6 +14,7 @@ export const QUERY_PERSIST_MAX_AGE_MS = 4 * 60 * 60 * 1000; // 4 horas
 export const QUERY_PERSIST_BUSTER = "v2";
 export const QUERY_NON_PERSISTED_KEY_PREFIXES = [
 	"coach-exercise-variants",
+	"coach-exercise-delete-impact",
 ] as const;
 
 export const QUERY_VOLATILE_DEFAULTS = {

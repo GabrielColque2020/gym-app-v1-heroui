@@ -411,6 +411,89 @@ export async function toggleCoachExerciseStatusAction( input: CoachExerciseMutat
 	return saveCoachExerciseAction( input );
 }
 
+export type CoachExerciseDeleteImpact = {
+	// Series cargadas con el ejercicio, o con el como variante: se borran.
+	progressCount: number;
+	// Estudiantes con series o con el ejercicio en su rutina.
+	studentCount: number;
+	// Lugares en rutinas de estudiantes y en plantillas: quedan sin ejercicio.
+	studentRoutineCount: number;
+	templateRoutineCount: number;
+	// Ejercicios donde aparece como variante: deja de estar.
+	variantCount: number;
+};
+
+// Lo que se pierde al eliminar un ejercicio, para decirlo antes de confirmar.
+// Tiene que contar lo mismo que borra `deleteCoachExerciseAction`.
+export async function getCoachExerciseDeleteImpactAction( exerciseId: string ): Promise<ActionResult<CoachExerciseDeleteImpact>> {
+	return runAction( "No se pudo revisar dónde se usa el ejercicio.", async () => {
+		const session = await requireCoachSession( "eliminar ejercicios" );
+		const normalizedExerciseId = normalizeId( exerciseId );
+
+		if (!normalizedExerciseId) {
+			throw new Error( "Tenés que seleccionar un ejercicio válido." );
+		}
+
+		const exercise = await prisma.exerciseCoach.findFirst( {
+			select: { id: true },
+			where: { coachId: session.sub, id: normalizedExerciseId },
+		} );
+
+		if (!exercise) {
+			throw new Error( "No se encontró el ejercicio." );
+		}
+
+		// El progreso hecho con el ejercicio como variante se borra en cascada.
+		const progressWhere = {
+			OR: [ { exerciseId: normalizedExerciseId }, { variantExerciseId: normalizedExerciseId } ],
+		};
+		const [ progressCount, progressStudents, routines, variantCount ] = await Promise.all( [
+			prisma.exerciseProgress.count( { where: progressWhere } ),
+			prisma.exerciseProgress.findMany( { distinct: [ "studentId" ], select: { studentId: true }, where: progressWhere } ),
+			prisma.routine.findMany( {
+				select: {
+					RoutineDay: {
+						select: {
+							trainingRoutineWeek: {
+								select: {
+									routineTemplateId: true,
+									trainingRoutineMonth: { select: { studentId: true } },
+								},
+							},
+						},
+					},
+				},
+				where: { exerciseId: normalizedExerciseId },
+			} ),
+			prisma.routineExerciseVariant.count( { where: { variantExerciseId: normalizedExerciseId } } ),
+		] );
+
+		const studentIds = new Set( progressStudents.map( ( row ) => row.studentId ).filter( Boolean ) );
+		let studentRoutineCount = 0;
+		let templateRoutineCount = 0;
+
+		for (const routine of routines) {
+			const week = routine.RoutineDay?.trainingRoutineWeek;
+			const studentId = week?.trainingRoutineMonth?.studentId;
+
+			if (studentId) {
+				studentRoutineCount += 1;
+				studentIds.add( studentId );
+			} else if (week?.routineTemplateId) {
+				templateRoutineCount += 1;
+			}
+		}
+
+		return {
+			progressCount,
+			studentCount: studentIds.size,
+			studentRoutineCount,
+			templateRoutineCount,
+			variantCount,
+		};
+	} );
+}
+
 export async function deleteCoachExerciseAction( exerciseId: string ) {
 	return runAction( "No se pudo eliminar el ejercicio.", async () => {
 		const session = await requireCoachSession( "eliminar ejercicios del coach" );

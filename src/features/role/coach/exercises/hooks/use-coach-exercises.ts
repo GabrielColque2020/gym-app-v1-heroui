@@ -11,6 +11,7 @@ import {
 import { TRAINING_ROUTINES_STUDENTS_QUERY_KEY } from "@/features/role/coach/training-routines-students/services/training-routines-students-query";
 import {
 	deleteCoachExerciseAction,
+	getCoachExerciseDeleteImpactAction,
 	saveCoachExerciseAction,
 	toggleCoachExerciseStatusAction,
 } from "@/features/role/coach/exercises/actions/coach-exercises";
@@ -64,6 +65,18 @@ export function useDeleteCoachExercise() {
 			invalidateCoachExercises( queryClient );
 			invalidateCoachExerciseRelatedQueries( queryClient );
 		},
+	} );
+}
+
+// Lo que se pierde al eliminar el ejercicio. Se pide al abrir la confirmacion y
+// siempre de nuevo: un numero viejo es justo lo que no puede mostrarse ahi.
+export function useCoachExerciseDeleteImpact( exerciseId: string, isEnabled: boolean ) {
+	return useQuery( {
+		enabled: isEnabled,
+		gcTime: 0,
+		queryFn: () => unwrapped( getCoachExerciseDeleteImpactAction )( exerciseId ),
+		queryKey: [ "coach-exercise-delete-impact", exerciseId ],
+		staleTime: 0,
 	} );
 }
 

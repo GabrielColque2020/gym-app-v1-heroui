@@ -1,8 +1,10 @@
 "use client";
 
 import { Alert, Button, Description, Drawer, Spinner, Surface } from "@heroui/react";
-import { Trash2 } from "lucide-react";
+import { EyeOff, Trash2 } from "lucide-react";
 
+import type { CoachExerciseDeleteImpact } from "@/features/role/coach/exercises/actions/coach-exercises";
+import { useCoachExerciseDeleteImpact } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
@@ -10,21 +12,62 @@ import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-respon
 type CoachDeleteExerciseDrawerProps = {
 	deleteErrorMessage?: string;
 	exercise: CoachExerciseListItem;
+	isDeactivating?: boolean;
 	isDeleting: boolean;
 	isOpen: boolean;
 	onCloseAction: () => void;
 	onConfirmAction: () => void;
+	// Desactivar en vez de eliminar: no se pierde nada. Solo si esta activo.
+	onDeactivateAction?: () => void;
 };
 
+function pluralize( count: number, singular: string, plural: string ) {
+	return `${ count } ${ count === 1 ? singular : plural }`;
+}
+
+// Lo que se pierde, en renglones que se entienden solos. Vacio si no se pierde nada.
+function describeImpact( impact: CoachExerciseDeleteImpact ) {
+	const lines: string[] = [];
+
+	if (impact.progressCount > 0) {
+		lines.push( `Se borran ${ pluralize( impact.progressCount, "serie cargada", "series cargadas" ) } por ${ pluralize( impact.studentCount, "estudiante", "estudiantes" ) }: desaparecen de su historial y su progreso.` );
+	}
+
+	if (impact.studentRoutineCount > 0) {
+		lines.push( `Queda un lugar vacío en ${ pluralize( impact.studentRoutineCount, "día de rutina", "días de rutina" ) } de tus estudiantes.` );
+	}
+
+	if (impact.templateRoutineCount > 0) {
+		lines.push( `Queda un lugar vacío en ${ pluralize( impact.templateRoutineCount, "día", "días" ) } de tus plantillas.` );
+	}
+
+	if (impact.variantCount > 0) {
+		lines.push( `Deja de ser variante en ${ pluralize( impact.variantCount, "ejercicio", "ejercicios" ) } de las rutinas.` );
+	}
+
+	return lines;
+}
+
+// Antes de borrar dice exactamente que se pierde (series de los estudiantes,
+// lugares en rutinas, variantes) y, si se pierde algo, ofrece desactivar: deja
+// de ofrecerse para rutinas nuevas sin borrar nada. El aviso de antes decia que
+// "puede afectar" lo que ven los estudiantes, y borraba su progreso sin decirlo.
 export function CoachDeleteExerciseDrawer( {
 	deleteErrorMessage,
 	exercise,
+	isDeactivating = false,
 	isDeleting,
 	isOpen,
 	onCloseAction,
 	onConfirmAction,
+	onDeactivateAction,
 }: CoachDeleteExerciseDrawerProps ) {
 	const placement = useResponsiveDrawerPlacement();
+	const impactQuery = useCoachExerciseDeleteImpact( exercise.id, isOpen );
+	const impactLines = impactQuery.data ? describeImpact( impactQuery.data ) : [];
+	const hasImpact = impactLines.length > 0;
+	const canDeactivate = Boolean( onDeactivateAction ) && exercise.active;
+	const isBusy = isDeleting || isDeactivating;
 
 	return (
 		<FeatureDrawerLayout
@@ -49,16 +92,58 @@ export function CoachDeleteExerciseDrawer( {
 			</Drawer.Header>
 
 			<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
-				<Alert className={ "border border-danger/20" } status={ "danger" }>
-					<Alert.Content>
-						<Alert.Title>Impacto sobre estudiantes y seguimiento</Alert.Title>
-						<Alert.Description>
-							Si eliminas este ejercicio, dejará de estar disponible para tus rutinas y puede afectar
-							lo que los estudiantes ven en sus rutinas e historial. Usa esta opción solo si estas
-							seguro de removerlo permanentemente de tu operación.
-						</Alert.Description>
-					</Alert.Content>
-				</Alert>
+				{ impactQuery.isPending ? (
+					<div className={ "flex items-center gap-2 text-sm text-muted" } role={ "status" }>
+						<Spinner size={ "sm" }/>
+						Revisando dónde se usa…
+					</div>
+				) : impactQuery.isError ? (
+					<Alert className={ "border border-warning/20" } status={ "warning" }>
+						<Alert.Content>
+							<Alert.Title>No se pudo revisar dónde se usa</Alert.Title>
+							<Alert.Description>
+								Si lo eliminás, se borran las series que tus estudiantes cargaron con este ejercicio.
+								Si no estás seguro, desactivalo.
+							</Alert.Description>
+						</Alert.Content>
+					</Alert>
+				) : hasImpact ? (
+					<Alert className={ "border border-danger/20" } status={ "danger" }>
+						<Alert.Content>
+							<Alert.Title>Esto se pierde al eliminarlo</Alert.Title>
+							<ul className={ "mt-1 list-disc space-y-1 ps-4 text-sm" }>
+								{ impactLines.map( ( line ) => <li key={ line }>{ line }</li> ) }
+							</ul>
+						</Alert.Content>
+					</Alert>
+				) : (
+					<Alert className={ "border border-success/20" } status={ "success" }>
+						<Alert.Content>
+							<Alert.Title>No lo usa nadie</Alert.Title>
+							<Alert.Description>
+								No está en ninguna rutina ni plantilla, y nadie cargó series con él. Se puede eliminar sin perder nada.
+							</Alert.Description>
+						</Alert.Content>
+					</Alert>
+				) }
+
+				{ canDeactivate && ( hasImpact || impactQuery.isError ) ? (
+					<Surface className={ "space-y-3 rounded-xl border border-default-hover bg-surface p-4" }>
+						<p className={ "text-sm text-foreground" }>
+							<span className={ "font-semibold" }>Mejor desactivalo.</span>{ " " }
+							Deja de ofrecerse para rutinas nuevas y no se borra nada: las series de tus estudiantes
+							siguen en su historial. Lo podés restaurar cuando quieras.
+						</p>
+						<Button isDisabled={ isBusy } isPending={ isDeactivating } variant={ "secondary" } onPress={ onDeactivateAction }>
+							{ ( { isPending } ) => (
+								<>
+									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <EyeOff className={ "size-4" }/> }
+									{ isPending ? "Desactivando..." : "Desactivar en su lugar" }
+								</>
+							) }
+						</Button>
+					</Surface>
+				) : null }
 
 				{ deleteErrorMessage ? (
 					<Alert className={ "border border-danger/20" } status={ "danger" }>
@@ -88,12 +173,13 @@ export function CoachDeleteExerciseDrawer( {
 			</Drawer.Body>
 
 			<Drawer.Footer className={ "border-default-100 shrink-0 justify-end gap-2 border-t pt-4" }>
-				<Button isDisabled={ isDeleting } variant={ "secondary" } onPress={ onCloseAction }>
+				<Button isDisabled={ isBusy } variant={ "secondary" } onPress={ onCloseAction }>
 					Cancelar
 				</Button>
 				<Button
 					className={ "bg-danger text-danger-foreground" }
-					isDisabled={ isDeleting }
+					// Mientras se revisa el impacto no se confirma: se borraria sin ver que se pierde.
+					isDisabled={ isBusy || impactQuery.isPending }
 					isPending={ isDeleting }
 					onPress={ onConfirmAction }
 				>

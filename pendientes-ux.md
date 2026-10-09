@@ -28,9 +28,10 @@ medida que se hace.
 - [x] **4. Reloj de descanso.** Pide que la pantalla no se apague mientras corre
   (`use-screen-wake-lock.ts`), y si terminó con la app en segundo plano avisa
   igual al volver ("Terminó hace 40 segundos"), hasta 10 minutos después.
-- [ ] **5. Eliminar un ejercicio propio borra el progreso de los estudiantes** y lo
-  saca de sus rutinas. El aviso tiene que decir cuántos estudiantes y registros
-  se pierden y sugerir "Desactivar".
+- [x] **5. Eliminar un ejercicio propio borraba el progreso sin decirlo.** La
+  confirmación dice cuántas series de cuántos estudiantes se borran, en cuántos
+  días de rutinas y plantillas queda un lugar vacío y de cuántos ejercicios deja
+  de ser variante, y ofrece "Desactivar en su lugar".
 
 ## Prioridad media
 

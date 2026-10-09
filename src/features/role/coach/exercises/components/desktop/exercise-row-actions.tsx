@@ -49,12 +49,16 @@ export function ExerciseRowActions( {
 			await deleteCoachExercise.mutateAsync( exercise.id );
 			setIsDeleteOpen( false );
 			toast.success( "Ejercicio eliminado", {
-				description: "El ejercicio fue borrado permanentemente del catálogo del coach.",
+				description: "Se borró de tu catálogo.",
 			} );
-		} catch (error) {
-			toast.danger( "Error al eliminar ejercicio", {
-				description: error instanceof Error ? error.message : "No se pudo eliminar el ejercicio.",
-			} );
+		} catch {
+			// El motivo queda a la vista dentro de la confirmacion, que sigue abierta.
+		}
+	}
+
+	async function handleDeactivateInstead() {
+		if (await changeStatus()) {
+			setIsDeleteOpen( false );
 		}
 	}
 
@@ -131,10 +135,12 @@ export function ExerciseRowActions( {
 				<CoachDeleteExerciseDrawer
 					deleteErrorMessage={ deleteCoachExercise.error?.message }
 					exercise={ exercise }
+					isDeactivating={ isPending }
 					isDeleting={ deleteCoachExercise.isPending }
 					isOpen={ isDeleteOpen }
 					onCloseAction={ () => setIsDeleteOpen( false ) }
 					onConfirmAction={ handleConfirmDelete }
+					onDeactivateAction={ handleDeactivateInstead }
 				/>
 			) : null }
 		</>

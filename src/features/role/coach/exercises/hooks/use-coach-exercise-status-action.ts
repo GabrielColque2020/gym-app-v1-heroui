@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/action-result";
 import { toast } from "@heroui/react";
 
 import { useToggleCoachExerciseStatus } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
@@ -37,12 +38,16 @@ export function useCoachExerciseStatusAction( { exercise }: UseCoachExerciseStat
 					? "Quedó inactivo solo para tu catálogo."
 					: "Vuelve a estar disponible en tu catálogo.",
 			} );
-		} catch {
+
+			return true;
+		} catch (error) {
 			toast.danger( exercise.active ? "Error al desactivar" : "Error al restaurar", {
-				description: exercise.active
+				description: getErrorMessage( error, exercise.active
 					? "No se pudo desactivar el ejercicio."
-					: "No se pudo activar el ejercicio.",
+					: "No se pudo activar el ejercicio." ),
 			} );
+
+			return false;
 		}
 	}
 
