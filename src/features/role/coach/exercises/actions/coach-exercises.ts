@@ -3,6 +3,7 @@
 import { Prisma } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { requireCoachSession } from "@/features/auth/coach-session";
+import { assertExerciseMediaAllowed, removeUnusedExerciseMedia } from "@/features/exercise-media/services/exercise-media-guard";
 import { formatBodyPart } from "@/features/exercises/services/exercise-form";
 import type { BodyPartValue } from "@/features/exercises/services/exercise-form";
 import { buildCoachExerciseSearchName, mapCategoryToBodyPart } from "@/features/role/coach/exercises/services/coach-exercise-form";
@@ -340,33 +341,71 @@ export async function getCoachExercisesAction(): Promise<CoachExerciseListItem[]
 	}
 }
 
+async function saveCoachExerciseRecord(
+	coachId: string,
+	input: CoachExerciseMutationInput,
+	normalizedInput: ReturnType<typeof validateCoachExerciseInput>,
+) {
+	if (input.sourceType === "global" && input.globalExerciseId) {
+		return upsertCoachOverrideByGlobalExerciseId( coachId, input.globalExerciseId, normalizedInput );
+	}
+
+	if (input.coachExerciseId) {
+		await assertCoachExerciseExists( coachId, input.coachExerciseId );
+
+		return prisma.exerciseCoach.update( {
+			data: normalizedInput,
+			where: {
+				id: input.coachExerciseId,
+			},
+		} );
+	}
+
+	return prisma.exerciseCoach.create( {
+		data: {
+			...normalizedInput,
+			coachId,
+			isOverride: Boolean( input.globalExerciseId ),
+		},
+	} );
+}
+
 export async function saveCoachExerciseAction( input: CoachExerciseMutationInput ) {
 	try {
 		const session = await requireCoachSession( "guardar ejercicios" );
 		const normalizedInput = validateCoachExerciseInput( input );
+		const owner = { id: session.sub, role: "COACH" as const };
+		// Lo que el ejercicio ya tenia guardado y lo del catalogo del que salio:
+		// esas direcciones se aceptan tal cual. Una nueva tiene que ser un archivo
+		// subido por este entrenador.
+		const previous = ( await prisma.exerciseCoach.findFirst( {
+			select: { imageUrl: true, videoUrl: true },
+			where: input.sourceType === "global" && input.globalExerciseId
+				? { coachId: session.sub, globalExerciseId: input.globalExerciseId }
+				: { coachId: session.sub, id: input.coachExerciseId ?? "" },
+		} ) ) as { imageUrl: string | null; videoUrl: string | null } | null;
+		const globalMedia = input.globalExerciseId
+			? ( await prisma.exerciseGlobal.findUnique( {
+				select: { imageUrl: true, videoUrl: true },
+				where: { id: input.globalExerciseId },
+			} ) ) as { imageUrl: string | null; videoUrl: string | null } | null
+			: null;
 
-		if (input.sourceType === "global" && input.globalExerciseId) {
-			return await upsertCoachOverrideByGlobalExerciseId( session.sub, input.globalExerciseId, normalizedInput );
-		}
-
-		if (input.coachExerciseId) {
-			await assertCoachExerciseExists( session.sub, input.coachExerciseId );
-
-			return await prisma.exerciseCoach.update( {
-				data: normalizedInput,
-				where: {
-					id: input.coachExerciseId,
-				},
-			} );
-		}
-
-		return await prisma.exerciseCoach.create( {
-			data: {
-				...normalizedInput,
-				coachId: session.sub,
-				isOverride: Boolean( input.globalExerciseId ),
-			},
+		await assertExerciseMediaAllowed( {
+			alreadyAllowed: [ previous?.imageUrl, previous?.videoUrl, globalMedia?.imageUrl, globalMedia?.videoUrl ],
+			next: { imageUrl: normalizedInput.imageUrl, videoUrl: normalizedInput.videoUrl },
+			owner,
 		} );
+
+		const savedExercise = await saveCoachExerciseRecord( session.sub, input, normalizedInput );
+
+		await removeUnusedExerciseMedia( {
+			next: [ normalizedInput.imageUrl, normalizedInput.videoUrl ],
+			owner,
+			previous: [ previous?.imageUrl, previous?.videoUrl ],
+		} );
+
+		return savedExercise;
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al guardar el ejercicio.";
 
@@ -391,7 +430,9 @@ export async function deleteCoachExerciseAction( exerciseId: string ) {
 			select: {
 				coachId: true,
 				id: true,
+				imageUrl: true,
 				name: true,
+				videoUrl: true,
 			},
 			where: {
 				coachId: session.sub,
@@ -431,6 +472,13 @@ export async function deleteCoachExerciseAction( exerciseId: string ) {
 				},
 			} );
 		}, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable } );
+
+		// Los archivos que el entrenador habia subido para este ejercicio.
+		await removeUnusedExerciseMedia( {
+			next: [],
+			owner: { id: session.sub, role: "COACH" },
+			previous: [ exercise.imageUrl, exercise.videoUrl ],
+		} );
 
 		return {
 			exerciseId: exercise.id,

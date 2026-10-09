@@ -14,7 +14,7 @@ import {
 	TextField
 } from "@heroui/react";
 
-import { AsyncMedia } from "@/components/common";
+import { ExerciseMediaField } from "@/features/exercise-media/components/exercise-media-field";
 import type {
 	AdminExerciseGlobalFormValues
 } from "@/features/role/admin/exercises/services/admin-exercise-global-form";
@@ -25,7 +25,9 @@ type AdminExerciseGlobalDrawerFieldsProps = {
 	isEquipmentInvalid: boolean;
 	isMuscleGroupInvalid: boolean;
 	isNameInvalid: boolean;
+	isSaving: boolean;
 	isTargetInvalid: boolean;
+	onUploadingChangeAction: ( isUploading: boolean ) => void;
 	updateValue: <Key extends keyof AdminExerciseGlobalFormValues>( key: Key, value: AdminExerciseGlobalFormValues[ Key ] ) => void;
 	values: AdminExerciseGlobalFormValues;
 };
@@ -85,7 +87,9 @@ export function AdminExerciseGlobalDrawerFields( {
 	isEquipmentInvalid,
 	isMuscleGroupInvalid,
 	isNameInvalid,
+	isSaving,
 	isTargetInvalid,
+	onUploadingChangeAction,
 	updateValue,
 	values,
 }: AdminExerciseGlobalDrawerFieldsProps ) {
@@ -230,28 +234,25 @@ export function AdminExerciseGlobalDrawerFields( {
 				/>
 			</TextField>
 
-			<div className={ "grid gap-4 md:grid-cols-2" } aria-label={ "Vista previa de medios" }>
-				<div className={ "space-y-2" }>
-					<Label>Vista previa de imagen</Label>
-					<AsyncMedia
-						alt={ `Vista previa de ${ values.name || "ejercicio" }` }
-						className={ "h-56 rounded-2xl border border-border" }
-						emptyLabel={ "No hay imagen cargada para este ejercicio." }
-						spinnerLabel={ `Cargando imagen de ${ values.name || "ejercicio" }` }
-						src={ values.imageUrl }
-					/>
-				</div>
-
-				<div className={ "space-y-2" }>
-					<Label>Vista previa de video / GIF</Label>
-					<AsyncMedia
-						alt={ `Vista previa de video de ${ values.name || "ejercicio" }` }
-						className={ "h-56 rounded-2xl border border-border" }
-						emptyLabel={ "No hay video o GIF cargado para este ejercicio." }
-						spinnerLabel={ `Cargando video de ${ values.name || "ejercicio" }` }
-						src={ values.videoUrl }
-					/>
-				</div>
+			{ /* La imagen y el video del catalogo: los ven todos los entrenadores que
+			     no hayan subido los suyos para este ejercicio. */ }
+			<div className={ "grid gap-4 md:grid-cols-2" }>
+				<ExerciseMediaField
+					exerciseName={ values.name }
+					isDisabled={ isSaving }
+					slot={ "image" }
+					value={ values.imageUrl }
+					onChangeAction={ ( url ) => updateValue( "imageUrl", url ) }
+					onUploadingChangeAction={ onUploadingChangeAction }
+				/>
+				<ExerciseMediaField
+					exerciseName={ values.name }
+					isDisabled={ isSaving }
+					slot={ "video" }
+					value={ values.videoUrl }
+					onChangeAction={ ( url ) => updateValue( "videoUrl", url ) }
+					onUploadingChangeAction={ onUploadingChangeAction }
+				/>
 			</div>
 
 			<div>

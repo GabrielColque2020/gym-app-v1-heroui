@@ -1,6 +1,7 @@
 "use server";
 
 import { requireAdminSession } from "@/features/auth/admin-session";
+import { assertExerciseMediaAllowed, removeUnusedExerciseMedia } from "@/features/exercise-media/services/exercise-media-guard";
 import { buildAdminExerciseGlobalSearchName } from "@/features/role/admin/exercises/services/admin-exercise-global-form";
 import prisma from "@/lib/prisma";
 
@@ -80,11 +81,14 @@ function validateAdminExerciseGlobalInput( input: AdminExerciseGlobalMutationInp
 
 export async function updateAdminExerciseGlobalAction( input: AdminExerciseGlobalMutationInput ) {
 	try {
-		await requireAdminSession( "actualizar ejercicios globales" );
+		const session = await requireAdminSession( "actualizar ejercicios globales" );
+		const owner = { id: session.sub, role: "ADMIN" as const };
 		const currentExercise = await prisma.exerciseGlobal.findUnique( {
 			select: {
 				active: true,
 				attribution: true,
+				imageUrl: true,
+				videoUrl: true,
 			},
 			where: {
 				id: input.id,
@@ -93,7 +97,15 @@ export async function updateAdminExerciseGlobalAction( input: AdminExerciseGloba
 
 		const data = validateAdminExerciseGlobalInput( input, currentExercise?.attribution ?? null );
 
-		return await prisma.$transaction( async ( tx ) => {
+		// Lo que el ejercicio ya tenia se acepta tal cual; lo nuevo tiene que ser
+		// un archivo subido desde el administrador.
+		await assertExerciseMediaAllowed( {
+			alreadyAllowed: [ currentExercise?.imageUrl, currentExercise?.videoUrl ],
+			next: { imageUrl: data.imageUrl, videoUrl: data.videoUrl },
+			owner,
+		} );
+
+		const savedExercise = await prisma.$transaction( async ( tx ) => {
 			const updatedExercise = await tx.exerciseGlobal.update( {
 				data,
 				where: {
@@ -114,6 +126,28 @@ export async function updateAdminExerciseGlobalAction( input: AdminExerciseGloba
 
 			return updatedExercise;
 		} );
+
+		// Un archivo reemplazado se borra solo si ya nadie lo usa: los ejercicios
+		// que los entrenadores editaron guardan su propia copia de la direccion.
+		const replaced: string[] = [];
+
+		for (const url of [ currentExercise?.imageUrl, currentExercise?.videoUrl ]) {
+			if (!url || url === data.imageUrl || url === data.videoUrl) continue;
+
+			const stillUsed = await prisma.exerciseCoach.count( {
+				where: { OR: [ { imageUrl: url }, { videoUrl: url } ] },
+			} );
+
+			if (stillUsed === 0) replaced.push( url );
+		}
+
+		await removeUnusedExerciseMedia( {
+			next: [ data.imageUrl, data.videoUrl ],
+			owner,
+			previous: replaced,
+		} );
+
+		return savedExercise;
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Error desconocido al actualizar el ejercicio global.";
 

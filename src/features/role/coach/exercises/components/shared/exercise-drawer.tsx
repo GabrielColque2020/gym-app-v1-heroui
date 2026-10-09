@@ -76,13 +76,20 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 	const [ values, setValues ] = useState<CoachExerciseFormValues>( () => getInitialValues( props.exercise ) );
 	const saveCoachExercise = useSaveCoachExercise();
 	const wasOpenRef = useRef( false );
+	// Cuantos archivos se estan subiendo: mientras haya alguno no se guarda,
+	// porque el ejercicio quedaria sin la imagen o el video que se eligio.
+	const [ uploadingCount, setUploadingCount ] = useState( 0 );
+	const isUploadingMedia = uploadingCount > 0;
+	const handleUploadingChange = useCallback( ( isUploading: boolean ) => {
+		setUploadingCount( ( count ) => Math.max( 0, count + ( isUploading ? 1 : -1 ) ) );
+	}, [] );
 
 	const isEditMode = props.mode === "edit";
 	const currentExercise = isEditMode ? props.exercise : null;
 	const activeMutation = saveCoachExercise;
 	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
 	const isCategoryInvalid = values.category.trim().length > 0 && values.category.trim().length < 2;
-	const isSubmitDisabled = values.name.trim().length < 2 || values.category.trim().length < 2 || activeMutation.isPending;
+	const isSubmitDisabled = values.name.trim().length < 2 || values.category.trim().length < 2 || activeMutation.isPending || isUploadingMedia;
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear ejercicio";
 	const showEditTriggerLabel = props.triggerVariant === "button";
 	const isOpen = props.isOpen ?? internalIsOpen;
@@ -232,9 +239,9 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 					<ExerciseDrawerFields
 						isCategoryInvalid={ isCategoryInvalid }
 						isNameInvalid={ isNameInvalid }
-						mediaImageUrl={ canShowGlobalMediaPreview ? values.imageUrl : null }
-						mediaVideoUrl={ canShowGlobalMediaPreview ? values.videoUrl : null }
-						showMediaPreview={ canShowGlobalMediaPreview }
+						isFromCatalog={ canShowGlobalMediaPreview }
+						isSaving={ activeMutation.isPending }
+						onUploadingChangeAction={ handleUploadingChange }
 						updateValue={ updateValue }
 						values={ values }
 					/>
@@ -247,7 +254,7 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 							{ ( { isPending } ) => (
 								<>
 									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CheckCircle2 className={ "size-4" }/> }
-									{ isPending ? ( isEditMode ? "Actualizando..." : "Guardando..." ) : submitLabel }
+									{ isPending ? ( isEditMode ? "Actualizando..." : "Guardando..." ) : isUploadingMedia ? "Subiendo archivo..." : submitLabel }
 								</>
 							) }
 						</Button>

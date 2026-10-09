@@ -46,6 +46,12 @@ export function AdminExerciseGlobalDrawer( {
 	const updateAdminExerciseGlobal = useUpdateAdminExerciseGlobal();
 	const wasOpenRef = useRef( false );
 	const placement = useResponsiveDrawerPlacement();
+	// Mientras sube un archivo no se guarda: el ejercicio quedaria sin el.
+	const [ uploadingCount, setUploadingCount ] = useState( 0 );
+	const isUploadingMedia = uploadingCount > 0;
+	const handleUploadingChange = useCallback( ( isUploading: boolean ) => {
+		setUploadingCount( ( count ) => Math.max( 0, count + ( isUploading ? 1 : -1 ) ) );
+	}, [] );
 
 	const isOpen = controlledIsOpen ?? internalIsOpen;
 	const setIsOpen = onOpenChangeAction ?? setInternalIsOpen;
@@ -60,7 +66,8 @@ export function AdminExerciseGlobalDrawer( {
 		values.target.trim().length < 2 ||
 		values.muscleGroup.trim().length < 2 ||
 		values.equipment.trim().length < 2 ||
-		updateAdminExerciseGlobal.isPending;
+		updateAdminExerciseGlobal.isPending ||
+		isUploadingMedia;
 
 	const resetFormState = useCallback( () => {
 		setValues( getInitialValues( exercise ) );
@@ -183,8 +190,10 @@ export function AdminExerciseGlobalDrawer( {
 						isEquipmentInvalid={ isEquipmentInvalid }
 						isMuscleGroupInvalid={ isMuscleGroupInvalid }
 						isNameInvalid={ isNameInvalid }
+						isSaving={ updateAdminExerciseGlobal.isPending }
 						isTargetInvalid={ isTargetInvalid }
 						updateValue={ updateValue }
+						onUploadingChangeAction={ handleUploadingChange }
 						values={ values }
 					/>
 
@@ -196,7 +205,7 @@ export function AdminExerciseGlobalDrawer( {
 							{ ( { isPending } ) => (
 								<>
 									{ isPending ? <Spinner color={ "current" } size={ "sm" }/> : <CheckCircle2 className={ "size-4" }/> }
-									{ isPending ? "Actualizando..." : "Guardar cambios" }
+									{ isPending ? "Actualizando..." : isUploadingMedia ? "Subiendo archivo..." : "Guardar cambios" }
 								</>
 							) }
 						</Button>

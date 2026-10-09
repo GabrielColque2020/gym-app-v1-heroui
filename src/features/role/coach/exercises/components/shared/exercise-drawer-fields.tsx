@@ -15,7 +15,7 @@ import {
 	TextField
 } from "@heroui/react";
 
-import { AsyncMedia } from "@/components/common";
+import { ExerciseMediaField } from "@/features/exercise-media/components/exercise-media-field";
 import { BODY_PART_OPTIONS, formatBodyPart } from "@/features/exercises/services/exercise-formatters";
 import type { CoachExerciseFormValues } from "@/features/role/coach/exercises/services/coach-exercise-form";
 import { useCoachExercises } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
@@ -23,9 +23,11 @@ import { useCoachExercises } from "@/features/role/coach/exercises/hooks/use-coa
 type ExerciseDrawerFieldsProps = {
 	isCategoryInvalid: boolean;
 	isNameInvalid: boolean;
-	mediaImageUrl?: string | null;
-	mediaVideoUrl?: string | null;
-	showMediaPreview?: boolean;
+	// El ejercicio sale del catalogo general: la imagen y el video que se ven
+	// son los del catalogo hasta que el entrenador suba los suyos.
+	isFromCatalog?: boolean;
+	isSaving?: boolean;
+	onUploadingChangeAction: ( isUploading: boolean ) => void;
 	updateValue: <Key extends keyof CoachExerciseFormValues>( key: Key, value: CoachExerciseFormValues[ Key ] ) => void;
 	values: CoachExerciseFormValues;
 };
@@ -148,9 +150,9 @@ function OptionalSelect( { label, name, onChangeAction, options, value }: Option
 export function ExerciseDrawerFields( {
 	isCategoryInvalid,
 	isNameInvalid,
-	mediaImageUrl,
-	mediaVideoUrl,
-	showMediaPreview = false,
+	isFromCatalog = false,
+	isSaving = false,
+	onUploadingChangeAction,
 	updateValue,
 	values,
 }: ExerciseDrawerFieldsProps ) {
@@ -244,31 +246,33 @@ export function ExerciseDrawerFields( {
 				/>
 			</TextField>
 
-			{ showMediaPreview ? (
-				<div className={ "grid gap-4 md:grid-cols-2" } aria-label={ "Vista previa de medios" }>
-					<div className={ "space-y-2" }>
-						<Label>Vista previa de imagen</Label>
-						<AsyncMedia
-							alt={ `Vista previa de ${ values.name || "ejercicio" }` }
-							className={ "h-56 rounded-2xl border border-border" }
-							emptyLabel={ "No hay imagen disponible para este ejercicio global." }
-							spinnerLabel={ `Cargando imagen de ${ values.name || "ejercicio" }` }
-							src={ mediaImageUrl }
-						/>
-					</div>
-
-					<div className={ "space-y-2" }>
-						<Label>Vista previa de video / GIF</Label>
-						<AsyncMedia
-							alt={ `Vista previa de video de ${ values.name || "ejercicio" }` }
-							className={ "h-56 rounded-2xl border border-border" }
-							emptyLabel={ "No hay video o GIF disponible para este ejercicio global." }
-							spinnerLabel={ `Cargando video de ${ values.name || "ejercicio" }` }
-							src={ mediaVideoUrl }
-						/>
-					</div>
+			{ /* La imagen y el video se suben aca. Se guardan con el ejercicio al
+			     tocar el boton de abajo. */ }
+			<div className={ "space-y-2" }>
+				<div className={ "grid gap-4 md:grid-cols-2" }>
+					<ExerciseMediaField
+						exerciseName={ values.name }
+						isDisabled={ isSaving }
+						slot={ "image" }
+						value={ values.imageUrl }
+						onChangeAction={ ( url ) => updateValue( "imageUrl", url ) }
+						onUploadingChangeAction={ onUploadingChangeAction }
+					/>
+					<ExerciseMediaField
+						exerciseName={ values.name }
+						isDisabled={ isSaving }
+						slot={ "video" }
+						value={ values.videoUrl }
+						onChangeAction={ ( url ) => updateValue( "videoUrl", url ) }
+						onUploadingChangeAction={ onUploadingChangeAction }
+					/>
 				</div>
-			) : null }
+				{ isFromCatalog ? (
+					<p className={ "text-xs text-muted" }>
+						Este ejercicio viene del catálogo. Si quitás tu imagen o tu video, vuelven a verse los del catálogo.
+					</p>
+				) : null }
+			</div>
 
 			<div>
 				<Checkbox
