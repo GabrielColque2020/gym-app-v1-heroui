@@ -76,5 +76,5 @@ export function formatMegabytes( bytes: number ) {
 
 export const EXERCISE_MEDIA_HELP = {
 	image: `JPG, PNG o WebP, hasta ${ formatMegabytes( EXERCISE_IMAGE_MAX_BYTES ) }.`,
-	video: `MP4, WebM, MOV o GIF, hasta ${ formatMegabytes( EXERCISE_VIDEO_MAX_BYTES ) } y ${ EXERCISE_VIDEO_MAX_SECONDS } segundos.`,
+	video: `GIF, MP4, WebM o MOV, hasta ${ formatMegabytes( EXERCISE_VIDEO_MAX_BYTES ) }. Los videos, hasta ${ EXERCISE_VIDEO_MAX_SECONDS } segundos.`,
 } as const;

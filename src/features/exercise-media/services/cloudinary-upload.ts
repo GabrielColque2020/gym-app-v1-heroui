@@ -176,11 +176,14 @@ export async function verifyUploadedExerciseMedia(
 		return { ok: false, reason: "El formato del archivo no está permitido." };
 	}
 
+	// `media_metadata` no es opcional: sin el, Cloudinary no informa la duracion
+	// de algunos videos (los WebM grabados desde el navegador) y uno de 33
+	// segundos pasaba como valido.
 	let details: { bytes?: number; duration?: number } | null = null;
 
 	try {
 		const response = await fetch(
-			`https://api.cloudinary.com/v1_1/${ credentials.cloudName }/resources/${ parsed.resourceType }/upload/${ parsed.publicId.split( "/" ).map( encodeURIComponent ).join( "/" ) }`,
+			`https://api.cloudinary.com/v1_1/${ credentials.cloudName }/resources/${ parsed.resourceType }/upload/${ parsed.publicId.split( "/" ).map( encodeURIComponent ).join( "/" ) }?media_metadata=true`,
 			{ cache: "no-store", headers: { Authorization: buildBasicAuth( credentials ) } },
 		);
 
@@ -198,10 +201,20 @@ export async function verifyUploadedExerciseMedia(
 		return { ok: false, reason: `El archivo pesa más de ${ formatMegabytes( rules.maxBytes ) }.` };
 	}
 
-	if (rules.maxSeconds !== null && typeof details.duration === "number" && details.duration > rules.maxSeconds + 0.5) {
-		await destroyExerciseMedia( credentials, input.url );
+	if (rules.maxSeconds !== null) {
+		// Un video sin duracion conocida no se acepta: no hay forma de saber si
+		// respeta el limite.
+		if (typeof details.duration !== "number") {
+			await destroyExerciseMedia( credentials, input.url );
 
-		return { ok: false, reason: `El video dura más de ${ EXERCISE_VIDEO_MAX_SECONDS } segundos.` };
+			return { ok: false, reason: "No se pudo saber cuánto dura el video. Probá con otro archivo." };
+		}
+
+		if (details.duration > rules.maxSeconds + 0.5) {
+			await destroyExerciseMedia( credentials, input.url );
+
+			return { ok: false, reason: `El video dura más de ${ EXERCISE_VIDEO_MAX_SECONDS } segundos.` };
+		}
 	}
 
 	return { ok: true };

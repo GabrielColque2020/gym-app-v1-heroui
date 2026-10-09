@@ -32,7 +32,8 @@ const ACCEPT = {
 
 const TEXT = {
 	image: { empty: "Sin imagen", label: "Imagen", upload: "Subir imagen" },
-	video: { empty: "Sin video", label: "Video corto o GIF", upload: "Subir video" },
+	// El GIF va primero: es lo que mas se sube, igual que en el catalogo.
+	video: { empty: "Sin GIF ni video", label: "GIF o video corto", upload: "Subir GIF o video" },
 } as const;
 
 // Cuanto dura un video, leido en el navegador antes de subirlo. `null` si el
@@ -41,14 +42,34 @@ function readVideoDuration( file: File ) {
 	return new Promise<number | null>( ( resolve ) => {
 		const video = document.createElement( "video" );
 		const objectUrl = URL.createObjectURL( file );
+		let isDone = false;
 		const finish = ( duration: number | null ) => {
+			if (isDone) return;
+
+			isDone = true;
 			URL.revokeObjectURL( objectUrl );
 			resolve( duration );
 		};
 
 		video.preload = "metadata";
-		video.onloadedmetadata = () => finish( Number.isFinite( video.duration ) ? video.duration : null );
+		video.onloadedmetadata = () => {
+			if (Number.isFinite( video.duration )) {
+				finish( video.duration );
+				return;
+			}
+
+			// Algunos videos (los WebM grabados desde el navegador o la camara) no
+			// traen la duracion escrita y el navegador responde "infinito". Saltar
+			// al final lo obliga a calcularla.
+			video.ontimeupdate = () => {
+				video.ontimeupdate = null;
+				finish( Number.isFinite( video.duration ) ? video.duration : null );
+			};
+			video.currentTime = Number.MAX_SAFE_INTEGER;
+		};
 		video.onerror = () => finish( null );
+		// Si el navegador no llega a responder, decide el servidor al guardar.
+		window.setTimeout( () => finish( null ), 4000 );
 		video.src = objectUrl;
 	} );
 }
