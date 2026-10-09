@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { Alert, Button, Card, FieldError, Input, Label, Spinner, TextField, Typography, } from "@heroui/react";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 
+import { LEAVE_SESSION_REASON_PARAM } from "@/features/auth/services/leave-session";
 import { useLogin } from "@/features/login/hooks/use-login";
 import { persistThemePreference, themePreferenceToUiThemePreference, } from "@/features/theme/theme-preference";
 
@@ -19,6 +20,13 @@ export default function LoginPageContent() {
 	const [ isPasswordVisible, setIsPasswordVisible ] = useState( false );
 	// Entre que el ingreso se acepta y carga la pantalla siguiente.
 	const [ isRedirecting, setIsRedirecting ] = useState( false );
+	// Por que la app saco a la persona hasta aca, si fue eso lo que paso.
+	const leaveReason = searchParams.get( LEAVE_SESSION_REASON_PARAM );
+	const leaveNotice = leaveReason === "inactive"
+		? { description: "Pedile a tu entrenador que la vuelva a activar.", title: "Tu cuenta fue desactivada" }
+		: leaveReason === "expired"
+			? { description: "Ingresá de nuevo para seguir.", title: "Tu sesión terminó" }
+			: null;
 
 	const isCredentialInvalid = credential.trim().length > 0 && credential.trim().length < 3;
 	const isPasswordInvalid = password.length === 0;
@@ -143,6 +151,16 @@ export default function LoginPageContent() {
 							</Typography>
 						</div>
 					</div>
+
+					{ /* Se va cuando hay un error de ingreso, para no mostrar dos avisos. */ }
+					{ leaveNotice && !loginMutation.isError ? (
+						<Alert className={ "border border-warning/20" } status={ "warning" }>
+							<Alert.Content>
+								<Alert.Title>{ leaveNotice.title }</Alert.Title>
+								<Alert.Description>{ leaveNotice.description }</Alert.Description>
+							</Alert.Content>
+						</Alert>
+					) : null }
 
 					{ loginMutation.isError ? (
 						<Alert className={ "border border-danger/20" } status={ "danger" }>

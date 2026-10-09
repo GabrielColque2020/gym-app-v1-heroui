@@ -6,8 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button, Modal, Spinner, Typography } from "@heroui/react";
 import { AlertTriangle, LogOut } from "lucide-react";
 
-import { clearRoutineStateOnLogout } from "@/features/routine/services/routine-logout";
-import { clearAppliedThemePreference } from "@/features/theme/theme-preference";
+import { leaveSession } from "@/features/auth/services/leave-session";
 
 type LogoutConfirmModalProps = {
 	isOpen: boolean;
@@ -26,21 +25,7 @@ export function LogoutConfirmModal( {
 
 		setIsLoggingOut( true );
 
-		try {
-			await fetch( "/api/auth/logout", {
-				method: "POST",
-			} );
-		} finally {
-			clearRoutineStateOnLogout();
-			clearAppliedThemePreference();
-			queryClient.clear();
-			window.sessionStorage.clear();
-			// Carga completa y no una navegacion interna: asi no queda viva la
-			// pantalla anterior, con sus consultas y reintentos. Esos pedidos
-			// seguian saliendo despues de cerrar sesion y, al entrar otra cuenta,
-			// podian dejar la pantalla de ingreso trabada.
-			window.location.replace( "/login" );
-		}
+		await leaveSession( queryClient );
 	}
 
 	function handleCancel() {
