@@ -9,6 +9,7 @@ import { CheckCircle2, CircleSlash, EllipsisVertical, PencilLine } from "lucide-
 
 import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
 import { useStudentStatusAction } from "@/features/students/hooks/use-student-status-action";
+import { DeactivateConfirmModal } from "@/features/shared/components/deactivate-confirm-modal";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 
 type StudentActionMenuProps = {
@@ -17,6 +18,7 @@ type StudentActionMenuProps = {
 
 export function StudentActionMenu( { student }: StudentActionMenuProps ) {
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
+	const [ isDeactivateOpen, setIsDeactivateOpen ] = useState( false );
 	const { changeStatus, isPending, statusLabel } = useStudentStatusAction( { student } );
 	const placement = useResponsiveDrawerPlacement();
 
@@ -27,6 +29,12 @@ export function StudentActionMenu( { student }: StudentActionMenuProps ) {
 		}
 
 		if (key === "status") {
+			// Desactivar pide confirmar; restaurar no, porque no le saca nada a nadie.
+			if (student.active) {
+				setIsDeactivateOpen( true );
+				return;
+			}
+
 			void changeStatus();
 		}
 	}
@@ -80,6 +88,14 @@ export function StudentActionMenu( { student }: StudentActionMenuProps ) {
 				placement={ placement }
 				student={ student }
 				onOpenChangeAction={ setIsEditOpen }
+			/>
+			<DeactivateConfirmModal
+				description={ "No va a poder entrar a la app hasta que lo restaures. Su rutina, su plan y su historial no se borran." }
+				isOpen={ isDeactivateOpen }
+				isPending={ isPending }
+				title={ `Desactivar a ${ student.name }` }
+				onConfirmAction={ changeStatus }
+				onOpenChangeAction={ setIsDeactivateOpen }
 			/>
 		</>
 	);

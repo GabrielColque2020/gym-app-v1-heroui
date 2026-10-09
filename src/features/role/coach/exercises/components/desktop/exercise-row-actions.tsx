@@ -13,6 +13,7 @@ import { ExerciseDrawer } from "@/features/role/coach/exercises/components/share
 import { useDeleteCoachExercise } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 import { useCoachExerciseStatusAction } from "@/features/role/coach/exercises/hooks/use-coach-exercise-status-action";
 import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
+import { DeactivateConfirmModal } from "@/features/shared/components/deactivate-confirm-modal";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 
 type ExerciseRowActionsProps = {
@@ -24,6 +25,7 @@ export function ExerciseRowActions( {
 }: ExerciseRowActionsProps ) {
 	const [ isDetailOpen, setIsDetailOpen ] = useState( false );
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
+	const [ isDeactivateOpen, setIsDeactivateOpen ] = useState( false );
 	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
 	const { changeStatus, isPending, statusLabel } = useCoachExerciseStatusAction( { exercise } );
 	const deleteCoachExercise = useDeleteCoachExercise();
@@ -42,6 +44,12 @@ export function ExerciseRowActions( {
 		}
 
 		if (key === "status") {
+			// Desactivar pide confirmar; restaurar no, porque no le saca nada a nadie.
+			if (exercise.active) {
+				setIsDeactivateOpen( true );
+				return;
+			}
+
 			void changeStatus();
 			return;
 		}
@@ -135,6 +143,14 @@ export function ExerciseRowActions( {
 				mode={ "edit" }
 				placement={ placement }
 				onOpenChangeAction={ setIsEditOpen }
+			/>
+			<DeactivateConfirmModal
+				description={ "Deja de aparecer al armar rutinas y al elegir variantes. Las rutinas que ya lo tienen lo conservan. Lo podés restaurar cuando quieras." }
+				isOpen={ isDeactivateOpen }
+				isPending={ isPending }
+				title={ `Desactivar ${ exercise.name }` }
+				onConfirmAction={ changeStatus }
+				onOpenChangeAction={ setIsDeactivateOpen }
 			/>
 			{ canDeleteExercise ? (
 				<CoachDeleteExerciseDrawer

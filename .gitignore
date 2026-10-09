@@ -42,3 +42,11 @@ next-env.d.ts
 /src/generated
 /public/exercises-dataset/images
 /public/exercises-dataset/videos
+
+# HeroUI Pro agent skills (licensed - do not commit)
+/.claude/skills/heroui-react-pro/
+/.cursor/skills/heroui-react-pro/
+/.agents/skills/heroui-react-pro/
+/.claude/skills/heroui-pro-design-taste/
+/.cursor/skills/heroui-pro-design-taste/
+/.agents/skills/heroui-pro-design-taste/

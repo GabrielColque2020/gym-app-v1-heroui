@@ -70,6 +70,15 @@ export function useSearchAndCreateExerciseDrawerState( {
 		syncCreatedExerciseAction( exercise );
 		setOrderValue( String( suggestedOrder ) );
 		setIsCreateDrawerOpen( false );
+		// El ejercicio recien creado se crea para agregarlo: se abre directo su
+		// pantalla. En la lista quedaba perdido entre cientos, casi nunca en la
+		// primera pagina, y habia que buscarlo de nuevo.
+		setSetsValue( "" );
+		setRepsValue( "" );
+		setRestValue( null );
+		setVariantItems( [] );
+		setLastAddedName( null );
+		setConfigExercise( exercise );
 		setIsPickerOpen( true );
 	}, [ suggestedOrder, syncCreatedExerciseAction ] );
 

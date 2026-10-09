@@ -11,6 +11,7 @@ import { ExerciseDetailDrawer } from "@/features/role/coach/exercises/components
 import { ExerciseDrawer } from "@/features/role/coach/exercises/components/shared/exercise-drawer";
 import { useDeleteCoachExercise } from "@/features/role/coach/exercises/hooks/use-coach-exercises";
 import { useCoachExerciseStatusAction } from "@/features/role/coach/exercises/hooks/use-coach-exercise-status-action";
+import { DeactivateConfirmModal } from "@/features/shared/components/deactivate-confirm-modal";
 import { formatCoachExerciseSource, formatCoachExerciseSummary } from "@/features/role/coach/exercises/services/coach-exercise-formatters";
 import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
 
@@ -23,6 +24,7 @@ export function ExerciseMobileCard( {
 }: ExerciseMobileCardProps ) {
 	const [ isDetailOpen, setIsDetailOpen ] = useState( false );
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
+	const [ isDeactivateOpen, setIsDeactivateOpen ] = useState( false );
 	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
 	const { changeStatus, isPending, statusLabel } = useCoachExerciseStatusAction( { exercise } );
 	const deleteCoachExercise = useDeleteCoachExercise();
@@ -40,6 +42,12 @@ export function ExerciseMobileCard( {
 		}
 
 		if (key === "status") {
+			// Desactivar pide confirmar; restaurar no, porque no le saca nada a nadie.
+			if (exercise.active) {
+				setIsDeactivateOpen( true );
+				return;
+			}
+
 			void changeStatus();
 			return;
 		}
@@ -171,6 +179,14 @@ export function ExerciseMobileCard( {
 				mode={ "edit" }
 				placement={ "bottom" }
 				onOpenChangeAction={ setIsEditOpen }
+			/>
+			<DeactivateConfirmModal
+				description={ "Deja de aparecer al armar rutinas y al elegir variantes. Las rutinas que ya lo tienen lo conservan. Lo podés restaurar cuando quieras." }
+				isOpen={ isDeactivateOpen }
+				isPending={ isPending }
+				title={ `Desactivar ${ exercise.name }` }
+				onConfirmAction={ changeStatus }
+				onOpenChangeAction={ setIsDeactivateOpen }
 			/>
 			{ canDeleteExercise ? (
 				<CoachDeleteExerciseDrawer
