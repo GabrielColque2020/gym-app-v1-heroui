@@ -268,7 +268,9 @@ model ExerciseProgress {
 
 model ExerciseCoach {
   id           String   @id @default(uuid())
-  externalId   String?  @unique
+  // Codigo del catalogo. No es unico: cada entrenador que usa un ejercicio
+  // global guarda su propia copia con el mismo codigo.
+  externalId   String?
   name         String
   searchName   String? // Nombre normalizado sin acentos y en minÃºsculas
   tips         String?
@@ -300,6 +302,7 @@ model ExerciseCoach {
   @@index([searchName])
   @@index([coachId])
   @@index([globalExerciseId])
+  @@index([externalId])
   @@unique([coachId, globalExerciseId])
 }
 

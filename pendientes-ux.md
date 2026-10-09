@@ -11,14 +11,10 @@ medida que se hace.
   cliente las desenvuelve con `unwrapped` (`src/lib/action-result.ts`). Email o
   DNI repetido se avisa como tal, y los toasts de los formularios muestran el
   motivo.
-- [ ] **Bug: un entrenador no puede guardar un día con un ejercicio global que
-  otro entrenador ya usó.** `ExerciseCoach.externalId` es único en toda la tabla
-  y al guardar el día se copia el del ejercicio global
-  (`routine-day-mutations.utils.ts`, el `upsert` de la copia). La segunda copia
-  choca y el día no se guarda ("Eso ya está cargado."). Empeora al borrar un
-  entrenador: sus copias quedan sin dueño y siguen bloqueando. Hay que hacer el
-  `externalId` único por entrenador (`@@unique([coachId, externalId])`) o no
-  copiarlo, revisando dónde se usa (variantes, sesión del estudiante).
+- [x] **Bug: un entrenador no podía guardar un día con un ejercicio global que
+  otro entrenador ya usó.** `ExerciseCoach.externalId` era único en toda la tabla
+  y cada entrenador guarda su copia con el mismo código. Pasó a índice común
+  (migración `20261011120000_exercise_coach_external_id_not_unique`).
 - [ ] **2. Al vencer la sesión se pierden series sin guardar.** La sesión dura 8
   horas fijas y no se renueva (`session-token.ts`), y `leaveSession` borra los
   borradores de la rutina. Renovar la sesión mientras se usa la app y no borrar
