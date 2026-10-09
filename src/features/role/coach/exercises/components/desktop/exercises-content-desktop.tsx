@@ -5,7 +5,8 @@ import { DataGrid } from "@heroui-pro/react";
 import { Chip } from "@heroui/react";
 import { useMemo } from "react";
 
-import { AsyncMedia, ListPagination } from "@/components/common";
+import { ListPagination } from "@/components/common";
+import { MediaPreviewThumbnail } from "@/components/common/media-preview-thumbnail";
 import {
 	CoachExercisesEmptyState
 } from "@/features/role/coach/exercises/components/shared/coach-exercises-empty-state";
@@ -30,12 +31,13 @@ export function ExercisesContentDesktop( { exercises }: ExercisesContentDesktopP
 				allowsSorting: true,
 				cell: ( exercise ) => (
 					<div className={ "flex min-w-0 items-center gap-3" }>
-						<AsyncMedia
-							alt={ `Imagen de ${ exercise.name }` }
-							className={ "size-18 shrink-0 rounded-xl border border-border" }
-							emptyLabel={ "Sin imagen" }
-							spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
-							src={ exercise.imageUrl }
+						{ /* Al pasar el mouse se ve el movimiento en grande, igual que al
+						     agregar un ejercicio a la rutina. */ }
+						<MediaPreviewThumbnail
+							imageUrl={ exercise.imageUrl }
+							name={ exercise.name }
+							thumbnailClassName={ "size-18" }
+							videoUrl={ exercise.videoUrl }
 						/>
 						<div className={ "flex min-w-0 flex-col" }>
 							<span className={ "line-clamp-2 font-medium text-foreground" }>{ exercise.name }</span>

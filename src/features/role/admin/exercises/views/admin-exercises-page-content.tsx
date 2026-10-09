@@ -6,7 +6,8 @@ import { Button, Card, Chip, Label, ListBox, SearchField, Select } from "@heroui
 import { useMemo } from "react";
 import { CopyX, RotateCw } from "lucide-react";
 
-import { AsyncMedia, ListPagination, PageBreadcrumbs, PageHeader } from "@/components/common";
+import { ListPagination, PageBreadcrumbs, PageHeader } from "@/components/common";
+import { MediaPreviewThumbnail } from "@/components/common/media-preview-thumbnail";
 import { AdminExercisesLoadingState } from "@/features/role/admin/exercises/components/shared/admin-exercises-loading-state";
 import { useAdminExerciseGlobals } from "@/features/role/admin/exercises/hooks/use-admin-exercise-globals";
 import { formatAdminExerciseCode, useAdminExerciseGlobalsPageState, type AdminExerciseGlobalRow } from "@/features/role/admin/exercises/hooks/use-admin-exercise-globals-page-state";
@@ -39,12 +40,11 @@ export default function AdminExercisesPageContent() {
 			minWidth: 260,
 			cell: ( exercise ) => (
 				<div className={ "flex min-w-0 items-center gap-3" }>
-					<AsyncMedia
-						alt={ `Imagen de ${ exercise.name }` }
-						className={ "size-12 shrink-0 rounded-xl border border-border" }
-						emptyLabel={ "Sin imagen" }
-						spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
-						src={ exercise.imageUrl }
+					<MediaPreviewThumbnail
+						imageUrl={ exercise.imageUrl }
+						name={ exercise.name }
+						thumbnailClassName={ "size-12" }
+						videoUrl={ exercise.videoUrl }
 					/>
 					<div className={ "flex min-w-0 flex-col" }>
 						<span className={ "truncate font-medium text-foreground" }>{ exercise.name }</span>

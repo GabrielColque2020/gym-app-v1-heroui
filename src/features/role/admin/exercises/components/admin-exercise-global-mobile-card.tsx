@@ -2,7 +2,7 @@
 
 import { Card, Chip } from "@heroui/react";
 
-import { AsyncMedia } from "@/components/common";
+import { MediaPreviewThumbnail } from "@/components/common/media-preview-thumbnail";
 import { AdminExerciseGlobalRowActions } from "@/features/role/admin/exercises/components/admin-exercise-global-row-actions";
 import { formatAdminExerciseCode, type AdminExerciseGlobalRow } from "@/features/role/admin/exercises/hooks/use-admin-exercise-globals-page-state";
 
@@ -19,12 +19,12 @@ export function AdminExerciseGlobalMobileCard( {
 	return (
 		<Card className={ "border border-border" } variant={ "default" }>
 			<Card.Content className={ "flex flex-row items-center gap-3 p-2" }>
-				<AsyncMedia
-					alt={ `Imagen de ${ exercise.name }` }
-					className={ "size-14 shrink-0 rounded-xl border border-border" }
-					emptyLabel={ "Sin imagen" }
-					spinnerLabel={ `Cargando imagen de ${ exercise.name }` }
-					src={ exercise.imageUrl }
+				{ /* En el telefono se abre al tocar la imagen y se cierra al tocar afuera. */ }
+				<MediaPreviewThumbnail
+					imageUrl={ exercise.imageUrl }
+					name={ exercise.name }
+					thumbnailClassName={ "size-14" }
+					videoUrl={ exercise.videoUrl }
 				/>
 				<div className={ "min-w-0 flex-1 space-y-0.5" }>
 					<p className={ "line-clamp-3 text-sm font-semibold leading-snug text-foreground" }>{ exercise.name }</p>

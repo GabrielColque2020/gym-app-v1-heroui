@@ -11,8 +11,10 @@ type MediaLoadState = "empty" | "error" | "loaded" | "loading";
 
 type AsyncMediaProps = {
 	alt: string;
-	// Un video que arranca solo, en silencio y en bucle, como una animacion. Para
-	// las vistas previas, donde no hay controles ni un toque que lo ponga a andar.
+	// Un video que arranca solo, en silencio y en bucle, como un GIF. Es lo
+	// normal: el movimiento de un ejercicio se mira, no se "reproduce". Los GIF
+	// del catalogo ademas se entregan como video (pesan mucho menos), y con
+	// controles a la vista parecian un reproductor en vez de una animacion.
 	autoPlayLoop?: boolean;
 	className?: string;
 	controls?: boolean;
@@ -34,9 +36,9 @@ function resolveKind( src: string, kind: AsyncMediaKind ) {
 
 export function AsyncMedia( {
 	alt,
-	autoPlayLoop = false,
+	autoPlayLoop = true,
 	className = "",
-	controls = true,
+	controls = false,
 	emptyLabel,
 	errorLabel,
 	kind = "auto",
