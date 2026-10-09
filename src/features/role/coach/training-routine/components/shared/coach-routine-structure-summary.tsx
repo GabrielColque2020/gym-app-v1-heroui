@@ -16,14 +16,14 @@ export function CoachRoutineStructureSummary( {
 			<div className={ "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" }>
 				<div>
 					<Typography className={ "text-sm font-semibold" }>Resumen</Typography>
-					<Description className={ "text-sm" }>La misma cantidad de días se aplicara a cada semana.</Description>
+					<Description className={ "text-sm" }>La misma cantidad de días se aplicará a cada semana.</Description>
 				</div>
 				<div className={ "flex flex-wrap gap-2" }>
 					<Chip color={ selectedWeeksCount > 0 ? "accent" : "default" } size={ "sm" } variant={ "soft" }>
-						{ selectedWeeksCount } semanas activas
+						{ selectedWeeksCount } { selectedWeeksCount === 1 ? "semana activa" : "semanas activas" }
 					</Chip>
 					<Chip color={ selectedDaysCount > 0 ? "accent" : "default" } size={ "sm" } variant={ "soft" }>
-						{ selectedDaysCount } días por semana
+						{ selectedDaysCount } { selectedDaysCount === 1 ? "día" : "días" } por semana
 					</Chip>
 				</div>
 			</div>

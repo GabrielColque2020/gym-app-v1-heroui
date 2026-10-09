@@ -70,7 +70,7 @@ export function StudentDrawerProfileSection( {
 					<Label>Email</Label>
 					<Input autoComplete={ "off" } className={ "border border-border" } placeholder={ "estudiante@email.com" }
 					       type={ "email" }/>
-					{ isEmailInvalid ? <FieldError>Ingresa un email válido.</FieldError> : null }
+					{ isEmailInvalid ? <FieldError>Ingresá un email válido.</FieldError> : null }
 				</TextField>
 
 				<TextField

@@ -125,7 +125,7 @@ export function ProfileDataForm( { initialValues, isStudent }: ProfileDataFormPr
 							>
 								<Label>Email</Label>
 								<Input autoComplete={ "email" } className={ "border border-border" } type={ "email" }/>
-								{ isEmailInvalid ? <FieldError>Ingresa un email válido.</FieldError> : null }
+								{ isEmailInvalid ? <FieldError>Ingresá un email válido.</FieldError> : null }
 							</TextField>
 
 							<TextField

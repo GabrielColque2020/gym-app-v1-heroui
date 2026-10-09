@@ -14,6 +14,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 		description,
 		duplicateNotice,
 		handleOpenChange,
+		hasUnsavedChanges,
 		handleSubmit,
 		isDescriptionInvalid,
 		isEditMode,
@@ -51,6 +52,7 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 				)
 			) }
 			<FeatureDrawerLayout
+				hasUnsavedChanges={ hasUnsavedChanges }
 				isOpen={ isOpen }
 				placement={ placement }
 				rightContentClassName={ "w-[34rem]" }
@@ -68,7 +70,8 @@ export function MealPlanDrawer( props: MealPlanDrawerProps ) {
 					</div>
 				</Drawer.Header>
 
-				<form className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleSubmit }>
+				{ /* `noValidate`: los errores los marca la app, al lado de cada campo. La validacion del navegador frenaba el envio y su aviso no siempre se ve. */ }
+				<form className={ "flex min-h-0 flex-1 flex-col" } noValidate onSubmit={ handleSubmit }>
 					<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 						{ activeMutation.isError ? (
 							<Alert className={ "border border-danger/20" } status={ "danger" }>

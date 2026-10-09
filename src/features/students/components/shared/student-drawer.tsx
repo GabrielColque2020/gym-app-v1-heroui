@@ -18,6 +18,7 @@ export function StudentDrawer( props: StudentFormDrawerProps ) {
 		description,
 		handleOpenChange,
 		handleSubmit,
+		hasUnsavedChanges,
 		isDniInvalid,
 		isEditMode,
 		isEmailInvalid,
@@ -38,7 +39,7 @@ export function StudentDrawer( props: StudentFormDrawerProps ) {
 
 	async function handleFormSubmit( event: React.SubmitEvent<HTMLFormElement> ) {
 		event.preventDefault();
-		await handleSubmit();
+		await handleSubmit( event.currentTarget );
 	}
 
 	return (
@@ -51,6 +52,7 @@ export function StudentDrawer( props: StudentFormDrawerProps ) {
 				onPress={ openDrawer }
 			/>
 			<FeatureDrawerLayout
+				hasUnsavedChanges={ hasUnsavedChanges }
 				isOpen={ isOpen }
 				placement={ placement }
 				rightContentClassName={ "w-135 px-5 pt-5 pb-4" }
@@ -68,7 +70,8 @@ export function StudentDrawer( props: StudentFormDrawerProps ) {
 					</div>
 				</Drawer.Header>
 
-				<form autoComplete={ "off" } className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleFormSubmit }>
+				{ /* `noValidate`: los errores los marca la app, al lado de cada campo. La validacion del navegador frenaba el envio y su aviso no siempre se ve. */ }
+				<form autoComplete={ "off" } className={ "flex min-h-0 flex-1 flex-col" } noValidate onSubmit={ handleFormSubmit }>
 					<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 						{ activeMutation.isError && (
 							<Alert className={ "border border-danger/20" } status={ "danger" }>

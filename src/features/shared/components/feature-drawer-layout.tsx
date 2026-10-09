@@ -1,9 +1,9 @@
 "use client";
 
 import type { ReactElement, ReactNode } from "react";
-import { cloneElement, useRef } from "react";
+import { cloneElement, useRef, useState } from "react";
 
-import { Drawer } from "@heroui/react";
+import { Button, Drawer, Modal } from "@heroui/react";
 import { UNSAFE_PortalProvider } from "@react-aria/overlays";
 import { twMerge } from "tailwind-merge";
 
@@ -11,6 +11,9 @@ type FeatureDrawerPlacement = "bottom" | "right";
 
 type FeatureDrawerLayoutProps = {
 	children: ReactNode;
+	// Con cambios sin guardar, cerrar (la X, Escape, tocar afuera, "Cancelar")
+	// pregunta antes. Un clic afuera de mas tiraba un alta completa.
+	hasUnsavedChanges?: boolean;
 	isDismissable?: boolean;
 	isOpen?: boolean;
 	bottomContentClassName?: string;
@@ -58,6 +61,7 @@ const BOTTOM_CONTENT_CLASS_NAME = [
 // Normaliza la estructura externa de los drawers usados dentro de features.
 export function FeatureDrawerLayout( {
 								 children,
+								 hasUnsavedChanges = false,
 								 isDismissable,
 								 isOpen,
 								 bottomContentClassName,
@@ -67,6 +71,17 @@ export function FeatureDrawerLayout( {
 								 trigger,
 							 }: FeatureDrawerLayoutProps ) {
 	const portalContainerRef = useRef<HTMLDivElement | null>( null );
+	const [ isDiscardOpen, setIsDiscardOpen ] = useState( false );
+
+	function handleOpenChange( nextIsOpen: boolean ) {
+		if (!nextIsOpen && hasUnsavedChanges) {
+			setIsDiscardOpen( true );
+			return;
+		}
+
+		onOpenChangeAction?.( nextIsOpen );
+	}
+
 	// Abajo no se cierra tocando afuera ni arrastrando: el drawer ocupa casi toda
 	// la pantalla y un toque de mas tiraba un formulario a medio llenar. Se
 	// cierra con sus botones. Al costado, un clic afuera es a proposito.
@@ -87,7 +102,7 @@ export function FeatureDrawerLayout( {
 				isDismissable={ canDismiss }
 				isOpen={ isOpen }
 				variant={ "opaque" }
-				onOpenChange={ onOpenChangeAction }
+				onOpenChange={ handleOpenChange }
 			>
 				<Drawer.Content
 					className={ placement === "right" ? RIGHT_CONTENT_CLASS_NAME : BOTTOM_CONTENT_CLASS_NAME }
@@ -105,11 +120,52 @@ export function FeatureDrawerLayout( {
 						<div ref={ portalContainerRef } className={ "contents" } data-drawer-no-drag>
 							<UNSAFE_PortalProvider getContainer={ () => portalContainerRef.current }>
 								{ children }
+								<DiscardChangesModal
+									isOpen={ isDiscardOpen }
+									onDiscardAction={ () => {
+										setIsDiscardOpen( false );
+										onOpenChangeAction?.( false );
+									} }
+									onOpenChangeAction={ setIsDiscardOpen }
+								/>
 							</UNSAFE_PortalProvider>
 						</div>
 					</Drawer.Dialog>
 				</Drawer.Content>
 			</Drawer.Backdrop>
 		</>
+	);
+}
+
+type DiscardChangesModalProps = {
+	isOpen: boolean;
+	onDiscardAction: () => void;
+	onOpenChangeAction: ( isOpen: boolean ) => void;
+};
+
+// Va adentro del drawer (en su contenedor de portales): asi queda encima y el
+// foco no se escapa al fondo.
+function DiscardChangesModal( { isOpen, onDiscardAction, onOpenChangeAction }: DiscardChangesModalProps ) {
+	return (
+		<Modal.Backdrop isOpen={ isOpen } variant={ "blur" } onOpenChange={ onOpenChangeAction }>
+			<Modal.Container placement={ "center" } size={ "sm" }>
+				<Modal.Dialog className={ "mx-auto w-full max-w-sm" }>
+					<Modal.Header>
+						<Modal.Heading>¿Descartar los cambios?</Modal.Heading>
+					</Modal.Header>
+					<Modal.Body>
+						<p className={ "text-sm text-muted" }>Lo que cargaste en este formulario todavía no se guardó.</p>
+					</Modal.Body>
+					<Modal.Footer className={ "gap-2" }>
+						<Button variant={ "secondary" } onPress={ () => onOpenChangeAction( false ) }>
+							Seguir editando
+						</Button>
+						<Button className={ "bg-danger text-danger-foreground" } onPress={ onDiscardAction }>
+							Descartar
+						</Button>
+					</Modal.Footer>
+				</Modal.Dialog>
+			</Modal.Container>
+		</Modal.Backdrop>
 	);
 }

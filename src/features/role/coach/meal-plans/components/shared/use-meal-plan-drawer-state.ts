@@ -6,6 +6,8 @@ import type React from "react";
 import { toast } from "@heroui/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { focusFirstInvalidField } from "@/lib/focus-first-invalid-field";
+
 import { useCreateMealPlan, useUpdateMealPlan } from "@/features/meal-plans/hooks/use-meal-plan-mutations";
 import { formatMealTime, MEAL_TIME_OPTIONS, type MealPlanFormValues, type MealTimeValue } from "@/features/meal-plans/services/meal-plans-form";
 import type { MealPlanDrawerProps } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer.types";
@@ -42,6 +44,10 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const existingMealTimes = props.existingMealTimes ?? NO_MEAL_TIMES;
 	const [ values, setValues ] = useState<MealPlanFormValues>( () => getInitialValues( props.mealPlan, existingMealTimes ) );
+	// Con que valores se abrio: contra eso se mira si hay cambios sin guardar.
+	const [ baselineValues, setBaselineValues ] = useState<MealPlanFormValues>( () => getInitialValues( props.mealPlan, existingMealTimes ) );
+	// Se intento guardar con algo mal: desde ahi se marca tambien lo vacio.
+	const [ hasTriedSubmit, setHasTriedSubmit ] = useState( false );
 	const createMealPlan = useCreateMealPlan();
 	const updateMealPlan = useUpdateMealPlan();
 	const wasOpenRef = useRef( false );
@@ -49,8 +55,11 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 
 	const isEditMode = props.mode === "edit";
 	const activeMutation = isEditMode ? updateMealPlan : createMealPlan;
-	const isDescriptionInvalid = values.description.trim().length > 0 && values.description.trim().length < 2;
-	const isSubmitDisabled = values.description.trim().length < 2 || activeMutation.isPending;
+	const isDescriptionWrong = values.description.trim().length < 2;
+	const isDescriptionInvalid = isDescriptionWrong && ( hasTriedSubmit || values.description.trim().length > 0 );
+	// Solo mientras guarda: con algo mal, tocarlo muestra que falta.
+	const isSubmitDisabled = activeMutation.isPending;
+	const hasUnsavedChanges = !activeMutation.isPending && JSON.stringify( values ) !== JSON.stringify( baselineValues );
 	const title = isEditMode ? "Editar comida" : "Agregar comida";
 	const description = isEditMode
 		? "Cambiá qué comida es o lo que incluye."
@@ -67,7 +76,11 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 		: null;
 
 	const resetFormState = useCallback( () => {
-		setValues( getInitialValues( props.mealPlan, existingMealTimes ) );
+		const openingValues = getInitialValues( props.mealPlan, existingMealTimes );
+
+		setValues( openingValues );
+		setBaselineValues( openingValues );
+		setHasTriedSubmit( false );
 		createMealPlan.reset();
 		updateMealPlan.reset();
 	}, [ createMealPlan, existingMealTimes, props.mealPlan, updateMealPlan ] );
@@ -110,6 +123,13 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 
 		if (isSubmitDisabled) return;
 
+		if (isDescriptionWrong) {
+			setHasTriedSubmit( true );
+			focusFirstInvalidField( event.currentTarget );
+
+			return;
+		}
+
 		try {
 			if (isEditMode) {
 				await updateMealPlan.mutateAsync( {
@@ -145,6 +165,7 @@ export function useMealPlanDrawerState( props: MealPlanDrawerProps ) {
 		description,
 		duplicateNotice,
 		handleOpenChange,
+		hasUnsavedChanges,
 		handleSubmit,
 		isDescriptionInvalid,
 		isEditMode,

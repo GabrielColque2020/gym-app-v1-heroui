@@ -205,7 +205,16 @@ export default function CoachRoutineStructure( {
 				</ScrollShadow>
 			</Drawer.Body>
 
-			<Drawer.Footer className={ "border-default-100 shrink-0 justify-end gap-2 border-t pt-4" }>
+			<Drawer.Footer className={ "border-default-100 shrink-0 flex-wrap items-center justify-end gap-2 border-t pt-4" }>
+				{ /* Por que el boton esta apagado: se veia casi igual que uno activo y no
+				     decia nada. */ }
+				{ sortedSelectedWeeks.length === 0 || sortedSelectedDays.length === 0 ? (
+					<p className={ "me-auto text-sm text-warning" } role={ "status" }>
+						{ sortedSelectedWeeks.length === 0 && sortedSelectedDays.length === 0
+							? "Elegí al menos una semana y un día."
+							: sortedSelectedWeeks.length === 0 ? "Elegí al menos una semana." : "Elegí al menos un día." }
+					</p>
+				) : null }
 				<Button isDisabled={ activeMutation.isPending } variant={ "secondary" } onPress={ onSavedAction }>
 					Cancelar
 				</Button>

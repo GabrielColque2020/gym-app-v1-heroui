@@ -5,7 +5,9 @@ import type { StudentFormDrawerProps } from "@/features/students/components/shar
 import type { StudentFormValues } from "@/features/students/services/student-form";
 
 import { toast } from "@heroui/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import { focusFirstInvalidField } from "@/lib/focus-first-invalid-field";
 
 import {
 	useCreateStudent,
@@ -20,6 +22,8 @@ import {
 export function useStudentDrawerState( props: StudentFormDrawerProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const [ values, setValues ] = useState<StudentFormValues>( () => getInitialStudentFormValues( props.student ) );
+	// Se intento guardar con algo mal: desde ahi se marcan tambien los vacios.
+	const [ hasTriedSubmit, setHasTriedSubmit ] = useState( false );
 	const createStudent = useCreateStudent();
 	const updateStudent = useUpdateStudent();
 	const wasOpenRef = useRef( false );
@@ -31,22 +35,27 @@ export function useStudentDrawerState( props: StudentFormDrawerProps ) {
 	const placement = props.placement ?? "right";
 	const title = isEditMode ? "Editar estudiante" : "Nuevo estudiante";
 	const description = isEditMode
-		? "Actualiza el perfil, estado y objetivos del estudiante."
-		: "Carga un estudiante disponible para seguimiento del coach.";
+		? "Actualizá el perfil, el estado y los objetivos del estudiante."
+		: "Cargá un estudiante para hacerle el seguimiento.";
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear estudiante";
 	const showEditTriggerLabel = props.triggerVariant === "button";
 	const {
 		isDniInvalid,
 		isEmailInvalid,
+		isFormValid,
 		isHeightInvalid,
 		isNameInvalid,
 		isPasswordInvalid,
-		isSubmitDisabled,
 		isWeightInvalid,
-	} = getStudentDrawerValidationState( values, isEditMode, activeMutation.isPending );
+	} = getStudentDrawerValidationState( values, isEditMode, hasTriedSubmit );
+	// Solo mientras guarda: con algo mal, tocarlo muestra que falta.
+	const isSubmitDisabled = activeMutation.isPending;
+	const initialValues = useMemo( () => getInitialStudentFormValues( props.student ), [ props.student ] );
+	const hasUnsavedChanges = !activeMutation.isPending && JSON.stringify( values ) !== JSON.stringify( initialValues );
 
 	const resetFormState = useCallback( () => {
 		setValues( getInitialStudentFormValues( props.student ) );
+		setHasTriedSubmit( false );
 		createStudent.reset();
 		updateStudent.reset();
 	}, [ createStudent, props.student, updateStudent ] );
@@ -85,8 +94,15 @@ export function useStudentDrawerState( props: StudentFormDrawerProps ) {
 		} ) );
 	}
 
-	async function handleSubmit() {
+	async function handleSubmit( form?: HTMLFormElement | null ) {
 		if (isSubmitDisabled) return false;
+
+		if (!isFormValid) {
+			setHasTriedSubmit( true );
+			focusFirstInvalidField( form ?? null );
+
+			return false;
+		}
 
 		try {
 			if (isEditMode) {
@@ -123,6 +139,7 @@ export function useStudentDrawerState( props: StudentFormDrawerProps ) {
 		description,
 		handleOpenChange,
 		handleSubmit,
+		hasUnsavedChanges,
 		isDniInvalid,
 		isEditMode,
 		isEmailInvalid,

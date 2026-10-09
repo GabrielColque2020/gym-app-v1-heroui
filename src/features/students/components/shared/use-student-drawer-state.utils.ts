@@ -51,30 +51,28 @@ function isNonNegativeNumberInput( value: string ) {
 	return Number.isFinite( Number( normalizedValue ) ) && Number( normalizedValue ) >= 0;
 }
 
-export function getStudentDrawerValidationState( values: StudentFormValues, isEditMode: boolean, isPending: boolean ) {
-	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
-	const isEmailInvalid = values.email.trim().length > 0 && !isValidEmail( values.email );
-	const isDniInvalid = values.dni.trim().length > 0 && !/^\d+$/.test( values.dni.trim() );
-	const isPasswordInvalid = values.password.trim().length > 0 && values.password.trim().length < 6;
+// `showAllErrors`: despues de intentar guardar se marcan tambien los obligatorios
+// vacios. Antes de eso, solo lo que ya se escribio mal: un formulario nuevo no
+// arranca lleno de rojo.
+export function getStudentDrawerValidationState( values: StudentFormValues, isEditMode: boolean, showAllErrors: boolean ) {
+	const isNameWrong = values.name.trim().length < 2;
+	const isEmailWrong = !isValidEmail( values.email );
+	const isDniWrong = !/^\d+$/.test( values.dni.trim() ) || Number( values.dni ) <= 0;
+	// Al editar, vacia es "no cambiarla".
+	const isPasswordWrong = values.password.trim().length > 0
+		? values.password.trim().length < 6
+		: !isEditMode;
 	const isHeightInvalid = !isNonNegativeNumberInput( values.height );
 	const isWeightInvalid = !isNonNegativeNumberInput( values.weight );
-	const isSubmitDisabled = values.name.trim().length < 2
-		|| !isValidEmail( values.email )
-		|| !/^\d+$/.test( values.dni.trim() )
-		|| Number( values.dni ) <= 0
-		|| ( !isEditMode && values.password.trim().length === 0 )
-		|| isPasswordInvalid
-		|| isHeightInvalid
-		|| isWeightInvalid
-		|| isPending;
+	const shows = ( isWrong: boolean, value: string ) => isWrong && ( showAllErrors || value.trim().length > 0 );
 
 	return {
-		isDniInvalid,
-		isEmailInvalid,
+		isDniInvalid: shows( isDniWrong, values.dni ),
+		isEmailInvalid: shows( isEmailWrong, values.email ),
+		isFormValid: !isNameWrong && !isEmailWrong && !isDniWrong && !isPasswordWrong && !isHeightInvalid && !isWeightInvalid,
 		isHeightInvalid,
-		isNameInvalid,
-		isPasswordInvalid,
-		isSubmitDisabled,
+		isNameInvalid: shows( isNameWrong, values.name ),
+		isPasswordInvalid: shows( isPasswordWrong, values.password ),
 		isWeightInvalid,
 	};
 }

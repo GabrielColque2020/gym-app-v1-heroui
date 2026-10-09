@@ -3,6 +3,8 @@
 import { getErrorMessage } from "@/lib/action-result";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+import { focusFirstInvalidField } from "@/lib/focus-first-invalid-field";
+
 import { Alert, Button, Description, Drawer, Spinner, toast } from "@heroui/react";
 import { CheckCircle2, PencilLine, Plus } from "lucide-react";
 
@@ -81,6 +83,10 @@ function mapCoachExerciseToRoutineExercise( exercise: CoachExerciseListItem ): E
 export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const [ values, setValues ] = useState<CoachExerciseFormValues>( () => getInitialValues( props.exercise ) );
+	// Con que valores se abrio: contra eso se mira si hay cambios sin guardar.
+	const [ baselineValues, setBaselineValues ] = useState<CoachExerciseFormValues>( () => getInitialValues( props.exercise ) );
+	// Se intento guardar con algo mal: desde ahi se marcan tambien los vacios.
+	const [ hasTriedSubmit, setHasTriedSubmit ] = useState( false );
 	const saveCoachExercise = useSaveCoachExercise();
 	const wasOpenRef = useRef( false );
 	// Cuantos archivos se estan subiendo: mientras haya alguno no se guarda,
@@ -95,9 +101,13 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 	const currentExercise = isEditMode ? props.exercise : null;
 	const initialName = props.mode === "create" ? props.initialName?.trim() ?? "" : "";
 	const activeMutation = saveCoachExercise;
-	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
-	const isCategoryInvalid = values.category.trim().length > 0 && values.category.trim().length < 2;
-	const isSubmitDisabled = values.name.trim().length < 2 || values.category.trim().length < 2 || activeMutation.isPending || isUploadingMedia;
+	const isNameWrong = values.name.trim().length < 2;
+	const isCategoryWrong = values.category.trim().length < 2;
+	const isNameInvalid = isNameWrong && ( hasTriedSubmit || values.name.trim().length > 0 );
+	const isCategoryInvalid = isCategoryWrong && ( hasTriedSubmit || values.category.trim().length > 0 );
+	// Mientras guarda o sube un archivo. Con algo mal, tocarlo muestra que falta.
+	const isSubmitDisabled = activeMutation.isPending || isUploadingMedia;
+	const hasUnsavedChanges = !activeMutation.isPending && JSON.stringify( values ) !== JSON.stringify( baselineValues );
 	const submitLabel = isEditMode ? "Guardar cambios" : "Crear ejercicio";
 	const showEditTriggerLabel = props.triggerVariant === "button";
 	const isOpen = props.isOpen ?? internalIsOpen;
@@ -124,9 +134,13 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 		const initialValues = getInitialValues( currentExercise ?? undefined );
 
 		// La busqueda se escribe en minuscula; un nombre arranca con mayuscula.
-		setValues( initialName
+		const openingValues = initialName
 			? { ...initialValues, name: initialName.charAt( 0 ).toUpperCase() + initialName.slice( 1 ) }
-			: initialValues );
+			: initialValues;
+
+		setValues( openingValues );
+		setBaselineValues( openingValues );
+		setHasTriedSubmit( false );
 		saveCoachExercise.reset();
 	}, [ currentExercise, initialName, saveCoachExercise ] );
 
@@ -179,6 +193,13 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 
 		if (isSubmitDisabled) return;
 
+		if (isNameWrong || isCategoryWrong) {
+			setHasTriedSubmit( true );
+			focusFirstInvalidField( event.currentTarget );
+
+			return;
+		}
+
 		try {
 			const savedExercise = await saveCoachExercise.mutateAsync( {
 				active: values.active,
@@ -224,7 +245,7 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 					onPress={ openDrawer }
 				/>
 			) }
-			<FeatureDrawerLayout isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange } rightContentClassName={ "w-[42rem]" }>
+			<FeatureDrawerLayout hasUnsavedChanges={ hasUnsavedChanges } isOpen={ isOpen } placement={ placement } onOpenChangeAction={ handleOpenChange } rightContentClassName={ "w-[42rem]" }>
 				<Drawer.Header className={ "border-default-100 relative border-b pb-4" }>
 					<div className={ "flex gap-3 " }>
 						<div className={ "flex size-10 shrink-0 items-center justify-center rounded-xl border border-accent-soft bg-accent-soft/60 text-accent" }>
@@ -237,7 +258,8 @@ export function ExerciseDrawer( props: ExerciseFormDrawerProps ) {
 					</div>
 				</Drawer.Header>
 
-				<form className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleSubmit }>
+				{ /* `noValidate`: los errores los marca la app, al lado de cada campo. La validacion del navegador frenaba el envio y su aviso no siempre se ve. */ }
+				<form className={ "flex min-h-0 flex-1 flex-col" } noValidate onSubmit={ handleSubmit }>
 					{ activeMutation.isError ? (
 						<div className={ "px-6 pt-5" }>
 							<Alert className={ "border border-danger/20" } status={ "danger" }>

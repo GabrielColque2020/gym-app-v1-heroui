@@ -39,9 +39,11 @@ medida que se hace.
   "Ir al inicio". "Reintentar" en todas las pantallas de error (`ErrorAlert`), con
   los errores de red en español. Las consultas que fallaron se vuelven a pedir
   solas al volver la conexión (`refetchOnReconnect`).
-- [ ] Formularios: llevar al primer campo con error al tocar "Crear" (en el
-  teléfono el error queda fuera de la vista), explicar por qué el botón está
-  desactivado, y preguntar antes de cerrar un panel con cambios sin guardar.
+- [x] Formularios (estudiante, entrenador, usuario, ejercicio, comida): el botón
+  solo se desactiva mientras guarda; al tocarlo con algo mal se marcan todos los
+  campos con problema y la vista va al primero (`focus-first-invalid-field.ts`).
+  Cerrar con cambios sin guardar pregunta antes (`FeatureDrawerLayout`). "Crear
+  rutina" dice qué falta elegir.
 - [ ] Ficha del estudiante: mostrar objetivo, peso y observaciones, y poder
   editarlos sin volver a la lista.
 - [ ] Poder abrir un estudiante inactivo para ver su historial sin reactivarlo.

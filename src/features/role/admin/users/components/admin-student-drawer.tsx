@@ -1,7 +1,9 @@
 "use client";
 
 import { getErrorMessage } from "@/lib/action-result";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import { focusFirstInvalidField } from "@/lib/focus-first-invalid-field";
 
 import { Button, Chip, Description, Drawer, Label, ListBox, Select, Spinner, toast } from "@heroui/react";
 import { CheckCircle2, Plus, UserPlus, Users } from "lucide-react";
@@ -57,6 +59,8 @@ export function AdminStudentDrawer( {
 									}: AdminStudentDrawerProps ) {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const [ values, setValues ] = useState<AdminStudentFormValues>( () => getInitialAdminStudentFormValues( student ) );
+	// Se intento guardar con algo mal: desde ahi se marcan tambien los vacios.
+	const [ hasTriedSubmit, setHasTriedSubmit ] = useState( false );
 	const createStudent = useCreateAdminStudent();
 	const updateStudent = useUpdateAdminStudent();
 	const { data: coaches = [] } = useAdminCoaches();
@@ -78,10 +82,14 @@ export function AdminStudentDrawer( {
 		isEmailInvalid,
 		isHeightInvalid,
 		isNameInvalid,
+		isFormValid,
 		isPasswordInvalid,
-		isSubmitDisabled,
 		isWeightInvalid,
-	} = getStudentDrawerValidationState( values, isEditMode, activeMutation.isPending );
+	} = getStudentDrawerValidationState( values, isEditMode, hasTriedSubmit );
+	// Solo mientras guarda: con algo mal, tocarlo muestra que falta.
+	const isSubmitDisabled = activeMutation.isPending;
+	const initialValues = useMemo( () => getInitialAdminStudentFormValues( currentStudent ), [ currentStudent ] );
+	const hasUnsavedChanges = !activeMutation.isPending && JSON.stringify( values ) !== JSON.stringify( initialValues );
 
 	useEffect( () => {
 		if (!open) {
@@ -92,6 +100,7 @@ export function AdminStudentDrawer( {
 		if (wasOpenRef.current) return;
 
 		setValues( getInitialAdminStudentFormValues( currentStudent ) );
+		setHasTriedSubmit( false );
 		createStudent.reset();
 		updateStudent.reset();
 		wasOpenRef.current = true;
@@ -99,6 +108,7 @@ export function AdminStudentDrawer( {
 
 	function resetFormState() {
 		setValues( getInitialAdminStudentFormValues( currentStudent ) );
+		setHasTriedSubmit( false );
 		createStudent.reset();
 		updateStudent.reset();
 	}
@@ -135,6 +145,13 @@ export function AdminStudentDrawer( {
 		event.preventDefault();
 
 		if (isSubmitDisabled) return;
+
+		if (!isFormValid) {
+			setHasTriedSubmit( true );
+			focusFirstInvalidField( event.currentTarget );
+
+			return;
+		}
 
 		try {
 			if (isEditMode) {
@@ -180,6 +197,7 @@ export function AdminStudentDrawer( {
 				</Button>
 			) }
 			<FeatureDrawerLayout
+				hasUnsavedChanges={ hasUnsavedChanges }
 				isDismissable={ false }
 				isOpen={ open }
 				placement={ placement }
@@ -198,7 +216,8 @@ export function AdminStudentDrawer( {
 					</div>
 				</Drawer.Header>
 
-				<form autoComplete={ "off" } className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleSubmit }>
+				{ /* `noValidate`: los errores los marca la app, al lado de cada campo. La validacion del navegador frenaba el envio y su aviso no siempre se ve. */ }
+				<form autoComplete={ "off" } className={ "flex min-h-0 flex-1 flex-col" } noValidate onSubmit={ handleSubmit }>
 					<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 						{ activeMutation.isError ? (
 							<div className={ "rounded-xl border border-danger/20 bg-danger/10 p-3 text-sm text-danger" }>

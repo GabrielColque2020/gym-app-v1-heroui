@@ -5,7 +5,9 @@ import type { DateValue } from "@internationalized/date";
 import type { FormEvent } from "react";
 
 import { parseDate } from "@internationalized/date";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import { focusFirstInvalidField } from "@/lib/focus-first-invalid-field";
 
 import {
 	Button,
@@ -69,6 +71,7 @@ export function AdminUserDrawer( {
 	const [ internalIsOpen, setInternalIsOpen ] = useState( false );
 	const [ isPasswordVisible, setIsPasswordVisible ] = useState( false );
 	const [ values, setValues ] = useState<AdminUserFormValues>( () => getInitialAdminUserFormValues( user ) );
+	const [ hasTriedSubmit, setHasTriedSubmit ] = useState( false );
 	const mutation = useUpdateAdminUser();
 	const wasOpenRef = useRef( false );
 	const open = controlledIsOpen ?? internalIsOpen;
@@ -86,6 +89,7 @@ export function AdminUserDrawer( {
 		if (wasOpenRef.current) return;
 
 		setValues( getInitialAdminUserFormValues( user ) );
+		setHasTriedSubmit( false );
 		setIsPasswordVisible( false );
 		mutation.reset();
 		wasOpenRef.current = true;
@@ -94,6 +98,7 @@ export function AdminUserDrawer( {
 	function handleOpenChange( nextIsOpen: boolean ) {
 		if (!nextIsOpen) {
 			setValues( getInitialAdminUserFormValues( user ) );
+			setHasTriedSubmit( false );
 			setIsPasswordVisible( false );
 			mutation.reset();
 			wasOpenRef.current = false;
@@ -109,20 +114,35 @@ export function AdminUserDrawer( {
 		} ) );
 	}
 
-	const isNameInvalid = values.name.trim().length > 0 && values.name.trim().length < 2;
-	const isEmailInvalid = values.email.trim().length > 0 && !isValidEmail( values.email.trim() );
-	const isDniInvalid = values.dni.trim().length > 0 && !/^\d+$/.test( values.dni.trim() );
-	const isPasswordInvalid = values.password.trim().length > 0 && values.password.trim().length < 6;
-	const isSubmitDisabled = isNameInvalid
-		|| isEmailInvalid
-		|| isDniInvalid
-		|| isPasswordInvalid
-		|| mutation.isPending;
+	// Antes de intentar guardar solo se marca lo que ya se escribio mal; despues,
+	// tambien lo obligatorio que quedo vacio.
+	const shows = ( isWrong: boolean, value: string ) => isWrong && ( hasTriedSubmit || value.trim().length > 0 );
+	const isNameWrong = values.name.trim().length < 2;
+	const isEmailWrong = !isValidEmail( values.email.trim() );
+	const isDniWrong = !/^\d+$/.test( values.dni.trim() ) || Number( values.dni ) <= 0;
+	// Vacia es "no cambiarla".
+	const isPasswordWrong = values.password.trim().length > 0 && values.password.trim().length < 6;
+	const isNameInvalid = shows( isNameWrong, values.name );
+	const isEmailInvalid = shows( isEmailWrong, values.email );
+	const isDniInvalid = shows( isDniWrong, values.dni );
+	const isPasswordInvalid = isPasswordWrong;
+	const isFormValid = !isNameWrong && !isEmailWrong && !isDniWrong && !isPasswordWrong;
+	// Solo mientras guarda: con algo mal, tocarlo muestra que falta.
+	const isSubmitDisabled = mutation.isPending;
+	const initialValues = useMemo( () => getInitialAdminUserFormValues( user ), [ user ] );
+	const hasUnsavedChanges = !mutation.isPending && JSON.stringify( values ) !== JSON.stringify( initialValues );
 
 	async function handleSubmit( event: FormEvent<HTMLFormElement> ) {
 		event.preventDefault();
 
 		if (isSubmitDisabled) return;
+
+		if (!isFormValid) {
+			setHasTriedSubmit( true );
+			focusFirstInvalidField( event.currentTarget );
+
+			return;
+		}
 
 		try {
 			await mutation.mutateAsync( {
@@ -148,6 +168,7 @@ export function AdminUserDrawer( {
 				</Button>
 			) }
 			<FeatureDrawerLayout
+				hasUnsavedChanges={ hasUnsavedChanges }
 				isDismissable={ false }
 				isOpen={ open }
 				placement={ placement }
@@ -168,7 +189,8 @@ export function AdminUserDrawer( {
 					</div>
 				</Drawer.Header>
 
-				<form autoComplete={ "off" } className={ "flex min-h-0 flex-1 flex-col" } onSubmit={ handleSubmit }>
+				{ /* `noValidate`: los errores los marca la app, al lado de cada campo. La validacion del navegador frenaba el envio y su aviso no siempre se ve. */ }
+				<form autoComplete={ "off" } className={ "flex min-h-0 flex-1 flex-col" } noValidate onSubmit={ handleSubmit }>
 					<Drawer.Body className={ "min-h-0 flex-1 space-y-6 overflow-y-auto py-3" }>
 						{ mutation.isError ? (
 							<div className={ "rounded-xl border border-danger/20 bg-danger/10 p-3 text-sm text-danger" }>
@@ -206,7 +228,7 @@ export function AdminUserDrawer( {
 								>
 									<Label>Email</Label>
 									<Input autoComplete={ "off" } className={ "border border-border" } placeholder={ "usuario@mail.com" } type={ "email" }/>
-									{ isEmailInvalid ? <FieldError>Ingresa un email válido.</FieldError> : null }
+									{ isEmailInvalid ? <FieldError>Ingresá un email válido.</FieldError> : null }
 								</TextField>
 
 								<TextField
