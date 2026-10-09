@@ -138,10 +138,11 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 							</Dropdown.Item>
 						) : null }
 						{ canToggle ? (
-							<Dropdown.Item id={ "toggle" } textValue={ user.active ? "Desactivar usuario" : "Activar usuario" }>
-								{ /* El tacho queda solo para eliminar: desactivar se puede revertir. */ }
-								{ user.active ? <CircleSlash className={ "size-4 shrink-0 text-warning" }/> : <CheckCircle2 className={ "size-4 shrink-0 text-success" }/> }
-								<Label className={ user.active ? "text-warning" : "text-success" }>
+							<Dropdown.Item id={ "toggle" } textValue={ user.active ? "Desactivar usuario" : "Activar usuario" } variant={ user.active ? "danger" : "default" }>
+								{ /* Desactivar va en rojo: le corta el acceso a la persona. El tacho
+								     queda solo para eliminar. */ }
+								{ user.active ? <CircleSlash className={ "size-4 shrink-0 text-danger" }/> : <CheckCircle2 className={ "size-4 shrink-0 text-foreground" }/> }
+								<Label className={ user.active ? "text-danger" : undefined }>
 									{ user.active ? "Desactivar" : "Activar" }
 								</Label>
 							</Dropdown.Item>

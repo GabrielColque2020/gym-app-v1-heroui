@@ -30,8 +30,8 @@ export function ExerciseChangeDrawerTrigger( {
 				>
 					<Header>Opciones</Header>
 					<Dropdown.Item id={ "change-exercise" } textValue={ "Cambiar ejercicio" } isDisabled={ !hasVariants || isLocked }>
-						<ArrowLeftRight className={ "size-4 shrink-0 text-accent" }/>
-						<Label className={ "text-accent" }>Cambiar ejercicio</Label>
+						<ArrowLeftRight className={ "size-4 shrink-0 text-foreground" }/>
+						<Label>Cambiar ejercicio</Label>
 					</Dropdown.Item>
 					<Dropdown.Item id={ "view-execution" } textValue={ "Ver ejecución" }>
 						<Eye className={ "size-4 shrink-0" }/>

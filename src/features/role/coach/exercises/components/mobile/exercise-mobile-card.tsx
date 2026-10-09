@@ -2,7 +2,7 @@
 
 import type { Key } from "@heroui/react";
 import { Button, Card, Chip, Dropdown, Header, Label, Spinner, toast } from "@heroui/react";
-import { CheckCircle2, EllipsisVertical, Eye, PencilLine, Trash2 } from "lucide-react";
+import { CheckCircle2, CircleSlash, EllipsisVertical, Eye, PencilLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { AsyncMedia } from "@/components/common";
@@ -126,20 +126,22 @@ export function ExerciseMobileCard( {
 									<Label>Ver ejercicio</Label>
 								</Dropdown.Item>
 								<Dropdown.Item id={ "edit" } textValue={ "Editar" }>
-									<PencilLine className={ "size-4 shrink-0 text-warning" }/>
-									<Label className={ "text-warning" }>Editar</Label>
+									<PencilLine className={ "size-4 shrink-0 text-foreground" }/>
+									<Label>Editar</Label>
 								</Dropdown.Item>
 								<Dropdown.Item
 									id={ "status" }
 									textValue={ statusLabel }
 									variant={ exercise.active ? "danger" : "default" }
 								>
+									{ /* Desactivar va en rojo porque le corta el acceso a alguien o saca
+									     un ejercicio de uso. El tacho queda solo para eliminar. */ }
 									{ exercise.active ? (
-										<Trash2 className={ "size-4 shrink-0 text-danger" }/>
+										<CircleSlash className={ "size-4 shrink-0 text-danger" }/>
 									) : (
-										<CheckCircle2 className={ "size-4 shrink-0 text-success" }/>
+										<CheckCircle2 className={ "size-4 shrink-0 text-foreground" }/>
 									) }
-									<Label className={ exercise.active ? "text-danger" : "text-success" }>{ statusLabel }</Label>
+									<Label className={ exercise.active ? "text-danger" : undefined }>{ statusLabel }</Label>
 								</Dropdown.Item>
 								{ canDeleteExercise ? (
 									<Dropdown.Item id={ "delete" } textValue={ "Eliminar permanentemente" } variant={ "danger" }>

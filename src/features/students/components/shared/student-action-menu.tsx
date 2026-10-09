@@ -5,7 +5,7 @@ import type { Key } from "@heroui/react";
 import { Button, Dropdown, Header, Label, Spinner } from "@heroui/react";
 
 import { useState } from "react";
-import { CheckCircle2, EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
+import { CheckCircle2, CircleSlash, EllipsisVertical, PencilLine } from "lucide-react";
 
 import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
 import { useStudentStatusAction } from "@/features/students/hooks/use-student-status-action";
@@ -52,20 +52,22 @@ export function StudentActionMenu( { student }: StudentActionMenuProps ) {
 					<Dropdown.Menu onAction={ handleAction }>
 						<Header>Opciones</Header>
 						<Dropdown.Item id={ "edit" } textValue={ "Editar" }>
-							<PencilLine className={ "size-4 shrink-0 text-warning" }/>
-							<Label className={ "text-warning" }>Editar</Label>
+							<PencilLine className={ "size-4 shrink-0 text-foreground" }/>
+							<Label>Editar</Label>
 						</Dropdown.Item>
 						<Dropdown.Item
 							id={ "status" }
 							textValue={ statusLabel }
 							variant={ student.active ? "danger" : "default" }
 						>
+							{ /* Desactivar va en rojo porque le corta el acceso a alguien o saca
+							     un ejercicio de uso. El tacho queda solo para eliminar. */ }
 							{ student.active ? (
-								<Trash2 className={ "size-4 shrink-0 text-danger" }/>
+								<CircleSlash className={ "size-4 shrink-0 text-danger" }/>
 							) : (
-								<CheckCircle2 className={ "size-4 shrink-0 text-success" }/>
+								<CheckCircle2 className={ "size-4 shrink-0 text-foreground" }/>
 							) }
-							<Label className={ student.active ? "text-danger" : "text-success" }>{ statusLabel }</Label>
+							<Label className={ student.active ? "text-danger" : undefined }>{ statusLabel }</Label>
 						</Dropdown.Item>
 					</Dropdown.Menu>
 				</Dropdown.Popover>

@@ -45,16 +45,16 @@ export function CoachDashboardStudentRowActions( { student }: CoachDashboardStud
 				} }>
 					<Header>Opciones</Header>
 					<Dropdown.Item id={ "routine" } textValue={ "Rutina" }>
-						<Dumbbell className={ "size-4 shrink-0 text-accent" }/>
-						<Label className={ "text-accent" }>Rutina</Label>
+						<Dumbbell className={ "size-4 shrink-0 text-foreground" }/>
+						<Label>Rutina</Label>
 					</Dropdown.Item>
 					<Dropdown.Item id={ "meal-plan" } textValue={ "Plan alimenticio" }>
-						<UtensilsCrossed className={ "size-4 shrink-0 text-success" }/>
-						<Label className={ "text-success" }>Plan</Label>
+						<UtensilsCrossed className={ "size-4 shrink-0 text-foreground" }/>
+						<Label>Plan</Label>
 					</Dropdown.Item>
 					<Dropdown.Item id={ "history" } textValue={ "Historial" }>
-						<CalendarClock className={ "size-4 shrink-0 text-warning" }/>
-						<Label className={ "text-warning" }>Historial</Label>
+						<CalendarClock className={ "size-4 shrink-0 text-foreground" }/>
+						<Label>Historial</Label>
 					</Dropdown.Item>
 					<Dropdown.Item id={ "progress" } textValue={ "Progreso" }>
 						<TrendingUp className={ "size-4 shrink-0 text-foreground" }/>

@@ -52,8 +52,8 @@ export function RoutineExerciseActions( {
 						<Dropdown.Item id={ "variants" } textValue={ "Variantes" } isDisabled={ !exercise }>
 							<div className={ "flex min-w-0 flex-col" }>
 								<div className={ "flex items-center gap-2" }>
-									<Link2 className={ "size-4 shrink-0 text-accent" }/>
-									<Label className={ "text-accent" }>Variantes</Label>
+									<Link2 className={ "size-4 shrink-0 text-foreground" }/>
+									<Label>Variantes</Label>
 								</div>
 								{ needsSaveFirst ? (
 									<Description className={ "text-xs text-muted" }>
@@ -64,7 +64,7 @@ export function RoutineExerciseActions( {
 						</Dropdown.Item>
 						<Dropdown.Item id={ "delete" } textValue={ "Eliminar" } variant={ "danger" }>
 							<Trash2 className={ "size-4 shrink-0 text-danger" }/>
-							<Label>Eliminar</Label>
+							<Label className={ "text-danger" }>Eliminar</Label>
 						</Dropdown.Item>
 					</Dropdown.Menu>
 				</Dropdown.Popover>
