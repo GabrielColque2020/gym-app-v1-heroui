@@ -405,8 +405,9 @@ export async function updateRoutineTemplateStructureAction( input: UpdateRoutine
 	return { ok: updated };
 }
 
-// Deja las demas semanas de la plantilla iguales a la elegida.
-export async function repeatRoutineTemplateWeekAction( input: { sourceWeek: number; templateId: string } ) {
+// Deja otras semanas de la plantilla iguales a la elegida: las de
+// `destinationWeeks` o, si no viene, todas las demas.
+export async function repeatRoutineTemplateWeekAction( input: { destinationWeeks?: number[]; sourceWeek: number; templateId: string } ) {
 	const session = await requireCoachSession( "repetir la semana de la plantilla" );
 	const template = ( await prisma.routineTemplate.findFirst( {
 		include: {
@@ -426,7 +427,12 @@ export async function repeatRoutineTemplateWeekAction( input: { sourceWeek: numb
 
 	if (!template || !sourceWeek) return { ok: false };
 
-	const destinationWeeks = template.weeks.filter( ( week ) => week.week !== input.sourceWeek ).map( ( week ) => week.week );
+	// Solo semanas que la plantilla tiene, y nunca la de origen.
+	const destinationWeeks = template.weeks
+		.map( ( week ) => week.week )
+		.filter( ( week ) => week !== input.sourceWeek && ( !input.destinationWeeks || input.destinationWeeks.includes( week ) ) );
+
+	if (destinationWeeks.length === 0) return { ok: false };
 
 	await prisma.$transaction( async ( tx ) => {
 		await tx.trainingRoutineWeek.deleteMany( {

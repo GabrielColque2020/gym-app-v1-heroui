@@ -162,7 +162,7 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Cómo copio una rutina de otro mes o de otro estudiante?",
 			},
 			{
-				answer: "En la rutina del mes, con Repetir en las demás copiás una semana ya armada en las demás del mismo mes. Si alguna ya tenía ejercicios, se reemplazan: la pantalla lo avisa antes de confirmar.",
+				answer: "En la rutina del mes, con Repetir en las demás copiás una semana ya armada en las demás del mismo mes. Antes de confirmar podés destildar las semanas que no quieras tocar. Si alguna ya tenía ejercicios, se reemplazan: la pantalla lo marca en cada una.",
 				id: "coach-routine-repeat-week",
 				question: "¿Cómo repito una semana en las siguientes?",
 			},

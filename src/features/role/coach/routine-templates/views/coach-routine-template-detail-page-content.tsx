@@ -112,8 +112,8 @@ export default function CoachRoutineTemplateDetailPageContent( { templateId }: C
 									isPending={ repeatWeek.isPending }
 									routineWeeks={ weeks }
 									selectedRoutine={ routineWeek }
-									onRepeatAction={ async ( sourceWeek ) => {
-										const result = await repeatWeek.mutateAsync( { sourceWeek, templateId } );
+									onRepeatAction={ async ( sourceWeek, destinationWeeks ) => {
+										const result = await repeatWeek.mutateAsync( { destinationWeeks, sourceWeek, templateId } );
 
 										if (!result.ok) throw new Error( "No se pudo repetir la semana." );
 									} }
