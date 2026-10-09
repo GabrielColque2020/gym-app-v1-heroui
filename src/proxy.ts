@@ -2,7 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import {
 	AUTH_SESSION_COOKIE_NAME,
+	getSessionCookieOptions,
 	getSessionSecret,
+	renewSessionToken,
 	verifySessionToken,
 } from "@/features/login/services/session-token";
 
@@ -16,7 +18,10 @@ function buildLoginUrl( request: NextRequest ) {
 	return loginUrl;
 }
 
-export async function middleware( request: NextRequest ) {
+// Corre antes de cada pantalla y de cada server action. Estuvo un tiempo como
+// `middleware.ts` en la raiz del proyecto, donde Next no lo encuentra cuando la
+// app vive en `src/`: no corria. Ahora es `src/proxy.ts`, el nombre de Next 16.
+export async function proxy( request: NextRequest ) {
 	const token = request.cookies.get( AUTH_SESSION_COOKIE_NAME )?.value;
 	const isLoginRoute = request.nextUrl.pathname === "/login";
 
@@ -58,11 +63,23 @@ export async function middleware( request: NextRequest ) {
 		return response;
 	}
 
-	return NextResponse.next();
+	// Mientras se usa la app la sesion se renueva: cada pantalla y cada guardado
+	// pasan por aca. Sin esto vencia a las 8 horas del ingreso, aunque la persona
+	// estuviera entrenando en ese momento.
+	const renewedToken = await renewSessionToken( session, getSessionSecret() );
+	const response = NextResponse.next();
+
+	if (renewedToken) {
+		response.cookies.set( getSessionCookieOptions( renewedToken ) );
+	}
+
+	return response;
 }
 
 export const config = {
 	matcher: [
-		"/((?!api|_next/static|_next/image|favicon.ico|.*\\.[^/]+$).*)",
+		// Quedan afuera la API, los archivos y lo que tiene que verse sin sesion:
+		// la pantalla sin conexion (la guarda el service worker) y el icono.
+		"/((?!api|_next/static|_next/image|favicon.ico|offline|apple-icon|.*\\.[^/]+$).*)",
 	],
 };

@@ -14,7 +14,7 @@ export default async function AppGroupLayout( { children }: { children: ReactNod
 
 	return (
 		<AppShell userName={ session.name } userRole={ session.role }>
-			<SessionGuard/>
+			<SessionGuard userId={ session.sub }/>
 			<div className={ "flex max-w-550 flex-col gap-4 px-5 pb-10 pt-4" }>
 				{ children }
 			</div>

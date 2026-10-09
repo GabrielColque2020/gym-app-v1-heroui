@@ -7,13 +7,12 @@ import {
 	recordFailedLogin,
 } from "@/features/login/services/login-attempts";
 import {
-	AUTH_SESSION_COOKIE_NAME,
-	AUTH_SESSION_TTL_SECONDS,
 	LOGIN_INACTIVE_ACCOUNT_MESSAGE,
 	LOGIN_INVALID_CREDENTIALS_MESSAGE,
 	loginUser,
 } from "@/features/login/services/login-service";
 import type { LoginPrismaClient } from "@/features/login/services/login-service";
+import { getSessionCookieOptions } from "@/features/login/services/session-token";
 import prisma from "@/lib/prisma";
 import type { LoginErrorResponse, LoginRequest, LoginResponse } from "@/types/auth";
 
@@ -75,15 +74,7 @@ export async function POST( request: NextRequest ) {
 		// Mandarla tambien en la respuesta la dejaba al alcance de cualquier script.
 		const response = NextResponse.json<Pick<LoginResponse, "user">>( { user: loginResponse.user } );
 
-		response.cookies.set( {
-			httpOnly: true,
-			maxAge: AUTH_SESSION_TTL_SECONDS,
-			name: AUTH_SESSION_COOKIE_NAME,
-			path: "/",
-			sameSite: "lax",
-			secure: process.env.NODE_ENV === "production",
-			value: loginResponse.sessionToken,
-		} );
+		response.cookies.set( getSessionCookieOptions( loginResponse.sessionToken ) );
 
 		return response;
 	} catch (error) {

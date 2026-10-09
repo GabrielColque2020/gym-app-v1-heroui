@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { leaveSession } from "@/features/auth/services/leave-session";
+import { claimRoutineDrafts } from "@/features/routine/services/routine-logout";
 
 // Cada cuanto se vuelve a preguntar mientras la app esta a la vista.
 const CHECK_INTERVAL_MS = 60_000;
@@ -18,10 +19,16 @@ const MIN_GAP_MS = 5_000;
 // Pregunta al volver a la app, cada minuto mientras esta a la vista y apenas
 // falla un pedido. Sin conexion no hace nada: la app se usa en el gimnasio y un
 // corte de internet no es motivo para echar a nadie.
-export function SessionGuard() {
+export function SessionGuard( { userId }: { userId: string } ) {
 	const queryClient = useQueryClient();
 	const lastCheckRef = useRef( 0 );
 	const isLeavingRef = useRef( false );
+
+	// Los borradores que quedaron de una sesion vencida son de quien estaba
+	// adentro: si ahora entro otra cuenta, se borran.
+	useEffect( () => {
+		claimRoutineDrafts( userId );
+	}, [ userId ] );
 
 	useEffect( () => {
 		async function checkSession() {

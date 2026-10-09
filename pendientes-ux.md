@@ -15,10 +15,11 @@ medida que se hace.
   otro entrenador ya usó.** `ExerciseCoach.externalId` era único en toda la tabla
   y cada entrenador guarda su copia con el mismo código. Pasó a índice común
   (migración `20261011120000_exercise_coach_external_id_not_unique`).
-- [ ] **2. Al vencer la sesión se pierden series sin guardar.** La sesión dura 8
-  horas fijas y no se renueva (`session-token.ts`), y `leaveSession` borra los
-  borradores de la rutina. Renovar la sesión mientras se usa la app y no borrar
-  borradores cuando la sesión vence (solo al cerrar sesión a propósito).
+- [x] **2. Al vencer la sesión se perdían series sin guardar.** La sesión se
+  renueva mientras se usa la app (`src/proxy.ts`, que antes era un
+  `middleware.ts` en la raíz que Next no encontraba y nunca corría). Al vencer
+  no se borran los borradores y se vuelve a la misma pantalla; si entra otra
+  cuenta en el mismo dispositivo, se borran (`claimRoutineDrafts`).
 - [ ] **3. Sin aviso de "sin conexión".** El chip queda en "Guardando…" para
   siempre o falla sin reintentar. Indicador offline y reintento al volver la red.
 - [ ] **4. Reloj de descanso.** Pedir Wake Lock para que no se apague la pantalla,

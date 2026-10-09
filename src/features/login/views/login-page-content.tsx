@@ -25,7 +25,7 @@ export default function LoginPageContent() {
 	const leaveNotice = leaveReason === "inactive"
 		? { description: "Pedile a tu entrenador que la vuelva a activar.", title: "Tu cuenta fue desactivada" }
 		: leaveReason === "expired"
-			? { description: "Ingresá de nuevo para seguir.", title: "Tu sesión terminó" }
+			? { description: "Ingresá de nuevo para seguir donde estabas. Lo que no se llegó a guardar sigue en este dispositivo.", title: "Tu sesión terminó" }
 			: null;
 
 	const isCredentialInvalid = credential.trim().length > 0 && credential.trim().length < 3;

@@ -1,7 +1,26 @@
 import type { AuthenticatedUser } from "@/types/auth";
 
 export const AUTH_SESSION_COOKIE_NAME = "gym_app_session";
+// Cuanto dura la sesion sin usar la app: se renueva mientras se usa (ver
+// `SESSION_RENEW_AFTER_SECONDS`), asi que un estudiante que entro a la mañana
+// no se queda afuera a mitad del entrenamiento de la tarde.
 export const AUTH_SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 Horas
+// Cada cuanto, como mucho, se renueva. Renovarla en cada pedido seria reescribir
+// la cookie todo el tiempo sin ganar nada.
+export const SESSION_RENEW_AFTER_SECONDS = 60 * 15;
+
+// Los mismos atributos al crearla en el ingreso y al renovarla.
+export function getSessionCookieOptions( token: string ) {
+	return {
+		httpOnly: true,
+		maxAge: AUTH_SESSION_TTL_SECONDS,
+		name: AUTH_SESSION_COOKIE_NAME,
+		path: "/",
+		sameSite: "lax" as const,
+		secure: process.env.NODE_ENV === "production",
+		value: token,
+	};
+}
 
 export function getSessionSecret() {
 	return process.env.AUTH_SESSION_SECRET
@@ -89,14 +108,29 @@ export async function createSessionToken(
 	user: AuthenticatedUser,
 	secret: string,
 ) {
+	return signSessionPayload( { active: user.active, role: user.role, sub: user.id }, secret );
+}
+
+// La misma sesion con el vencimiento corrido desde ahora. Si todavia no paso
+// `SESSION_RENEW_AFTER_SECONDS` desde la ultima, devuelve null: no hace falta.
+export async function renewSessionToken( session: SessionTokenPayload, secret: string ) {
+	if (Date.now() / 1000 - session.iat < SESSION_RENEW_AFTER_SECONDS) {
+		return null;
+	}
+
+	return signSessionPayload( { active: session.active, role: session.role, sub: session.sub }, secret );
+}
+
+async function signSessionPayload(
+	user: Pick<SessionTokenPayload, "active" | "role" | "sub">,
+	secret: string,
+) {
 	const issuedAt = Math.floor( Date.now() / 1000 );
 	const payload: SessionTokenPayload = {
-		active: user.active,
+		...user,
 		exp: issuedAt + AUTH_SESSION_TTL_SECONDS,
 		iat: issuedAt,
 		jti: crypto.randomUUID(),
-		role: user.role,
-		sub: user.id,
 	};
 	const encodedPayload = toBase64Url( encodeUtf8( JSON.stringify( payload ) ) );
 	const key = await importHmacKey( secret );
