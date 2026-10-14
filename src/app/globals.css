@@ -50,6 +50,22 @@
         overflow: visible;
     }
 
+    /* En pantallas tactiles todo boton se puede tocar en al menos 44 x 44 px,
+       aunque se dibuje mas chico: los de 32 y 36 px (mes anterior y siguiente,
+       ±15 s del reloj, la nota del ejercicio, la X de los drawers) pedian
+       punteria. Se agranda la zona que recibe el toque con una capa invisible,
+       sin mover nada del diseño. Los botones de la libreria ya son `relative`. */
+    @media (pointer: coarse) {
+        .button::after,
+        .close-button::after,
+        .pagination__link::after {
+            content: "";
+            position: absolute;
+            inset-block: min(0px, calc((100% - 2.75rem) / 2));
+            inset-inline: min(0px, calc((100% - 2.75rem) / 2));
+        }
+    }
+
     .feature-drawer--bottom .drawer__footer {
         position: sticky;
         inset-block-end: calc(-1 * var(--feature-drawer-padding, 1.5rem));

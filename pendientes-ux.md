@@ -74,8 +74,8 @@ medida que se hace.
 - [x] Usuarios del admin en el teléfono: buscador a lo ancho y Rol y Estado lado a
   lado sin etiquetas (sin filtro dicen "Rol" / "Estado"); Editar solo con el lápiz y
   el nombre en hasta dos renglones.
-- [ ] Botones de al menos 44 px en el teléfono: mes anterior y siguiente, ±15 s del
-  reloj, botón de nota.
+- [x] Botones de al menos 44 px en el teléfono: en pantallas táctiles todo botón se
+  toca en 44 × 44 aunque se dibuje más chico (capa invisible en `globals.css`).
 - [ ] Login sin conexión muestra "Failed to fetch". El "pedile a tu entrenador"
   también lo ven el entrenador y el admin.
 - [ ] PWA: el service worker puede no registrarse si el `load` ya pasó; la página
