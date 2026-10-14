@@ -27,7 +27,12 @@ export function CoachRoutineStructureDaySelector( {
 					Los días seleccionados se aplican a todas las semanas activas.
 				</Description>
 			</div>
+			{ /* Adentro de cada casilla va un <span> con el estilo de Label y no un
+			     <Label>: el grupo le pasa su id a todo Label de adentro, y las seis
+			     casillas terminaban con el mismo id y el grupo se anunciaba "Día 1".
+			     El nombre del grupo va en `aria-label`. Igual en semanas y en copiar. */ }
 			<CheckboxButtonGroup
+				aria-label={ "Días por semana" }
 				className={ "grid-cols-2 gap-2 [--checkbox-button-group-item-radius:0.75rem] px-0.5 md:grid-cols-3" }
 				layout={ "grid" }
 				value={ selectedDays }
@@ -35,10 +40,10 @@ export function CoachRoutineStructureDaySelector( {
 				onChange={ ( value ) => onChangeAction( value as string[] ) }
 			>
 				{ dayOptions.map( ( day ) => (
-					<CheckboxButtonGroup.Item key={ day.value } className={ "gap-2 px-3 py-2.5" } value={ day.value }>
+					<CheckboxButtonGroup.Item key={ day.value } aria-label={ day.label } className={ "gap-2 px-3 py-2.5" } value={ day.value }>
 						<CheckboxButtonGroup.Indicator/>
 						<CheckboxButtonGroup.ItemContent>
-							<Label className={ "text-sm" }>{ day.label }</Label>
+							<span className={ "label text-sm" }>{ day.label }</span>
 						</CheckboxButtonGroup.ItemContent>
 					</CheckboxButtonGroup.Item>
 				) ) }

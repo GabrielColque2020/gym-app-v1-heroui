@@ -81,8 +81,10 @@ medida que se hace.
   "tu entrenador" y al entrenador "el administrador"; los textos sin rol, los dos.
 - [x] PWA: el service worker se registra aunque `load` ya haya pasado; "Reintentar"
   de la pantalla sin conexión vuelve a pedir la página donde estabas (caché v2).
-- [ ] Checkbox de días en "Crear rutina": se anuncian como "1", "2"… Probar en un
-  teléfono real que se puedan marcar (en la emulación del navegador no andaban).
+- [x] Casillas de días y semanas (crear rutina, plantillas y copiar): cada una se
+  llama "Día N" / "Semana N" y el grupo, "Días por semana" / "Semanas activas".
+  Las seis compartían un id y el grupo se anunciaba "Día 1". Falta probar el toque
+  en un teléfono real (en la emulación ahora sí marcan).
 - [x] El admin también tiene "Mi perfil": nombre, email, DNI, datos y contraseña.
 - [x] El botón "atrás" del teléfono cierra el drawer, modal o menú abierto en vez de
   retroceder la página (`overlay-back-guard.tsx`). Con cambios sin guardar, pregunta.

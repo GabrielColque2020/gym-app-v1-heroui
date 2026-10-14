@@ -153,6 +153,7 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 								<div className={ "grid gap-2" }>
 									<Label className={ "text-sm font-semibold" }>Semanas de origen</Label>
 									<CheckboxButtonGroup
+										aria-label={ "Semanas de origen" }
 										className={ "grid-cols-2 gap-2 [--checkbox-button-group-item-radius:0.75rem]" }
 										layout={ "grid" }
 										value={ selectedSourceWeeks }
@@ -160,13 +161,13 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 										onChange={ ( value ) => setSelectedSourceWeeks( value as string[] ) }
 									>
 										{ sourceWeeks.map( ( routineWeek ) => (
-											<CheckboxButtonGroup.Item key={ routineWeek.week } className={ "min-h-16 gap-2 px-3 py-2" } value={ String( routineWeek.week ) }>
+											<CheckboxButtonGroup.Item key={ routineWeek.week } aria-label={ `Semana ${ routineWeek.week }` } className={ "min-h-16 gap-2 px-3 py-2" } value={ String( routineWeek.week ) }>
 												<CheckboxButtonGroup.Indicator/>
 												<CheckboxButtonGroup.ItemContent>
-													<Label className={ "text-sm" }>Semana { routineWeek.week }</Label>
-													<Description className={ "line-clamp-1 text-xs" }>
+													<span className={ "label text-sm" }>Semana { routineWeek.week }</span>
+													<span className={ "description line-clamp-1 text-xs" }>
 														{ routineWeek.dayCount } días / { routineWeek.exerciseCount } ejercicios
-													</Description>
+													</span>
 												</CheckboxButtonGroup.ItemContent>
 											</CheckboxButtonGroup.Item>
 										) ) }
@@ -188,6 +189,7 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 											</Description>
 										</div>
 										<CheckboxButtonGroup
+											aria-label={ "Semanas de destino" }
 											className={ "grid-cols-2 gap-2 [--checkbox-button-group-item-radius:0.75rem]" }
 											layout={ "grid" }
 											value={ singleDestWeeks }
@@ -195,10 +197,10 @@ export function CoachCopyRoutineDrawerInnerMobile( props: CoachCopyRoutineDrawer
 											onChange={ ( value ) => setSingleDestWeeks( value as string[] ) }
 										>
 											{ [ "1", "2", "3", "4" ].map( ( week ) => (
-												<CheckboxButtonGroup.Item key={ week } className={ "min-h-12 gap-2 px-3 py-2" } value={ week }>
+												<CheckboxButtonGroup.Item key={ week } aria-label={ `Semana ${ week }` } className={ "min-h-12 gap-2 px-3 py-2" } value={ week }>
 													<CheckboxButtonGroup.Indicator/>
 													<CheckboxButtonGroup.ItemContent>
-														<Label className={ "text-sm" }>Semana { week }</Label>
+														<span className={ "label text-sm" }>Semana { week }</span>
 													</CheckboxButtonGroup.ItemContent>
 												</CheckboxButtonGroup.Item>
 											) ) }

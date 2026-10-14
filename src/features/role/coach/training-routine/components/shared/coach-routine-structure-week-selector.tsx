@@ -26,6 +26,7 @@ export function CoachRoutineStructureWeekSelector( {
 				<Description className={ "text-sm" }>Seleccioná las semanas activas de la rutina.</Description>
 			</div>
 			<CheckboxButtonGroup
+				aria-label={ "Semanas activas" }
 				className={ "grid-cols-2 gap-3 [--checkbox-button-group-item-radius:0.75rem] px-0.5 md:grid-cols-4" }
 				layout={ "grid" }
 				value={ selectedWeeks }
@@ -33,10 +34,10 @@ export function CoachRoutineStructureWeekSelector( {
 				onChange={ ( value ) => onChangeAction( value as string[] ) }
 			>
 				{ weekOptions.map( ( week ) => (
-					<CheckboxButtonGroup.Item key={ week.value } className={ "gap-2 px-4 py-3" } value={ week.value }>
+					<CheckboxButtonGroup.Item key={ week.value } aria-label={ week.label } className={ "gap-2 px-4 py-3" } value={ week.value }>
 						<CheckboxButtonGroup.Indicator/>
 						<CheckboxButtonGroup.ItemContent>
-							<Label className={ "text-sm" }>{ week.label }</Label>
+							<span className={ "label text-sm" }>{ week.label }</span>
 						</CheckboxButtonGroup.ItemContent>
 					</CheckboxButtonGroup.Item>
 				) ) }
