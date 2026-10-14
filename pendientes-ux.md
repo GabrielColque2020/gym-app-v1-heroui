@@ -60,7 +60,7 @@ medida que se hace.
 - [x] Descarga de PDF (rutina, plan e historial): se pide con `fetch` y, si el
   servidor responde con error, se avisa el motivo; "Descargando…" dura lo que de
   verdad tarda (`download-file.ts`). Las rutas no dejan pasar errores técnicos.
-- [ ] `lang="es"` en `layout.tsx` y el manifest en español.
+- [x] `lang="es"` en `layout.tsx` y el manifest en español.
 
 ## Pulido
 

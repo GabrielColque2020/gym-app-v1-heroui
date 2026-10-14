@@ -13,7 +13,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
 	applicationName: "Gym App",
-	description: "Gym App dashboard for coaches and students.",
+	description: "Rutinas, planes de alimentación e historial de entrenamiento para entrenadores y estudiantes.",
 	manifest: "/manifest.webmanifest",
 	title: "Gym App",
 	appleWebApp: {
@@ -56,7 +56,7 @@ export default async function RootLayout( { children }: { children: ReactNode } 
     <html
       suppressHydrationWarning
       className={ "bg-background text-foreground" }
-      lang={ "en" }
+      lang={ "es" }
     >
       <body className={ "font-sans antialiased" }>
         <Providers defaultTheme={ defaultTheme }>

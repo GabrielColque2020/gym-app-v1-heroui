@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
 	return {
 		background_color: "#f1f4fb",
 		categories: [ "health", "fitness", "productivity" ],
-		description: "Gym App dashboard for coaches and students.",
+		description: "Rutinas, planes de alimentación e historial de entrenamiento para entrenadores y estudiantes.",
 		display: "standalone",
 		icons: [
 			{
@@ -19,7 +19,7 @@ export default function manifest(): MetadataRoute.Manifest {
 				type: "image/svg+xml",
 			},
 		],
-		lang: "en",
+		lang: "es-AR",
 		name: "Gym App",
 		orientation: "portrait",
 		short_name: "Gym App",
