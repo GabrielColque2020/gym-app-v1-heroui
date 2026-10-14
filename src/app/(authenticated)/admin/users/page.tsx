@@ -8,23 +8,19 @@ export const metadata: Metadata = {
 };
 
 type AdminUsersPageProps = {
-	searchParams: Promise<{ estado?: string; nuevo?: string; rol?: string; sinEntrenador?: string }>;
+	searchParams: Promise<{ nuevo?: string }>;
 };
 
 export default async function AdminUsersPage( { searchParams }: AdminUsersPageProps ) {
-	const { estado, nuevo, rol, sinEntrenador } = await searchParams;
+	const { nuevo } = await searchParams;
 
 	// Desde Inicio se llega con "?nuevo=entrenador" o "?nuevo=estudiante" para
-	// abrir directamente el formulario.
-	// Los contadores de Inicio llegan con el filtro ya elegido ("?rol=", "?estado=", "?sinEntrenador=1").
+	// abrir directamente el formulario. Los contadores de Inicio llegan con el
+	// filtro ya elegido ("?rol=", "?estado=", "?sinEntrenador=1"): esos los lee la
+	// lista directo de la URL.
 	return (
 		<AdminUsersPageContent
 			initialCreate={ nuevo === "entrenador" ? "coach" : nuevo === "estudiante" ? "student" : null }
-			initialFilters={ {
-				onlyWithoutCoach: sinEntrenador === "1",
-				role: rol === "entrenador" ? "COACH" : rol === "estudiante" ? "STUDENT" : rol === "administrador" ? "ADMIN" : "ALL",
-				status: estado === "activos" ? "ACTIVE" : estado === "inactivos" ? "INACTIVE" : "ALL",
-			} }
 		/>
 	);
 }

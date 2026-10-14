@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { usePagination } from "@/components/common";
 import {
@@ -10,9 +10,12 @@ import {
 	type BodyPartFilter,
 } from "@/features/exercises/services/exercise-form";
 import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
+import { useUrlEnum, useUrlPage, useUrlText } from "@/lib/use-url-state";
 
 export const ALL_COACH_EXERCISE_SOURCES = "ALL";
 export type CoachExerciseSourceFilter = typeof ALL_COACH_EXERCISE_SOURCES | "GLOBAL" | "COACH" | "OVERRIDE";
+const SOURCE_FILTERS: readonly CoachExerciseSourceFilter[] = [ ALL_COACH_EXERCISE_SOURCES, "GLOBAL", "COACH", "OVERRIDE" ];
+const BODY_PART_FILTERS: readonly BodyPartFilter[] = [ ALL_BODY_PARTS, ...BODY_PART_OPTIONS.map( ( option ) => option.value ) ];
 
 type UseCoachExerciseListOptions = {
 	exercises: CoachExerciseListItem[];
@@ -23,10 +26,11 @@ const ITEMS_PER_PAGE = 8;
 const MOBILE_ITEMS_PER_PAGE = 10;
 
 export function useCoachExerciseList( { exercises }: UseCoachExerciseListOptions ) {
-	const [ nameFilter, setNameFilter ] = useState( "" );
-	const [ bodyPartFilter, setBodyPartFilter ] = useState<BodyPartFilter>( ALL_BODY_PARTS );
-	const [ sourceFilter, setSourceFilter ] = useState<CoachExerciseSourceFilter>( ALL_COACH_EXERCISE_SOURCES );
-	const [ page, setPage ] = useState( 1 );
+	// En la URL: al abrir un ejercicio o volver de otra pantalla, la lista sigue como estaba.
+	const [ nameFilter, setNameFilter ] = useUrlText( "buscar" );
+	const [ bodyPartFilter, setBodyPartFilter ] = useUrlEnum<BodyPartFilter>( "grupo", ALL_BODY_PARTS, BODY_PART_FILTERS );
+	const [ sourceFilter, setSourceFilter ] = useUrlEnum<CoachExerciseSourceFilter>( "origen", ALL_COACH_EXERCISE_SOURCES, SOURCE_FILTERS );
+	const [ page, setPage ] = useUrlPage();
 
 	const bodyParts = useMemo(
 		() => BODY_PART_OPTIONS.map( ( option ) => option ),

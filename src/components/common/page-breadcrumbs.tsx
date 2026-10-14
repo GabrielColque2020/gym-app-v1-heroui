@@ -4,6 +4,8 @@ import { Breadcrumbs, Button } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
+import { withRememberedListQuery } from "@/lib/use-url-state";
+
 type PageBreadcrumbItem = {
 	href?: string;
 	label: string;
@@ -59,7 +61,8 @@ export function PageBreadcrumbs( {
 				className={ "w-fit shrink-0" }
 				size={ "sm" }
 				variant={ "secondary" }
-				onPress={ () => router.push( isBackToHome ? dashboardHref : backHref ) }
+				// Volver a una lista la deja con los filtros y la pagina que tenia.
+				onPress={ () => router.push( isBackToHome ? dashboardHref : withRememberedListQuery( backHref ) ) }
 			>
 				<ArrowLeft className={ "size-4" }/>
 				{ backLabel }

@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { usePagination } from "@/components/common";
 import { normalizeSearchName } from "@/features/exercises/services/exercise-form";
 import type { AdminExerciseGlobalListItem } from "@/features/role/admin/exercises/types/admin-exercise-global-list-item";
 import { ADMIN_EXERCISE_GLOBAL_MOBILE_PAGE_SIZE, ADMIN_EXERCISE_GLOBAL_PAGE_SIZE, type AdminExerciseGlobalStatusFilter } from "@/features/role/admin/exercises/services/admin-exercise-global-query";
+import { useUrlEnum, useUrlFlag, useUrlPage, useUrlState, useUrlText } from "@/lib/use-url-state";
 
 export const ADMIN_EXERCISE_GLOBAL_STATUS_FILTERS = [ "ALL", "ACTIVE", "INACTIVE" ] as const;
 
@@ -26,11 +27,12 @@ type UseAdminExerciseGlobalsPageStateOptions = {
 };
 
 export function useAdminExerciseGlobalsPageState( { exercises }: UseAdminExerciseGlobalsPageStateOptions ) {
-	const [ search, setSearch ] = useState( "" );
-	const [ statusFilter, setStatusFilter ] = useState<AdminExerciseGlobalStatusFilter>( "ALL" );
-	const [ categoryFilter, setCategoryFilter ] = useState( "ALL" );
-	const [ page, setPage ] = useState( 1 );
-	const [ onlyDuplicates, setOnlyDuplicates ] = useState( false );
+	// En la URL: al editar un ejercicio o recargar, la lista sigue como estaba.
+	const [ search, setSearch ] = useUrlText( "buscar" );
+	const [ statusFilter, setStatusFilter ] = useUrlEnum<AdminExerciseGlobalStatusFilter>( "estado", "ALL", ADMIN_EXERCISE_GLOBAL_STATUS_FILTERS );
+	const [ categoryFilter, setCategoryFilter ] = useUrlState<string>( "categoria", "ALL" );
+	const [ page, setPage ] = useUrlPage();
+	const [ onlyDuplicates, setOnlyDuplicates ] = useUrlFlag( "repetidos" );
 	const rows = useMemo<AdminExerciseGlobalRow[]>( () => {
 		const countByName = new Map<string, number>();
 
@@ -121,7 +123,7 @@ export function useAdminExerciseGlobalsPageState( { exercises }: UseAdminExercis
 	}
 
 	function toggleOnlyDuplicates() {
-		setOnlyDuplicates( ( current ) => !current );
+		setOnlyDuplicates( !onlyDuplicates );
 		setPage( 1 );
 	}
 

@@ -3,7 +3,6 @@
 import { Button, Card, Chip, Label, ListBox, SearchField, Select } from "@heroui/react";
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { RotateCw, UserPlus, UserX } from "lucide-react";
 
@@ -17,32 +16,33 @@ import { AdminUserMobileCard } from "@/features/role/admin/users/components/admi
 import { AdminUserRowActions } from "@/features/role/admin/users/components/admin-user-row-actions";
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 import { getAdminCoachLabel, getAdminRoleLabel } from "@/features/role/admin/users/services/admin-user-labels";
-import { useAdminUsersPageState, type AdminUsersInitialFilters } from "@/features/role/admin/users/hooks/use-admin-users-page-state";
+import { useAdminUsersPageState } from "@/features/role/admin/users/hooks/use-admin-users-page-state";
 
 type AdminUsersPageContentProps = {
 	// Formulario que se abre al entrar, cuando se llega desde un acceso rápido.
 	initialCreate?: "coach" | "student" | null;
 	// Filtros con los que se abre la lista, cuando se llega desde un contador de Inicio.
-	initialFilters?: AdminUsersInitialFilters;
 };
 
-export default function AdminUsersPageContent( { initialCreate = null, initialFilters }: AdminUsersPageContentProps ) {
-	const router = useRouter();
+export default function AdminUsersPageContent( { initialCreate = null }: AdminUsersPageContentProps ) {
 	const isMounted = useIsMounted();
 	const { data = [], error, isError, isFetching, isLoading, refetch } = useAdminUsers();
 	const isRefreshing = isFetching && !isLoading;
 	const [ isCreateCoachOpen, setIsCreateCoachOpen ] = useState( initialCreate === "coach" );
 	const [ isCreateStudentOpen, setIsCreateStudentOpen ] = useState( initialCreate === "student" );
 
-	const hasInitialFilters = Boolean( initialFilters && ( initialFilters.onlyWithoutCoach || initialFilters.role !== "ALL" || initialFilters.status !== "ALL" ) );
-
-	// Se limpia la dirección para que recargar o volver atrás no reabra el formulario
-	// ni vuelva a imponer el filtro con el que se llegó.
+	// Se saca "?nuevo=" de la dirección para que recargar o volver atrás no reabra
+	// el formulario. Los filtros quedan: son de la lista y viven en la URL.
 	useEffect( () => {
-		if (initialCreate || hasInitialFilters) router.replace( "/admin/users" );
-	}, [ hasInitialFilters, initialCreate, router ] );
+		if (!initialCreate) return;
 
-	const pageState = useAdminUsersPageState( data, initialFilters );
+		const params = new URLSearchParams( window.location.search );
+
+		params.delete( "nuevo" );
+		window.history.replaceState( null, "", `${ window.location.pathname }${ params.size ? `?${ params }` : "" }` );
+	}, [ initialCreate ] );
+
+	const pageState = useAdminUsersPageState( data );
 	const filteredUsers = pageState.filteredUsers;
 	const breadcrumbs = [
 		{ href: "/admin/dashboard", label: "Inicio" },

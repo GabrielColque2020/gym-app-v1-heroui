@@ -3,7 +3,7 @@
 import type { StudentListItem } from "@/features/students/actions/get-students";
 import type { StudentStatusFilter } from "@/features/students/services/student-form";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { usePagination } from "@/components/common";
 import {
@@ -12,17 +12,21 @@ import {
 	INACTIVE_STATUS,
 	normalizeSearchValue,
 } from "@/features/students/services/student-form";
+import { useUrlEnum, useUrlPage, useUrlText } from "@/lib/use-url-state";
 
-const ITEMS_PER_PAGE = 5;
+// Con 5, un entrenador con 40 estudiantes tenia 8 paginas.
+const ITEMS_PER_PAGE = 10;
+const STATUS_FILTERS = [ ALL_STATUSES, ACTIVE_STATUS, INACTIVE_STATUS ] as const;
 
 type UseStudentListOptions = {
 	students: StudentListItem[];
 };
 
 export function useStudentList( { students }: UseStudentListOptions ) {
-	const [ searchFilter, setSearchFilter ] = useState( "" );
-	const [ statusFilter, setStatusFilter ] = useState<StudentStatusFilter>( ALL_STATUSES );
-	const [ page, setPage ] = useState( 1 );
+	// En la URL: al abrir un estudiante y volver, la lista sigue como estaba.
+	const [ searchFilter, setSearchFilter ] = useUrlText( "buscar" );
+	const [ statusFilter, setStatusFilter ] = useUrlEnum<StudentStatusFilter>( "estado", ALL_STATUSES, STATUS_FILTERS );
+	const [ page, setPage ] = useUrlPage();
 
 	const filteredStudents = useMemo(
 		() => {

@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import type { AdminUserListItem } from "@/features/role/admin/users/actions/get-admin-users";
 import { ADMIN_USER_ROLE_FILTERS, ADMIN_USER_STATUS_FILTERS, type AdminUserRoleFilter, type AdminUserStatusFilter } from "@/features/role/admin/users/services/admin-users-query";
+import { useUrlFlag, useUrlState, useUrlText } from "@/lib/use-url-state";
 
 function normalizeSearchValue( value: string ) {
 	return value
@@ -14,22 +15,40 @@ function normalizeSearchValue( value: string ) {
 		.replace( /\s+/g, " " );
 }
 
-export type AdminUsersInitialFilters = {
-	onlyWithoutCoach: boolean;
-	role: AdminUserRoleFilter;
-	status: AdminUserStatusFilter;
+// En la URL van en castellano ("?rol=entrenador&estado=activos"): son los que
+// arman los contadores de Inicio y se leen en la barra del navegador.
+const ROLE_IN_URL: Record<Exclude<AdminUserRoleFilter, "ALL">, string> = {
+	ADMIN: "administrador",
+	COACH: "entrenador",
+	STUDENT: "estudiante",
 };
+const STATUS_IN_URL: Record<Exclude<AdminUserStatusFilter, "ALL">, string> = {
+	ACTIVE: "activos",
+	INACTIVE: "inactivos",
+};
+
+function fromUrl<T extends string>( map: Record<string, string>, raw: string ) {
+	return ( Object.keys( map ).find( ( key ) => map[ key ] === raw ) ?? null ) as T | null;
+}
 
 // Un estudiante activo sin entrenador, o con uno desactivado: nadie le arma la rutina.
 export function isStudentWithoutCoach( user: AdminUserListItem ) {
 	return user.role === "STUDENT" && user.active && !user.coach?.active;
 }
 
-export function useAdminUsersPageState( users: AdminUserListItem[], initialFilters?: AdminUsersInitialFilters ) {
-	const [ search, setSearch ] = useState( "" );
-	const [ roleFilter, setRoleFilter ] = useState<AdminUserRoleFilter>( initialFilters?.role ?? "ALL" );
-	const [ statusFilter, setStatusFilter ] = useState<AdminUserStatusFilter>( initialFilters?.status ?? "ALL" );
-	const [ onlyWithoutCoach, setOnlyWithoutCoach ] = useState( initialFilters?.onlyWithoutCoach ?? false );
+// Los filtros viven en la URL: al editar un usuario, recargar o volver, la lista
+// sigue como estaba.
+export function useAdminUsersPageState( users: AdminUserListItem[] ) {
+	const [ search, setSearch ] = useUrlText( "buscar" );
+	const [ roleFilter, setRoleFilter ] = useUrlState<AdminUserRoleFilter>( "rol", "ALL", {
+		parse: ( raw ) => fromUrl<AdminUserRoleFilter>( ROLE_IN_URL, raw ),
+		serialize: ( value ) => ( value === "ALL" ? "" : ROLE_IN_URL[ value ] ),
+	} );
+	const [ statusFilter, setStatusFilter ] = useUrlState<AdminUserStatusFilter>( "estado", "ALL", {
+		parse: ( raw ) => fromUrl<AdminUserStatusFilter>( STATUS_IN_URL, raw ),
+		serialize: ( value ) => ( value === "ALL" ? "" : STATUS_IN_URL[ value ] ),
+	} );
+	const [ onlyWithoutCoach, setOnlyWithoutCoach ] = useUrlFlag( "sinEntrenador" );
 	const withoutCoachCount = useMemo( () => users.filter( isStudentWithoutCoach ).length, [ users ] );
 
 	const filteredUsers = useMemo( () => {
@@ -62,7 +81,7 @@ export function useAdminUsersPageState( users: AdminUserListItem[], initialFilte
 		setSearch,
 		setStatusFilter,
 		statusFilter,
-		toggleOnlyWithoutCoach: () => setOnlyWithoutCoach( ( current ) => !current ),
+		toggleOnlyWithoutCoach: () => setOnlyWithoutCoach( !onlyWithoutCoach ),
 		withoutCoachCount,
 	};
 }

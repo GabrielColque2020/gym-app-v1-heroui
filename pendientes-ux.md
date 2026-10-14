@@ -50,8 +50,10 @@ medida que se hace.
 - [x] Un estudiante inactivo se abre como cualquier otro: rutina, plan,
   historial y progreso, con un aviso de que no puede entrar a la app y
   "Restaurar" a mano. El entrenador le puede dejar rutina y plan listos.
-- [ ] Guardar filtros y página de las listas en la URL. Subir de 5 la cantidad de
-  estudiantes por página.
+- [x] Filtros y página de las listas en la URL (estudiantes, ejercicios, usuarios
+  y ejercicios globales, con `use-url-state.ts`): sobreviven a abrir uno y
+  volver, a recargar y a compartir el enlace. "Volver" recupera la búsqueda.
+  Estudiantes, 10 por página.
 - [ ] Calcular el mes actual con la hora de Argentina y no con la del servidor
   (UTC): el último día del mes después de las 21 hs abre el mes siguiente.
 - [ ] Descarga de PDF: detectar cuando el servidor responde con error.
