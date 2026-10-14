@@ -18,15 +18,9 @@ import prisma from "@/lib/prisma";
 // Devuelven el motivo en vez de tirar un error: ver `ActionResult`.
 type ProfileActionResult<T = undefined> = ActionResult<T>;
 
-// Solo entrenadores y estudiantes: el administrador no tiene "Mi perfil".
+// Cualquiera con la sesion abierta, y siempre sobre su propia cuenta.
 async function requireProfileSession() {
-	const session = await getAuthenticatedSession();
-
-	if (!session || session.role === "ADMIN") {
-		return null;
-	}
-
-	return session;
+	return getAuthenticatedSession();
 }
 
 function isUniqueConstraintError( error: unknown ) {

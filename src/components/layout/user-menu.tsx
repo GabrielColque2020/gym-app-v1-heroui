@@ -31,8 +31,6 @@ export function UserMenu( { userName, userRole }: UserMenuProps ) {
 	const { setTheme, theme } = useTheme();
 
 	const currentTheme = ( theme ?? "system" ) as UiThemePreference;
-	// El administrador no tiene "Mi perfil": sus datos se manejan desde Usuarios.
-	const hasProfile = userRole !== "ADMIN";
 
 	async function handleThemeAction( key: Key ) {
 		if (key === "system" || key === "light" || key === "dark") {
@@ -78,17 +76,13 @@ export function UserMenu( { userName, userRole }: UserMenuProps ) {
 						<p className={ "truncate text-xs text-muted" }>{ getRoleLabel( userRole ) }</p>
 					</div>
 
-					{ hasProfile ? (
-						<>
-							<Separator/>
-							<Dropdown.Menu aria-label={ "Tu cuenta" } onAction={ handleAccountAction }>
-								<Dropdown.Item id={ "profile" } textValue={ "Mi perfil" }>
-									<UserRound className={ "size-4 shrink-0 text-muted" }/>
-									<Label>Mi perfil</Label>
-								</Dropdown.Item>
-							</Dropdown.Menu>
-						</>
-					) : null }
+					<Separator/>
+					<Dropdown.Menu aria-label={ "Tu cuenta" } onAction={ handleAccountAction }>
+						<Dropdown.Item id={ "profile" } textValue={ "Mi perfil" }>
+							<UserRound className={ "size-4 shrink-0 text-muted" }/>
+							<Label>Mi perfil</Label>
+						</Dropdown.Item>
+					</Dropdown.Menu>
 
 					<Separator/>
 					<Dropdown.Menu

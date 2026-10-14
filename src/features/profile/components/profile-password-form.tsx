@@ -10,14 +10,22 @@ import { Eye, EyeOff, KeyRound } from "lucide-react";
 import { IconButton } from "@/components/ui/icon-button";
 import { changeOwnPasswordAction } from "@/features/profile/actions/profile-mutations";
 import { MIN_PASSWORD_LENGTH } from "@/features/profile/services/profile-form";
+import type { Role } from "@/generated/prisma/client";
 
 import { ProfileCardHeader } from "./profile-card-header";
 
 type ProfilePasswordFormProps = {
-	isStudent: boolean;
+	role: Role;
 };
 
-export function ProfilePasswordForm( { isStudent }: ProfilePasswordFormProps ) {
+// A quien pedirle una contraseña nueva si no se acuerda de la actual.
+const PASSWORD_RESET_BY_ROLE: Record<Role, string> = {
+	ADMIN: "a otro administrador",
+	COACH: "al administrador",
+	STUDENT: "a tu entrenador",
+};
+
+export function ProfilePasswordForm( { role }: ProfilePasswordFormProps ) {
 	const [ currentPassword, setCurrentPassword ] = useState( "" );
 	const [ newPassword, setNewPassword ] = useState( "" );
 	const [ isPasswordVisible, setIsPasswordVisible ] = useState( false );
@@ -101,7 +109,7 @@ export function ProfilePasswordForm( { isStudent }: ProfilePasswordFormProps ) {
 						</div>
 						{ isTooShort
 							? <FieldError>Debe tener al menos { MIN_PASSWORD_LENGTH } caracteres.</FieldError>
-							: <Description>Si no te acordás de la actual, pedile { isStudent ? "a tu entrenador" : "al administrador" } que te ponga una nueva.</Description> }
+							: <Description>Si no te acordás de la actual, pedile { PASSWORD_RESET_BY_ROLE[ role ] } que te ponga una nueva.</Description> }
 					</TextField>
 
 					<div className={ "flex justify-end" }>

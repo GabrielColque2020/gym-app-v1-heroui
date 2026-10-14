@@ -321,6 +321,11 @@ const ADMIN_FAQ_SECTIONS: FaqSection[] = [
 				id: "admin-edit-user",
 				question: "¿Cómo edito o desactivo un usuario?",
 			},
+			{
+				answer: "Tocá tu avatar, arriba a la derecha, y elegí Mi perfil. Ahí cambiás tu nombre, email, DNI, género, fecha de nacimiento y tu contraseña. Si cambiás el email o el DNI, que son con lo que entrás, te pide tu contraseña actual, y no pueden ser los de otra cuenta.",
+				id: "admin-profile",
+				question: "¿Cómo cambio mis datos o mi contraseña?",
+			},
 		],
 		title: "Usuarios",
 	},

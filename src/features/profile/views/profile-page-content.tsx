@@ -21,7 +21,7 @@ export default function ProfilePageContent( { initialValues, role }: ProfilePage
 				title={ "Mi perfil" }
 			/>
 			<ProfileDataForm initialValues={ initialValues } isStudent={ isStudent }/>
-			<ProfilePasswordForm isStudent={ isStudent }/>
+			<ProfilePasswordForm role={ role }/>
 		</div>
 	);
 }

@@ -74,5 +74,4 @@ medida que se hace.
   sin conexión manda al inicio y no a donde estabas.
 - [ ] Checkbox de días en "Crear rutina": se anuncian como "1", "2"… Probar en un
   teléfono real que se puedan marcar (en la emulación del navegador no andaban).
-- [ ] Admin sin "Mi perfil": hoy cambia su contraseña editándose desde Usuarios.
-  Confirmar si alcanza.
+- [x] El admin también tiene "Mi perfil": nombre, email, DNI, datos y contraseña.

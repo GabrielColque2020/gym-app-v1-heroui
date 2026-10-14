@@ -15,11 +15,6 @@ export default async function ProfilePage() {
 		redirect( "/login" );
 	}
 
-	// El administrador no tiene "Mi perfil": sus datos los maneja desde Usuarios.
-	if (session.role === "ADMIN") {
-		redirect( "/admin/dashboard" );
-	}
-
 	const user = await prisma.user.findUnique( {
 		select: {
 			birthDate: true,
