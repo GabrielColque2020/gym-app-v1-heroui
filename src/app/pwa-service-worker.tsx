@@ -22,6 +22,15 @@ export function PwaServiceWorker() {
       }
     };
 
+    // Despues de `load` para no competir con lo que la pagina carga primero. Pero
+    // este efecto corre al hidratar, y muchas veces `load` ya paso: esperarlo
+    // dejaba la app sin service worker (ni pantalla sin conexion) para siempre.
+    if (document.readyState === "complete") {
+      void registerServiceWorker();
+
+      return;
+    }
+
     window.addEventListener( "load", registerServiceWorker );
 
     return () => {

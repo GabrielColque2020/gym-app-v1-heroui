@@ -4,7 +4,7 @@ import { StatusPageCard } from "@/components/common/status-page-card";
 export default function OfflinePage() {
   return (
     <StatusPageCard
-      actionHref={ "/" }
+      actionHref={ "reload" }
       actionIcon={ RefreshCw }
       actionLabel={ "Reintentar" }
       badgeIcon={ WifiOff }

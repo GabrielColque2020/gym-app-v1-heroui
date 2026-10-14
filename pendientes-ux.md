@@ -79,8 +79,8 @@ medida que se hace.
 - [x] Login sin conexión: aviso de conexión en vez de "Failed to fetch", y ya no se
   queda en "Ingresando..." sin señal. Cuenta desactivada: al estudiante le dice
   "tu entrenador" y al entrenador "el administrador"; los textos sin rol, los dos.
-- [ ] PWA: el service worker puede no registrarse si el `load` ya pasó; la página
-  sin conexión manda al inicio y no a donde estabas.
+- [x] PWA: el service worker se registra aunque `load` ya haya pasado; "Reintentar"
+  de la pantalla sin conexión vuelve a pedir la página donde estabas (caché v2).
 - [ ] Checkbox de días en "Crear rutina": se anuncian como "1", "2"… Probar en un
   teléfono real que se puedan marcar (en la emulación del navegador no andaban).
 - [x] El admin también tiene "Mi perfil": nombre, email, DNI, datos y contraseña.

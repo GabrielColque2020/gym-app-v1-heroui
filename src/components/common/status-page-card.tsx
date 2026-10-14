@@ -3,10 +3,13 @@ import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Button, Card, Typography } from "@heroui/react";
+import { buttonVariants, Card, Typography } from "@heroui/react";
+
+import { StatusPageReloadLink } from "@/components/common/status-page-reload-link";
 
 type StatusPageCardProps = {
-  actionHref: string;
+  // Un destino, o `"reload"` para volver a pedir la pagina en la que se esta.
+  actionHref: string | "reload";
   actionIcon: LucideIcon;
   actionLabel: string;
   badgeIcon: LucideIcon;
@@ -28,6 +31,8 @@ export function StatusPageCard( {
   detailTitle,
   title,
 }: StatusPageCardProps ) {
+  const actionClassName = `${ buttonVariants( { fullWidth: true, size: "lg" } ) } bg-accent text-accent-foreground`;
+
   return (
     <main
       className={
@@ -97,12 +102,19 @@ export function StatusPageCard( {
             </Typography>
           </div>
 
-          <Link className={ "block" } href={ actionHref }>
-            <Button className={ "w-full bg-accent text-accent-foreground" } size={ "lg" }>
+          { /* Un enlace con forma de boton: antes era un boton adentro de un enlace,
+               dos controles anidados para un lector de pantalla. */ }
+          { actionHref === "reload" ? (
+            <StatusPageReloadLink className={ actionClassName }>
               <ActionIcon className={ "size-4" } />
               { actionLabel }
-            </Button>
-          </Link>
+            </StatusPageReloadLink>
+          ) : (
+            <Link className={ actionClassName } href={ actionHref }>
+              <ActionIcon className={ "size-4" } />
+              { actionLabel }
+            </Link>
+          ) }
         </Card.Content>
       </Card>
     </main>

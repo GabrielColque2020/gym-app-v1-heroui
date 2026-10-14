@@ -1,4 +1,6 @@
-const CACHE_VERSION = "gym-app-pwa-v1";
+// Subirla cuando cambia la pantalla sin conexion: se guarda al instalar, y el
+// service worker solo se reinstala si cambia este archivo.
+const CACHE_VERSION = "gym-app-pwa-v2";
 const STATIC_CACHE = `${ CACHE_VERSION }-static`;
 const OFFLINE_URL = "/offline";
 const STATIC_URLS = [
