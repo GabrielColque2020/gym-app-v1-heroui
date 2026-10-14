@@ -12,21 +12,32 @@ type BuildRoutinePageDerivedStateParams = {
 	isSavePending: boolean;
 };
 
-// Cuando se hizo este dia: la fecha del ultimo registro que el estudiante cargo en el.
-function getDayDoneDate( data: StudentRoutineSessionDetail | undefined ) {
-	if (!data) return null;
-
+// Las fechas de las series de este dia (no las de otros dias del historial).
+function getOwnDates( data: StudentRoutineSessionDetail ) {
 	const ownSessionKey = getSessionKey( {
 		dayNumber: data.dayNumber,
 		month: data.trainingRoutine.month,
 		week: data.trainingRoutine.week,
 		year: data.trainingRoutine.year,
 	} );
-	const ownDates = data.progressEntries
+
+	return data.progressEntries
 		.filter( ( entry ) => getSessionKey( entry ) === ownSessionKey )
 		.map( ( entry ) => new Date( entry.date ).getTime() );
+}
+
+// Cuando se hizo este dia: la fecha del ultimo registro que el estudiante cargo en el.
+function getDayDoneDate( data: StudentRoutineSessionDetail | undefined ) {
+	const ownDates = data ? getOwnDates( data ) : [];
 
 	return ownDates.length > 0 ? new Date( Math.max( ...ownDates ) ) : null;
+}
+
+// Cuando empezo a cargar este dia: el dia que se propone al terminarlo.
+function getDayStartDate( data: StudentRoutineSessionDetail | undefined ) {
+	const ownDates = data ? getOwnDates( data ) : [];
+
+	return ownDates.length > 0 ? new Date( Math.min( ...ownDates ) ) : null;
 }
 
 export function buildRoutinePageDerivedState( {
@@ -50,6 +61,7 @@ export function buildRoutinePageDerivedState( {
 		backHref: `/student/training-routine?month=${ data?.trainingRoutine.month ?? "" }&year=${ data?.trainingRoutine.year ?? "" }`,
 		canFinishDay: hasExercises && !isSavePending,
 		dayDoneDate: getDayDoneDate( data ),
+		dayStartDate: getDayStartDate( data ),
 		halfLoadedSetCount: activeSession ? countHalfLoadedSets( activeSession ) : 0,
 		isDayFinished: Boolean( data?.isFinalized ),
 		routineStatusDescription,

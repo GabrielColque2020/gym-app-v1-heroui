@@ -96,5 +96,6 @@ medida que se hace.
 - [x] Cartel en el inicio del estudiante: "Te quedó sin terminar" si cargó series
   otro día y no lo terminó ("Terminar ahora"), y "Tenés series sin subir" si
   quedaron en el teléfono.
-- [ ] Fecha del entrenamiento: al cargar tarde un día, preguntar cuándo se entrenó
-  ("Hoy / Ayer / Otra fecha") para que el gráfico de progreso no lo corra.
+- [x] Fecha del entrenamiento: "Terminar día" pregunta cuándo se entrenó (Hoy / Ayer /
+  Otra fecha, hasta 60 días) y propone el día de la primera serie; las series del
+  día pasan a esa fecha.

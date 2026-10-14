@@ -23,7 +23,7 @@ type UseRoutinePageActionsOptions = {
 	refetchAction: () => Promise<unknown>;
 	replaceDraftAction: ( nextSession: StudentRoutineSession ) => void;
 	routineDayId: string | null;
-	saveSessionAction: ( options: { finalize: boolean; silent: boolean } ) => Promise<boolean>;
+	saveSessionAction: ( options: { finalize: boolean; silent: boolean; trainedOn?: string | null } ) => Promise<boolean>;
 };
 
 export function useRoutinePageActions( {
@@ -127,8 +127,8 @@ export function useRoutinePageActions( {
 		setIsFinishDrawerOpen( true );
 	}, [ canFinishDay ] );
 
-	const handleConfirmFinish = useCallback( async () => {
-		const isSaved = await saveSessionAction( { finalize: true, silent: false } );
+	const handleConfirmFinish = useCallback( async ( trainedOn: string ) => {
+		const isSaved = await saveSessionAction( { finalize: true, silent: false, trainedOn } );
 
 		if (!isSaved) return;
 

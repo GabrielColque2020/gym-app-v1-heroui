@@ -30,3 +30,31 @@ export function getAppCurrentMonth() {
 export function getAppCurrentYear() {
 	return getAppDateParts().year;
 }
+
+// El dia de `date` en hora argentina como "AAAA-MM-DD": asi viaja una fecha sin
+// hora entre la pantalla y el servidor, sin que el huso la corra un dia.
+export function toAppDateKey( date: Date = new Date() ) {
+	const { day, month, year } = getAppDateParts( date );
+
+	return `${ year }-${ String( month ).padStart( 2, "0" ) }-${ String( day ).padStart( 2, "0" ) }`;
+}
+
+// El dia `days` dias antes o despues de `key`.
+export function shiftAppDateKey( key: string, days: number ) {
+	return toAppDateKey( new Date( appDateKeyToNoon( key ).getTime() + days * 24 * 60 * 60 * 1000 ) );
+}
+
+// El mediodia de ese dia en Argentina (UTC−3, sin horario de verano): queda lejos
+// de la medianoche, asi que en cualquier huso sigue siendo el mismo dia.
+export function appDateKeyToNoon( key: string ) {
+	return new Date( `${ key }T12:00:00-03:00` );
+}
+
+// Un "AAAA-MM-DD" que existe: "2026-02-30" no.
+export function isAppDateKey( value: unknown ): value is string {
+	if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test( value )) return false;
+
+	const noon = appDateKeyToNoon( value );
+
+	return !Number.isNaN( noon.getTime() ) && toAppDateKey( noon ) === value;
+}

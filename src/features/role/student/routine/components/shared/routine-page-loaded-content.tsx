@@ -20,6 +20,7 @@ export function RoutinePageLoadedContent( {
 		activeSession,
 		backHref,
 		canFinishDay,
+		dayStartDate,
 		handleConfirmFinish,
 		handleConfirmRefresh,
 		handleExerciseUpdate,
@@ -79,6 +80,7 @@ export function RoutinePageLoadedContent( {
 			/>
 			</RoutineSessionLockProvider>
 			<RoutineSaveDrawer
+				dayStartDate={ dayStartDate }
 				isOpen={ isFinishDrawerOpen }
 				isPending={ saveRoutineSession.isPending }
 				validationError={ validationError }

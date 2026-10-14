@@ -68,9 +68,10 @@ export function useRoutineSessionAutosave( {
 	const hasFailed = hasChanges && failedSignature === draftSignature;
 	const canSave = hasChanges && !validationError && Boolean( routineDayId && studentId );
 
-	// `finalize` marca el dia como terminado. `silent` es el guardado automatico:
-	// no avisa cada vez que guarda, solo si falla.
-	const saveSession = useCallback( async ( { finalize, silent }: { finalize: boolean; silent: boolean } ) => {
+	// `finalize` marca el dia como terminado (y `trainedOn`, el dia en que se
+	// entreno). `silent` es el guardado automatico: no avisa cada vez que guarda,
+	// solo si falla.
+	const saveSession = useCallback( async ( { finalize, silent, trainedOn = null }: { finalize: boolean; silent: boolean; trainedOn?: string | null } ) => {
 		if (!activeSession || !routineDayId || !studentId) {
 			if (!silent) toast.danger( "No se puede guardar", { description: "Faltan datos para guardar la sesión." } );
 
@@ -90,6 +91,7 @@ export function useRoutineSessionAutosave( {
 				...mapStudentRoutineSessionToSaveInput( activeSession ),
 				finalize,
 				studentId,
+				trainedOn,
 			} );
 			setFailedSignature( null );
 			setAcceptedSignature( sentSignature );

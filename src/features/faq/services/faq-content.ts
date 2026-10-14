@@ -39,7 +39,7 @@ const STUDENT_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Cómo uso el reloj de descanso?",
 			},
 			{
-				answer: "Le avisa a tu entrenador que ese entrenamiento está hecho. Antes de confirmar te muestra un resumen, y podés terminar aunque te hayan quedado series sin cargar. Después el día queda como Día terminado y las series se bloquean para que no las cambies sin querer.",
+				answer: "Le avisa a tu entrenador que ese entrenamiento está hecho. Antes de confirmar te muestra un resumen y te pregunta cuándo entrenaste (hoy, ayer u otra fecha): si cargaste tarde, así tu progreso queda en el día correcto. Podés terminar aunque te hayan quedado series sin cargar. Después el día queda como Día terminado y las series se bloquean para que no las cambies sin querer.",
 				id: "student-routine-finalized",
 				question: "¿Para qué sirve Terminar día?",
 			},
@@ -233,7 +233,7 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 				question: "¿Cómo veo el progreso de un estudiante?",
 			},
 			{
-				answer: "El peso más alto de cada sesión, o las repeticiones más altas si el ejercicio se hace sin peso. Las sesiones van por la fecha en que el estudiante las cargó. Si un día eligió una variante, esa sesión cuenta para la variante y no para el ejercicio original.",
+				answer: "El peso más alto de cada sesión, o las repeticiones más altas si el ejercicio se hace sin peso. Las sesiones van por el día que el estudiante eligió al tocar Terminar día; si todavía no lo terminó, por la fecha en que las cargó. Si un día eligió una variante, esa sesión cuenta para la variante y no para el ejercicio original.",
 				id: "coach-progress-chart",
 				question: "¿Qué muestra el gráfico de progreso?",
 			},

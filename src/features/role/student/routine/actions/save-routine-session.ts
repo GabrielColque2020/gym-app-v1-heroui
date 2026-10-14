@@ -3,6 +3,7 @@
 import type { ActionResult } from "@/lib/action-result";
 import { runAction } from "@/lib/run-action";
 import prisma from "@/lib/prisma";
+import { appDateKeyToNoon, isAppDateKey, shiftAppDateKey, toAppDateKey } from "@/lib/app-date";
 
 import { getAuthenticatedSession } from "@/features/auth/session";
 import {
@@ -19,6 +20,10 @@ type SaveStudentRoutineSessionInput = StudentRoutineSessionSaveInput & {
 	// una serie no es haber terminado.
 	finalize?: boolean;
 	studentId?: string | null;
+	// Con `finalize`: el dia en que entreno ("AAAA-MM-DD", hora argentina). Las
+	// series se guardan con la fecha en que se cargan; si cargo tarde, aca se
+	// corrigen para que el progreso no quede corrido de dia.
+	trainedOn?: string | null;
 };
 
 // Lo que cambia al guardar: las series de este dia y si quedo terminado. La
@@ -55,6 +60,7 @@ type SavedDayForSave = {
 export async function saveStudentRoutineSessionAction( {
 														   exercises,
 														   finalize = false,
+													   trainedOn = null,
 														   routineDayId,
 														   studentId,
 													   }: SaveStudentRoutineSessionInput ): Promise<ActionResult<SavedStudentRoutineSession>> {
@@ -73,6 +79,10 @@ export async function saveStudentRoutineSessionAction( {
 
 		if (activeStudentId !== session.sub) {
 			throw new Error( "La rutina solicitada no pertenece al estudiante autenticado." );
+		}
+
+		if (trainedOn !== null && !isValidTrainedOn( trainedOn )) {
+			throw new Error( `Elegí una fecha de los últimos ${ MAX_TRAINED_ON_DAYS_AGO } días, que no sea posterior a hoy.` );
 		}
 
 		const normalizedRoutineDayId = routineDayId.trim();
@@ -141,6 +151,14 @@ export async function saveStudentRoutineSessionAction( {
 		};
 		const resolvedExercises = resolveStudentRoutineExercises( routineDay, exercises );
 		const progressRows = buildStudentRoutineProgressRows( routineDay, resolvedExercises, activeStudentId );
+		// Las series de este dia.
+		const sessionWhere = {
+			dayNumber: routineDay.dayNumber,
+			month: routineDay.trainingRoutine.month,
+			studentId: activeStudentId,
+			week: routineDay.trainingRoutine.week,
+			year: routineDay.trainingRoutine.year,
+		};
 
 		// Se guarda aplicando solo las diferencias: borrar y recrear todo le cambiaria
 		// la fecha a las series que ya estaban.
@@ -151,13 +169,7 @@ export async function saveStudentRoutineSessionAction( {
 
 			const existingRows = await tx.exerciseProgress.findMany( {
 				orderBy: [ { date: "desc" }, { id: "desc" } ],
-				where: {
-					dayNumber: routineDay.dayNumber,
-					month: routineDay.trainingRoutine.month,
-					studentId: activeStudentId,
-					week: routineDay.trainingRoutine.week,
-					year: routineDay.trainingRoutine.year,
-				},
+				where: sessionWhere,
 			} );
 			// Una serie se reconoce por su ejercicio y su numero. Si quedo repetida
 			// de antes, se conserva la mas nueva.
@@ -228,6 +240,25 @@ export async function saveStudentRoutineSessionAction( {
 				} );
 			}
 
+			// Las series del dia que tengan otra fecha pasan al dia elegido. Las que ya
+			// son de ese dia quedan como estan.
+			if (finalize && trainedOn) {
+				const moved = await tx.exerciseProgress.updateMany( {
+					data: { date: appDateKeyToNoon( trainedOn ) },
+					where: {
+						...sessionWhere,
+						OR: [
+							{ date: { lt: new Date( `${ trainedOn }T00:00:00-03:00` ) } },
+							{ date: { gte: new Date( `${ shiftAppDateKey( trainedOn, 1 ) }T00:00:00-03:00` ) } },
+						],
+					},
+				} );
+
+				if (moved.count > 0) {
+					return tx.exerciseProgress.findMany( { where: sessionWhere } );
+				}
+			}
+
 			return savedRows;
 		} );
 
@@ -241,4 +272,16 @@ export async function saveStudentRoutineSessionAction( {
 			year: routineDay.trainingRoutine.year,
 		};
 	} );
+}
+
+// Hasta cuanto para atras se puede decir que se entreno: un olvido de unos dias,
+// no reescribir el historial.
+const MAX_TRAINED_ON_DAYS_AGO = 60;
+
+function isValidTrainedOn( value: string ) {
+	if (!isAppDateKey( value )) return false;
+
+	const today = toAppDateKey();
+
+	return value <= today && value >= shiftAppDateKey( today, -MAX_TRAINED_ON_DAYS_AGO );
 }

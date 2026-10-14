@@ -15,6 +15,7 @@ import type {
 type SaveStudentRoutineSessionMutationInput = StudentRoutineSessionSaveInput & {
 	finalize?: boolean;
 	studentId: string | null;
+	trainedOn?: string | null;
 };
 
 export function useSaveStudentRoutineSession() {
