@@ -81,3 +81,5 @@ medida que se hace.
 - [ ] Checkbox de días en "Crear rutina": se anuncian como "1", "2"… Probar en un
   teléfono real que se puedan marcar (en la emulación del navegador no andaban).
 - [x] El admin también tiene "Mi perfil": nombre, email, DNI, datos y contraseña.
+- [x] El botón "atrás" del teléfono cierra el drawer, modal o menú abierto en vez de
+  retroceder la página (`overlay-back-guard.tsx`). Con cambios sin guardar, pregunta.

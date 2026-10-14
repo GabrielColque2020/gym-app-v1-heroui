@@ -10,6 +10,7 @@ import type { Role } from "@/generated/prisma/client";
 import { DashboardNavbar } from "./dashboard-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
 import { OfflineBanner } from "./offline-banner";
+import { OverlayBackGuard } from "./overlay-back-guard";
 
 export interface AppShellProps {
 	children: ReactNode;
@@ -39,6 +40,7 @@ export function AppShell( { basePath = "", children, userName, userRole }: AppSh
 			<Sidebar.Main>
 				<DashboardNavbar userName={ userName } userRole={ userRole }/>
 				<OfflineBanner/>
+				<OverlayBackGuard/>
 				{ children }
 			</Sidebar.Main>
 		</Sidebar.Provider>
