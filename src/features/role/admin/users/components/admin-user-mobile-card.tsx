@@ -18,10 +18,11 @@ export function AdminUserMobileCard( { user }: AdminUserMobileCardProps ) {
 			<Card.Content className={ "space-y-2 p-3" }>
 				<div className={ "flex items-start justify-between gap-2" }>
 					<div className={ "min-w-0" }>
-						<p className={ "truncate text-base font-semibold text-foreground" }>{ user.name }</p>
+						{ /* El nombre puede ir en dos renglones: cortado no se sabia de quien era. */ }
+						<p className={ "line-clamp-2 break-words text-base font-semibold text-foreground" }>{ user.name }</p>
 						<p className={ "truncate text-sm text-muted" }>{ user.email }</p>
 					</div>
-					<AdminUserRowActions user={ user }/>
+					<AdminUserRowActions isCompact user={ user }/>
 				</div>
 
 				<div className={ "flex flex-wrap items-center gap-x-2 gap-y-1" }>

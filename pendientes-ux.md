@@ -71,8 +71,9 @@ medida que se hace.
   ("válida", "cambió", "sesión", "Año"), "entrenador" en los avisos de permiso,
   singular en semanas y ejercicios, y "Cerrar" / "Navegación principal" en vez de
   inglés para lectores de pantalla. Las páginas sin conexión y 404, en voseo.
-- [ ] Usuarios del admin en el teléfono: los filtros ocupan toda la pantalla y el
-  nombre queda cortado por el botón Editar.
+- [x] Usuarios del admin en el teléfono: buscador a lo ancho y Rol y Estado lado a
+  lado sin etiquetas (sin filtro dicen "Rol" / "Estado"); Editar solo con el lápiz y
+  el nombre en hasta dos renglones.
 - [ ] Botones de al menos 44 px en el teléfono: mes anterior y siguiente, ±15 s del
   reloj, botón de nota.
 - [ ] Login sin conexión muestra "Failed to fetch". El "pedile a tu entrenador"

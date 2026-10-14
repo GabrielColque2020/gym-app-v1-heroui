@@ -176,35 +176,44 @@ export default function AdminUsersPageContent( { initialCreate = null }: AdminUs
 				{ /* La tabla se muestra cuando este bloque tiene lugar para ella (896 px);
 				     por debajo van las tarjetas. No depende del ancho de la ventana. */ }
 				<Card.Content className={ "@container space-y-4 p-3" }>
-					<div className={ "grid gap-3 @3xl:grid-cols-3" }>
-						<SearchField name={ "admin-user-search" } value={ pageState.search } onChange={ pageState.setSearch }>
-							<Label>Buscar</Label>
+					{ /* En el telefono: el buscador a lo ancho y los dos filtros lado a lado, sin
+					     etiquetas. Con una etiqueta y un renglon cada uno ocupaban media pantalla
+					     antes del primer usuario. */ }
+					<div className={ "grid grid-cols-2 gap-2 @3xl:grid-cols-3 @3xl:gap-3" }>
+						<SearchField className={ "col-span-2 @3xl:col-span-1" } name={ "admin-user-search" } value={ pageState.search } onChange={ pageState.setSearch }>
+							<Label className={ "sr-only @3xl:not-sr-only" }>Buscar</Label>
 							<SearchField.Group className={ "border border-border" }>
 								<SearchField.SearchIcon/>
 								<SearchField.Input placeholder={ "Nombre, email, DNI o entrenador..." }/>
 								<SearchField.ClearButton/>
 							</SearchField.Group>
 						</SearchField>
-						<Select value={ pageState.roleFilter } variant={ "primary" }
+						<Select className={ "min-w-0" } value={ pageState.roleFilter } variant={ "primary" }
 						        onChange={ ( value ) => pageState.setRoleFilter( value as typeof pageState.roleFilter ) }>
-							<Label>Rol</Label>
-							<Select.Trigger className={ "border border-border" }><Select.Value/><Select.Indicator/></Select.Trigger>
+							<Label className={ "sr-only @3xl:not-sr-only" }>Rol</Label>
+							<Select.Trigger className={ "w-full min-w-0 border border-border" }>
+								<FilterValue isAll={ pageState.roleFilter === "ALL" } shortLabel={ "Rol" }/>
+								<Select.Indicator/>
+							</Select.Trigger>
 							<Select.Popover>
 								<ListBox>
-									<ListBox.Item id={ "ALL" } textValue={ "Todos" }>Todos<ListBox.ItemIndicator/></ListBox.Item>
+									<ListBox.Item id={ "ALL" } textValue={ "Todos los roles" }>Todos los roles<ListBox.ItemIndicator/></ListBox.Item>
 									<ListBox.Item id={ "ADMIN" } textValue={ "Administrador" }>Administrador<ListBox.ItemIndicator/></ListBox.Item>
 									<ListBox.Item id={ "COACH" } textValue={ "Entrenador" }>Entrenador<ListBox.ItemIndicator/></ListBox.Item>
 									<ListBox.Item id={ "STUDENT" } textValue={ "Estudiante" }>Estudiante<ListBox.ItemIndicator/></ListBox.Item>
 								</ListBox>
 							</Select.Popover>
 						</Select>
-						<Select value={ pageState.statusFilter } variant={ "primary" }
+						<Select className={ "min-w-0" } value={ pageState.statusFilter } variant={ "primary" }
 						        onChange={ ( value ) => pageState.setStatusFilter( value as typeof pageState.statusFilter ) }>
-							<Label>Estado</Label>
-							<Select.Trigger className={ "border border-border" }><Select.Value/><Select.Indicator/></Select.Trigger>
+							<Label className={ "sr-only @3xl:not-sr-only" }>Estado</Label>
+							<Select.Trigger className={ "w-full min-w-0 border border-border" }>
+								<FilterValue isAll={ pageState.statusFilter === "ALL" } shortLabel={ "Estado" }/>
+								<Select.Indicator/>
+							</Select.Trigger>
 							<Select.Popover>
 								<ListBox>
-									<ListBox.Item id={ "ALL" } textValue={ "Todos" }>Todos<ListBox.ItemIndicator/></ListBox.Item>
+									<ListBox.Item id={ "ALL" } textValue={ "Todos los estados" }>Todos los estados<ListBox.ItemIndicator/></ListBox.Item>
 									<ListBox.Item id={ "ACTIVE" } textValue={ "Activos" }>Activos<ListBox.ItemIndicator/></ListBox.Item>
 									<ListBox.Item id={ "INACTIVE" } textValue={ "Inactivos" }>Inactivos<ListBox.ItemIndicator/></ListBox.Item>
 								</ListBox>
@@ -259,5 +268,21 @@ export default function AdminUsersPageContent( { initialCreate = null }: AdminUs
 				</Card.Content>
 			</Card>
 		</div>
+	);
+}
+
+// Sin filtro, en el telefono el desplegable dice solo "Rol" o "Estado": "Todos los
+// estados" no entra en la mitad del ancho. En escritorio, con la etiqueta arriba,
+// queda el texto de la opcion.
+function FilterValue( { isAll, shortLabel }: { isAll: boolean; shortLabel: string } ) {
+	return (
+		<Select.Value className={ "truncate" }>
+			{ ( { selectedText } ) => isAll ? (
+				<>
+					<span className={ "@3xl:hidden" }>{ shortLabel }</span>
+					<span className={ "hidden @3xl:inline" }>{ selectedText }</span>
+				</>
+			) : selectedText }
+		</Select.Value>
 	);
 }

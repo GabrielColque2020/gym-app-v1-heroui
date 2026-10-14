@@ -15,10 +15,13 @@ import { useAdminUsers, useDeleteAdminUser, useToggleUserStatus } from "@/featur
 import { MoreActionsButton } from "@/features/shared/components/more-actions-button";
 
 type AdminUserRowActionsProps = {
+	// En la tarjeta del telefono "Editar" va solo con el lapiz: con el rotulo le
+	// sacaba lugar al nombre.
+	isCompact?: boolean;
 	user: AdminUserListItem;
 };
 
-export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
+export function AdminUserRowActions( { isCompact = false, user }: AdminUserRowActionsProps ) {
 	const mutation = useToggleUserStatus();
 	const deleteMutation = useDeleteAdminUser();
 	const [ isEditOpen, setIsEditOpen ] = useState( false );
@@ -119,12 +122,13 @@ export function AdminUserRowActions( { user }: AdminUserRowActionsProps ) {
 			<Button
 				aria-label={ `Editar a ${ user.name }` }
 				className={ "shrink-0" }
+				isIconOnly={ isCompact }
 				size={ "sm" }
 				variant={ "secondary" }
 				onPress={ () => setIsEditOpen( true ) }
 			>
 				<PencilLine className={ "size-4" }/>
-				Editar
+				{ isCompact ? null : "Editar" }
 			</Button>
 			{ hasMenu ? (
 			<Dropdown>
