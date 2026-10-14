@@ -39,6 +39,8 @@ export function CoachStudentTabs( { active, studentId }: CoachStudentTabsProps )
 					return (
 						<Link
 							key={ tab.id }
+							// El nombre completo tambien en el telefono, donde se ve el corto.
+							aria-label={ tab.label }
 							aria-current={ isActive ? "page" : undefined }
 							className={
 								// En el telefono se reparten el ancho, con el icono arriba del

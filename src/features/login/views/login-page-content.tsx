@@ -143,8 +143,9 @@ export default function LoginPageContent() {
 				<Card.Content className={ "space-y-6 px-5 py-6 sm:px-8 sm:py-8" }>
 					<div className={ "space-y-2 text-center" }>
 						<div className={ "mx-auto flex size-16 items-center justify-center rounded-2xl border border-border bg-surface-secondary p-2 shadow-sm" }>
+							{ /* Decorativo: al lado dice "Gym App". */ }
 							<Image
-								alt={ "Gym App icon" }
+								alt={ "" }
 								className={ "size-12" }
 								height={ 48 }
 								priority

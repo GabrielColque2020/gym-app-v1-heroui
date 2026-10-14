@@ -69,7 +69,7 @@ export function StatusPageCard( {
           <div className={ "space-y-3" }>
             <div className={ "mx-auto flex size-16 items-center justify-center rounded-2xl border border-border bg-surface-secondary p-2 shadow-sm" }>
               <Image
-                alt={ "Gym App icon" }
+                alt={ "Gym App" }
                 className={ "size-12" }
                 height={ 48 }
                 priority
