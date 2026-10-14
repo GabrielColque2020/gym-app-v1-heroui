@@ -143,7 +143,7 @@ export function MobileExerciseSetCard( {
 					<TextArea
 						fullWidth
 						aria-label={ "Nota" }
-						placeholder={ "Agrega una observación para esta serie" }
+						placeholder={ "Agregá una observación para esta serie" }
 						value={ selectedNoteSet?.notes ?? "" }
 						className={ "border border-border" }
 						onChange={ ( e ) => {

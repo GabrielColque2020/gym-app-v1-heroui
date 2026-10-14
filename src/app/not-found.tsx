@@ -10,8 +10,8 @@ export default function NotFound() {
       badgeIcon={ SearchX }
       badgeLabel={ "Error 404" }
       description={ "La página que intentaste abrir no existe o ya no está disponible dentro de Gym App." }
-      detail={ "Puede tratarse de un enlace viejo, una ruta mal escrita o una sección que cambio de lugar. Vuelve al inicio para continuar navegando." }
-      detailTitle={ "Que pudo pasar" }
+      detail={ "Puede tratarse de un enlace viejo, una ruta mal escrita o una sección que cambió de lugar. Volvé al inicio para seguir." }
+      detailTitle={ "Qué pudo pasar" }
       title={ "No encontramos esa página" }
     />
   );

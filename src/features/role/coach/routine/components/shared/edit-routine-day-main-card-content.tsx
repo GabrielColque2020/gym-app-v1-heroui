@@ -24,7 +24,7 @@ export function EditRoutineDayMainCardContent( {
 			{ validationError ? (
 				<Alert className={ "border border-warning/20" } status={ "warning" }>
 					<Alert.Content>
-						<Alert.Title>Revisa el borrador antes de guardar</Alert.Title>
+						<Alert.Title>Revisá el borrador antes de guardar</Alert.Title>
 						<Alert.Description>{ validationError }</Alert.Description>
 					</Alert.Content>
 				</Alert>

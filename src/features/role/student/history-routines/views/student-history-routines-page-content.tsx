@@ -103,7 +103,7 @@ export default function StudentHistoryRoutinesPageContent( { studentId }: Studen
 		return (
 			<Alert className={ "border border-warning/20" } status={ "warning" }>
 				<Alert.Content>
-					<Alert.Title>Debes iniciar sesión</Alert.Title>
+					<Alert.Title>Tenés que iniciar sesión</Alert.Title>
 					<Alert.Description>
 						No se pudo identificar tu cuenta para mostrar tu historial de rutinas.
 					</Alert.Description>

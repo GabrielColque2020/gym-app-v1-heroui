@@ -103,7 +103,7 @@ export function parseBirthDate( value: string ) {
 	const birthDate = new Date( `${ normalizedValue }T00:00:00.000Z` );
 
 	if (Number.isNaN( birthDate.getTime() )) {
-		throw new Error( "La fecha de nacimiento no es valida." );
+		throw new Error( "La fecha de nacimiento no es válida." );
 	}
 
 	return birthDate;

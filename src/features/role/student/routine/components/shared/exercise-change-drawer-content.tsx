@@ -31,7 +31,7 @@ export default function ExerciseChangeDrawerContent( {
 					<div className={ "min-w-0" }>
 						<Drawer.Heading>Cambiar ejercicio</Drawer.Heading>
 						<Description className={ "mt-1 text-sm" }>
-							Selecciona una variante disponible para esta rutina.
+							Seleccioná una variante disponible para esta rutina.
 						</Description>
 					</div>
 				</div>

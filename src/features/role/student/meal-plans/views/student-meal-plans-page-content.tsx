@@ -196,7 +196,7 @@ export default function StudentMealPlansPageContent( { studentId }: StudentMealP
 		return (
 			<Alert className={ "border border-warning/20" } status={ "warning" }>
 				<Alert.Content>
-					<Alert.Title>Debes iniciar sesión</Alert.Title>
+					<Alert.Title>Tenés que iniciar sesión</Alert.Title>
 					<Alert.Description>No se pudo identificar tu cuenta para mostrar tu plan alimenticio.</Alert.Description>
 				</Alert.Content>
 			</Alert>

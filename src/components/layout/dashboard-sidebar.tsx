@@ -87,7 +87,7 @@ function SidebarContents( {
 				<Sidebar.Pages defaultValue={ initialPage }>
 					<Sidebar.Page value={ "main" }>
 						<Sidebar.Group>
-							<Sidebar.Menu aria-label={ "Dashboard navigation" }>
+							<Sidebar.Menu aria-label={ "Navegación principal" }>
 								{ visibleNavItems.map((item) => (
 									<SidebarNavItem
 										key={ `${item.href ?? item.label}-${item.label}` }

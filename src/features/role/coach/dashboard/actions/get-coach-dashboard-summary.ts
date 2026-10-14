@@ -36,7 +36,7 @@ export type CoachDashboardSummary = {
 
 export async function getCoachDashboardSummaryAction(): Promise<ActionResult<CoachDashboardSummary>> {
 	return runAction( "No se pudo obtener el resumen.", async () => {
-		const session = await requireCoachSession( "consultar el dashboard del coach" );
+		const session = await requireCoachSession( "ver tu inicio" );
 		const now = new Date();
 		const currentPeriod = buildCoachDashboardCurrentPeriod( now );
 

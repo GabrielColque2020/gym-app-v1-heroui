@@ -284,7 +284,7 @@ async function upsertCoachOverrideByGlobalExerciseId( coachId: string, globalExe
 
 export async function getCoachExercisesAction(): Promise<ActionResult<CoachExerciseListItem[]>> {
 	return runAction( "No se pudo obtener el catálogo de ejercicios.", async () => {
-		const session = await requireCoachSession( "consultar ejercicios del coach" );
+		const session = await requireCoachSession( "ver tus ejercicios" );
 
 		const [ globalExercises, coachExercises ] = await Promise.all( [
 			prisma.exerciseGlobal.findMany( {
@@ -496,7 +496,7 @@ export async function getCoachExerciseDeleteImpactAction( exerciseId: string ): 
 
 export async function deleteCoachExerciseAction( exerciseId: string ) {
 	return runAction( "No se pudo eliminar el ejercicio.", async () => {
-		const session = await requireCoachSession( "eliminar ejercicios del coach" );
+		const session = await requireCoachSession( "eliminar ejercicios" );
 		const normalizedExerciseId = normalizeId( exerciseId );
 
 		if (!normalizedExerciseId) {
@@ -518,7 +518,7 @@ export async function deleteCoachExerciseAction( exerciseId: string ) {
 		} );
 
 		if (!exercise) {
-			throw new Error( "No se encontró el ejercicio del coach solicitado." );
+			throw new Error( "No se encontró el ejercicio." );
 		}
 
 		await prisma.$transaction( async ( tx ) => {

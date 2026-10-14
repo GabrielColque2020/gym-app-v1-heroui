@@ -180,7 +180,7 @@ export async function getExerciseVariantsAction( { routineId }: ExerciseVariantQ
 		const normalizedRoutineId = normalizeId( routineId );
 
 		if (!normalizedRoutineId) {
-			throw new Error( "Seleccioná una rutina valida." );
+			throw new Error( "Seleccioná una rutina válida." );
 		}
 
 		const session = await requireCoachSession( "consultar las variantes" );
@@ -289,7 +289,7 @@ export async function setExerciseVariantsAction( input: ExerciseVariantSaveInput
 		const variantExerciseIds = normalizeVariantIds( input.variantExerciseIds );
 
 		if (!routineId) {
-			throw new Error( "Seleccioná una rutina valida." );
+			throw new Error( "Seleccioná una rutina válida." );
 		}
 
 		const session = await requireCoachSession( "guardar las variantes" );

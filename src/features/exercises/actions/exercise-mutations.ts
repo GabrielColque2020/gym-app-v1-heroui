@@ -19,7 +19,7 @@ function validateExerciseInput( input: CreateExerciseInput ) {
 	}
 
 	if (!isBodyPartValue( input.bodyPart )) {
-		throw new Error( "Seleccioná una parte del cuerpo valida." );
+		throw new Error( "Seleccioná una parte del cuerpo válida." );
 	}
 
 	return {

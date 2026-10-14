@@ -116,7 +116,7 @@ export function FeatureDrawerLayout( {
 					>
 						{ /* La manija solo se dibuja si de verdad se puede arrastrar. */ }
 						{ placement === "bottom" && canDismiss ? <Drawer.Handle/> : null }
-						<Drawer.CloseTrigger className={ "absolute inset-e-4 top-4 z-10" }/>
+						<Drawer.CloseTrigger aria-label={ "Cerrar" } className={ "absolute inset-e-4 top-4 z-10" }/>
 						<div ref={ portalContainerRef } className={ "contents" } data-drawer-no-drag>
 							<UNSAFE_PortalProvider getContainer={ () => portalContainerRef.current }>
 								{ children }

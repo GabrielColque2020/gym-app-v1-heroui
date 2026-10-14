@@ -167,7 +167,7 @@ export async function loginUser(
 	const password = input.password.trim();
 
 	if (!credential) {
-		throw new Error( "Debes ingresar un DNI o correo electrónico." );
+		throw new Error( "Ingresá tu DNI o correo electrónico." );
 	}
 
 	if (!password) {

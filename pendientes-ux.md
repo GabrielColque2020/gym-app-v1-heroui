@@ -67,9 +67,10 @@ medida que se hace.
 - [x] Botones en los vacíos: inicio del entrenador sin estudiantes ("Cargar estudiante"
   abre la lista con el alta abierta, `?nuevo=1`), lista vacía o sin coincidencias
   ("Limpiar filtros"), tarjeta "hoy" del estudiante sin rutina.
-- [ ] Textos: voseo en todos lados ("Carga", "Configura", "Estas por", "Debes",
-  "No tienes"), tildes ("historica", "aplicara", "contrasenia", "valida"),
-  "entrenador" en vez de "coach", "1 día por semana" en singular.
+- [x] Textos: voseo ("Seleccioná", "Configurá", "Estás por", "Tenés que"), tildes
+  ("válida", "cambió", "sesión", "Año"), "entrenador" en los avisos de permiso,
+  singular en semanas y ejercicios, y "Cerrar" / "Navegación principal" en vez de
+  inglés para lectores de pantalla. Las páginas sin conexión y 404, en voseo.
 - [ ] Usuarios del admin en el teléfono: los filtros ocupan toda la pantalla y el
   nombre queda cortado por el botón Editar.
 - [ ] Botones de al menos 44 px en el teléfono: mes anterior y siguiente, ±15 s del

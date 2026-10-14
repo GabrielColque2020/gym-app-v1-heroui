@@ -234,7 +234,7 @@ export function useCoachCopyRoutineDrawerState( {
 	const destinationAffectedLabel = useMemo( () => {
 		if (mode === "month") {
 			return destinationWeeksOccupied > 0
-				? `${ destinationWeeksOccupied } semanas en ${ destLabel }`
+				? `${ destinationWeeksOccupied } ${ destinationWeeksOccupied === 1 ? "semana" : "semanas" } en ${ destLabel }`
 				: destLabel;
 		}
 
@@ -247,7 +247,7 @@ export function useCoachCopyRoutineDrawerState( {
 	const selectedSourceWeeksLabel =
 		mode === "month"
 			? source?.weekCount
-				? `${ source.weekCount } semanas`
+				? `${ source.weekCount } ${ source.weekCount === 1 ? "semana" : "semanas" }`
 				: "-"
 			: weekListLabel( selectedSorted );
 	const singleWeekPreview =

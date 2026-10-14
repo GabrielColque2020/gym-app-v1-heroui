@@ -58,7 +58,7 @@ export function ExerciseChangeDrawerVariantOption( {
 					</p>
 					<p className={ "truncate text-xs text-muted" }>
 						{ variant.lastSession ? (
-							`Última sesion: ${ formatSessionDateLabel( variant.lastSession.date ) }`
+							`Última sesión: ${ formatSessionDateLabel( variant.lastSession.date ) }`
 						) : (
 							"Sin registro anterior"
 						) }

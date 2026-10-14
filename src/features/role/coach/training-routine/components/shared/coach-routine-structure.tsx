@@ -104,7 +104,7 @@ export default function CoachRoutineStructure( {
 		mode === "create"
 			? previousLabel
 				? `Arranca con la estructura de ${ previousLabel }. Ajustá semanas y días si este mes cambia.`
-				: "Configura semanas y días de entrenamiento para crear la base de la rutina."
+				: "Configurá semanas y días de entrenamiento para crear la base de la rutina."
 			: "Agregá o quitá semanas y días del mes. Los ejercicios de los días que ya están no se tocan.";
 
 	function handleWeeksChange( value: string[] ) {

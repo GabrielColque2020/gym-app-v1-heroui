@@ -28,7 +28,7 @@ export async function GET( request: Request ) {
 		const { searchParams } = new URL( request.url );
 		const disposition = searchParams.get( "disposition" ) === "inline" ? "inline" : "attachment";
 		const month = parsePositiveInteger( searchParams.get( "month" ), "Mes" );
-		const year = parsePositiveInteger( searchParams.get( "year" ), "Ano" );
+		const year = parsePositiveInteger( searchParams.get( "year" ), "Año" );
 		const requestedStudentId = searchParams.get( "studentId" )?.trim() || null;
 
 		if (session.role !== "STUDENT" && session.role !== "COACH") {

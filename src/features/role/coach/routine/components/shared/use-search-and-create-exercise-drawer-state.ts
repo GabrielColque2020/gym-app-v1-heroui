@@ -120,7 +120,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 
 		if (!Number.isInteger( parsedOrder ) || parsedOrder < 1) {
 			toast.danger( "Orden inválido", {
-				description: "Ingresa un orden entero mayor o igual a 1.",
+				description: "Ingresá un orden entero mayor o igual a 1.",
 			} );
 			return;
 		}

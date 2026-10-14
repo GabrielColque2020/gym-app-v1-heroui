@@ -53,10 +53,10 @@ export function LogoutConfirmModal( {
 									<AlertTriangle className={ "mt-0.5 size-5 shrink-0 text-warning" }/>
 									<div className={ "space-y-1" }>
 										<Typography className={ "text-sm font-medium" } type={ "body-sm" }>
-											Estas por cerrar sesión.
+											Estás por cerrar sesión.
 										</Typography>
 										<Typography className={ "text-sm text-muted" } type={ "body-sm" }>
-											Los datos no guardados podrian perderse. Antes de continuar, verifica que no
+											Lo que no se haya guardado podría perderse. Antes de seguir, fijate que no
 											te falte guardar cambios.
 										</Typography>
 									</div>

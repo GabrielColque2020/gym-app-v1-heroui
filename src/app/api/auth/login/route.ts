@@ -84,7 +84,7 @@ export async function POST( request: NextRequest ) {
 			return toErrorResponse( message, 403 );
 		}
 
-		if (message === "Debes ingresar un DNI o correo electrónico." || message === "La contraseña es obligatoria.") {
+		if (message === "Ingresá tu DNI o correo electrónico." || message === "La contraseña es obligatoria.") {
 			return toErrorResponse( message, 400 );
 		}
 

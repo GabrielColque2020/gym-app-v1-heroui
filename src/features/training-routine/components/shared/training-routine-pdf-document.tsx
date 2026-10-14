@@ -225,7 +225,7 @@ export function TrainingRoutinePdfDocument( {
 					<Text style={ [ styles.line, styles.muted ] }>Resumen por día con semanas, ejercicios, series, repeticiones, descanso entre series y observaciones.</Text>
 					<View style={ styles.chips }>
 						<Text style={ styles.chip }>{ periodLabel }</Text>
-						<Text style={ styles.chip }>{ `${ routineWeeks.length } semanas` }</Text>
+						<Text style={ styles.chip }>{ `${ routineWeeks.length } ${ routineWeeks.length === 1 ? "semana" : "semanas" }` }</Text>
 					</View>
 				</View>
 
@@ -241,7 +241,7 @@ export function TrainingRoutinePdfDocument( {
 										<Text style={ styles.daySubtitle }>{ getTrainingRoutineDayTitle( day ) }</Text>
 									</View>
 								</View>
-								<Text style={ styles.daySubtitle }>{ `${ day.routines.length } ejercicios` }</Text>
+								<Text style={ styles.daySubtitle }>{ `${ day.routines.length } ${ day.routines.length === 1 ? "ejercicio" : "ejercicios" }` }</Text>
 							</View>
 
 							<View style={ styles.tableHeader }>
