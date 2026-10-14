@@ -76,8 +76,9 @@ medida que se hace.
   el nombre en hasta dos renglones.
 - [x] Botones de al menos 44 px en el teléfono: en pantallas táctiles todo botón se
   toca en 44 × 44 aunque se dibuje más chico (capa invisible en `globals.css`).
-- [ ] Login sin conexión muestra "Failed to fetch". El "pedile a tu entrenador"
-  también lo ven el entrenador y el admin.
+- [x] Login sin conexión: aviso de conexión en vez de "Failed to fetch", y ya no se
+  queda en "Ingresando..." sin señal. Cuenta desactivada: al estudiante le dice
+  "tu entrenador" y al entrenador "el administrador"; los textos sin rol, los dos.
 - [ ] PWA: el service worker puede no registrarse si el `load` ya pasó; la página
   sin conexión manda al inicio y no a donde estabas.
 - [ ] Checkbox de días en "Crear rutina": se anuncian como "1", "2"… Probar en un

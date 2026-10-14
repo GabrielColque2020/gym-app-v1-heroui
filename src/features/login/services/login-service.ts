@@ -152,7 +152,15 @@ export async function recordUserLoginHistory(
 
 // Los unicos motivos de rechazo que se le cuentan a quien intenta entrar.
 export const LOGIN_INVALID_CREDENTIALS_MESSAGE = "El DNI, el correo o la contraseña no son correctos.";
-export const LOGIN_INACTIVE_ACCOUNT_MESSAGE = "Tu cuenta está desactivada. Pedile a tu entrenador que la vuelva a activar.";
+// A un estudiante lo reactiva su entrenador; a un entrenador, el administrador.
+// Se sabe quien es porque la contraseña ya se comprobo.
+export class LoginInactiveAccountError extends Error {
+	constructor( role: string ) {
+		super( role === "STUDENT"
+			? "Tu cuenta está desactivada. Pedile a tu entrenador que la vuelva a activar."
+			: "Tu cuenta está desactivada. Pedile al administrador que la vuelva a activar." );
+	}
+}
 
 // Hash de una contraseña que nadie tiene. Cuando la cuenta no existe se compara
 // igual contra este, para que la respuesta tarde lo mismo que con una cuenta real
@@ -188,7 +196,7 @@ export async function loginUser(
 
 	// Que la cuenta esta desactivada se dice solo a quien puso bien la contraseña.
 	if (!user.active) {
-		throw new Error( LOGIN_INACTIVE_ACCOUNT_MESSAGE );
+		throw new LoginInactiveAccountError( user.role );
 	}
 
 	const authenticatedUser = toAuthenticatedUser( user );

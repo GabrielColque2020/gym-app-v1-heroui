@@ -7,7 +7,7 @@ import {
 	recordFailedLogin,
 } from "@/features/login/services/login-attempts";
 import {
-	LOGIN_INACTIVE_ACCOUNT_MESSAGE,
+	LoginInactiveAccountError,
 	LOGIN_INVALID_CREDENTIALS_MESSAGE,
 	loginUser,
 } from "@/features/login/services/login-service";
@@ -80,7 +80,7 @@ export async function POST( request: NextRequest ) {
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "No se pudo iniciar sesión.";
 
-		if (message === LOGIN_INACTIVE_ACCOUNT_MESSAGE) {
+		if (error instanceof LoginInactiveAccountError) {
 			return toErrorResponse( message, 403 );
 		}
 

@@ -10,6 +10,7 @@ import { Eye, EyeOff, LogIn } from "lucide-react";
 
 import { LEAVE_SESSION_REASON_PARAM } from "@/features/auth/services/leave-session";
 import { useLogin } from "@/features/login/hooks/use-login";
+import { getErrorMessage } from "@/lib/action-result";
 import { persistThemePreference, themePreferenceToUiThemePreference, } from "@/features/theme/theme-preference";
 
 export default function LoginPageContent() {
@@ -23,7 +24,7 @@ export default function LoginPageContent() {
 	// Por que la app saco a la persona hasta aca, si fue eso lo que paso.
 	const leaveReason = searchParams.get( LEAVE_SESSION_REASON_PARAM );
 	const leaveNotice = leaveReason === "inactive"
-		? { description: "Pedile a tu entrenador que la vuelva a activar.", title: "Tu cuenta fue desactivada" }
+		? { description: "Pedile a tu entrenador que la vuelva a activar. Si sos entrenador, al administrador.", title: "Tu cuenta fue desactivada" }
 		: leaveReason === "expired"
 			? { description: "Ingresá de nuevo para seguir donde estabas. Lo que no se llegó a guardar sigue en este dispositivo.", title: "Tu sesión terminó" }
 			: null;
@@ -167,8 +168,10 @@ export default function LoginPageContent() {
 							<Alert.Content>
 								<Alert.Title>No pudimos iniciar sesión</Alert.Title>
 								{ /* El servidor ya manda un texto pensado para mostrar: datos
-								     incorrectos, cuenta desactivada o una falla nuestra. */ }
-								<Alert.Description>{ loginMutation.error.message }</Alert.Description>
+								     incorrectos, cuenta desactivada o una falla nuestra. Si el
+								     pedido ni llego (sin señal), el navegador dice "Failed to
+								     fetch": se cambia por un aviso de conexion. */ }
+								<Alert.Description>{ getErrorMessage( loginMutation.error, "No pudimos iniciar sesión. Probá de nuevo en un momento." ) }</Alert.Description>
 							</Alert.Content>
 						</Alert>
 					) : null }
@@ -236,9 +239,11 @@ export default function LoginPageContent() {
 								</>
 							) }
 						</Button>
-						{ /* No hay recuperacion por correo: la contraseña la cambia el entrenador. */ }
+						{ /* No hay recuperacion por correo: la contraseña de un estudiante la cambia
+						     su entrenador, y la de un entrenador, el administrador. Aca todavia no se
+						     sabe quien entra: el texto es para los dos. */ }
 						<p className={ "text-center text-xs leading-5 text-muted" }>
-							¿Olvidaste tu contraseña? Pedile a tu entrenador que te la cambie.
+							¿Olvidaste tu contraseña? Pedile a tu entrenador que te la cambie. Si sos entrenador, al administrador.
 						</p>
 					</form>
 				</Card.Content>

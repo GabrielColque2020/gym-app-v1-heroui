@@ -32,5 +32,9 @@ async function requestLogin( payload: LoginRequest ): Promise<LoginResult> {
 export function useLogin() {
 	return useMutation( {
 		mutationFn: requestLogin,
+		// Sin señal se intenta igual y falla enseguida con un aviso. Con el modo de
+		// fabrica ("online") el pedido quedaba en pausa esperando la red y el
+		// boton se quedaba en "Ingresando..." sin decir nada.
+		networkMode: "always",
 	} );
 }

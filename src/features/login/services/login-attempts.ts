@@ -8,7 +8,7 @@ export const LOGIN_MAX_FAILURES_PER_IP = 30;
 export const LOGIN_FAILURE_WINDOW_MINUTES = 15;
 
 export const LOGIN_TOO_MANY_ATTEMPTS_MESSAGE =
-	`Demasiados intentos fallidos. Esperá ${ LOGIN_FAILURE_WINDOW_MINUTES } minutos y probá de nuevo, o pedile a tu entrenador que te cambie la contraseña.`;
+	`Demasiados intentos fallidos. Esperá ${ LOGIN_FAILURE_WINDOW_MINUTES } minutos y probá de nuevo, o pedile a tu entrenador (o al administrador, si sos entrenador) que te cambie la contraseña.`;
 
 // Los intentos mas viejos que esto ya no sirven para nada y se borran.
 const ATTEMPT_RETENTION_MS = 24 * 60 * 60 * 1000;
