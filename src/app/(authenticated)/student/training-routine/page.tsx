@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import TrainingRoutinesPageContent from "@/features/role/student/training-routine/views/training-routines-page-content";
+import { getAppCurrentMonth, getAppCurrentYear } from "@/lib/app-date";
 
 export const metadata: Metadata = {
 	title: "Rutina de Entrenamiento",
@@ -14,13 +15,9 @@ interface Props {
 	}>;
 }
 
-function getCurrentMonth() {
-	return new Date().getMonth() + 1;
-}
-
-function getCurrentYear() {
-	return new Date().getFullYear();
-}
+// El mes de hoy en Argentina: el servidor corre en UTC.
+const getCurrentMonth = getAppCurrentMonth;
+const getCurrentYear = getAppCurrentYear;
 
 export default async function StudentTrainingRoutinePage( { searchParams }: Props ) {
 	const resolvedSearchParams = await searchParams;

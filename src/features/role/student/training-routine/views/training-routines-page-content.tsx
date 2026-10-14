@@ -13,6 +13,7 @@ import { TrainingRoutinesWeekList } from "@/features/role/student/training-routi
 import { useTrainingRoutines } from "@/features/role/student/training-routine/hooks/use-training-routines";
 import { downloadFileFromUrl } from "@/features/shared/services/download-file";
 import { buildTrainingRoutineReportPdfUrl } from "@/features/training-routine/services/training-routines-report-pdf-url";
+import { getAppCurrentMonth, getAppCurrentYear } from "@/lib/app-date";
 
 type TrainingRoutinesPageContentProps = {
 	initialMonth?: number;
@@ -21,13 +22,9 @@ type TrainingRoutinesPageContentProps = {
 
 const EMPTY_ROUTINE_WEEKS: never[] = [];
 
-function getCurrentMonth() {
-	return new Date().getMonth() + 1;
-}
-
-function getCurrentYear() {
-	return new Date().getFullYear();
-}
+// El mismo mes que calcula el servidor, aunque el telefono este en otra hora.
+const getCurrentMonth = getAppCurrentMonth;
+const getCurrentYear = getAppCurrentYear;
 
 export default function TrainingRoutinesPageContent( {
 	initialMonth = getCurrentMonth(),

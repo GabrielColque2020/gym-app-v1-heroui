@@ -1,7 +1,8 @@
 ﻿import { monthYearLabel, padMonth } from "@/constants/months";
+import { getAppCurrentYear } from "@/lib/app-date";
 
 export function buildYearOptions() {
-	const currentYear = new Date().getFullYear();
+	const currentYear = getAppCurrentYear();
 
 	return Array.from( { length: 8 }, ( _, i ) => ( {
 		label: ( currentYear - 3 + i ).toString(),

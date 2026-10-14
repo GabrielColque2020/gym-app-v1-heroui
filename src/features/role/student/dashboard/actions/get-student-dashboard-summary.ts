@@ -8,6 +8,7 @@ import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { getAuthenticatedSession } from "@/features/auth/session";
 import { selectNextRoutineDay } from "@/features/role/student/dashboard/services/student-dashboard-mappers";
 import prisma from "@/lib/prisma";
+import { getAppDateParts } from "@/lib/app-date";
 
 const studentSelect = {
 	id: true,
@@ -89,9 +90,8 @@ export async function getStudentDashboardSummaryAction(): Promise<ActionResult<S
 			throw new Error( "No tenés permiso para ver este inicio." );
 		}
 
-		const now = new Date();
-		const currentMonth = now.getMonth() + 1;
-		const currentYear = now.getFullYear();
+		// El mes de hoy en Argentina: el servidor corre en UTC.
+		const { month: currentMonth, year: currentYear } = getAppDateParts();
 		const [ student, currentMonthRoutineMonth, mealPlans, latestProgress, currentMonthProgress ] = await Promise.all( [
 			prisma.user.findFirst( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,

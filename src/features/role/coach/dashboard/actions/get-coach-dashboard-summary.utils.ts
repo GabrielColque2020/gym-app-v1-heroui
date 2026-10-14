@@ -5,6 +5,7 @@ import {
 	mapCoachDashboardStudent,
 	RECENT_ACTIVITY_WINDOW_DAYS,
 } from "@/features/role/coach/dashboard/services/coach-dashboard-mappers";
+import { getAppDateParts } from "@/lib/app-date";
 
 export const dashboardStudentSelect = {
 	active: true,
@@ -29,8 +30,8 @@ type BuildCoachDashboardSummaryInput = {
 };
 
 export function buildCoachDashboardCurrentPeriod( now: Date ) {
-	const month = now.getMonth() + 1;
-	const year = now.getFullYear();
+	// El mes de hoy en Argentina: el servidor corre en UTC.
+	const { month, year } = getAppDateParts( now );
 	const recentActivityCutoff = new Date( now );
 
 	recentActivityCutoff.setDate( recentActivityCutoff.getDate() - RECENT_ACTIVITY_WINDOW_DAYS );

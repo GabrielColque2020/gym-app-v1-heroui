@@ -54,8 +54,9 @@ medida que se hace.
   y ejercicios globales, con `use-url-state.ts`): sobreviven a abrir uno y
   volver, a recargar y a compartir el enlace. "Volver" recupera la búsqueda.
   Estudiantes, 10 por página.
-- [ ] Calcular el mes actual con la hora de Argentina y no con la del servidor
-  (UTC): el último día del mes después de las 21 hs abre el mes siguiente.
+- [x] El mes actual se calcula en hora argentina en el servidor y en el navegador
+  (`app-date.ts`): el último día del mes después de las 21 hs ya no abre el mes
+  siguiente.
 - [ ] Descarga de PDF: detectar cuando el servidor responde con error.
 - [ ] `lang="es"` en `layout.tsx` y el manifest en español.
 

@@ -9,6 +9,7 @@ import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { MONTH_OPTIONS, monthYearLabel } from "@/constants/months";
 import { routineMonthKey } from "@/features/training-routine/services/routine-month-key";
+import { getAppDateParts } from "@/lib/app-date";
 
 type MonthJumpPickerProps = {
 	// De donde salen los meses que tienen rutina, para marcarlos con un punto.
@@ -35,9 +36,7 @@ export function MonthJumpPicker( {
 	const [ isOpen, setIsOpen ] = useState( false );
 	// El año que se esta mirando en el selector, que puede no ser el de la pantalla.
 	const [ viewYear, setViewYear ] = useState( year );
-	const today = new Date();
-	const currentMonth = today.getMonth() + 1;
-	const currentYear = today.getFullYear();
+	const { month: currentMonth, year: currentYear } = getAppDateParts();
 	const isShowingCurrentMonth = month === currentMonth && year === currentYear;
 	// Los meses con rutina se piden recien al abrir el selector, no al entrar a la
 	// pantalla: quien solo usa las flechas no paga la consulta. Vienen todos los
