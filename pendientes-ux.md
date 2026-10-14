@@ -105,3 +105,9 @@ medida que se hace.
 - [x] La copia de los datos guardada en el navegador tiene dueño: si la sesión
   vencía con la app cerrada, la siguiente cuenta que entraba veía los estudiantes
   o la rutina de la anterior (`claimPersistedQueryCache`).
+
+## Tests
+
+- [x] Vitest (`pnpm test`): próxima sesión, fechas en hora argentina, sesión y su
+  tope de 7 días, mensajes de error de las acciones, dueño de la copia de datos y
+  validación de "Mi perfil". 36 tests, en Node, sin base.
