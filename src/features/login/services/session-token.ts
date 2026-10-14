@@ -8,6 +8,10 @@ export const AUTH_SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 Horas
 // Cada cuanto, como mucho, se renueva. Renovarla en cada pedido seria reescribir
 // la cookie todo el tiempo sin ganar nada.
 export const SESSION_RENEW_AFTER_SECONDS = 60 * 15;
+// Tope desde que se ingreso con la contraseña, se use o no la app: a los 7 dias
+// hay que volver a entrar. Sin tope, renovandose sola, una sesion en un telefono
+// perdido o prestado no vencia nunca.
+export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 
 // Los mismos atributos al crearla en el ingreso y al renovarla.
 export function getSessionCookieOptions( token: string ) {
@@ -31,6 +35,8 @@ export function getSessionSecret() {
 
 export type SessionTokenPayload = {
 	active: boolean;
+	// Cuando se ingreso con la contraseña. Se conserva al renovar.
+	authAt: number;
 	exp: number;
 	iat: number;
 	jti: string;
@@ -108,27 +114,28 @@ export async function createSessionToken(
 	user: AuthenticatedUser,
 	secret: string,
 ) {
-	return signSessionPayload( { active: user.active, role: user.role, sub: user.id }, secret );
+	return signSessionPayload( { active: user.active, authAt: Math.floor( Date.now() / 1000 ), role: user.role, sub: user.id }, secret );
 }
 
-// La misma sesion con el vencimiento corrido desde ahora. Si todavia no paso
-// `SESSION_RENEW_AFTER_SECONDS` desde la ultima, devuelve null: no hace falta.
+// La misma sesion con el vencimiento corrido desde ahora, sin pasar el tope de
+// `SESSION_MAX_AGE_SECONDS`. Si todavia no paso `SESSION_RENEW_AFTER_SECONDS`
+// desde la ultima, devuelve null: no hace falta.
 export async function renewSessionToken( session: SessionTokenPayload, secret: string ) {
 	if (Date.now() / 1000 - session.iat < SESSION_RENEW_AFTER_SECONDS) {
 		return null;
 	}
 
-	return signSessionPayload( { active: session.active, role: session.role, sub: session.sub }, secret );
+	return signSessionPayload( { active: session.active, authAt: session.authAt, role: session.role, sub: session.sub }, secret );
 }
 
 async function signSessionPayload(
-	user: Pick<SessionTokenPayload, "active" | "role" | "sub">,
+	user: Pick<SessionTokenPayload, "active" | "authAt" | "role" | "sub">,
 	secret: string,
 ) {
 	const issuedAt = Math.floor( Date.now() / 1000 );
 	const payload: SessionTokenPayload = {
 		...user,
-		exp: issuedAt + AUTH_SESSION_TTL_SECONDS,
+		exp: Math.min( issuedAt + AUTH_SESSION_TTL_SECONDS, user.authAt + SESSION_MAX_AGE_SECONDS ),
 		iat: issuedAt,
 		jti: crypto.randomUUID(),
 	};
@@ -179,11 +186,15 @@ export async function verifySessionToken(
 			return null;
 		}
 
-		if (payload.exp * 1000 <= Date.now()) {
+		// Las sesiones de antes del tope no traen `authAt`: cuenta desde que se
+		// emitio el token, y se conserva desde la proxima renovacion.
+		const authAt = typeof payload.authAt === "number" ? payload.authAt : payload.iat;
+
+		if (payload.exp * 1000 <= Date.now() || ( authAt + SESSION_MAX_AGE_SECONDS ) * 1000 <= Date.now()) {
 			return null;
 		}
 
-		return payload as SessionTokenPayload;
+		return { ...payload, authAt } as SessionTokenPayload;
 	} catch {
 		return null;
 	}
