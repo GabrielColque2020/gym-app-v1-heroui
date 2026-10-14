@@ -103,8 +103,44 @@ export function shouldPersistQuery( query: Query ) {
 	return query.state.status === "success" && shouldPersistQueryKey( query.queryKey );
 }
 
+// De quien es la copia de los datos guardada en el navegador.
+const QUERY_CACHE_OWNER_STORAGE_KEY = "gym-app-query-cache-owner";
+
 export function clearPersistedQueryCache() {
 	if (typeof window === "undefined") return;
 
-	window.localStorage.removeItem( QUERY_PERSIST_STORAGE_KEY );
+	try {
+		window.localStorage.removeItem( QUERY_PERSIST_STORAGE_KEY );
+		window.localStorage.removeItem( QUERY_CACHE_OWNER_STORAGE_KEY );
+	} catch {
+		// Sin almacenamiento no hay copia que borrar.
+	}
+}
+
+// La copia guardada en el navegador queda a nombre de `userId`. Si era de otra
+// cuenta, se borra y devuelve true.
+//
+// Sin esto, una sesion que vencia con la app cerrada (no pasa por "Cerrar
+// sesión") dejaba la copia de esa cuenta, y la siguiente que entraba en ese
+// navegador veia sus estudiantes o su rutina: la copia se restaura al abrir y,
+// como es reciente, ni siquiera se volvia a pedir.
+//
+// `clearIfUnknown`: si no hay dueño anotado (copias de antes de que esto
+// existiera), al ingresar con la contraseña se borra por las dudas; con la
+// sesion ya abierta se asume que es de quien esta adentro.
+export function claimPersistedQueryCache( userId: string, { clearIfUnknown }: { clearIfUnknown: boolean } ) {
+	if (typeof window === "undefined") return false;
+
+	try {
+		const owner = window.localStorage.getItem( QUERY_CACHE_OWNER_STORAGE_KEY );
+		const isForeign = owner ? owner !== userId : clearIfUnknown;
+
+		if (isForeign) clearPersistedQueryCache();
+
+		window.localStorage.setItem( QUERY_CACHE_OWNER_STORAGE_KEY, userId );
+
+		return isForeign;
+	} catch {
+		return false;
+	}
 }

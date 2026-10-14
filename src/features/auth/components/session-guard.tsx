@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
+import { claimPersistedQueryCache } from "@/constants/query";
 import { leaveSession } from "@/features/auth/services/leave-session";
 import { claimRoutineDrafts } from "@/features/routine/services/routine-logout";
 
@@ -24,11 +25,17 @@ export function SessionGuard( { userId }: { userId: string } ) {
 	const lastCheckRef = useRef( 0 );
 	const isLeavingRef = useRef( false );
 
-	// Los borradores que quedaron de una sesion vencida son de quien estaba
-	// adentro: si ahora entro otra cuenta, se borran.
+	// Los borradores y la copia de los datos que quedaron de una sesion vencida
+	// son de quien estaba adentro: si ahora entro otra cuenta, se borran. El login
+	// ya descarta la copia ajena; esto es por si llego de otro lado. Ahi se vuelven
+	// a pedir los datos de las pantallas abiertas.
 	useEffect( () => {
 		claimRoutineDrafts( userId );
-	}, [ userId ] );
+
+		if (claimPersistedQueryCache( userId, { clearIfUnknown: false } )) {
+			void queryClient.resetQueries();
+		}
+	}, [ queryClient, userId ] );
 
 	useEffect( () => {
 		async function checkSession() {

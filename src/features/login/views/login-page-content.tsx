@@ -4,10 +4,12 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Alert, Button, Card, FieldError, Input, Label, Spinner, TextField, Typography, } from "@heroui/react";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 
+import { claimPersistedQueryCache } from "@/constants/query";
 import { LEAVE_SESSION_REASON_PARAM } from "@/features/auth/services/leave-session";
 import { useLogin } from "@/features/login/hooks/use-login";
 import { getErrorMessage } from "@/lib/action-result";
@@ -16,6 +18,7 @@ import { persistThemePreference, themePreferenceToUiThemePreference, } from "@/f
 export default function LoginPageContent() {
 	const searchParams = useSearchParams();
 	const loginMutation = useLogin();
+	const queryClient = useQueryClient();
 	const [ credential, setCredential ] = useState( "" );
 	const [ password, setPassword ] = useState( "" );
 	const [ isPasswordVisible, setIsPasswordVisible ] = useState( false );
@@ -89,6 +92,12 @@ export default function LoginPageContent() {
 			} );
 
 			persistThemePreference( themePreferenceToUiThemePreference( result.user.themePreference ) );
+			// Si en este navegador quedo la copia de los datos de otra cuenta (su sesion
+			// vencio con la app cerrada), se descarta antes de entrar. Tambien la que
+			// esta en memoria: si no, se volveria a guardar antes de la recarga.
+			if (claimPersistedQueryCache( result.user.id, { clearIfUnknown: true } )) {
+				queryClient.clear();
+			}
 			// Carga completa: si queda algo de la sesion anterior en memoria, una
 			// navegacion interna podia fallar en silencio y dejar esta pantalla
 			// como si el boton no hubiera hecho nada.

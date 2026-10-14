@@ -99,3 +99,9 @@ medida que se hace.
 - [x] Fecha del entrenamiento: "Terminar día" pregunta cuándo se entrenó (Hoy / Ayer /
   Otra fecha, hasta 60 días) y propone el día de la primera serie; las series del
   día pasan a esa fecha.
+
+## Seguridad
+
+- [x] La copia de los datos guardada en el navegador tiene dueño: si la sesión
+  vencía con la app cerrada, la siguiente cuenta que entraba veía los estudiantes
+  o la rutina de la anterior (`claimPersistedQueryCache`).
