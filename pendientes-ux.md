@@ -88,3 +88,13 @@ medida que se hace.
 - [x] El admin también tiene "Mi perfil": nombre, email, DNI, datos y contraseña.
 - [x] El botón "atrás" del teléfono cierra el drawer, modal o menú abierto en vez de
   retroceder la página (`overlay-back-guard.tsx`). Con cambios sin guardar, pregunta.
+
+## Días de la rutina
+
+- [x] Próxima sesión: sigue desde el día más avanzado con series cargadas; lo de
+  atrás que quedó sin hacer no traba (`next-routine-day.ts`, inicio y semanas).
+- [x] Cartel en el inicio del estudiante: "Te quedó sin terminar" si cargó series
+  otro día y no lo terminó ("Terminar ahora"), y "Tenés series sin subir" si
+  quedaron en el teléfono.
+- [ ] Fecha del entrenamiento: al cargar tarde un día, preguntar cuándo se entrenó
+  ("Hoy / Ayer / Otra fecha") para que el gráfico de progreso no lo corra.

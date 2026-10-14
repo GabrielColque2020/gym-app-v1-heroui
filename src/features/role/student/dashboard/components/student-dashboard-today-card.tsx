@@ -1,11 +1,12 @@
 "use client";
 
-import { Button, Card, Chip } from "@heroui/react";
+import { Alert, Button, Card, Chip } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
 import { StudentDashboardEmptyState } from "@/features/role/student/dashboard/components/student-dashboard-empty-state";
 import { buildRoutineDayHref, buildTrainingRoutineHref, } from "@/features/role/student/dashboard/services/student-dashboard-links";
+import { APP_TIME_ZONE, getAppDateParts } from "@/lib/app-date";
 
 type StudentDashboardTodayCardProps = {
 	currentMonth: number;
@@ -19,6 +20,7 @@ type StudentDashboardTodayCardProps = {
 		id: string;
 		isFinalized: boolean;
 		title: string;
+		unfinishedSince: string | null;
 		week: number;
 	} | null;
 	totalWeeks: number;
@@ -63,9 +65,23 @@ export function StudentDashboardTodayCard( {
 		);
 	}
 
+	const unfinishedLabel = nextRoutineDay.unfinishedSince ? formatUnfinishedDay( nextRoutineDay.unfinishedSince ) : null;
+
 	return (
 		<Card className={ "border border-border py-2" } variant={ "default" }>
 			<Card.Content className={ "space-y-4 p-3" }>
+				{ /* Cargo series en otra fecha y no toco "Terminar día". Lo cargado ya esta
+				     guardado; falta marcarlo como hecho para seguir con el proximo. */ }
+				{ unfinishedLabel ? (
+					<Alert className={ "border border-warning/20" } status={ "warning" }>
+						<Alert.Content>
+							<Alert.Title>Te quedó sin terminar</Alert.Title>
+							<Alert.Description>
+								{ `Cargaste series ${ unfinishedLabel } y no tocaste "Terminar día". Lo que cargaste está guardado: si ya hiciste todo, entrá y terminalo.` }
+							</Alert.Description>
+						</Alert.Content>
+					</Alert>
+				) : null }
 				<div className={ "flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between" }>
 					<div className={ "space-y-2" }>
 						<div className={ "flex flex-wrap items-center gap-2" }>
@@ -95,7 +111,7 @@ export function StudentDashboardTodayCard( {
 						size={ "lg" }
 						onPress={ () => router.push( buildRoutineDayHref( nextRoutineDay.id ) ) }
 					>
-						{ nextRoutineDay.isFinalized ? "Ver lo que hice" : nextRoutineDay.hasProgress ? "Continuar rutina" : "Empezar rutina" }
+						{ nextRoutineDay.isFinalized ? "Ver lo que hice" : unfinishedLabel ? "Terminar ahora" : nextRoutineDay.hasProgress ? "Continuar rutina" : "Empezar rutina" }
 						<ArrowRight className={ "size-4" }/>
 					</Button>
 				</div>
@@ -126,4 +142,22 @@ export function StudentDashboardTodayCard( {
 			</Card.Content>
 		</Card>
 	);
+}
+
+const weekdayFormatter = new Intl.DateTimeFormat( "es-AR", {
+	day: "numeric",
+	month: "numeric",
+	timeZone: APP_TIME_ZONE,
+	weekday: "long",
+} );
+
+// "ayer" o "el martes 13/10", en hora argentina.
+function formatUnfinishedDay( isoDate: string ) {
+	const date = new Date( isoDate );
+	const day = getAppDateParts( date );
+	const yesterday = getAppDateParts( new Date( Date.now() - 24 * 60 * 60 * 1000 ) );
+
+	if (day.year === yesterday.year && day.month === yesterday.month && day.day === yesterday.day) return "ayer";
+
+	return `el ${ weekdayFormatter.format( date ).replace( ",", "" ) }`;
 }

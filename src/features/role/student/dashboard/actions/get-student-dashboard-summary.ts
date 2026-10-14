@@ -6,7 +6,7 @@ import type { Prisma } from "@/generated/prisma/client";
 
 import { QUERY_ACCELERATE_CACHE } from "@/constants/query";
 import { getAuthenticatedSession } from "@/features/auth/session";
-import { selectNextRoutineDay } from "@/features/role/student/dashboard/services/student-dashboard-mappers";
+import { pickNextRoutineDay } from "@/features/training-routine/services/next-routine-day";
 import prisma from "@/lib/prisma";
 import { getAppDateParts } from "@/lib/app-date";
 
@@ -68,6 +68,9 @@ export type StudentDashboardSummary = {
 			id: string;
 			isFinalized: boolean;
 			title: string;
+			// Cuando cargo la ultima serie, si el dia quedo sin terminar y eso fue antes
+			// de hoy (en hora argentina): el inicio avisa que lo termine.
+			unfinishedSince: string | null;
 			week: number;
 		} | null;
 		totalWeeks: number;
@@ -149,6 +152,7 @@ export async function getStudentDashboardSummaryAction(): Promise<ActionResult<S
 			// Sin cache: es lo que distingue un dia "en curso", y cambia mientras entrena.
 			prisma.exerciseProgress.findMany( {
 				select: {
+					date: true,
 					dayNumber: true,
 					week: true,
 				},
@@ -165,14 +169,20 @@ export async function getStudentDashboardSummaryAction(): Promise<ActionResult<S
 		}
 
 		const currentMonthRoutines = currentMonthRoutineMonth?.weeks ?? [];
-		const daysWithProgress = new Set(
-			currentMonthProgress.map( ( progress ) => `${ progress.week }-${ progress.dayNumber }` ),
-		);
+		// La ultima serie cargada en cada dia.
+		const lastProgressByDay = new Map<string, Date>();
+
+		for (const progress of currentMonthProgress) {
+			const key = `${ progress.week }-${ progress.dayNumber }`;
+			const current = lastProgressByDay.get( key );
+
+			if (!current || progress.date > current) lastProgressByDay.set( key, progress.date );
+		}
 		const orderedRoutineDays = currentMonthRoutines.flatMap( ( routine ) =>
 			routine.routineDays.map( ( day ) => ( {
 				dayNumber: day.dayNumber,
 				exerciseCount: day.routines.length,
-				hasProgress: daysWithProgress.has( `${ routine.week }-${ day.dayNumber }` ),
+				hasProgress: lastProgressByDay.has( `${ routine.week }-${ day.dayNumber }` ),
 				id: day.id,
 				isFinalized: day.isFinalized,
 				title: routine.name,
@@ -183,7 +193,16 @@ export async function getStudentDashboardSummaryAction(): Promise<ActionResult<S
 
 			return left.dayNumber - right.dayNumber;
 		} );
-		const nextRoutineDay = selectNextRoutineDay( orderedRoutineDays );
+		const nextDay = pickNextRoutineDay( orderedRoutineDays );
+		const nextDayLastProgress = nextDay ? lastProgressByDay.get( `${ nextDay.week }-${ nextDay.dayNumber }` ) : undefined;
+		const nextRoutineDay = nextDay
+			? {
+				...nextDay,
+				unfinishedSince: !nextDay.isFinalized && nextDayLastProgress && isBeforeToday( nextDayLastProgress )
+					? nextDayLastProgress.toISOString()
+					: null,
+			}
+			: null;
 		const lastRecordedMonthValue = latestProgress
 			? {
 				month: latestProgress.month,
@@ -215,4 +234,12 @@ export async function getStudentDashboardSummaryAction(): Promise<ActionResult<S
 			},
 		};
 	} );
+}
+
+// Si `date` es de un dia anterior a hoy, en hora argentina.
+function isBeforeToday( date: Date ) {
+	const day = getAppDateParts( date );
+	const today = getAppDateParts();
+
+	return day.year * 10_000 + day.month * 100 + day.day < today.year * 10_000 + today.month * 100 + today.day;
 }

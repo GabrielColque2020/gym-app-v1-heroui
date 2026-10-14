@@ -12,6 +12,7 @@ import {
 	getTrainingRoutineDayStatus,
 	getTrainingRoutineDayTitle,
 } from "@/features/role/student/training-routine/components/training-routines-day-card.utils";
+import { pickNextRoutineDay } from "@/features/training-routine/services/next-routine-day";
 
 type TrainingRoutinesWeekListProps = {
 	routineWeeks: StudentTrainingRoutine[];
@@ -22,14 +23,20 @@ type DayRowProps = {
 	isNext: boolean;
 };
 
-// El dia por el que sigue el estudiante: el que dejo empezado y, si no hay
-// ninguno, el primero que todavia no hizo.
+// El dia por el que sigue el estudiante: el mismo criterio que la proxima sesion
+// del inicio (ver `pickNextRoutineDay`).
 function findNextDayId( routineWeeks: StudentTrainingRoutine[] ) {
-	const days = routineWeeks.flatMap( ( week ) => week.routineDays ).filter( ( day ) => day.routines.length > 0 );
-	const nextDay = days.find( ( day ) => !day.isFinalized && day.loadedSetCount > 0 )
-		?? days.find( ( day ) => !day.isFinalized );
+	const days = routineWeeks.flatMap( ( week ) => week.routineDays ).map( ( day ) => ( {
+		exerciseCount: day.routines.length,
+		hasProgress: day.loadedSetCount > 0,
+		id: day.id,
+		isFinalized: day.isFinalized,
+	} ) );
 
-	return nextDay?.id ?? null;
+	const nextDay = pickNextRoutineDay( days );
+
+	// Sin ningun dia con ejercicios no hay por donde seguir.
+	return nextDay && nextDay.exerciseCount > 0 ? nextDay.id : null;
 }
 
 function DayRow( { day, isNext }: DayRowProps ) {

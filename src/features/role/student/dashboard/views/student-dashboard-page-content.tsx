@@ -7,6 +7,7 @@ import {  } from "@heroui/react";
 import { DashboardSkeleton } from "@/components/common/skeletons";
 import { useIsMounted } from "@/components/layout/use-is-mounted";
 import { StudentDashboardActivityCard } from "@/features/role/student/dashboard/components/student-dashboard-activity-card";
+import { StudentDashboardPendingSyncAlert } from "@/features/role/student/dashboard/components/student-dashboard-pending-sync-alert";
 import { StudentDashboardHero } from "@/features/role/student/dashboard/components/student-dashboard-hero";
 import { StudentDashboardQuickActions } from "@/features/role/student/dashboard/components/student-dashboard-quick-actions";
 import { StudentDashboardQuickStats } from "@/features/role/student/dashboard/components/student-dashboard-quick-stats";
@@ -73,6 +74,7 @@ export default function StudentDashboardPageContent() {
 			/>
 			{ /* La proxima sesion va primero: es a lo que el estudiante entra, y en el
 			     telefono quedaba debajo de cuatro tarjetas de numeros. */ }
+			<StudentDashboardPendingSyncAlert/>
 			<StudentDashboardTodayCard
 				currentMonth={ data.routine.currentMonth }
 				currentYear={ data.routine.currentYear }

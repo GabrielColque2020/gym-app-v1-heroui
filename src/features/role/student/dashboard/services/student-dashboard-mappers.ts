@@ -13,16 +13,6 @@ const MONTH_LABELS = [
 	"Diciembre",
 ] as const;
 
-type DashboardRoutineDayInput = {
-	dayNumber: number;
-	exerciseCount: number;
-	hasProgress: boolean;
-	id: string;
-	isFinalized: boolean;
-	title: string;
-	week: number;
-};
-
 export function buildMonthYearLabel( month: number, year: number ) {
 	return `${ MONTH_LABELS[ month - 1 ] ?? String( month ).padStart( 2, "0" ) } ${ year }`;
 }
@@ -52,17 +42,3 @@ export function formatLastRecordedMonthLabel(
 	return buildMonthYearLabel( monthYear.month, monthYear.year );
 }
 
-export function selectNextRoutineDay( days: DashboardRoutineDayInput[] ) {
-	if (days.length === 0) {
-		return null;
-	}
-
-	// Primero el dia que dejo empezado; si no hay, el primero que todavia no hizo.
-	// Un dia sin ejercicios no es una sesion: se saltea.
-	const trainableDays = days.filter( ( day ) => day.exerciseCount > 0 );
-
-	return trainableDays.find( ( day ) => !day.isFinalized && day.hasProgress )
-		?? trainableDays.find( ( day ) => !day.isFinalized )
-		?? trainableDays[ 0 ]
-		?? days[ 0 ];
-}
