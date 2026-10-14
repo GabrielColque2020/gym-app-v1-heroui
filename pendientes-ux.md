@@ -57,7 +57,9 @@ medida que se hace.
 - [x] El mes actual se calcula en hora argentina en el servidor y en el navegador
   (`app-date.ts`): el último día del mes después de las 21 hs ya no abre el mes
   siguiente.
-- [ ] Descarga de PDF: detectar cuando el servidor responde con error.
+- [x] Descarga de PDF (rutina, plan e historial): se pide con `fetch` y, si el
+  servidor responde con error, se avisa el motivo; "Descargando…" dura lo que de
+  verdad tarda (`download-file.ts`). Las rutas no dejan pasar errores técnicos.
 - [ ] `lang="es"` en `layout.tsx` y el manifest en español.
 
 ## Pulido

@@ -10,7 +10,7 @@ import { formatMealPlanDescriptionLines, formatMealPlanUpdatedLabel, formatMealT
 import { buildMealPlansReportPdfUrl } from "@/features/meal-plans/services/meal-plans-report-pdf-url";
 import type { MealPlan } from "@/features/meal-plans/types/meal-plans-types";
 import { useMealPlans } from "@/features/role/student/meal-plans/hooks/use-meal-plans";
-import { downloadFileFromUrl } from "@/features/shared/services/download-file";
+import { useFileDownload } from "@/features/shared/services/download-file";
 
 type StudentMealPlansPageContentProps = { studentId: string | null };
 
@@ -59,7 +59,7 @@ function MealPlanCard( { isRecent, mealPlan }: { isRecent: boolean; mealPlan: Me
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const { data, error, isError, isFetching, isLoading, refetch } = useMealPlans( studentId );
-	const [ isDownloading, setIsDownloading ] = useState( false );
+	const { download, isDownloading } = useFileDownload();
 	// El momento en que se abrio la pantalla, para calcular "hace cuanto".
 	const [ now ] = useState( () => Date.now() );
 	const crumbs = [
@@ -68,11 +68,7 @@ function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	];
 
 	function handleDownload() {
-		setIsDownloading( true );
-		downloadFileFromUrl( buildMealPlansReportPdfUrl( { studentId } ) );
-		window.setTimeout( () => {
-			setIsDownloading( false );
-		}, 1200 );
+		void download( buildMealPlansReportPdfUrl( { studentId } ) );
 	}
 
 	if (isLoading) {

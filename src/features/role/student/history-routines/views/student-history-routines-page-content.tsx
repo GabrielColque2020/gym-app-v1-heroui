@@ -8,6 +8,8 @@ import { TableSkeleton } from "@/components/common/skeletons";
 import { HistoryRoutinesReportsIndex } from "@/features/history-routines/components/shared/history-routines-reports-index";
 import { buildHistoryRoutinesReportPdfUrl } from "@/features/history-routines/services/history-routines-report-pdf-url";
 import type { HistoryRoutineReportRow } from "@/features/history-routines/services/history-routines-reports";
+import { downloadFile } from "@/features/shared/services/download-file";
+import { getErrorMessage } from "@/lib/action-result";
 import { useHistoryRoutinesReports } from "@/features/role/student/history-routines/hooks/use-history-routines-reports";
 
 type StudentHistoryRoutinesPageContentProps = {
@@ -31,25 +33,13 @@ function StudentHistoryRoutinesPageContentLoaded( { studentId }: { studentId: st
 				studentId,
 				year: report.year,
 			} );
-			const downloadLink = document.createElement( "a" );
-			downloadLink.download = "";
-			downloadLink.href = reportUrl;
-			downloadLink.rel = "noopener";
-			downloadLink.style.display = "none";
-			document.body.append( downloadLink );
-			downloadLink.click();
-			downloadLink.remove();
-
-			window.setTimeout( () => {
-				setPendingPeriodKey( ( current ) => current === report.periodKey ? null : current );
-			}, 1200 );
+			// Se pide y se mira la respuesta: si el servidor no puede armar el
+			// reporte, se avisa aca en vez de bajar un archivo con el error adentro.
+			await downloadFile( reportUrl, "historial.pdf" );
 		} catch ( downloadReportError ) {
-			setPendingPeriodKey( null );
-			setDownloadError(
-				downloadReportError instanceof Error
-					? downloadReportError.message
-					: "No se pudo generar el reporte del periodo seleccionado.",
-			);
+			setDownloadError( getErrorMessage( downloadReportError, "No se pudo generar el reporte del periodo seleccionado." ) );
+		} finally {
+			setPendingPeriodKey( ( current ) => current === report.periodKey ? null : current );
 		}
 	}
 

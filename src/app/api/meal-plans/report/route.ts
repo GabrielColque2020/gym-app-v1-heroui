@@ -1,4 +1,5 @@
 import { unwrapped } from "@/lib/action-result";
+import { toUserFacingMessage } from "@/lib/run-action";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { NextResponse } from "next/server";
 
@@ -13,7 +14,7 @@ export async function GET( request: Request ) {
 		const studentId = searchParams.get( "studentId" )?.trim();
 
 		if (!studentId) {
-			return NextResponse.json( { error: "Debes indicar un estudiante para generar el reporte." }, { status: 400 } );
+			return NextResponse.json( { error: "Falta indicar el estudiante para generar el reporte." }, { status: 400 } );
 		}
 
 		const data = await unwrapped( getMealPlansByStudentAction )( { studentId } );
@@ -38,7 +39,7 @@ export async function GET( request: Request ) {
 		} );
 	} catch (error) {
 		return NextResponse.json(
-			{ error: error instanceof Error ? error.message : "No se pudo generar el reporte PDF." },
+			{ error: toUserFacingMessage( error, "No se pudo generar el reporte PDF." ) },
 			{ status: 400 },
 		);
 	}

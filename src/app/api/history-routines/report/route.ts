@@ -1,4 +1,5 @@
 import { renderToBuffer } from "@react-pdf/renderer";
+import { toUserFacingMessage } from "@/lib/run-action";
 import { NextResponse } from "next/server";
 
 import { monthYearLabel } from "@/constants/months";
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
         const session = await getAuthenticatedSession();
 
         if (!session) {
-            return NextResponse.json({ error: "Debes iniciar sesión para generar el reporte." }, { status: 401 });
+            return NextResponse.json({ error: "Tenés que iniciar sesión para generar el reporte." }, { status: 401 });
         }
 
         const { searchParams } = new URL(request.url);
@@ -39,13 +40,13 @@ export async function GET(request: Request) {
         const requestedStudentId = searchParams.get("studentId")?.trim() || null;
 
         if (session.role !== "STUDENT" && session.role !== "COACH") {
-            return NextResponse.json({ error: "No tienes permisos para generar este reporte." }, { status: 403 });
+            return NextResponse.json({ error: "No tenés permiso para generar este reporte." }, { status: 403 });
         }
 
         const studentId = session.role === "STUDENT" ? session.sub : requestedStudentId;
 
         if (!studentId) {
-            return NextResponse.json({ error: "Debes indicar un estudiante para generar el reporte." }, { status: 400 });
+            return NextResponse.json({ error: "Falta indicar el estudiante para generar el reporte." }, { status: 400 });
         }
 
         const reportData = await getHistoryRoutinesByStudentBase({
@@ -84,7 +85,7 @@ export async function GET(request: Request) {
     } catch (error) {
         return NextResponse.json(
             {
-                error: error instanceof Error ? error.message : "No se pudo generar el reporte PDF.",
+                error: toUserFacingMessage( error, "No se pudo generar el reporte PDF." ),
             },
             { status: 400 },
         );

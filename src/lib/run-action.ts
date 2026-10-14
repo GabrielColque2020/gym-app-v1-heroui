@@ -9,14 +9,21 @@ export async function runAction<T>( fallback: string, body: () => Promise<T> ): 
 	try {
 		return { data: await body(), ok: true };
 	} catch (error) {
-		const reason = getUserFacingReason( error );
-
-		if (!reason) {
-			console.error( fallback, error );
-		}
-
-		return { ok: false, reason: reason ?? fallback };
+		return { ok: false, reason: toUserFacingMessage( error, fallback ) };
 	}
+}
+
+// El mensaje de un error para mostrarle a la persona: el que escribimos
+// nosotros, o `fallback` si es tecnico (que queda en el log). Lo usan las
+// server actions y las rutas de la API.
+export function toUserFacingMessage( error: unknown, fallback: string ) {
+	const reason = getUserFacingReason( error );
+
+	if (!reason) {
+		console.error( fallback, error );
+	}
+
+	return reason ?? fallback;
 }
 
 function getUserFacingReason( error: unknown ) {

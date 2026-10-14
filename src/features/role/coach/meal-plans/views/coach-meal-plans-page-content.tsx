@@ -14,7 +14,7 @@ import { MealPlanCopyDrawer } from "@/features/role/coach/meal-plans/components/
 import { MealPlanDrawer } from "@/features/role/coach/meal-plans/components/shared/meal-plan-drawer";
 import { useCoachMealPlansPageState } from "@/features/role/coach/meal-plans/hooks/use-coach-meal-plans-page-state";
 import { CoachStudentTabs } from "@/features/role/coach/students/components/coach-student-tabs";
-import { downloadFileFromUrl } from "@/features/shared/services/download-file";
+import { useFileDownload } from "@/features/shared/services/download-file";
 
 type CoachMealPlansPageContentProps = {
 	studentId: string | null;
@@ -22,15 +22,11 @@ type CoachMealPlansPageContentProps = {
 
 function MealPlansPageContentLoaded( { studentId }: { studentId: string } ) {
 	const { breadcrumbs, data, error, handleRefresh, isError, isLoading, isRefreshing } = useCoachMealPlansPageState( studentId );
-	const [ isDownloading, setIsDownloading ] = useState( false );
+	const { download, isDownloading } = useFileDownload();
 	const [ isCopyOpen, setIsCopyOpen ] = useState( false );
 
 	function handleDownload() {
-		setIsDownloading( true );
-		downloadFileFromUrl( buildMealPlansReportPdfUrl( { studentId } ) );
-		window.setTimeout( () => {
-			setIsDownloading( false );
-		}, 1200 );
+		void download( buildMealPlansReportPdfUrl( { studentId } ) );
 	}
 
 	if (isLoading) {

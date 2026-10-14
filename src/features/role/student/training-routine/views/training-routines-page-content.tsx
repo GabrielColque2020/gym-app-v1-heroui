@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@heroui/react";
 
@@ -11,7 +10,7 @@ import { TrainingRoutinesLoadingState } from "@/features/role/student/training-r
 import { TrainingRoutinesMonthHeader } from "@/features/role/student/training-routine/components/training-routines-month-header";
 import { TrainingRoutinesWeekList } from "@/features/role/student/training-routine/components/training-routines-week-list";
 import { useTrainingRoutines } from "@/features/role/student/training-routine/hooks/use-training-routines";
-import { downloadFileFromUrl } from "@/features/shared/services/download-file";
+import { useFileDownload } from "@/features/shared/services/download-file";
 import { buildTrainingRoutineReportPdfUrl } from "@/features/training-routine/services/training-routines-report-pdf-url";
 import { getAppCurrentMonth, getAppCurrentYear } from "@/lib/app-date";
 
@@ -31,7 +30,7 @@ export default function TrainingRoutinesPageContent( {
 	initialYear = getCurrentYear(),
 }: TrainingRoutinesPageContentProps ) {
 	const router = useRouter();
-	const [ isDownloading, setIsDownloading ] = useState( false );
+	const { download, isDownloading } = useFileDownload();
 	// El mes sale de la direccion: asi "volver" desde un dia cae en el mes de ese dia.
 	const activeMonth = initialMonth;
 	const activeYear = initialYear;
@@ -55,16 +54,12 @@ export default function TrainingRoutinesPageContent( {
 	}
 
 	function handleDownload() {
-		setIsDownloading( true );
-		downloadFileFromUrl(
+		void download(
 			buildTrainingRoutineReportPdfUrl( {
 				month: activeMonth,
 				year: activeYear,
 			} ),
 		);
-		window.setTimeout( () => {
-			setIsDownloading( false );
-		}, 1200 );
 	}
 
 	return (

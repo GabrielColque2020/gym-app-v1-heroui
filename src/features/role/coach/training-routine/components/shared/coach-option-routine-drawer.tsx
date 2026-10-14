@@ -11,7 +11,7 @@ import { CoachDeleteRoutineDrawer } from "@/features/role/coach/training-routine
 import { CoachEditRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-edit-routine-drawer";
 import { CoachSaveTemplateModal } from "@/features/role/coach/training-routine/components/shared/coach-save-template-modal";
 import { useDeleteTrainingRoutineStructure } from "@/features/role/coach/training-routine/hooks/use-training-routine-structure";
-import { downloadFileFromUrl } from "@/features/shared/services/download-file";
+import { useFileDownload } from "@/features/shared/services/download-file";
 import { buildTrainingRoutineReportPdfUrl } from "@/features/training-routine/services/training-routines-report-pdf-url";
 
 type CoachDeleteRoutineActionProps = {
@@ -49,7 +49,7 @@ export function CoachOptionRoutineDrawer( {
 		( count, routineWeek ) => count + routineWeek.routineDays.reduce( ( dayTotal, day ) => dayTotal + ( day.loadedSetCount ?? 0 ), 0 ),
 		0,
 	);
-	const [ isDownloading, setIsDownloading ] = useState( false );
+	const { download, isDownloading } = useFileDownload();
 	const deleteRoutine = useDeleteTrainingRoutineStructure();
 
 	const summary = useMemo(
@@ -97,17 +97,13 @@ export function CoachOptionRoutineDrawer( {
 	}
 
 	function handleDownloadReport() {
-		setIsDownloading( true );
-		downloadFileFromUrl(
+		void download(
 			buildTrainingRoutineReportPdfUrl( {
 				month,
 				studentId,
 				year,
 			} ),
 		);
-		window.setTimeout( () => {
-			setIsDownloading( false );
-		}, 1200 );
 	}
 
 	return (
