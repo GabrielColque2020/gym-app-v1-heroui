@@ -99,6 +99,9 @@ medida que se hace.
 - [x] Fecha del entrenamiento: "Terminar día" pregunta cuándo se entrenó (Hoy / Ayer /
   Otra fecha, hasta 60 días) y propone el día de la primera serie; las series del
   día pasan a esa fecha.
+- [x] Para el coach: "6 de 12 días hechos · 2 salteados" en el inicio (y esos
+  estudiantes suben en la lista), y en la rutina del estudiante el resumen y los días
+  marcados "Salteado" / "Sin terminar" (`summarizeRoutineMonth`).
 
 ## Seguridad
 

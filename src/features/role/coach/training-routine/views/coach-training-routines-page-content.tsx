@@ -121,6 +121,7 @@ export default function CoachTrainingRoutinesPageContent( {
 				/>
 			) : (
 				<CoachTrainingRoutineMonthGrid
+					showStudentProgress
 					buildDayHrefAction={ ( routineDayId ) => buildEditRoutineDayHref( routineDayId, studentId, month, year ) }
 					renderWeekAction={ ( routineWeek ) => (
 						<CoachRepeatWeekAction

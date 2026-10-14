@@ -35,3 +35,46 @@ export function pickNextRoutineDay<T extends NextRoutineDayCandidate>( days: T[]
 		?? trainableDays.find( ( day ) => !day.isFinalized )
 		?? furthest;
 }
+
+export type RoutineMonthSummary = {
+	// Dias terminados.
+	doneCount: number;
+	// Dias con ejercicios: los que cuentan para el total.
+	totalCount: number;
+	// Sin ninguna serie y antes del dia mas avanzado que ya entreno: los salteo.
+	skippedIndexes: Set<number>;
+	// Con series pero sin terminar, y antes del dia mas avanzado: los dejo.
+	unfinishedIndexes: Set<number>;
+};
+
+// Cuanto cumplio el estudiante la rutina del mes, con los dias en el orden de la
+// rutina. El mismo criterio que `pickNextRoutineDay`: lo que esta adelante del
+// dia mas avanzado todavia no le toca, asi que no cuenta como salteado.
+//
+// Los indices son los de `days` (incluidos los dias sin ejercicios, que nunca
+// cuentan como salteados).
+export function summarizeRoutineMonth( days: NextRoutineDayCandidate[] ): RoutineMonthSummary {
+	const furthestIndex = days.findLastIndex( ( day ) => day.exerciseCount > 0 && ( day.hasProgress || day.isFinalized ) );
+	const skippedIndexes = new Set<number>();
+	const unfinishedIndexes = new Set<number>();
+	let doneCount = 0;
+	let totalCount = 0;
+
+	days.forEach( ( day, index ) => {
+		if (day.exerciseCount === 0) return;
+
+		totalCount += 1;
+
+		if (day.isFinalized) {
+			doneCount += 1;
+			return;
+		}
+
+		if (index >= furthestIndex) return;
+
+		if (day.hasProgress) unfinishedIndexes.add( index );
+		else skippedIndexes.add( index );
+	} );
+
+	return { doneCount, skippedIndexes, totalCount, unfinishedIndexes };
+}

@@ -13,6 +13,8 @@ import {
 import { mapCoachDashboardStudent } from "@/features/role/coach/dashboard/services/coach-dashboard-mappers";
 import prisma from "@/lib/prisma";
 
+type CurrentRoutineRecord = Parameters<typeof buildCoachDashboardSummary>[ 0 ][ "currentRoutineRecords" ][ number ];
+
 export type CoachDashboardStudentSummary = ReturnType<typeof mapCoachDashboardStudent>;
 
 export type CoachDashboardSummary = {
@@ -47,6 +49,7 @@ export async function getCoachDashboardSummaryAction(): Promise<ActionResult<Coa
 			latestRoutineRecords,
 			latestMealPlanRecords,
 			latestProgressRecords,
+			currentMonthProgressRecords,
 		] = await Promise.all( [
 			prisma.user.findMany( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
@@ -70,14 +73,29 @@ export async function getCoachDashboardSummaryAction(): Promise<ActionResult<Coa
 					coachId: session.sub,
 				},
 			} ),
+			// Sin cache: con los dias, para el resumen de cuanto cumplio cada uno, y
+			// "terminado" cambia mientras entrena.
 			prisma.trainingRoutineMonth.findMany( {
-				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 				distinct: [ "studentId" ],
 				orderBy: [
 					{ studentId: "asc" },
 				],
 				select: {
 					studentId: true,
+					weeks: {
+						orderBy: { week: "asc" },
+						select: {
+							routineDays: {
+								orderBy: { dayNumber: "asc" },
+								select: {
+									_count: { select: { routines: true } },
+									dayNumber: true,
+									isFinalized: true,
+								},
+							},
+							week: true,
+						},
+					},
 				},
 				where: {
 					month: currentPeriod.month,
@@ -102,7 +120,7 @@ export async function getCoachDashboardSummaryAction(): Promise<ActionResult<Coa
 					},
 					year: currentPeriod.year,
 				},
-			} ),
+			} ) as unknown as Promise<CurrentRoutineRecord[]>,
 			prisma.trainingRoutineMonth.findMany( {
 				cacheStrategy: QUERY_ACCELERATE_CACHE.standard,
 				distinct: [ "studentId" ],
@@ -172,10 +190,31 @@ export async function getCoachDashboardSummaryAction(): Promise<ActionResult<Coa
 					},
 				},
 			} ),
+			// En que dias del mes cargo series cada estudiante. Sin cache, igual que
+			// los dias.
+			prisma.exerciseProgress.findMany( {
+				distinct: [ "studentId", "week", "dayNumber" ],
+				select: {
+					dayNumber: true,
+					studentId: true,
+					week: true,
+				},
+				where: {
+					month: currentPeriod.month,
+					student: {
+						is: {
+							coachId: session.sub,
+							role: "STUDENT",
+						},
+					},
+					year: currentPeriod.year,
+				},
+			} ),
 		] );
 
 		return buildCoachDashboardSummary( {
 			activeExerciseCount: activeExerciseRecords.length,
+			currentMonthProgressRecords,
 			currentRoutineRecords,
 			latestMealPlanRecords,
 			latestProgressRecords,

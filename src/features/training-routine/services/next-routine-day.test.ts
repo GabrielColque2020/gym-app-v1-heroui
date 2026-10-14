@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { pickNextRoutineDay } from "@/features/training-routine/services/next-routine-day";
+import { pickNextRoutineDay, summarizeRoutineMonth } from "@/features/training-routine/services/next-routine-day";
 
 type Day = { exerciseCount: number; hasProgress: boolean; id: string; isFinalized: boolean };
 
@@ -53,5 +53,34 @@ describe( "pickNextRoutineDay", () => {
 	it( "sin dias con ejercicios devuelve el primero, y sin dias nada", () => {
 		expect( pickNextRoutineDay( days( "00" ) )?.id ).toBe( "d1" );
 		expect( pickNextRoutineDay( [] ) ).toBeNull();
+	} );
+} );
+
+describe( "summarizeRoutineMonth", () => {
+	const summary = ( pattern: string ) => {
+		const result = summarizeRoutineMonth( days( pattern ) );
+
+		return {
+			done: result.doneCount,
+			skipped: [ ...result.skippedIndexes ],
+			total: result.totalCount,
+			unfinished: [ ...result.unfinishedIndexes ],
+		};
+	};
+
+	it( "sin nada cargado no hay salteados: todavia no le toca nada", () => {
+		expect( summary( "----" ) ).toEqual( { done: 0, skipped: [], total: 4, unfinished: [] } );
+	} );
+
+	it( "cuenta como salteado lo que quedo atras sin series", () => {
+		expect( summary( "f-f--" ) ).toEqual( { done: 2, skipped: [ 1 ], total: 5, unfinished: [] } );
+	} );
+
+	it( "lo empezado y dejado atras es sin terminar; el mas avanzado esta en curso", () => {
+		expect( summary( "pf-p-" ) ).toEqual( { done: 1, skipped: [ 2 ], total: 5, unfinished: [ 0 ] } );
+	} );
+
+	it( "los dias sin ejercicios no cuentan", () => {
+		expect( summary( "0f0-f" ) ).toEqual( { done: 2, skipped: [ 3 ], total: 3, unfinished: [] } );
 	} );
 } );

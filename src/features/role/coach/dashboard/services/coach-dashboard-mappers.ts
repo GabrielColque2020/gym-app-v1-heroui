@@ -28,6 +28,13 @@ type MapCoachDashboardStudentInput = {
 		month: number;
 		year: number;
 	} | null;
+	// Cuanto cumplio la rutina de este mes; null si no tiene.
+	monthProgress: {
+		doneCount: number;
+		skippedCount: number;
+		totalCount: number;
+		unfinishedCount: number;
+	} | null;
 	name: string;
 	recentActivityCutoff: Date;
 };
@@ -54,6 +61,7 @@ export function mapCoachDashboardStudent( {
 	lastMealPlanUpdatedAt,
 	lastProgressAt,
 	lastRoutineMonth,
+	monthProgress,
 	name,
 	recentActivityCutoff,
 }: MapCoachDashboardStudentInput ) {
@@ -69,6 +77,7 @@ export function mapCoachDashboardStudent( {
 		lastMealPlanUpdatedAt: lastMealPlanUpdatedAt?.toISOString() ?? null,
 		lastProgressAt: lastProgressAt?.toISOString() ?? null,
 		lastRoutineMonthLabel: lastRoutineMonth ? buildMonthYearLabel( lastRoutineMonth.month, lastRoutineMonth.year ) : null,
+		monthProgress,
 		name,
 		needsRecentActivityAttention,
 	};
@@ -79,6 +88,7 @@ export function compareStudentsByPriority<
 		active: boolean;
 		hasMealPlan: boolean;
 		hasRoutineThisMonth: boolean;
+		monthProgress: { skippedCount: number } | null;
 		name: string;
 		needsRecentActivityAttention: boolean;
 	}
@@ -87,7 +97,8 @@ export function compareStudentsByPriority<
 		if (!student.active) return 4;
 		if (!student.hasRoutineThisMonth) return 0;
 		if (!student.hasMealPlan) return 1;
-		if (student.needsRecentActivityAttention) return 2;
+		// Sin entrenar hace un tiempo, o salteando dias de la rutina.
+		if (student.needsRecentActivityAttention || ( student.monthProgress?.skippedCount ?? 0 ) > 0) return 2;
 
 		return 3;
 	};

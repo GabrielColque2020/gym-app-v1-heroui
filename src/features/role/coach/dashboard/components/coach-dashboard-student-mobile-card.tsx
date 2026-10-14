@@ -3,7 +3,7 @@ import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboa
 import { Card, Chip } from "@heroui/react";
 
 import { CoachDashboardStudentRowActions } from "@/features/role/coach/dashboard/components/coach-dashboard-student-row-actions";
-import { buildCoachDashboardRoutineStatusLabel, formatCoachDashboardDateLabel, } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table.utils";
+import { buildCoachDashboardRoutineAlertLabel, buildCoachDashboardRoutineStatusLabel, formatCoachDashboardDateLabel, } from "@/features/role/coach/dashboard/components/coach-dashboard-students-table.utils";
 
 type CoachDashboardStudentMobileCardProps = {
 	student: CoachDashboardStudentSummary;
@@ -33,6 +33,9 @@ export function CoachDashboardStudentMobileCard( {
 					<div className={ "rounded-lg border border-border bg-surface px-3 py-2" }>
 						<p className={ "text-xs font-medium text-muted" }>Rutina del mes</p>
 						<p className={ "text-sm text-foreground" }>{ buildCoachDashboardRoutineStatusLabel( student ) }</p>
+						{ buildCoachDashboardRoutineAlertLabel( student ) ? (
+							<p className={ "text-xs font-medium text-warning" }>{ buildCoachDashboardRoutineAlertLabel( student ) }</p>
+						) : null }
 					</div>
 					<div className={ "rounded-lg border border-border bg-surface px-3 py-2" }>
 						<p className={ "text-xs font-medium text-muted" }>Plan alimenticio</p>

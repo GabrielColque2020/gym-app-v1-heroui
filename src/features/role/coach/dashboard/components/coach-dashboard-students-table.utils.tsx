@@ -15,10 +15,25 @@ export function formatCoachDashboardDateLabel( date: string | null ) {
 	} ).format( new Date( date ) );
 }
 
+// Lo que quedo atras sin hacer este mes: "2 salteados · 1 sin terminar".
+export function buildCoachDashboardRoutineAlertLabel( student: CoachDashboardStudentSummary ) {
+	const { skippedCount = 0, unfinishedCount = 0 } = student.monthProgress ?? {};
+	const parts = [
+		skippedCount > 0 ? `${ skippedCount } ${ skippedCount === 1 ? "salteado" : "salteados" }` : null,
+		unfinishedCount > 0 ? `${ unfinishedCount } sin terminar` : null,
+	].filter( Boolean );
+
+	return parts.length > 0 ? parts.join( " · " ) : null;
+}
+
 export function buildCoachDashboardRoutineStatusLabel( student: CoachDashboardStudentSummary ) {
 	if (student.hasRoutineThisMonth) {
 		// El mes ya lo dice el titulo de la columna o de la tarjeta.
-		return "Cargada este mes";
+		if (!student.monthProgress) return "Cargada este mes";
+
+		const { doneCount, totalCount } = student.monthProgress;
+
+		return `${ doneCount } de ${ totalCount } ${ totalCount === 1 ? "día hecho" : "días hechos" }`;
 	}
 
 	if (student.lastRoutineMonthLabel) {
@@ -86,6 +101,9 @@ export function buildCoachDashboardStudentsColumns(): DataGridColumn<CoachDashbo
 					<span className={ "text-xs text-muted" }>
 						{ buildCoachDashboardRoutineStatusLabel( student ) }
 					</span>
+					{ buildCoachDashboardRoutineAlertLabel( student ) ? (
+						<span className={ "text-xs font-medium text-warning" }>{ buildCoachDashboardRoutineAlertLabel( student ) }</span>
+					) : null }
 				</div>
 			),
 			header: "Rutina del mes",

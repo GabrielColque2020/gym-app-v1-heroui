@@ -6,6 +6,7 @@ import type {
 } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 
 import type { ReactNode } from "react";
+import { useMemo } from "react";
 
 import Link from "next/link";
 import { Card } from "@heroui/react";
@@ -13,6 +14,7 @@ import { CheckCircle2, Pencil, Plus } from "lucide-react";
 
 import { isRoutineDayDraftDirty } from "@/features/routine/services/routine-day-editor";
 import { useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
+import { summarizeRoutineMonth } from "@/features/training-routine/services/next-routine-day";
 import { getTrainingRoutineDayTitle } from "@/features/training-routine/services/training-routine-day-formatters";
 
 type CoachTrainingRoutineMonthGridProps = {
@@ -21,15 +23,22 @@ type CoachTrainingRoutineMonthGridProps = {
 	// Accion del encabezado de cada semana (por ejemplo, repetirla en las demas).
 	renderWeekAction?: ( routineWeek: CoachTrainingRoutine ) => ReactNode;
 	routineWeeks: CoachTrainingRoutine[];
+	// El mes de un estudiante (no una plantilla): resume cuanto cumplio y marca
+	// los dias que salteo o dejo a medias.
+	showStudentProgress?: boolean;
 };
+
+// Como va el estudiante con este dia, mirado desde el dia mas avanzado que entreno.
+type DayProgress = "skipped" | "unfinished" | null;
 
 type DayCellProps = {
 	day: CoachTrainingRoutineDay;
 	hasUnsavedChanges: boolean;
 	href: string;
+	progress: DayProgress;
 };
 
-function DayCell( { day, hasUnsavedChanges, href }: DayCellProps ) {
+function DayCell( { day, hasUnsavedChanges, href, progress }: DayCellProps ) {
 	const isEmpty = day.routines.length === 0;
 
 	return (
@@ -50,9 +59,18 @@ function DayCell( { day, hasUnsavedChanges, href }: DayCellProps ) {
 							Sin guardar
 						</span>
 					) : null }
-					{ /* El estudiante ya termino este dia, o lo empezo y todavia no lo cerro. */ }
+					{ /* El estudiante ya termino este dia, lo salteo, lo dejo a medias (y ya
+					     siguio con otro) o lo esta haciendo. */ }
 					{ day.isFinalized ? (
 						<CheckCircle2 aria-label={ "Realizado por el estudiante" } className={ "size-4 text-success" }/>
+					) : progress === "skipped" ? (
+						<span className={ "rounded-full bg-warning/15 px-2 py-0.5 text-[11px] font-medium text-warning" }>
+							Salteado
+						</span>
+					) : progress === "unfinished" ? (
+						<span className={ "rounded-full bg-warning/15 px-2 py-0.5 text-[11px] font-medium text-warning" }>
+							Sin terminar
+						</span>
 					) : day.loadedSetCount > 0 ? (
 						<span className={ "rounded-full bg-accent/15 px-2 py-0.5 text-[11px] font-medium text-accent" }>
 							En curso
@@ -96,12 +114,48 @@ export function CoachTrainingRoutineMonthGrid( {
 												  buildDayHrefAction,
 												  renderWeekAction,
 												  routineWeeks,
+												  showStudentProgress = false,
 											  }: CoachTrainingRoutineMonthGridProps ) {
 	// Los borradores viven en este navegador: un dia editado y no guardado se avisa aca.
 	const drafts = useRoutineDayDraftStore( ( state ) => state.drafts );
+	// Con el mismo criterio que la proxima sesion del estudiante: lo que esta
+	// adelante del dia mas avanzado todavia no le toca.
+	const monthProgress = useMemo( () => {
+		if (!showStudentProgress) return null;
+
+		const days = routineWeeks.flatMap( ( week ) => week.routineDays );
+		const summary = summarizeRoutineMonth( days.map( ( day ) => ( {
+			exerciseCount: day.routines.length,
+			hasProgress: day.loadedSetCount > 0,
+			isFinalized: day.isFinalized,
+		} ) ) );
+		const progressByDayId = new Map<string, DayProgress>();
+
+		days.forEach( ( day, index ) => {
+			if (summary.skippedIndexes.has( index )) progressByDayId.set( day.id, "skipped" );
+			if (summary.unfinishedIndexes.has( index )) progressByDayId.set( day.id, "unfinished" );
+		} );
+
+		return { progressByDayId, summary };
+	}, [ routineWeeks, showStudentProgress ] );
+	const skippedCount = monthProgress?.summary.skippedIndexes.size ?? 0;
+	const unfinishedCount = monthProgress?.summary.unfinishedIndexes.size ?? 0;
+	const hasAlerts = skippedCount > 0 || unfinishedCount > 0;
+	const summaryLabel = monthProgress && monthProgress.summary.totalCount > 0
+		? [
+			`${ monthProgress.summary.doneCount } de ${ monthProgress.summary.totalCount } ${ monthProgress.summary.totalCount === 1 ? "día hecho" : "días hechos" }`,
+			skippedCount > 0 ? `${ skippedCount } ${ skippedCount === 1 ? "salteado" : "salteados" }` : null,
+			unfinishedCount > 0 ? `${ unfinishedCount } sin terminar` : null,
+		].filter( Boolean ).join( " · " )
+		: null;
 
 	return (
 		<div className={ "flex flex-col gap-3" }>
+			{ summaryLabel ? (
+				<p className={ `rounded-xl border px-3 py-2 text-sm font-medium text-foreground ${ hasAlerts ? "border-warning/20 bg-warning/10" : "border-border bg-surface" }` } role={ "status" }>
+					{ summaryLabel }
+				</p>
+			) : null }
 			{ routineWeeks.map( ( routineWeek ) => {
 				const loadedDays = routineWeek.routineDays.filter( ( day ) => day.routines.length > 0 ).length;
 				const exerciseCount = routineWeek.routineDays.reduce( ( count, day ) => count + day.routines.length, 0 );
@@ -129,6 +183,7 @@ export function CoachTrainingRoutineMonthGrid( {
 											day={ day }
 											hasUnsavedChanges={ isRoutineDayDraftDirty( drafts[ day.id ], day.routines ) }
 											href={ buildDayHrefAction( day.id ) }
+											progress={ monthProgress?.progressByDayId.get( day.id ) ?? null }
 										/>
 									) ) }
 								</div>
