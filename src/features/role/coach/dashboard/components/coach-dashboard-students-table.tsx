@@ -3,7 +3,9 @@
 import type { DataGridColumn } from "@heroui-pro/react";
 import { DataGrid } from "@heroui-pro/react";
 import type { CoachDashboardStudentSummary } from "@/features/role/coach/dashboard/actions/get-coach-dashboard-summary";
-import { Card, Label, SearchField } from "@heroui/react";
+import { Button, Card, Label, SearchField } from "@heroui/react";
+import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { ListPagination, usePagination } from "@/components/common";
@@ -18,6 +20,7 @@ type CoachDashboardStudentsTableProps = {
 export function CoachDashboardStudentsTable( {
 												 students,
 											 }: CoachDashboardStudentsTableProps ) {
+	const router = useRouter();
 	const [ searchFilter, setSearchFilter ] = useState( "" );
 	const [ page, setPage ] = useState( 1 );
 	const filteredStudents = useMemo(
@@ -37,7 +40,14 @@ export function CoachDashboardStudentsTable( {
 	if (students.length === 0) {
 		return (
 			<CoachDashboardEmptyState
-				description={ "Cargá el primero desde Estudiantes, en el menú, para empezar." }
+				action={
+					// Abre la lista con el formulario de alta ya abierto.
+					<Button className={ "bg-accent text-accent-foreground" } onPress={ () => router.push( "/coach/student?nuevo=1" ) }>
+						<Plus className={ "size-4" }/>
+						Cargar estudiante
+					</Button>
+				}
+				description={ "Cargá el primero para armarle la rutina y el plan." }
 				title={ "Todavía no tenés estudiantes" }
 			/>
 		);
@@ -72,6 +82,14 @@ export function CoachDashboardStudentsTable( {
 
 				{ filteredStudents.length === 0 ? (
 					<CoachDashboardEmptyState
+						action={
+							<Button variant={ "secondary" } onPress={ () => {
+								setSearchFilter( "" );
+								setPage( 1 );
+							} }>
+								Limpiar búsqueda
+							</Button>
+						}
 						description={ "No encontramos estudiantes que coincidan con la búsqueda." }
 						title={ "Sin resultados" }
 					/>

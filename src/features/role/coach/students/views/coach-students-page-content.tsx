@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, Card } from "@heroui/react";
 import { RotateCw } from "lucide-react";
 
@@ -10,9 +10,15 @@ import { StudentsContentDesktop } from "@/features/students/components/desktop/s
 import { StudentsContentMobile } from "@/features/students/components/mobile/students-content-mobile";
 import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
 import { useStudents } from "@/features/students/hooks/use-students";
+import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
+
+type CoachStudentsPageContentProps = {
+	// Llegar con el formulario de alta abierto ("?nuevo=1").
+	initialCreate?: boolean;
+};
 
 // Renderiza el listado de estudiantes y sus estados de carga.
-export default function CoachStudentsPageContent() {
+export default function CoachStudentsPageContent( { initialCreate = false }: CoachStudentsPageContentProps ) {
 	const { data: students = [], error, isError, isFetching, isLoading, refetch } = useStudents();
 	const breadcrumbs = [
 		{ href: "/coach/dashboard", label: "Inicio" },
@@ -24,6 +30,23 @@ export default function CoachStudentsPageContent() {
 	const summary = students.length === 0
 		? "Todavía no cargaste estudiantes."
 		: `${ students.length } ${ students.length === 1 ? "estudiante" : "estudiantes" } · ${ activeCount } ${ activeCount === 1 ? "activo" : "activos" }`;
+	// El alta que abren "?nuevo=1" y el boton de la lista vacia. Los de la cabecera
+	// tienen el suyo.
+	const [ isCreateOpen, setIsCreateOpen ] = useState( initialCreate );
+	const createPlacement = useResponsiveDrawerPlacement();
+	const openCreate = useCallback( () => setIsCreateOpen( true ), [] );
+
+	// Se saca "?nuevo" de la direccion para que recargar o volver atras no reabra
+	// el formulario.
+	useEffect( () => {
+		if (!initialCreate) return;
+
+		const params = new URLSearchParams( window.location.search );
+
+		params.delete( "nuevo" );
+		window.history.replaceState( null, "", `${ window.location.pathname }${ params.size ? `?${ params }` : "" }` );
+	}, [ initialCreate ] );
+
 	const handleRefresh = useCallback( () => {
 		if (isRefreshing) return;
 
@@ -116,18 +139,25 @@ export default function CoachStudentsPageContent() {
 				     lugar del que necesita y "Abrir" quedaba escondido a la derecha. */ }
 				<Card.Content className={ "@container p-3" }>
 					<div className={ "hidden w-full @2xl:flex" }>
-						<StudentsContentDesktop students={ students }/>
+						<StudentsContentDesktop students={ students } onCreateStudentAction={ openCreate }/>
 					</div>
 					<div className={ "w-full @2xl:hidden" }>
-						<StudentsContentMobile students={ students }/>
+						<StudentsContentMobile students={ students } onCreateStudentAction={ openCreate }/>
 					</div>
 				</Card.Content>
 				<Card.Footer className={ "border-t border-border px-3 py-2" }>
 					<div className={ "text-sm text-muted" }>
-						Desactivar conserva al estudiante y su información historica.
+						Desactivar conserva al estudiante y su información histórica.
 					</div>
 				</Card.Footer>
 			</Card>
+			<StudentDrawer
+				hideTrigger
+				isOpen={ isCreateOpen }
+				mode={ "create" }
+				placement={ createPlacement }
+				onOpenChangeAction={ setIsCreateOpen }
+			/>
 		</div>
 	);
 }

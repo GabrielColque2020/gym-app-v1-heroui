@@ -37,8 +37,14 @@ export function StudentDashboardTodayCard( {
 	if (!hasCurrentMonthRoutine) {
 		return (
 			<StudentDashboardEmptyState
-				description={ `No encontramos una rutina para ${ String( currentMonth ).padStart( 2, "0" ) }/${ currentYear }.` }
-				title={ "Todavía no tienes una rutina cargada este mes" }
+				action={
+					// Mientras tanto puede repetir la de otro mes: en la rutina se cambia de mes.
+					<Button variant={ "secondary" } onPress={ () => router.push( buildTrainingRoutineHref() ) }>
+						Ver mis rutinas
+					</Button>
+				}
+				description={ `Tu entrenador todavía no cargó la de ${ String( currentMonth ).padStart( 2, "0" ) }/${ currentYear }. Cuando la cargue, aparece acá.` }
+				title={ "Todavía no tenés rutina este mes" }
 			/>
 		);
 	}
@@ -46,8 +52,13 @@ export function StudentDashboardTodayCard( {
 	if (!nextRoutineDay) {
 		return (
 			<StudentDashboardEmptyState
-				description={ "Puedes revisar todas tus semanas y días desde tu módulo de rutina." }
-				title={ "No hay un día disponible para mostrar ahora mismo" }
+				action={
+					<Button variant={ "secondary" } onPress={ () => router.push( buildTrainingRoutineHref() ) }>
+						Ver todas mis semanas
+					</Button>
+				}
+				description={ "Tus semanas y días están en la rutina del mes." }
+				title={ "No hay un día para mostrar ahora" }
 			/>
 		);
 	}

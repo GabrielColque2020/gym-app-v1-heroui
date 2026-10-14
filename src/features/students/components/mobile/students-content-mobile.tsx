@@ -5,14 +5,16 @@ import type { StudentListItem } from "@/features/students/actions/get-students";
 import { ListPagination } from "@/components/common";
 import { StudentMobileCard } from "@/features/students/components/mobile/student-mobile-card";
 import { StudentFilters } from "@/features/students/components/shared/student-filters";
-import { StudentsEmptyState } from "@/features/students/components/shared/students-empty-state";
+import { StudentsNoMatchEmptyState, StudentsNoneEmptyState } from "@/features/students/components/shared/students-empty-state";
 import { useStudentList } from "@/features/students/hooks/use-student-list";
 
 type StudentsContentMobileProps = {
+	// Abre el alta: lo usa el boton de la lista vacia.
+	onCreateStudentAction?: () => void;
 	students: StudentListItem[];
 };
 
-export function StudentsContentMobile( { students }: StudentsContentMobileProps ) {
+export function StudentsContentMobile( { onCreateStudentAction, students }: StudentsContentMobileProps ) {
 	const {
 		changePage,
 		clearFilters,
@@ -34,7 +36,7 @@ export function StudentsContentMobile( { students }: StudentsContentMobileProps 
 	} = pagination;
 
 	if (students.length === 0) {
-		return <StudentsEmptyState message={ "No hay estudiantes cargados" }/>;
+		return <StudentsNoneEmptyState onCreateStudentAction={ onCreateStudentAction }/>;
 	}
 
 	return (
@@ -50,7 +52,7 @@ export function StudentsContentMobile( { students }: StudentsContentMobileProps 
 			/>
 
 			{ filteredStudents.length === 0 ? (
-				<StudentsEmptyState message={ "No hay estudiantes que coincidan con los filtros" }/>
+				<StudentsNoMatchEmptyState onClearFiltersAction={ clearFilters }/>
 			) : (
 				<>
 					<div className={ "grid gap-2" }>

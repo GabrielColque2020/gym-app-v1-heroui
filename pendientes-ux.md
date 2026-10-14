@@ -64,8 +64,9 @@ medida que se hace.
 
 ## Pulido
 
-- [ ] Botones en los vacíos: inicio del entrenador sin estudiantes, lista de
-  estudiantes vacía, tarjeta "hoy" del estudiante.
+- [x] Botones en los vacíos: inicio del entrenador sin estudiantes ("Cargar estudiante"
+  abre la lista con el alta abierta, `?nuevo=1`), lista vacía o sin coincidencias
+  ("Limpiar filtros"), tarjeta "hoy" del estudiante sin rutina.
 - [ ] Textos: voseo en todos lados ("Carga", "Configura", "Estas por", "Debes",
   "No tienes"), tildes ("historica", "aplicara", "contrasenia", "valida"),
   "entrenador" en vez de "coach", "1 día por semana" en singular.

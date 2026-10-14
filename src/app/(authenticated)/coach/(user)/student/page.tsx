@@ -7,8 +7,15 @@ export const metadata: Metadata = {
 	description: "Lista de estudiantes",
 };
 
-export default function CoachStudentPage() {
+type CoachStudentPageProps = {
+	searchParams: Promise<{ nuevo?: string }>;
+};
+
+export default async function CoachStudentPage( { searchParams }: CoachStudentPageProps ) {
+	const { nuevo } = await searchParams;
+
+	// Desde Inicio, sin estudiantes, se llega con "?nuevo=1" para cargar el primero.
 	return (
-		<CoachStudentsPageContent/>
+		<CoachStudentsPageContent initialCreate={ nuevo === "1" }/>
 	);
 }

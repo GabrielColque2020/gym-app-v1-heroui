@@ -12,14 +12,16 @@ import { buildStudentTrainingRoutineHref } from "@/features/role/coach/dashboard
 import { ListPagination } from "@/components/common";
 import { StudentFilters } from "@/features/students/components/shared/student-filters";
 import { StudentRowActions } from "@/features/students/components/shared/student-row-actions";
-import { StudentsEmptyState } from "@/features/students/components/shared/students-empty-state";
+import { StudentsNoMatchEmptyState, StudentsNoneEmptyState } from "@/features/students/components/shared/students-empty-state";
 import { useStudentList } from "@/features/students/hooks/use-student-list";
 
 type StudentsContentDesktopProps = {
+	// Abre el alta: lo usa el boton de la lista vacia.
+	onCreateStudentAction?: () => void;
 	students: StudentListItem[];
 };
 
-export function StudentsContentDesktop( { students }: StudentsContentDesktopProps ) {
+export function StudentsContentDesktop( { onCreateStudentAction, students }: StudentsContentDesktopProps ) {
 	const columns = useMemo<DataGridColumn<StudentListItem>[]>( () => [
 		// Primero el nombre, que es por lo que se reconoce a alguien. Los anchos
 		// minimos suman 670: la tabla se muestra desde 672 de ancho y entra entera.
@@ -101,7 +103,7 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 	} = pagination;
 
 	if (students.length === 0) {
-		return <StudentsEmptyState message={ "No hay estudiantes cargados" }/>;
+		return <StudentsNoneEmptyState onCreateStudentAction={ onCreateStudentAction }/>;
 	}
 
 	return (
@@ -117,7 +119,7 @@ export function StudentsContentDesktop( { students }: StudentsContentDesktopProp
 			/>
 
 			{ filteredStudents.length === 0 ? (
-				<StudentsEmptyState message={ "No hay estudiantes que coincidan con los filtros" }/>
+				<StudentsNoMatchEmptyState onClearFiltersAction={ clearFilters }/>
 			) : (
 				<>
 					<DataGrid
