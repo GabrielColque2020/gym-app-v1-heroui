@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "@heroui/react";
 import { ArrowLeft, ChevronDown, Link2 } from "lucide-react";
 
@@ -13,6 +13,8 @@ import { SearchAndCreateExerciseDrawerPrescription } from "@/features/role/coach
 
 type SearchAndCreateExerciseDrawerConfigProps = {
 	exercise: ExerciseListItem;
+	// "También en las otras semanas", si la rutina tiene otros dias.
+	otherDaysSlot?: ReactNode;
 	onBackAction: () => void;
 	onRepsChange: ( value: string ) => void;
 	onRestChange: ( value: number | null ) => void;
@@ -29,6 +31,7 @@ type SearchAndCreateExerciseDrawerConfigProps = {
 // antes de saber para que ejercicio eran, y las variantes no tenian lugar.
 export function SearchAndCreateExerciseDrawerConfig( {
 	exercise,
+	otherDaysSlot,
 	onBackAction,
 	onRepsChange,
 	onRestChange,
@@ -106,6 +109,8 @@ export function SearchAndCreateExerciseDrawerConfig( {
 					</div>
 				) : null }
 			</div>
+
+			{ otherDaysSlot }
 		</div>
 	);
 }

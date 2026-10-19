@@ -28,7 +28,7 @@ export function RoutineExerciseVariantsButton( { clientId, exerciseName, pending
 					: `Ver las variantes de ${ exerciseName } (${ count })`
 			}
 			className={
-				`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent ${
+				`inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent ${
 					count > 0
 						? "bg-accent-soft font-medium text-accent hover:bg-accent-soft/70"
 						: "border border-dashed border-border text-muted hover:border-accent hover:text-foreground"

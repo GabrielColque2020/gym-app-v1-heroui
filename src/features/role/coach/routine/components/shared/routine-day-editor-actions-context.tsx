@@ -8,7 +8,20 @@ export type RoutineDayCopyOption = {
 	label: string;
 };
 
+// Un dia de la rutina, para elegir en cuales agregar un ejercicio.
+export type RoutineDaySummary = {
+	dayNumber: number;
+	exerciseIds: string[];
+	id: string;
+	isFinalized: boolean;
+	week: number;
+};
+
 type RoutineDayEditorActions = {
+	// El dia que se esta editando.
+	currentDay: { dayNumber: number; id: string; week: number };
+	// Todos los dias de la rutina (mes o plantilla), este incluido.
+	routineDays: RoutineDaySummary[];
 	// Otros dias del mes con ejercicios, para arrancar un dia vacio copiando uno.
 	copyOptions: RoutineDayCopyOption[];
 	onCopyFromDay: ( routineDayId: string ) => void;

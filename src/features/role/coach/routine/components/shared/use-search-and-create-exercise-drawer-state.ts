@@ -13,10 +13,15 @@ export type ExercisePrescription = {
 	sets: string;
 	// Variantes elegidas para el ejercicio que se esta agregando.
 	variantExerciseIds: string[];
+	// Otros dias de la rutina donde agregarlo tambien.
+	otherDayIds?: string[];
 };
 
 type UseSearchAndCreateExerciseDrawerStateParams = {
 	addedExerciseIds: Set<string>;
+	// Los otros dias marcados al momento de agregar. Es una funcion porque se
+	// calculan con lo que devuelve este mismo hook.
+	getOtherDayIds: () => string[];
 	suggestedOrder: number;
 	// Se llama despues de agregar un ejercicio, para limpiar la busqueda.
 	onAddedAction: () => void;
@@ -28,6 +33,7 @@ type UseSearchAndCreateExerciseDrawerStateParams = {
 
 export function useSearchAndCreateExerciseDrawerState( {
 	addedExerciseIds,
+	getOtherDayIds,
 	suggestedOrder,
 	onAddedAction,
 	onAddExerciseAction,
@@ -125,7 +131,10 @@ export function useSearchAndCreateExerciseDrawerState( {
 			return;
 		}
 
+		const otherDayIds = getOtherDayIds();
+
 		onAddExerciseAction( exercise, parsedOrder, {
+			otherDayIds,
 			reps: repsValue.trim(),
 			restSeconds: restValue,
 			sets: setsValue.trim(),
@@ -136,9 +145,9 @@ export function useSearchAndCreateExerciseDrawerState( {
 		setOrderValue( String( Math.max( parsedOrder + 1, suggestedOrder ) ) );
 		// Vuelve a la lista, con la busqueda vacia, para elegir el siguiente.
 		resetConfig();
-		setLastAddedName( exercise.name );
+		setLastAddedName( otherDayIds.length > 0 ? `${ exercise.name } en ${ otherDayIds.length + 1 } días` : exercise.name );
 		onAddedAction();
-	}, [ configExercise, orderValue, onAddedAction, onAddExerciseAction, repsValue, resetConfig, restValue, setsValue, suggestedOrder, variantItems ] );
+	}, [ configExercise, getOtherDayIds, orderValue, onAddedAction, onAddExerciseAction, repsValue, resetConfig, restValue, setsValue, suggestedOrder, variantItems ] );
 
 	const handlePickerOpenChange = useCallback( ( isOpen: boolean ) => {
 		if (isOpen) {

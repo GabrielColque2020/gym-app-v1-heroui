@@ -156,15 +156,19 @@ export function RepeatWeekButton( {
 									return (
 										<Checkbox
 											key={ routineWeek.id }
-											className={ "flex w-full flex-row items-center gap-3 rounded-xl border border-border bg-surface-secondary px-3 py-2" }
+											aria-label={ `Semana ${ routineWeek.week }` }
+											className={ "w-full" }
 											isDisabled={ isPending }
 											isSelected={ isSelected }
 											onChange={ ( nextIsSelected ) => toggleWeek( routineWeek.week, nextIsSelected ) }
 										>
-											<Checkbox.Control>
-												<Checkbox.Indicator/>
-											</Checkbox.Control>
-											<Checkbox.Content className={ "min-w-0 flex-1" }>
+											{ /* La casilla va adentro de Content, que es la zona que se toca:
+											     afuera se veia pero no respondia. */ }
+											<Checkbox.Content className={ "flex w-full cursor-pointer items-center gap-3 rounded-xl border border-border bg-surface-secondary px-3 py-2" }>
+												<Checkbox.Control>
+													<Checkbox.Indicator/>
+												</Checkbox.Control>
+												<span className={ "min-w-0 flex-1" }>
 												<span className={ "block text-sm font-medium text-foreground" }>Semana { routineWeek.week }</span>
 												{ /* El aviso va en cada semana y solo pesa si esta marcada:
 												     asi se ve que se pierde antes de confirmar. */ }
@@ -172,6 +176,7 @@ export function RepeatWeekButton( {
 													{ exerciseCount === 0
 														? "Vacía"
 														: `${ exerciseCount } ${ exerciseCount === 1 ? "ejercicio" : "ejercicios" }${ isSelected ? ": se reemplazan" : "" }` }
+												</span>
 												</span>
 											</Checkbox.Content>
 										</Checkbox>

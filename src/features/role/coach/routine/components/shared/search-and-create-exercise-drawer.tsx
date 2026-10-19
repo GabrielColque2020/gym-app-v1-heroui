@@ -21,6 +21,12 @@ import {
     useSearchAndCreateExerciseDrawerState
 } from "@/features/role/coach/routine/components/shared/use-search-and-create-exercise-drawer-state";
 import {CheckCircle2, Plus} from "lucide-react";
+import {useCallback, useEffect, useRef, useState} from "react";
+import {useRoutineDayEditorActions} from "@/features/role/coach/routine/components/shared/routine-day-editor-actions-context";
+import type {RoutineDayChecklistItem} from "@/features/role/coach/routine/components/shared/routine-day-checklist";
+import {
+    SearchAndCreateExerciseDrawerOtherDays
+} from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-other-days";
 
 type AddExercisePickerDrawerContentProps = {
     addedExerciseIds: Set<string>;
@@ -34,6 +40,15 @@ export function SearchAndCreateExerciseDrawer({
                                                   suggestedOrder,
                                               }: AddExercisePickerDrawerContentProps) {
     const placement = useResponsiveDrawerPlacement();
+    const {currentDay, routineDays} = useRoutineDayEditorActions();
+    // Los otros dias marcados para el ejercicio en pantalla. `null`: los de
+    // siempre, sin tocar. Es por ejercicio: al elegir otro vuelve a lo de siempre.
+    const [otherDaysChoice, setOtherDaysChoice] = useState<{ exerciseId: string; ids: Set<string> } | null>(null);
+    // Si el ultimo se agrego "Solo en este dia", el siguiente arranca igual: al
+    // armar un dia distinto a los demas no hay que desmarcar cada vez.
+    const [startsWithThisDayOnly, setStartsWithThisDayOnly] = useState(false);
+    const otherDayIdsRef = useRef<string[]>([]);
+    const getOtherDayIds = useCallback(() => otherDayIdsRef.current, []);
     const {
         bodyPartFilter,
         changePage,
@@ -74,6 +89,7 @@ export function SearchAndCreateExerciseDrawer({
         variantItems,
     } = useSearchAndCreateExerciseDrawerState({
         addedExerciseIds,
+        getOtherDayIds,
         currentPage: pagination.currentPage,
         onAddedAction: clearSearch,
         onAddExerciseAction,
@@ -82,6 +98,45 @@ export function SearchAndCreateExerciseDrawer({
         syncCreatedExerciseAction: syncCreatedExercise,
     });
     const isSearching = searchValue !== debouncedSearchValue;
+    // Los otros dias de la rutina para el ejercicio elegido. No se pueden marcar
+    // los que ya lo tienen ni los que el estudiante termino.
+    const otherDayItems: RoutineDayChecklistItem[] = configExercise
+        ? routineDays.filter((day) => day.id !== currentDay.id).map((day) => {
+            const hasExercise = day.exerciseIds.includes(configExercise.id);
+
+            return {
+                dayNumber: day.dayNumber,
+                detail: day.isFinalized
+                    ? "Terminado"
+                    : hasExercise
+                        ? "Ya lo tiene"
+                        : `${day.exerciseIds.length} ${day.exerciseIds.length === 1 ? "ejercicio" : "ejercicios"}`,
+                id: day.id,
+                isUnavailable: day.isFinalized || hasExercise,
+                week: day.week,
+            };
+        })
+        : [];
+    // Lo que viene marcado: el mismo dia en las otras semanas.
+    const defaultOtherDayIds = otherDayItems
+        .filter((item) => !item.isUnavailable && item.dayNumber === currentDay.dayNumber)
+        .map((item) => item.id);
+    const selectedOtherDayIds = configExercise && otherDaysChoice?.exerciseId === configExercise.id
+        ? otherDaysChoice.ids
+        : new Set(startsWithThisDayOnly ? [] : defaultOtherDayIds);
+    const hasPrescription = setsValue.trim().length > 0 && repsValue.trim().length > 0;
+    const otherDayIds = hasPrescription
+        ? otherDayItems.filter((item) => !item.isUnavailable && selectedOtherDayIds.has(item.id)).map((item) => item.id)
+        : [];
+
+    useEffect(() => {
+        otherDayIdsRef.current = otherDayIds;
+    });
+
+    function confirmAdd() {
+        if (defaultOtherDayIds.length > 0) setStartsWithThisDayOnly(otherDayIds.length === 0);
+        handleConfirmAdd();
+    }
 
     return (
         <>
@@ -115,6 +170,15 @@ export function SearchAndCreateExerciseDrawer({
                     <Drawer.Body key={ "config" } className={ "min-h-0 flex-1 overflow-y-auto py-3" }>
                         <SearchAndCreateExerciseDrawerConfig
                             exercise={ configExercise }
+                            otherDaysSlot={ otherDayItems.length > 0 ? (
+                                <SearchAndCreateExerciseDrawerOtherDays
+                                    defaultIds={ defaultOtherDayIds }
+                                    hasPrescription={ hasPrescription }
+                                    items={ otherDayItems }
+                                    selectedIds={ selectedOtherDayIds }
+                                    onChangeAction={ (ids) => setOtherDaysChoice({exerciseId: configExercise.id, ids}) }
+                                />
+                            ) : null }
                             repsValue={ repsValue }
                             restValue={ restValue }
                             setsValue={ setsValue }
@@ -185,9 +249,9 @@ export function SearchAndCreateExerciseDrawer({
                         <Button variant={ "secondary" } onPress={ handleCancelConfig }>
                             Volver
                         </Button>
-                        <Button className={ "bg-accent text-accent-foreground" } onPress={ handleConfirmAdd }>
+                        <Button className={ "bg-accent text-accent-foreground" } onPress={ confirmAdd }>
                             <Plus className={ "size-4" }/>
-                            Agregar ejercicio
+                            { otherDayIds.length > 0 ? `Agregar en ${otherDayIds.length + 1} días` : "Agregar ejercicio" }
                         </Button>
                     </Drawer.Footer>
                 ) : (

@@ -4,13 +4,14 @@ import prisma from "@/lib/prisma";
 import type { ActionResult } from "@/lib/action-result";
 import { runAction } from "@/lib/run-action";
 import { requireCoachSession } from "@/features/auth/coach-session";
-import { assertRoutineCatalogExercisesAvailable } from "@/features/routine/actions/routine-day-mutations.utils";
-import { buildRoutineDayDetailWhere, normalizeRoutineDayDetailInput } from "@/features/routine/services/routine-day-detail.query";
+import { assertRoutineCatalogExercisesAvailable, getRoutineWeekScope } from "@/features/routine/actions/routine-day-mutations.utils";
 
 export type ReplaceRoutineExerciseInput = {
 	fromExerciseId: string;
-	// Un dia cualquiera del mes o la plantilla: de ahi sale cual es la rutina.
+	// El dia desde el que se pide el cambio: de ahi sale cual es la rutina.
 	routineDayId: string;
+	// Los dias donde cambiarlo, que el coach marco. Solo valen los de esa rutina.
+	routineDayIds: string[];
 	studentId?: string | null;
 	templateId?: string | null;
 	// Puede ser un ejercicio del catalogo global: se usa la copia del coach.
@@ -28,8 +29,8 @@ export type ReplaceRoutineExerciseResult = {
 	skippedFinalizedDays: number;
 };
 
-// Cambia un ejercicio por otro en todos los dias de la rutina del mes (o de la
-// plantilla) donde aparece, conservando series, repeticiones, descanso, orden y
+// Cambia un ejercicio por otro en los dias elegidos de la rutina del mes (o de
+// la plantilla), conservando series, repeticiones, descanso, orden y
 // nota. Las variantes eran del ejercicio anterior y se quitan.
 export async function replaceRoutineExerciseAction( input: ReplaceRoutineExerciseInput ): Promise<ActionResult<ReplaceRoutineExerciseResult>> {
 	return runAction( "No se pudo cambiar el ejercicio en la rutina.", async () => {
@@ -37,27 +38,16 @@ export async function replaceRoutineExerciseAction( input: ReplaceRoutineExercis
 		const coachId = session.sub;
 		const fromExerciseId = input.fromExerciseId.trim();
 		const toExerciseId = input.toExerciseId.trim();
-		const detailInput = normalizeRoutineDayDetailInput( {
+		if (!fromExerciseId || !toExerciseId || !input.routineDayId.trim()) {
+			throw new Error( "Elegí el ejercicio que reemplaza al anterior." );
+		}
+
+		const weekWhere = await getRoutineWeekScope( {
 			coachId,
 			routineDayId: input.routineDayId,
 			studentId: input.studentId,
 			templateId: input.templateId,
 		} );
-
-		if (!fromExerciseId || !toExerciseId || !detailInput.routineDayId) {
-			throw new Error( "Elegí el ejercicio que reemplaza al anterior." );
-		}
-
-		const routineDay = await prisma.routineDay.findFirst( {
-			select: { trainingRoutineWeek: { select: { routineTemplateId: true, trainingRoutineMonthId: true } } },
-			where: buildRoutineDayDetailWhere( detailInput ),
-		} );
-
-		if (!routineDay) {
-			throw new Error( "No se encontró el día de rutina seleccionado." );
-		}
-
-		const { routineTemplateId, trainingRoutineMonthId } = routineDay.trainingRoutineWeek;
 		const [ resolved ] = await assertRoutineCatalogExercisesAvailable( coachId, [ {
 			exerciseId: toExerciseId,
 			observation: "",
@@ -72,10 +62,6 @@ export async function replaceRoutineExerciseAction( input: ReplaceRoutineExercis
 			throw new Error( "Elegiste el mismo ejercicio que ya está." );
 		}
 
-		const weekWhere = routineTemplateId
-			? { routineTemplateId }
-			: { trainingRoutineMonthId: trainingRoutineMonthId ?? "" };
-
 		return prisma.$transaction( async ( transaction ) => {
 			const days = await transaction.routineDay.findMany( {
 				select: {
@@ -84,6 +70,7 @@ export async function replaceRoutineExerciseAction( input: ReplaceRoutineExercis
 					routines: { select: { exerciseId: true, id: true } },
 				},
 				where: {
+					id: { in: input.routineDayIds },
 					routines: { some: { exerciseId: fromExerciseId } },
 					trainingRoutineWeek: weekWhere,
 				},

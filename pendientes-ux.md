@@ -102,10 +102,15 @@ medida que se hace.
 - [x] Para el coach: "6 de 12 días hechos · 2 salteados" en el inicio (y esos
   estudiantes suben en la lista), y en la rutina del estudiante el resumen y los días
   marcados "Salteado" / "Sin terminar" (`summarizeRoutineMonth`).
-- [x] "Cambiar" en cada ejercicio del día: se elige otro y se cambia solo en ese día o
-  en todos los de la rutina (o plantilla) donde está, con las mismas series,
+- [x] "Cambiar" en cada ejercicio del día: se elige otro y se marcan, semana por
+  semana, los días de la rutina (o plantilla) donde cambiarlo, con las mismas series,
   repeticiones, descanso y nota. Los días terminados por el estudiante no se tocan y
   las variantes del anterior se quitan (`replaceRoutineExerciseAction`).
+- [x] "Agregar ejercicio" en una rutina con varias semanas: en la pantalla del ejercicio,
+  "También en las otras semanas" viene marcado en el mismo día de las otras semanas y
+  se puede elegir otros días. Va al final de cada día, con las mismas series,
+  repeticiones, descanso y variantes; si el último se agregó solo en este día, el
+  siguiente arranca igual (`addRoutineExerciseToDaysAction`).
 
 ## Seguridad
 

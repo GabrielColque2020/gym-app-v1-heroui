@@ -11,23 +11,34 @@ import { ListPagination } from "@/components/common";
 import { MediaPreviewThumbnail } from "@/components/common/media-preview-thumbnail";
 import { ExerciseDrawer } from "@/features/role/coach/exercises/components/shared/exercise-drawer";
 import { getExerciseName } from "@/features/role/coach/routine/components/shared/routine-day-exercise-editor.utils";
+import { RoutineDayChecklist } from "@/features/role/coach/routine/components/shared/routine-day-checklist";
 import { SearchAndCreateExerciseDrawerControls } from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-controls";
 import { SearchAndCreateExerciseDrawerResults } from "@/features/role/coach/routine/components/shared/search-and-create-exercise-drawer-results";
 import { useRoutineDayExerciseCatalog } from "@/features/routine/hooks/use-routine-day-exercise-catalog";
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 
-export type ReplaceExerciseScope = "day" | "routine";
+// Un dia de la rutina que tiene el ejercicio que se cambia.
+export type ReplaceExerciseDay = {
+	dayNumber: number;
+	id: string;
+	// El dia que se esta editando: siempre se cambia.
+	isCurrent: boolean;
+	// Terminado por el estudiante: no se cambia, queda lo que hizo.
+	isFinalized: boolean;
+	// Series y repeticiones del ejercicio en ese dia, para reconocerlo.
+	prescription: string | null;
+	week: number;
+};
 
 type ReplaceExerciseDrawerProps = {
 	addedExerciseIds: Set<string>;
-	// Dias que el estudiante ya termino con este ejercicio: no se cambian.
-	finalizedDayCount: number;
+	// Todos los dias de la rutina con este ejercicio, este incluido.
+	days: ReplaceExerciseDay[];
 	onOpenChangeAction: ( isOpen: boolean ) => void;
-	// Devuelve si se pudo cambiar, para cerrar el drawer solo en ese caso.
-	onReplaceAction: ( exercise: ExerciseListItem, scope: ReplaceExerciseScope ) => Promise<boolean>;
-	// Otros dias de la rutina, sin terminar, que tienen el mismo ejercicio.
-	otherDayCount: number;
+	// Recibe los dias marcados y devuelve si se pudo cambiar, para cerrar el
+	// drawer solo en ese caso.
+	onReplaceAction: ( exercise: ExerciseListItem, routineDayIds: string[] ) => Promise<boolean>;
 	routine: DraftRoutineDayExercise;
 	// Las variantes de la fila en este dia: eran del ejercicio anterior.
 	variantCount: number;
@@ -37,17 +48,21 @@ function pluralDays( count: number ) {
 	return `${ count } ${ count === 1 ? "día" : "días" }`;
 }
 
+function getSelectableDayIds( days: ReplaceExerciseDay[] ) {
+	return days.filter( ( day ) => !day.isFinalized ).map( ( day ) => day.id );
+}
+
 const NOOP_REGISTER_REF = () => {};
 
 // Para corregir un ejercicio cargado por error: se elige el que va en su lugar
-// y se decide si cambia solo en este dia o en todos los de la rutina donde esta.
-// Series, repeticiones, descanso, orden y nota quedan como estaban.
+// y se marcan los dias de la rutina donde cambiarlo. Arrancan marcados todos:
+// lo comun es que el error este repetido en cada semana. Series, repeticiones,
+// descanso, orden y nota quedan como estaban.
 export function ReplaceExerciseDrawer( {
 	addedExerciseIds,
-	finalizedDayCount,
+	days,
 	onOpenChangeAction,
 	onReplaceAction,
-	otherDayCount,
 	routine,
 	variantCount,
 }: ReplaceExerciseDrawerProps ) {
@@ -65,19 +80,38 @@ export function ReplaceExerciseDrawer( {
 		updateSearchValue,
 	} = useRoutineDayExerciseCatalog();
 	const [ chosenExercise, setChosenExercise ] = useState<ExerciseListItem | null>( null );
-	const [ pendingScope, setPendingScope ] = useState<ReplaceExerciseScope | null>( null );
+	const [ selectedDayIds, setSelectedDayIds ] = useState( () => new Set( getSelectableDayIds( days ) ) );
+	const [ isPending, setIsPending ] = useState( false );
 	const [ isCreateDrawerOpen, setIsCreateDrawerOpen ] = useState( false );
 	const currentName = getExerciseName( routine );
+	const selectableDayIds = getSelectableDayIds( days );
+	const currentDayId = days.find( ( day ) => day.isCurrent )?.id ?? null;
+	const finalizedDayCount = days.filter( ( day ) => day.isFinalized ).length;
+	const selectedCount = selectableDayIds.filter( ( id ) => selectedDayIds.has( id ) ).length;
+	const areAllSelected = selectedCount === selectableDayIds.length;
 
-	async function replace( scope: ReplaceExerciseScope ) {
-		if (!chosenExercise || pendingScope) return;
+	function toggleDay( dayId: string, isSelected: boolean ) {
+		setSelectedDayIds( ( current ) => {
+			const next = new Set( current );
 
-		setPendingScope( scope );
+			if (isSelected) next.add( dayId );
+			else next.delete( dayId );
+
+			return next;
+		} );
+	}
+
+	async function replace() {
+		if (!chosenExercise || isPending) return;
+
+		setIsPending( true );
 
 		try {
-			if (await onReplaceAction( chosenExercise, scope )) onOpenChangeAction( false );
+			const dayIds = selectableDayIds.filter( ( id ) => selectedDayIds.has( id ) );
+
+			if (await onReplaceAction( chosenExercise, dayIds )) onOpenChangeAction( false );
 		} finally {
-			setPendingScope( null );
+			setIsPending( false );
 		}
 	}
 
@@ -88,7 +122,7 @@ export function ReplaceExerciseDrawer( {
 				placement={ placement }
 				rightContentClassName={ "w-[38rem]" }
 				onOpenChangeAction={ ( isOpen ) => {
-					if (!pendingScope) onOpenChangeAction( isOpen );
+					if (!isPending) onOpenChangeAction( isOpen );
 				} }
 			>
 				<Drawer.Header className={ "border-default-100 relative border-b pb-4" }>
@@ -121,18 +155,51 @@ export function ReplaceExerciseDrawer( {
 							</div>
 						</div>
 
-						{ otherDayCount > 0 ? (
-							<p className={ "text-sm text-foreground" }>
-								{ currentName } también está en otros { pluralDays( otherDayCount ) } de esta rutina.
-								Podés cambiarlo en todos de una vez.
-							</p>
+						{ days.length > 1 ? (
+							<div className={ "space-y-3" }>
+								<div className={ "flex items-start justify-between gap-3" }>
+									<div className={ "min-w-0" }>
+										<p className={ "text-sm font-medium text-foreground" }>
+											{ `Está en ${ pluralDays( days.length ) } de esta rutina` }
+										</p>
+										<p className={ "text-sm text-muted" }>Marcá en cuáles cambiarlo.</p>
+									</div>
+									{ selectableDayIds.length > 1 ? (
+										<Button
+											className={ "shrink-0" }
+											isDisabled={ isPending }
+											size={ "sm" }
+											variant={ "ghost" }
+											onPress={ () => setSelectedDayIds( new Set( areAllSelected ? [ currentDayId ?? "" ] : selectableDayIds ) ) }
+										>
+											{ areAllSelected ? "Solo este día" : "Marcar todos" }
+										</Button>
+									) : null }
+								</div>
+
+								{ /* Este dia siempre cambia: desde aca se pidio el cambio. */ }
+								<RoutineDayChecklist
+									isDisabled={ isPending }
+									items={ days.map( ( day ) => ( {
+										dayNumber: day.dayNumber,
+										detail: day.isFinalized ? "Terminado: no se cambia" : day.prescription ?? "Sin series cargadas",
+										id: day.id,
+										isCurrent: day.isCurrent,
+										isUnavailable: day.isFinalized,
+										week: day.week,
+									} ) ) }
+									selectedIds={ selectedDayIds }
+									onToggleAction={ toggleDay }
+								/>
+
+								{ finalizedDayCount > 0 ? (
+									<p className={ "text-sm text-muted" }>
+										Los días que el estudiante ya terminó quedan como los hizo.
+									</p>
+								) : null }
+							</div>
 						) : null }
-						{ finalizedDayCount > 0 ? (
-							<p className={ "text-sm text-muted" }>
-								{ finalizedDayCount === 1 ? "Un día que el estudiante ya terminó no se cambia" : `${ pluralDays( finalizedDayCount ) } que el estudiante ya terminó no se cambian` }:
-								queda lo que hizo.
-							</p>
-						) : null }
+
 						{ variantCount > 0 ? (
 							<p className={ "text-sm text-muted" }>
 								{ variantCount === 1 ? "Su variante era" : `Sus ${ variantCount } variantes eran` } del ejercicio anterior y se { variantCount === 1 ? "quita" : "quitan" }.
@@ -177,29 +244,17 @@ export function ReplaceExerciseDrawer( {
 				) }
 
 				{ chosenExercise ? (
-					<Drawer.Footer className={ "border-default-100 flex flex-wrap items-center justify-end gap-2 border-t pt-4" }>
-						<Button isDisabled={ Boolean( pendingScope ) } variant={ "ghost" } onPress={ () => setChosenExercise( null ) }>
+					<Drawer.Footer className={ "border-default-100 flex items-center justify-end gap-2 border-t pt-4" }>
+						<Button isDisabled={ isPending } variant={ "ghost" } onPress={ () => setChosenExercise( null ) }>
 							Volver
 						</Button>
 						<Button
-							className={ otherDayCount > 0 ? undefined : "bg-accent text-accent-foreground" }
-							isPending={ pendingScope === "day" }
-							isDisabled={ pendingScope === "routine" }
-							variant={ otherDayCount > 0 ? "secondary" : "primary" }
-							onPress={ () => void replace( "day" ) }
+							className={ "bg-accent text-accent-foreground" }
+							isPending={ isPending }
+							onPress={ () => void replace() }
 						>
-							{ otherDayCount > 0 ? "Solo en este día" : "Cambiar" }
+							{ selectedCount <= 1 ? "Cambiar en este día" : `Cambiar en ${ pluralDays( selectedCount ) }` }
 						</Button>
-						{ otherDayCount > 0 ? (
-							<Button
-								className={ "bg-accent text-accent-foreground" }
-								isPending={ pendingScope === "routine" }
-								isDisabled={ pendingScope === "day" }
-								onPress={ () => void replace( "routine" ) }
-							>
-								{ `En los ${ pluralDays( otherDayCount + 1 ) }` }
-							</Button>
-						) : null }
 					</Drawer.Footer>
 				) : null }
 			</FeatureDrawerLayout>

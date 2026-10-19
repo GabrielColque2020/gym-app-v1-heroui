@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ExerciseVariantsDrawer } from "@/features/role/coach/exercises/components/shared/exercise-variants-drawer";
-import { ReplaceExerciseDrawer } from "@/features/role/coach/routine/components/shared/replace-exercise-drawer";
+import { ReplaceExerciseDrawer, type ReplaceExerciseDay } from "@/features/role/coach/routine/components/shared/replace-exercise-drawer";
 import { RoutineDayEditorActionsProvider } from "@/features/role/coach/routine/components/shared/routine-day-editor-actions-context";
 
 import { buildEditRoutineDayHref, buildEditTemplateDayHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
@@ -22,6 +22,10 @@ import { routineDayQueryOptions } from "@/features/routine/services/routine-day-
 import { useEditRoutineDayLoadedState } from "@/features/role/coach/routine/hooks/use-edit-routine-day-loaded-state";
 
 const NO_WEEKS: never[] = [];
+
+function formatPrescription( sets: string, reps: string ) {
+	return sets.trim() && reps.trim() ? `${ sets.trim() } × ${ reps.trim() }` : null;
+}
 
 type EditRoutineDayLoadedContentProps = {
 	data: RoutineDayDetailBase;
@@ -154,12 +158,33 @@ export function EditRoutineDayLoadedContent( {
 	const replaceRoutine = replaceOrder !== null
 		? draftRoutines.find( ( routine ) => routine.order === replaceOrder ) ?? null
 		: null;
-	// Los otros dias de la rutina con el mismo ejercicio, para ofrecer cambiarlo
-	// en todos. Los que el estudiante ya termino se cuentan aparte: no se cambian.
-	const otherDaysWithReplaceExercise = replaceRoutine
-		? ( monthWeeks ?? [] ).flatMap( ( week ) => week.routineDays ).filter( ( day ) => (
-			day.id !== routineDayId && day.routines.some( ( routine ) => routine.exerciseId === replaceRoutine.exerciseId )
-		) )
+	// Los dias de la rutina con el mismo ejercicio, para elegir en cuales
+	// cambiarlo. Este va siempre, con lo del borrador: puede no estar guardado.
+	const replaceDays: ReplaceExerciseDay[] = replaceRoutine
+		? [
+			{
+				dayNumber: data.dayNumber,
+				id: routineDayId,
+				isCurrent: true,
+				isFinalized: false,
+				prescription: formatPrescription( replaceRoutine.sets, replaceRoutine.reps ),
+				week: data.trainingRoutine.week,
+			},
+			...( monthWeeks ?? [] ).flatMap( ( week ) => week.routineDays.flatMap( ( day ) => {
+				const routine = day.routines.find( ( candidate ) => candidate.exerciseId === replaceRoutine.exerciseId );
+
+				if (day.id === routineDayId || !routine) return [];
+
+				return [ {
+					dayNumber: day.dayNumber,
+					id: day.id,
+					isCurrent: false,
+					isFinalized: day.isFinalized,
+					prescription: formatPrescription( routine.sets, routine.reps ),
+					week: week.week,
+				} ];
+			} ) ),
+		]
 		: [];
 
 	const daysWithExercises = ( monthWeeks ?? [] ).flatMap( ( week ) =>
@@ -168,6 +193,14 @@ export function EditRoutineDayLoadedContent( {
 			.map( ( day ) => ( { day, week: week.week } ) ),
 	);
 	const editorActions = {
+		currentDay: { dayNumber: data.dayNumber, id: routineDayId, week: data.trainingRoutine.week },
+		routineDays: ( monthWeeks ?? [] ).flatMap( ( week ) => week.routineDays.map( ( day ) => ( {
+			dayNumber: day.dayNumber,
+			exerciseIds: day.routines.flatMap( ( routine ) => routine.exerciseId ? [ routine.exerciseId ] : [] ),
+			id: day.id,
+			isFinalized: day.isFinalized,
+			week: week.week,
+		} ) ) ),
 		copyOptions: daysWithExercises.map( ( { day, week } ) => ( {
 			exerciseCount: day.routines.length,
 			id: day.id,
@@ -264,8 +297,7 @@ export function EditRoutineDayLoadedContent( {
 			{ replaceRoutine ? (
 				<ReplaceExerciseDrawer
 					addedExerciseIds={ addedExerciseIds }
-					finalizedDayCount={ otherDaysWithReplaceExercise.filter( ( day ) => day.isFinalized ).length }
-					otherDayCount={ otherDaysWithReplaceExercise.filter( ( day ) => !day.isFinalized ).length }
+					days={ replaceDays }
 					routine={ replaceRoutine }
 					variantCount={ replaceRoutine.id
 						? variantCountByRoutineId.get( replaceRoutine.id ) ?? 0
@@ -273,10 +305,12 @@ export function EditRoutineDayLoadedContent( {
 					onOpenChangeAction={ ( isOpen ) => {
 						if (!isOpen) setReplaceOrder( null );
 					} }
-					onReplaceAction={ async ( exercise, scope ) => (
-						scope === "day"
+					// Solo este dia: se cambia en el borrador y se guarda como cualquier
+					// otro cambio. Con mas dias, se cambia en el servidor.
+					onReplaceAction={ async ( exercise, dayIds ) => (
+						dayIds.length <= 1
 							? replaceExerciseInDay( replaceRoutine.clientId, exercise )
-							: replaceExerciseInRoutine( replaceRoutine.clientId, exercise )
+							: replaceExerciseInRoutine( replaceRoutine.clientId, exercise, dayIds )
 					) }
 				/>
 			) : null }

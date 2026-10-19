@@ -16,7 +16,8 @@ import { useSaveRoutineDayExercises } from "@/features/routine/hooks/use-routine
 import { getDraftCatalogExerciseIds, mapDraftToSaveInput } from "@/features/routine/services/routine-day-editor";
 import { coachRoutineTemplateDetailQueryKey } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
 import { replaceRoutineExerciseAction } from "@/features/routine/actions/replace-routine-exercise";
-import { replaceExerciseInRoutineDayDrafts } from "@/features/routine/stores/use-routine-day-draft-store";
+import { addRoutineExerciseToDaysAction } from "@/features/routine/actions/add-routine-exercise-to-days";
+import { appendExerciseToRoutineDayDrafts, replaceExerciseInRoutineDayDrafts } from "@/features/routine/stores/use-routine-day-draft-store";
 import { routineDayQueryKey } from "@/features/routine/services/routine-day-query";
 import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
 
@@ -28,6 +29,15 @@ const AUTOSAVE_DELAY_MS = 700;
 // falta algun dato para poder guardarlos. `unsaved`: hay cambios que quedaron de
 // una visita anterior y no se guardan solos; el coach decide guardarlos o descartarlos.
 export type RoutineDaySaveStatus = "blocked" | "error" | "offline" | "pending" | "saved" | "saving" | "unsaved";
+
+type AddExercisePrescription = {
+	// Otros dias de la rutina donde agregarlo tambien.
+	otherDayIds?: string[];
+	reps: string;
+	restSeconds?: number | null;
+	sets: string;
+	variantExerciseIds?: string[];
+};
 
 function isRequiredRoutineFieldComplete( value: string ) {
 	return value.trim().length > 0;
@@ -141,10 +151,73 @@ export function useEditRoutineDayLoadedState( {
 	// solos no vuelven a avisar lo mismo cada vez.
 	const notifiedFailureRef = useRef<string | null>( null );
 
+	// Despues de un cambio que toca otros dias de la rutina. Los otros dias se
+	// sacan de la cache y no solo se invalidan: con `refetchOnMount: false` y la
+	// copia guardada en el navegador, al abrirlos se mostraria lo de antes.
+	async function refreshAfterRoutineWideChange( { includeCurrentDay }: { includeCurrentDay: boolean } ) {
+		queryClient.removeQueries( {
+			predicate: ( query ) => query.queryKey[ 0 ] === "routine-day" && query.queryKey[ 1 ] !== routineDayId,
+		} );
+		await Promise.all( [
+			includeCurrentDay
+				? queryClient.invalidateQueries( { queryKey: routineDayQueryKey( routineDayId, studentId, templateId ) } )
+				: null,
+			queryClient.invalidateQueries( {
+				queryKey: routine.template
+					? coachRoutineTemplateDetailQueryKey( routine.template.id )
+					: coachTrainingRoutinesQueryKey( routine.student?.id ?? "", routine.month, routine.year ),
+			} ),
+		] );
+	}
+
+	// Agrega el ejercicio, ya cargado en este dia, al final de los otros dias
+	// marcados. Este dia se guarda por su lado, como siempre.
+	async function addExerciseToOtherDays( exercise: ExerciseListItem, prescription: AddExercisePrescription, otherDayIds: string[] ) {
+		try {
+			const result = await unwrapped( addRoutineExerciseToDaysAction )( {
+				exerciseId: exercise.id,
+				reps: prescription.reps,
+				restSeconds: prescription.restSeconds ?? null,
+				routineDayId,
+				routineDayIds: otherDayIds,
+				sets: prescription.sets,
+				studentId,
+				templateId,
+				variantExerciseIds: prescription.variantExerciseIds,
+			} );
+
+			appendExerciseToRoutineDayDrafts( result.addedDayIds, { ...exercise, id: result.resolvedExerciseId }, {
+				reps: prescription.reps,
+				restSeconds: prescription.restSeconds ?? null,
+				sets: prescription.sets,
+			} );
+			await refreshAfterRoutineWideChange( { includeCurrentDay: false } );
+
+			const addedCount = result.addedDayIds.length;
+			const { skippedDuplicateDays, skippedFinalizedDays } = result;
+
+			toast.success( `Agregaste ${ exercise.name } en ${ addedCount + 1 } días`, {
+				description: [
+					`Este y ${ addedCount } ${ addedCount === 1 ? "día más" : "días más" }, al final de cada uno.`,
+					skippedDuplicateDays > 0
+						? `Sin agregar: ${ skippedDuplicateDays } ${ skippedDuplicateDays === 1 ? "día que ya lo tenía" : "días que ya lo tenían" }.`
+						: null,
+					skippedFinalizedDays > 0
+						? `Sin agregar: ${ skippedFinalizedDays } ${ skippedFinalizedDays === 1 ? "día terminado" : "días terminados" } por el estudiante.`
+						: null,
+				].filter( Boolean ).join( " " ),
+			} );
+		} catch (error) {
+			toast.danger( "No se pudo agregar en los otros días", {
+				description: `${ getErrorMessage( error, "Hubo un error al guardarlo." ) } Quedó agregado solo en este día.`,
+			} );
+		}
+	}
+
 	function handleAddExercise(
 		exercise: ExerciseListItem,
 		order: number,
-		prescription?: { reps: string; restSeconds?: number | null; sets: string; variantExerciseIds?: string[] },
+		prescription?: AddExercisePrescription,
 	) {
 		markEdited();
 
@@ -165,6 +238,9 @@ export function useEditRoutineDayLoadedState( {
 		// Las variantes elegidas al agregar esperan en el borrador y se guardan con el dia.
 		if (prescription?.variantExerciseIds?.length) {
 			setExercisePendingVariants( result.routine.clientId, prescription.variantExerciseIds );
+		}
+		if (prescription?.otherDayIds?.length) {
+			void addExerciseToOtherDays( exercise, prescription, prescription.otherDayIds );
 		}
 	}
 
@@ -325,8 +401,8 @@ export function useEditRoutineDayLoadedState( {
 		return true;
 	}
 
-	// Cambia el ejercicio de una fila en todos los dias de la rutina donde esta.
-	async function replaceExerciseInRoutine( clientId: string, exercise: ExerciseListItem ) {
+	// Cambia el ejercicio de una fila en los dias de la rutina que el coach marco.
+	async function replaceExerciseInRoutine( clientId: string, exercise: ExerciseListItem, routineDayIds: string[] ) {
 		const current = draftRoutines.find( ( routine ) => routine.clientId === clientId );
 
 		if (!current) return false;
@@ -345,6 +421,7 @@ export function useEditRoutineDayLoadedState( {
 			const result = await unwrapped( replaceRoutineExerciseAction )( {
 				fromExerciseId: current.exerciseId,
 				routineDayId,
+				routineDayIds,
 				studentId,
 				templateId,
 				toExerciseId: exercise.id,
@@ -358,20 +435,7 @@ export function useEditRoutineDayLoadedState( {
 				current.exerciseId,
 				replacedExercise,
 			);
-			// Los otros dias se sacan de la cache y no solo se invalidan: con
-			// `refetchOnMount: false` y la copia guardada en el navegador, al abrirlos
-			// se mostraria lo de antes.
-			queryClient.removeQueries( {
-				predicate: ( query ) => query.queryKey[ 0 ] === "routine-day" && query.queryKey[ 1 ] !== routineDayId,
-			} );
-			await Promise.all( [
-				queryClient.invalidateQueries( { queryKey: routineDayQueryKey( routineDayId, studentId, templateId ) } ),
-				queryClient.invalidateQueries( {
-					queryKey: routine.template
-						? coachRoutineTemplateDetailQueryKey( routine.template.id )
-						: coachTrainingRoutinesQueryKey( routine.student?.id ?? "", routine.month, routine.year ),
-				} ),
-			] );
+			await refreshAfterRoutineWideChange( { includeCurrentDay: true } );
 
 			const changedCount = Math.max( result.replacedDayIds.length, 1 );
 			const { skippedDuplicateDays, skippedFinalizedDays } = result;

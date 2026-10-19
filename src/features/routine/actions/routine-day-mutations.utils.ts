@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { buildRoutineDayDetailWhere, normalizeRoutineDayDetailInput } from "@/features/routine/services/routine-day-detail.query";
 
 import { emptyToNull } from "@/features/exercises/services/exercise-form";
 import { buildCoachExerciseSearchName, mapCategoryToBodyPart } from "@/features/role/coach/exercises/services/coach-exercise-form";
@@ -341,4 +342,29 @@ export function normalizeRoutineDayMutationInput( input: SaveRoutineDayExercises
 		studentId: input.studentId?.trim(),
 		templateId: input.templateId?.trim(),
 	};
+}
+
+// La rutina (mes de un estudiante o plantilla) a la que pertenece un dia del
+// coach, como filtro de semanas. Para los cambios que tocan varios dias a la vez:
+// solo valen los de esa misma rutina.
+export async function getRoutineWeekScope( input: {
+	coachId: string;
+	routineDayId: string;
+	studentId?: string | null;
+	templateId?: string | null;
+} ) {
+	const routineDay = await prisma.routineDay.findFirst( {
+		select: { trainingRoutineWeek: { select: { routineTemplateId: true, trainingRoutineMonthId: true } } },
+		where: buildRoutineDayDetailWhere( normalizeRoutineDayDetailInput( input ) ),
+	} );
+
+	if (!routineDay) {
+		throw new Error( "No se encontró el día de rutina seleccionado." );
+	}
+
+	const { routineTemplateId, trainingRoutineMonthId } = routineDay.trainingRoutineWeek;
+
+	return routineTemplateId
+		? { routineTemplateId }
+		: { trainingRoutineMonthId: trainingRoutineMonthId ?? "" };
 }

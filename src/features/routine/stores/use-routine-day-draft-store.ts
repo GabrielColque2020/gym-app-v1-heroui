@@ -7,6 +7,7 @@ import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-
 import type { RoutineDayExercise } from "@/features/routine/services/routine-day-detail";
 import type { DayExercise } from "@/features/routine/services/routine-day-editor";
 import {
+	createDraftRoutineExercise,
 	getNextRoutineExerciseOrder,
 	mapRoutineExercisesToDraft,
 	sortDraftRoutineExercises,
@@ -201,6 +202,31 @@ export function replaceExerciseInRoutineDayDrafts( routineDayIds: string[], from
 					? { ...routine, exercise, exerciseId: exercise.id, pendingVariantExerciseIds: undefined }
 					: routine
 			) );
+		}
+
+		return { drafts: nextDrafts };
+	} );
+}
+
+// Suma un ejercicio al final de los borradores de esos dias, cuando se agrego
+// en ellos desde otro dia: si no, al guardar un borrador viejo se borraria.
+export function appendExerciseToRoutineDayDrafts(
+	routineDayIds: string[],
+	exercise: ExerciseListItem,
+	prescription: Pick<DayExercise, "reps" | "restSeconds" | "sets">,
+) {
+	useRoutineDayDraftStore.setState( ( state ) => {
+		const nextDrafts = { ...state.drafts };
+
+		for (const routineDayId of routineDayIds) {
+			const draft = nextDrafts[ routineDayId ];
+
+			if (!draft || draft.some( ( routine ) => routine.exerciseId === exercise.id )) continue;
+
+			nextDrafts[ routineDayId ] = [
+				...draft,
+				{ ...createDraftRoutineExercise( exercise, getNextRoutineExerciseOrder( draft ) ), ...prescription },
+			];
 		}
 
 		return { drafts: nextDrafts };
