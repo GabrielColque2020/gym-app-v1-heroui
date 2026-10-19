@@ -9,6 +9,7 @@ import { formatBodyPartValue, getExerciseName } from "@/features/role/coach/rout
 import { RoutineDayExerciseField } from "@/features/role/coach/routine/components/shared/routine-day-exercise-field";
 import { RoutineDayExerciseMoveButtons } from "@/features/role/coach/routine/components/shared/routine-day-exercise-move-buttons";
 import { RoutineExerciseActions } from "@/features/role/coach/routine/components/shared/routine-exercise-actions";
+import { RoutineExerciseReplaceButton } from "@/features/role/coach/routine/components/shared/routine-exercise-replace-button";
 import { RoutineExerciseVariantsButton } from "@/features/role/coach/routine/components/shared/routine-exercise-variants-button";
 import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
@@ -75,6 +76,7 @@ function RoutineDayExerciseRow( {
 									routineId={ routine.id }
 								/>
 							) : null }
+							<RoutineExerciseReplaceButton clientId={ routine.clientId } exerciseName={ exerciseName }/>
 						</div>
 					</div>
 				</div>

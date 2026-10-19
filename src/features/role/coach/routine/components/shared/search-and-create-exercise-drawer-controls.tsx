@@ -5,9 +5,10 @@ import { ALL_BODY_PARTS, BODY_PART_OPTIONS, type BodyPartFilter } from "@/featur
 type SearchAndCreateExerciseDrawerControlsProps = {
 	bodyPartFilter: BodyPartFilter;
 	onBodyPartFilterChangeAction: ( value: BodyPartFilter ) => void;
-	onOrderChange: ( value: string ) => void;
+	// Sin orden (al cambiar un ejercicio, que queda en su lugar) no se muestra.
+	onOrderChange?: ( value: string ) => void;
 	onSearchValueChangeAction: ( value: string ) => void;
-	orderValue: string;
+	orderValue?: string;
 	searchValue: string;
 };
 
@@ -64,15 +65,17 @@ export function SearchAndCreateExerciseDrawerControls( {
 				</Select.Popover>
 			</Select>
 
-			<TextField className={ "w-24 shrink-0" } name={ "exercise-order" } value={ orderValue } onChange={ onOrderChange }>
-				<Label>Orden</Label>
-				<Input
-					aria-label={ "Orden del ejercicio en la rutina" }
-					inputMode={ "numeric" }
-					placeholder={ "1" }
-					className={ "border border-border" }
-				/>
-			</TextField>
+			{ onOrderChange ? (
+				<TextField className={ "w-24 shrink-0" } name={ "exercise-order" } value={ orderValue } onChange={ onOrderChange }>
+					<Label>Orden</Label>
+					<Input
+						aria-label={ "Orden del ejercicio en la rutina" }
+						inputMode={ "numeric" }
+						placeholder={ "1" }
+						className={ "border border-border" }
+					/>
+				</TextField>
+			) : null }
 			</div>
 		</>
 	);

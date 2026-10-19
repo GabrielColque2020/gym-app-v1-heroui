@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ExerciseVariantsDrawer } from "@/features/role/coach/exercises/components/shared/exercise-variants-drawer";
+import { ReplaceExerciseDrawer } from "@/features/role/coach/routine/components/shared/replace-exercise-drawer";
 import { RoutineDayEditorActionsProvider } from "@/features/role/coach/routine/components/shared/routine-day-editor-actions-context";
 
 import { buildEditRoutineDayHref, buildEditTemplateDayHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
@@ -62,6 +63,8 @@ export function EditRoutineDayLoadedContent( {
 		saveStatus,
 		setExercisePendingVariants,
 		moveExercise,
+		replaceExerciseInDay,
+		replaceExerciseInRoutine,
 		replaceWithCopies,
 		requiredFieldsMessage,
 		resetRefreshConfirmOpen,
@@ -146,6 +149,19 @@ export function EditRoutineDayLoadedContent( {
 		setPendingVariantsOrder( routine.order );
 	}
 
+	// La fila que se esta cambiando por otro ejercicio. Por orden, como las variantes.
+	const [ replaceOrder, setReplaceOrder ] = useState<number | null>( null );
+	const replaceRoutine = replaceOrder !== null
+		? draftRoutines.find( ( routine ) => routine.order === replaceOrder ) ?? null
+		: null;
+	// Los otros dias de la rutina con el mismo ejercicio, para ofrecer cambiarlo
+	// en todos. Los que el estudiante ya termino se cuentan aparte: no se cambian.
+	const otherDaysWithReplaceExercise = replaceRoutine
+		? ( monthWeeks ?? [] ).flatMap( ( week ) => week.routineDays ).filter( ( day ) => (
+			day.id !== routineDayId && day.routines.some( ( routine ) => routine.exerciseId === replaceRoutine.exerciseId )
+		) )
+		: [];
+
 	const daysWithExercises = ( monthWeeks ?? [] ).flatMap( ( week ) =>
 		week.routineDays
 			.filter( ( day ) => day.id !== routineDayId && day.routines.length > 0 )
@@ -180,6 +196,11 @@ export function EditRoutineDayLoadedContent( {
 			}
 		},
 		onMoveExercise: moveExercise,
+		onRequestReplace: ( clientId: string ) => {
+			const routine = draftRoutines.find( ( candidate ) => candidate.clientId === clientId );
+
+			if (routine) setReplaceOrder( routine.order );
+		},
 		onRequestVariants: ( clientId: string ) => void requestVariants( clientId ),
 		variantCountByRoutineId,
 	};
@@ -237,6 +258,26 @@ export function EditRoutineDayLoadedContent( {
 					onOpenChangeAction={ ( isOpen ) => {
 						if (!isOpen) setPendingVariantsOrder( null );
 					} }
+				/>
+			) : null }
+
+			{ replaceRoutine ? (
+				<ReplaceExerciseDrawer
+					addedExerciseIds={ addedExerciseIds }
+					finalizedDayCount={ otherDaysWithReplaceExercise.filter( ( day ) => day.isFinalized ).length }
+					otherDayCount={ otherDaysWithReplaceExercise.filter( ( day ) => !day.isFinalized ).length }
+					routine={ replaceRoutine }
+					variantCount={ replaceRoutine.id
+						? variantCountByRoutineId.get( replaceRoutine.id ) ?? 0
+						: replaceRoutine.pendingVariantExerciseIds?.length ?? 0 }
+					onOpenChangeAction={ ( isOpen ) => {
+						if (!isOpen) setReplaceOrder( null );
+					} }
+					onReplaceAction={ async ( exercise, scope ) => (
+						scope === "day"
+							? replaceExerciseInDay( replaceRoutine.clientId, exercise )
+							: replaceExerciseInRoutine( replaceRoutine.clientId, exercise )
+					) }
 				/>
 			) : null }
 

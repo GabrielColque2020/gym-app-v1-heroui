@@ -183,3 +183,26 @@ export function createEmptyRoutineDayDraft( routineDayId: string ) {
 export function getNextRoutineDayExerciseOrder( routineDayId: string ) {
 	return getNextRoutineExerciseOrder( useRoutineDayDraftStore.getState().drafts[ routineDayId ] ?? [] );
 }
+
+// Cambia un ejercicio por otro en los borradores de esos dias, cuando se cambio
+// en toda la rutina: si no, un borrador viejo volveria a guardar el anterior.
+// La fila conserva su id porque en el servidor tambien lo conservo.
+export function replaceExerciseInRoutineDayDrafts( routineDayIds: string[], fromExerciseId: string, exercise: ExerciseListItem ) {
+	useRoutineDayDraftStore.setState( ( state ) => {
+		const nextDrafts = { ...state.drafts };
+
+		for (const routineDayId of routineDayIds) {
+			const draft = nextDrafts[ routineDayId ];
+
+			if (!draft) continue;
+
+			nextDrafts[ routineDayId ] = draft.map( ( routine ) => (
+				routine.exerciseId === fromExerciseId
+					? { ...routine, exercise, exerciseId: exercise.id, pendingVariantExerciseIds: undefined }
+					: routine
+			) );
+		}
+
+		return { drafts: nextDrafts };
+	} );
+}

@@ -12,7 +12,7 @@ import {
 	getSuggestedRoutineExerciseOrder,
 } from "@/features/routine/hooks/use-routine-day-draft.utils";
 import { getRoutineDayDraft, useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
-import { createDraftRoutineExercise } from "@/features/routine/services/routine-day-editor";
+import { createDraftRoutineExercise, getDraftCatalogExerciseIds } from "@/features/routine/services/routine-day-editor";
 import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
 
 type UseRoutineDayDraftOptions = {
@@ -191,6 +191,34 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 		} ) );
 	}
 
+	// Cambia el ejercicio de una fila por otro y deja series, repeticiones,
+	// descanso, orden y nota. Es una fila nueva (sin id ni variantes): al
+	// guardar se crea la del ejercicio nuevo y se borra la del anterior.
+	function replaceExercise( clientId: string, exercise: ExerciseListItem ): DraftMutationResult {
+		hydrateDraftIfNeeded();
+
+		const currentDraft = getRoutineDayDraft( routineDayId ) ?? [];
+		const current = currentDraft.find( ( routine ) => routine.clientId === clientId );
+
+		if (!current) return { error: "No se encontró el ejercicio a cambiar." };
+
+		if (currentDraft.some( ( routine ) => routine.clientId !== clientId && getDraftCatalogExerciseIds( routine ).includes( exercise.id ) )) {
+			return { error: `${ exercise.name } ya está en este día.` };
+		}
+
+		const routine: DraftRoutineDayExercise = {
+			...createDraftRoutineExercise( exercise, current.order ),
+			observation: current.observation,
+			reps: current.reps,
+			restSeconds: current.restSeconds,
+			sets: current.sets,
+		};
+
+		setDraft( routineDayId, currentDraft.map( ( candidate ) => candidate.clientId === clientId ? routine : candidate ) );
+
+		return { routine };
+	}
+
 	function getSuggestedOrder() {
 		return getSuggestedRoutineExerciseOrder( sortedDraftRoutines );
 	}
@@ -209,6 +237,7 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 		hasHydrated,
 		isDirty,
 		moveExercise,
+		replaceExercise,
 		replaceWithCopies,
 		resetDraft,
 		restoreExercise,

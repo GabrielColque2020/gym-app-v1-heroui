@@ -1,8 +1,9 @@
 "use client";
 
-import { getErrorMessage, isNetworkError } from "@/lib/action-result";
+import { getErrorMessage, isNetworkError, unwrapped } from "@/lib/action-result";
 import { useAutosaveRetry } from "@/lib/use-autosave-retry";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import type { ExerciseListItem } from "@/features/exercises/types/exercise-list-item";
 import type { RoutineDayDetailBase } from "@/features/routine/actions/get-routine-day";
@@ -12,7 +13,12 @@ import { toast } from "@heroui/react";
 import { syncCoachTrainingRoutinesAfterSave } from "@/features/role/coach/routine/hooks/use-save-routine-day-exercises.utils";
 import { useRoutineDayDraft } from "@/features/routine/hooks/use-routine-day-draft";
 import { useSaveRoutineDayExercises } from "@/features/routine/hooks/use-routine-day-mutations";
-import { mapDraftToSaveInput } from "@/features/routine/services/routine-day-editor";
+import { getDraftCatalogExerciseIds, mapDraftToSaveInput } from "@/features/routine/services/routine-day-editor";
+import { coachRoutineTemplateDetailQueryKey } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
+import { replaceRoutineExerciseAction } from "@/features/routine/actions/replace-routine-exercise";
+import { replaceExerciseInRoutineDayDrafts } from "@/features/routine/stores/use-routine-day-draft-store";
+import { routineDayQueryKey } from "@/features/routine/services/routine-day-query";
+import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
 
 // Espera despues del ultimo cambio antes de guardar solo: lo justo para no
 // guardar a mitad de una palabra o de un numero de dos cifras.
@@ -44,6 +50,7 @@ export function useEditRoutineDayLoadedState( {
 	studentId,
 	templateId,
 }: UseEditRoutineDayLoadedStateParams ) {
+	const queryClient = useQueryClient();
 	const [ isRefreshConfirmOpen, setIsRefreshConfirmOpen ] = useState( false );
 	const saveRoutineDay = useSaveRoutineDayExercises( {
 		onSuccessAction: syncCoachTrainingRoutinesAfterSave,
@@ -302,6 +309,95 @@ export function useEditRoutineDayLoadedState( {
 					? "blocked"
 					: hasSessionEdits ? "pending" : "unsaved";
 
+	// Cambia el ejercicio de una fila solo en este dia. Se guarda como cualquier
+	// otro cambio del borrador.
+	function replaceExerciseInDay( clientId: string, exercise: ExerciseListItem ) {
+		markEdited();
+
+		const result = draft.replaceExercise( clientId, exercise );
+
+		if (result.error !== undefined) {
+			toast.danger( "No se pudo cambiar el ejercicio", { description: result.error } );
+
+			return false;
+		}
+
+		return true;
+	}
+
+	// Cambia el ejercicio de una fila en todos los dias de la rutina donde esta.
+	async function replaceExerciseInRoutine( clientId: string, exercise: ExerciseListItem ) {
+		const current = draftRoutines.find( ( routine ) => routine.clientId === clientId );
+
+		if (!current) return false;
+
+		if (draftRoutines.some( ( routine ) => routine.clientId !== clientId && getDraftCatalogExerciseIds( routine ).includes( exercise.id ) )) {
+			toast.danger( "No se pudo cambiar el ejercicio", { description: `${ exercise.name } ya está en este día.` } );
+
+			return false;
+		}
+
+		// Lo editado ahora en este dia se guarda antes, para que el cambio en el
+		// servidor parta de lo ultimo.
+		if (saveStatus === "pending") await handleSave();
+
+		try {
+			const result = await unwrapped( replaceRoutineExerciseAction )( {
+				fromExerciseId: current.exerciseId,
+				routineDayId,
+				studentId,
+				templateId,
+				toExerciseId: exercise.id,
+			} );
+			const replacedExercise = { ...exercise, id: result.resolvedExerciseId };
+
+			// Los borradores de esos dias (y el de este, aunque la fila todavia no
+			// estuviera guardada) pasan al ejercicio nuevo.
+			replaceExerciseInRoutineDayDrafts(
+				[ ...new Set( [ ...result.replacedDayIds, routineDayId ] ) ],
+				current.exerciseId,
+				replacedExercise,
+			);
+			// Los otros dias se sacan de la cache y no solo se invalidan: con
+			// `refetchOnMount: false` y la copia guardada en el navegador, al abrirlos
+			// se mostraria lo de antes.
+			queryClient.removeQueries( {
+				predicate: ( query ) => query.queryKey[ 0 ] === "routine-day" && query.queryKey[ 1 ] !== routineDayId,
+			} );
+			await Promise.all( [
+				queryClient.invalidateQueries( { queryKey: routineDayQueryKey( routineDayId, studentId, templateId ) } ),
+				queryClient.invalidateQueries( {
+					queryKey: routine.template
+						? coachRoutineTemplateDetailQueryKey( routine.template.id )
+						: coachTrainingRoutinesQueryKey( routine.student?.id ?? "", routine.month, routine.year ),
+				} ),
+			] );
+
+			const changedCount = Math.max( result.replacedDayIds.length, 1 );
+			const { skippedDuplicateDays, skippedFinalizedDays } = result;
+
+			toast.success( `Cambiaste ${ current.exercise?.name ?? "el ejercicio" } por ${ exercise.name }`, {
+				description: [
+					`En ${ changedCount } ${ changedCount === 1 ? "día" : "días" } de la rutina.`,
+					skippedDuplicateDays > 0
+						? `Sin cambiar: ${ skippedDuplicateDays } ${ skippedDuplicateDays === 1 ? "día que ya tenía" : "días que ya tenían" } ${ exercise.name }.`
+						: null,
+					skippedFinalizedDays > 0
+						? `Sin cambiar: ${ skippedFinalizedDays } ${ skippedFinalizedDays === 1 ? "día terminado" : "días terminados" } por el estudiante.`
+						: null,
+				].filter( Boolean ).join( " " ),
+			} );
+
+			return true;
+		} catch (error) {
+			toast.danger( "No se pudo cambiar el ejercicio", {
+				description: getErrorMessage( error, "No se pudo cambiar el ejercicio en la rutina." ),
+			} );
+
+			return false;
+		}
+	}
+
 	return {
 		addedExerciseIds,
 		draftRoutines,
@@ -318,6 +414,8 @@ export function useEditRoutineDayLoadedState( {
 		saveStatus,
 		setExercisePendingVariants,
 		moveExercise,
+		replaceExerciseInDay,
+		replaceExerciseInRoutine,
 		replaceWithCopies,
 		resetRefreshConfirmOpen: () => setIsRefreshConfirmOpen( false ),
 		requiredFieldsMessage,

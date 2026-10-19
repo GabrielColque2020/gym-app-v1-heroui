@@ -102,6 +102,10 @@ medida que se hace.
 - [x] Para el coach: "6 de 12 días hechos · 2 salteados" en el inicio (y esos
   estudiantes suben en la lista), y en la rutina del estudiante el resumen y los días
   marcados "Salteado" / "Sin terminar" (`summarizeRoutineMonth`).
+- [x] "Cambiar" en cada ejercicio del día: se elige otro y se cambia solo en ese día o
+  en todos los de la rutina (o plantilla) donde está, con las mismas series,
+  repeticiones, descanso y nota. Los días terminados por el estudiante no se tocan y
+  las variantes del anterior se quitan (`replaceRoutineExerciseAction`).
 
 ## Seguridad
 
