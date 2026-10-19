@@ -9,7 +9,8 @@ import { RoutineDayChecklist, type RoutineDayChecklistItem } from "@/features/ro
 type SearchAndCreateExerciseDrawerOtherDaysProps = {
 	// El mismo dia en las otras semanas: lo que viene marcado.
 	defaultIds: string[];
-	// Sin series y repeticiones no se agrega en otros dias: quedarian sin completar.
+	// Sin series y repeticiones no se agrega en otros dias (quedarian sin
+	// completar), pero los dias se pueden marcar igual.
 	hasPrescription: boolean;
 	items: RoutineDayChecklistItem[];
 	onChangeAction: ( ids: Set<string> ) => void;
@@ -25,7 +26,7 @@ function joinWithY( values: string[] ) {
 function summarize( items: RoutineDayChecklistItem[], selectedIds: ReadonlySet<string> ) {
 	const selected = items.filter( ( item ) => selectedIds.has( item.id ) );
 
-	if (selected.length === 0) return "Solo este día";
+	if (selected.length === 0) return "Solo en este día";
 
 	const dayNumbers = new Set( selected.map( ( item ) => item.dayNumber ) );
 
@@ -38,7 +39,7 @@ function summarize( items: RoutineDayChecklistItem[], selectedIds: ReadonlySet<s
 	return `${ selected.length } días más`;
 }
 
-// "También en las otras semanas", en la pantalla del ejercicio que se agrega.
+// "Agregar también en otros días", en la pantalla del ejercicio que se agrega.
 // Plegado muestra lo marcado en una linea: si no se toca, se agrega tambien en
 // el mismo dia de las otras semanas sin ningun paso extra.
 export function SearchAndCreateExerciseDrawerOtherDays( {
@@ -70,31 +71,36 @@ export function SearchAndCreateExerciseDrawerOtherDays( {
 			>
 				<CalendarRange aria-hidden className={ "size-4 shrink-0 text-muted" }/>
 				<span className={ "min-w-0 flex-1" }>
-					<span className={ "block text-sm font-medium text-foreground" }>También en las otras semanas</span>
-					<span className={ hasPrescription && hasSelection ? "block text-xs font-medium text-accent" : "block text-xs text-muted" }>
-						{ hasPrescription
-							? summarize( items, selectedIds )
-							: "Cargá series y repeticiones para agregarlo también en otros días." }
+					<span className={ "block text-sm font-medium text-foreground" }>Agregar también en otros días</span>
+					<span className={ hasSelection ? "block text-xs font-medium text-accent" : "block text-xs text-muted" }>
+						{ summarize( items, selectedIds ) }
 					</span>
+					{ /* Solo desplegada: plegada, apenas se elige el ejercicio, parecia un
+					     campo obligatorio de esta seccion. Que falten series ya lo marca
+					     su campo al tocar "Agregar". */ }
+					{ isOpen && hasSelection && !hasPrescription ? (
+						<span className={ "block text-xs font-medium text-warning" }>
+							Cargá series y repeticiones para agregarlo en esos días.
+						</span>
+					) : null }
 				</span>
-				<span className={ "shrink-0 text-xs text-muted" }>Elegir</span>
+				<span className={ "shrink-0 text-xs text-muted" }>Elegir días</span>
 				<ChevronDown aria-hidden className={ `size-4 shrink-0 text-muted transition-transform ${ isOpen ? "rotate-180" : "" }` }/>
 			</button>
 
 			{ isOpen ? (
 				<div className={ "space-y-3 border-t border-border p-3" }>
 					<div className={ "flex flex-wrap gap-2" }>
-						<Button isDisabled={ !hasPrescription } size={ "sm" } variant={ "secondary" } onPress={ () => onChangeAction( new Set() ) }>
+						<Button size={ "sm" } variant={ "secondary" } onPress={ () => onChangeAction( new Set() ) }>
 							Solo este día
 						</Button>
 						{ defaultIds.length > 0 ? (
-							<Button isDisabled={ !hasPrescription } size={ "sm" } variant={ "secondary" } onPress={ () => onChangeAction( new Set( defaultIds ) ) }>
-								Mismo día en todas
+							<Button size={ "sm" } variant={ "secondary" } onPress={ () => onChangeAction( new Set( defaultIds ) ) }>
+								Mismo día en todas las semanas
 							</Button>
 						) : null }
 					</div>
 					<RoutineDayChecklist
-						isDisabled={ !hasPrescription }
 						items={ items }
 						selectedIds={ selectedIds }
 						onToggleAction={ toggle }

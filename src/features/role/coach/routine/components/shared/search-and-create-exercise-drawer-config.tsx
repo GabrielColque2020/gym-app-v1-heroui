@@ -13,6 +13,8 @@ import { SearchAndCreateExerciseDrawerPrescription } from "@/features/role/coach
 
 type SearchAndCreateExerciseDrawerConfigProps = {
 	exercise: ExerciseListItem;
+	// Se intento agregar sin series o repeticiones.
+	isMissingShown: boolean;
 	// "También en las otras semanas", si la rutina tiene otros dias.
 	otherDaysSlot?: ReactNode;
 	onBackAction: () => void;
@@ -31,6 +33,7 @@ type SearchAndCreateExerciseDrawerConfigProps = {
 // antes de saber para que ejercicio eran, y las variantes no tenian lugar.
 export function SearchAndCreateExerciseDrawerConfig( {
 	exercise,
+	isMissingShown,
 	otherDaysSlot,
 	onBackAction,
 	onRepsChange,
@@ -70,6 +73,7 @@ export function SearchAndCreateExerciseDrawerConfig( {
 			</div>
 
 			<SearchAndCreateExerciseDrawerPrescription
+				isMissingShown={ isMissingShown }
 				repsValue={ repsValue }
 				restValue={ restValue }
 				setsValue={ setsValue }

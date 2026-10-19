@@ -3,6 +3,8 @@ import { Button, Input, TextField } from "@heroui/react";
 import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
 
 type SearchAndCreateExerciseDrawerPrescriptionProps = {
+	// Se intento agregar con algo vacio: se marca lo que falta.
+	isMissingShown: boolean;
 	onRepsChange: ( value: string ) => void;
 	onRestChange: ( value: number | null ) => void;
 	onSetsChange: ( value: string ) => void;
@@ -19,9 +21,11 @@ const PRESETS = [
 ] as const;
 
 // Series, repeticiones y descanso del ejercicio que se esta agregando. Los
-// atajos cargan las combinaciones mas comunes de un toque. Se pueden dejar
-// vacias y completar despues en la lista del dia.
+// atajos cargan las combinaciones mas comunes de un toque. Series y repeticiones
+// son obligatorias: un ejercicio sin ellas no le sirve al estudiante, y agregado
+// en otros dias les llegaria vacio.
 export function SearchAndCreateExerciseDrawerPrescription( {
+															   isMissingShown,
 															   onRepsChange,
 															   onRestChange,
 															   onSetsChange,
@@ -29,19 +33,24 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 															   restValue,
 															   setsValue,
 														   }: SearchAndCreateExerciseDrawerPrescriptionProps ) {
+	const isSetsMissing = isMissingShown && !setsValue.trim();
+	const isRepsMissing = isMissingShown && !repsValue.trim();
+	const missingClassName = "border-danger";
+
 	return (
 		<div className={ "space-y-2 rounded-xl border border-border bg-surface-secondary p-3" }>
 			<p className={ "text-sm font-medium text-foreground" }>
 				Series y repeticiones
-				<span className={ "font-normal text-muted" }> · podés completarlas después</span>
+				<span className={ "font-normal text-muted" }> · obligatorias</span>
 			</p>
 			{ /* En el telefono va todo en un solo renglon que se desliza: envolviendo
 			     en dos renglones le sacaba lugar a la lista de ejercicios. */ }
 			<div className={ "flex items-center gap-2 overflow-x-auto [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden" }>
 				<TextField className={ "w-16 shrink-0 sm:w-20" } name={ "exercise-sets" } value={ setsValue } onChange={ ( value ) => onSetsChange( value.replace( /\D/g, "" ).slice( 0, 2 ) ) }>
 					<Input
+						aria-invalid={ isSetsMissing || undefined }
 						aria-label={ "Series" }
-						className={ "border border-border" }
+						className={ `border ${ isSetsMissing ? missingClassName : "border-border" }` }
 						inputMode={ "numeric" }
 						placeholder={ "Series" }
 					/>
@@ -49,8 +58,9 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 				<span aria-hidden className={ "shrink-0 text-sm text-muted" }>×</span>
 				<TextField className={ "w-20 shrink-0 sm:w-24" } name={ "exercise-reps" } value={ repsValue } onChange={ onRepsChange }>
 					<Input
+						aria-invalid={ isRepsMissing || undefined }
 						aria-label={ "Repeticiones" }
-						className={ "border border-border" }
+						className={ `border ${ isRepsMissing ? missingClassName : "border-border" }` }
 						placeholder={ "Reps" }
 					/>
 				</TextField>
@@ -80,6 +90,11 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 					);
 				} ) }
 			</div>
+			{ isSetsMissing || isRepsMissing ? (
+				<p className={ "text-xs font-medium text-danger" } role={ "alert" }>
+					Cargá series y repeticiones para agregar el ejercicio.
+				</p>
+			) : null }
 		</div>
 	);
 }

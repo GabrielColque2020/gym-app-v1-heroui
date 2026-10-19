@@ -2,7 +2,7 @@
 
 import type {ExerciseListItem} from "@/features/exercises/types/exercise-list-item";
 
-import {Button, Description, Drawer} from "@heroui/react";
+import {Button, Description, Drawer, toast} from "@heroui/react";
 
 import {ListPagination} from "@/components/common";
 import {ExerciseDrawer} from "@/features/role/coach/exercises/components/shared/exercise-drawer";
@@ -125,15 +125,29 @@ export function SearchAndCreateExerciseDrawer({
         ? otherDaysChoice.ids
         : new Set(startsWithThisDayOnly ? [] : defaultOtherDayIds);
     const hasPrescription = setsValue.trim().length > 0 && repsValue.trim().length > 0;
-    const otherDayIds = hasPrescription
-        ? otherDayItems.filter((item) => !item.isUnavailable && selectedOtherDayIds.has(item.id)).map((item) => item.id)
-        : [];
+    const otherDayIds = otherDayItems
+        .filter((item) => !item.isUnavailable && selectedOtherDayIds.has(item.id))
+        .map((item) => item.id);
 
     useEffect(() => {
         otherDayIdsRef.current = otherDayIds;
     });
 
+    // El ejercicio para el que se intento agregar sin series o repeticiones: se
+    // marca lo que falta. Por ejercicio, para que el siguiente arranque limpio.
+    const [missingShownFor, setMissingShownFor] = useState<string | null>(null);
+
     function confirmAdd() {
+        // Series y repeticiones son obligatorias: sin ellas el ejercicio no le
+        // sirve al estudiante, y en los otros dias llegaria vacio.
+        if (!hasPrescription) {
+            setMissingShownFor(configExercise?.id ?? null);
+            toast.danger("Faltan series y repeticiones", {
+                description: "Cargalas para agregar el ejercicio.",
+            });
+            return;
+        }
+
         if (defaultOtherDayIds.length > 0) setStartsWithThisDayOnly(otherDayIds.length === 0);
         handleConfirmAdd();
     }
@@ -170,6 +184,7 @@ export function SearchAndCreateExerciseDrawer({
                     <Drawer.Body key={ "config" } className={ "min-h-0 flex-1 overflow-y-auto py-3" }>
                         <SearchAndCreateExerciseDrawerConfig
                             exercise={ configExercise }
+                            isMissingShown={ missingShownFor === configExercise.id }
                             otherDaysSlot={ otherDayItems.length > 0 ? (
                                 <SearchAndCreateExerciseDrawerOtherDays
                                     defaultIds={ defaultOtherDayIds }

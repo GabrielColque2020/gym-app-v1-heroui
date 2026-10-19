@@ -107,7 +107,7 @@ medida que se hace.
   repeticiones, descanso y nota. Los días terminados por el estudiante no se tocan y
   las variantes del anterior se quitan (`replaceRoutineExerciseAction`).
 - [x] "Agregar ejercicio" en una rutina con varias semanas: en la pantalla del ejercicio,
-  "También en las otras semanas" viene marcado en el mismo día de las otras semanas y
+  "Agregar también en otros días" viene marcado en el mismo día de las otras semanas y
   se puede elegir otros días. Va al final de cada día, con las mismas series,
   repeticiones, descanso y variantes; si el último se agregó solo en este día, el
   siguiente arranca igual (`addRoutineExerciseToDaysAction`).
