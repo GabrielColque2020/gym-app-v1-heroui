@@ -21,13 +21,16 @@ import { EditRoutineDayLoadedHeader } from "@/features/role/coach/routine/compon
 import { EditRoutineDayNavigation } from "@/features/role/coach/routine/components/shared/edit-routine-day-navigation";
 import { EditRoutineDayMainCard } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card";
 import { EditRoutineDayRefreshModal } from "@/features/role/coach/routine/components/shared/edit-routine-day-refresh-modal";
+import { formatSetBlocksSummary } from "@/features/routine/services/reps-per-set";
 import { routineDayQueryOptions } from "@/features/routine/services/routine-day-query";
 import { useEditRoutineDayLoadedState } from "@/features/role/coach/routine/hooks/use-edit-routine-day-loaded-state";
 
 const NO_WEEKS: never[] = [];
 
 function formatPrescription( sets: string, reps: string ) {
-	return sets.trim() && reps.trim() ? `${ sets.trim() } × ${ reps.trim() }` : null;
+	if (!sets.trim() || !reps.trim()) return null;
+
+	return formatSetBlocksSummary( sets, reps ) ?? `${ sets.trim() } × ${ reps.trim() }`;
 }
 
 type EditRoutineDayLoadedContentProps = {
@@ -288,7 +291,9 @@ export function EditRoutineDayLoadedContent( {
 
 			<EditRoutineDayInfoCard
 				key={ routineDayId }
-				initialInfo={ { note: data.note, title: data.title } }
+				// La copia guardada en el navegador puede ser de antes de estos campos: sin
+				// el `?? null`, un dia sin titulo parecia cambiado y se guardaba solo.
+				initialInfo={ { note: data.note ?? null, title: data.title ?? null } }
 				onSaveAction={ saveDayInfo }
 			/>
 

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { getRepsPerSetWarning, getSetTargetReps } from "@/features/routine/services/reps-per-set";
+import {
+	formatSetBlocksSummary,
+	getSetTargetReps,
+	parseSetBlocks,
+	serializeSetBlocks,
+} from "@/features/routine/services/reps-per-set";
 
 describe( "repeticiones por serie", () => {
 	it( "sin barra, todas las series piden lo mismo", () => {
@@ -21,11 +26,27 @@ describe( "repeticiones por serie", () => {
 		expect( getSetTargetReps( "", 1 ) ).toBe( "" );
 		expect( getSetTargetReps( null, 1 ) ).toBe( "" );
 	} );
+} );
 
-	it( "avisa solo cuando sobran valores", () => {
-		expect( getRepsPerSetWarning( "5 / 6 / 6", "3" ) ).toBeNull();
-		expect( getRepsPerSetWarning( "5 / 6", "3" ) ).toBeNull();
-		expect( getRepsPerSetWarning( "10", "3" ) ).toBeNull();
-		expect( getRepsPerSetWarning( "5 / 6 / 6 / 6", "3" ) ).toBe( "Hay 4 valores para 3 series: sobran 1." );
+describe( "bloques de series", () => {
+	it( "arma los bloques de lo guardado", () => {
+		expect( parseSetBlocks( "3", "5 / 6 / 6" ) ).toEqual( [ { reps: "5", sets: "1" }, { reps: "6", sets: "2" } ] );
+		expect( parseSetBlocks( "3", "5 / 6" ) ).toEqual( [ { reps: "5", sets: "1" }, { reps: "6", sets: "2" } ] );
+		expect( parseSetBlocks( "3", "10" ) ).toBeNull();
+	} );
+
+	it( "guarda los bloques en series y repeticiones", () => {
+		expect( serializeSetBlocks( [ { reps: "5", sets: "1" }, { reps: "6", sets: "2" } ] ) ).toEqual( { reps: "5 / 6 / 6", sets: "3" } );
+		expect( serializeSetBlocks( [ { reps: "8-10", sets: "1" }, { reps: "8-10", sets: "2" } ] ) ).toEqual( { reps: "8-10", sets: "3" } );
+	} );
+
+	it( "un bloque sin completar deja todo vacío", () => {
+		expect( serializeSetBlocks( [ { reps: "5", sets: "1" }, { reps: "", sets: "2" } ] ) ).toEqual( { reps: "", sets: "" } );
+		expect( serializeSetBlocks( [] ) ).toEqual( { reps: "", sets: "" } );
+	} );
+
+	it( "se lee como 1×5 + 2×6", () => {
+		expect( formatSetBlocksSummary( "3", "5 / 6 / 6" ) ).toBe( "1×5 + 2×6" );
+		expect( formatSetBlocksSummary( "3", "10" ) ).toBeNull();
 	} );
 } );

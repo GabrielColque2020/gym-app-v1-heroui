@@ -1,3 +1,4 @@
+import { getSetTargetReps } from "@/features/routine/services/reps-per-set";
 import type {
 	HistoryProgressEntry,
 	HistoryRoutineExercise,
@@ -115,7 +116,8 @@ export function buildHistoryRoutineExercise(
 				completed: false,
 				id: `${ baseExerciseId }:${ setNumber }`,
 				planned: setNumber <= plannedSets,
-				plannedReps,
+				// Con series diferentes ("5 / 6 / 6") cada serie tiene la suya.
+				plannedReps: getSetTargetReps( plannedReps, setNumber ) || plannedReps,
 				notes: null,
 				repsCompleted: null,
 				setNumber,
@@ -131,7 +133,7 @@ export function buildHistoryRoutineExercise(
 			completed: entry.setsCompleted === "1" || repsCompleted !== null || weightUsed !== null,
 			id: entry.id,
 			planned: setNumber <= plannedSets,
-			plannedReps,
+			plannedReps: getSetTargetReps( plannedReps, setNumber ) || plannedReps,
 			notes: parsedNotes.notes,
 			repsCompleted,
 			setNumber,

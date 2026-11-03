@@ -122,10 +122,12 @@ medida que se hace.
   ejercicio, todos marcados, y les deja las mismas variantes en lugar de las que tenían.
   Es a pedido (los otros días pueden tener otras a propósito) y los días terminados por
   el estudiante no se tocan (`copyRoutineExerciseVariantsAction`).
-- [x] Repeticiones distintas por serie (top set + back-off, pirámides): "5 / 6 / 6" con 3
-  series pide 5 en la primera y 6 en las otras; con menos valores, el último se repite.
-  El estudiante ve la meta de cada serie y "3 series · 5 / 6 / 6". Al cargarlo, el coach
-  ve la ayuda y un aviso si sobran valores (`reps-per-set.ts`).
+- [x] Series diferentes (top set + back-off, pirámides): en la fila del ejercicio y al
+  agregarlo, "Series diferentes" cambia "series × reps" por bloques (1 × 5, 2 × 6...) con
+  "Agregar bloque" y "Las mismas en todas". Se guardan en las mismas series y
+  repeticiones ("5 / 6 / 6", el coach no ve la barra), así que el estudiante, el
+  historial y las copias no cambian. El estudiante, el PDF y las listas de días lo leen
+  como "1×5 + 2×6" (`reps-per-set.ts`, `routine-set-blocks-editor.tsx`).
 - [x] Título y nota de cada día (migración `20261103120000_routine_day_title_and_note`): el
   coach los carga arriba de los ejercicios y se guardan solos. El título reemplaza a los
   grupos musculares en la grilla del mes, la lista de días del estudiante, su inicio y el

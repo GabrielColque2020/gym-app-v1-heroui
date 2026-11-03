@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@heroui/react";
-import { MessageSquarePlus, MessageSquareText } from "lucide-react";
+import { Layers, MessageSquarePlus, MessageSquareText } from "lucide-react";
 
 import { MediaPreviewThumbnail } from "@/components/common/media-preview-thumbnail";
 import { formatBodyPartValue, getExerciseName } from "@/features/role/coach/routine/components/shared/routine-day-exercise-editor.utils";
@@ -12,7 +12,8 @@ import { RoutineExerciseActions } from "@/features/role/coach/routine/components
 import { RoutineExerciseReplaceButton } from "@/features/role/coach/routine/components/shared/routine-exercise-replace-button";
 import { RoutineExerciseVariantsButton } from "@/features/role/coach/routine/components/shared/routine-exercise-variants-button";
 import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
-import { getRepsPerSetWarning } from "@/features/routine/services/reps-per-set";
+import { RoutineSetBlocksEditor } from "@/features/role/coach/routine/components/shared/routine-set-blocks-editor";
+import { formatSetBlocksSummary, parseSetBlocks, REPS_PER_SET_SEPARATOR } from "@/features/routine/services/reps-per-set";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
 type UpdateField = ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "sets", value: number | string | null ) => void;
@@ -45,7 +46,9 @@ function RoutineDayExerciseRow( {
 	// La nota es opcional: se despliega al pedirla o si ya tiene texto.
 	const [ isNoteOpen, setIsNoteOpen ] = useState( hasNote );
 	const missingClassName = "border-warning";
-	const repsPerSetWarning = getRepsPerSetWarning( routine.reps, routine.sets );
+	// Series diferentes (1 × 5 y 2 × 6): se abre sola si lo guardado ya las tiene.
+	const [ hasSetBlocks, setHasSetBlocks ] = useState( () => parseSetBlocks( routine.sets, routine.reps ) !== null );
+	const setBlocksSummary = formatSetBlocksSummary( routine.sets, routine.reps );
 
 	return (
 		<li className={ "min-w-0 space-y-2 rounded-xl border border-border bg-surface-secondary px-2.5 py-2.5" }>
@@ -79,6 +82,19 @@ function RoutineDayExerciseRow( {
 								/>
 							) : null }
 							<RoutineExerciseReplaceButton clientId={ routine.clientId } exerciseName={ exerciseName }/>
+							{ /* Para una top set con back-off o una piramide: cada bloque con sus
+							     series y repeticiones, sin escribir nada raro en un solo campo. */ }
+							{ hasSetBlocks ? null : (
+								<button
+									aria-label={ `Cargar series diferentes en ${ exerciseName }` }
+									className={ "inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-dashed border-border px-2 py-0.5 text-xs text-muted transition-colors hover:border-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent" }
+									type={ "button" }
+									onClick={ () => setHasSetBlocks( true ) }
+								>
+									<Layers aria-hidden className={ "size-3" }/>
+									Series diferentes
+								</button>
+							) }
 						</div>
 					</div>
 				</div>
@@ -89,6 +105,15 @@ function RoutineDayExerciseRow( {
 				{ /* En angosto arranca desde el borde y no debajo de la imagen: con la sangria,
 				     el descanso con su tiempo empujaba las acciones afuera de la tarjeta. */ }
 				<div className={ "flex min-w-0 items-end justify-between gap-1 @xl:shrink-0 @xl:justify-end @xl:gap-3" }>
+					{ hasSetBlocks ? (
+						// Los bloques se cargan abajo; aca queda lo que se pide, de un vistazo.
+						<div className={ "flex min-w-0 flex-col gap-0.5" }>
+							<span className={ "text-[11px] leading-4 text-muted" }>Series diferentes</span>
+							<span className={ `text-sm font-semibold ${ setBlocksSummary || routine.sets.trim() ? "text-foreground" : "text-warning" }` }>
+								{ setBlocksSummary ?? ( routine.sets.trim() && routine.reps.trim() ? `${ routine.sets }×${ routine.reps }` : "Completá los bloques" ) }
+							</span>
+						</div>
+					) : (
 					<div className={ "flex min-w-0 items-end gap-1.5" }>
 						<RoutineDayExerciseField
 							ariaLabel={ `Series de ${ exerciseName }` }
@@ -105,16 +130,17 @@ function RoutineDayExerciseRow( {
 						<span aria-hidden className={ "pb-2 text-sm text-muted" }>×</span>
 						<RoutineDayExerciseField
 							ariaLabel={ `Repeticiones de ${ exerciseName }` }
-							// Un poco mas ancho que series: entra "5 / 6 / 6" (distintas por serie).
-							className={ "w-24 min-w-14 shrink gap-0.5" }
+							className={ "w-20 min-w-14 shrink gap-0.5" }
 							label={ "Repeticiones" }
-							inputClassName={ `w-full px-1 text-center ${ routine.reps.trim() && !repsPerSetWarning ? "" : missingClassName }` }
+							inputClassName={ `w-full px-1 text-center ${ routine.reps.trim() ? "" : missingClassName }` }
 							name={ `reps-${ routine.clientId }` }
 							placeholder={ "10-12" }
 							value={ routine.reps }
-							onChange={ ( value ) => onUpdateField( routine.clientId, "reps", value ) }
+							// La barra separa las series diferentes por dentro: escrita aca las partiria sin que se vea.
+							onChange={ ( value ) => onUpdateField( routine.clientId, "reps", value.replaceAll( REPS_PER_SET_SEPARATOR, "" ) ) }
 						/>
 					</div>
+					) }
 					<div className={ "flex shrink-0 items-center" }>
 						{ /* Opcional: es el tiempo con el que arranca el reloj del estudiante. */ }
 						<RoutineRestSelect
@@ -140,8 +166,22 @@ function RoutineDayExerciseRow( {
 				</div>
 			</div>
 
-			{ repsPerSetWarning ? (
-				<p className={ "text-xs font-medium text-warning" } role={ "status" }>{ repsPerSetWarning }</p>
+			{ hasSetBlocks ? (
+				<RoutineSetBlocksEditor
+					exerciseName={ exerciseName }
+					isMissingShown
+					reps={ routine.reps }
+					sets={ routine.sets }
+					onChangeAction={ ( value ) => {
+						onUpdateField( routine.clientId, "sets", value.sets );
+						onUpdateField( routine.clientId, "reps", value.reps );
+					} }
+					onDisableAction={ ( value ) => {
+						onUpdateField( routine.clientId, "sets", value.sets );
+						onUpdateField( routine.clientId, "reps", value.reps );
+						setHasSetBlocks( false );
+					} }
+				/>
 			) : null }
 
 			{ isNoteOpen ? (

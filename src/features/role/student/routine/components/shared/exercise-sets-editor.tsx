@@ -7,6 +7,7 @@ import { ChevronDown, ChevronUp, History, MessageSquarePlus, Minus, Plus } from 
 
 import { useIsRoutineSessionLocked } from "@/features/role/student/routine/components/shared/routine-session-lock-context";
 import { getExerciseLastSession, parseWeightInput } from "@/features/role/student/routine/views/routine-page-content.utils";
+import { formatSetBlocks, groupSetTargets } from "@/features/routine/services/reps-per-set";
 import { formatTargetReps } from "@/features/routine/services/routine-session";
 import type { Exercise } from "@/features/routine/types/routine-exercise.types";
 
@@ -49,8 +50,8 @@ function buildTargetSummary(exercise: Exercise) {
         return `${exercise.sets.length} x ${sharedTargetReps}`;
     }
 
-    // Distintas por serie ("5 / 6 / 6"): se ve lo que pide cada una.
-    return `${exercise.sets.length} series · ${exercise.sets.map((set) => set.targetRepsLabel?.trim() || String(set.targetReps)).join(" / ")}`;
+    // Series diferentes: "1×5 + 2×6".
+    return formatSetBlocks(groupSetTargets(exercise.sets.map((set) => set.targetRepsLabel?.trim() || String(set.targetReps))));
 }
 
 type StepperFieldProps = {

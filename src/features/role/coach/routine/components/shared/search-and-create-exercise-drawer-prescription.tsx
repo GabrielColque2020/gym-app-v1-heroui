@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Button, Input, TextField } from "@heroui/react";
+import { Layers } from "lucide-react";
 
 import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
-import { getRepsPerSetWarning } from "@/features/routine/services/reps-per-set";
+import { RoutineSetBlocksEditor } from "@/features/role/coach/routine/components/shared/routine-set-blocks-editor";
+import { REPS_PER_SET_SEPARATOR } from "@/features/routine/services/reps-per-set";
 
 type SearchAndCreateExerciseDrawerPrescriptionProps = {
 	// Se intento agregar con algo vacio: se marca lo que falta.
@@ -37,7 +40,8 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 	const isSetsMissing = isMissingShown && !setsValue.trim();
 	const isRepsMissing = isMissingShown && !repsValue.trim();
 	const missingClassName = "border-danger";
-	const repsPerSetWarning = getRepsPerSetWarning( repsValue, setsValue );
+	// Series diferentes (1 × 5 y 2 × 6): bloques en lugar de un solo "series × reps".
+	const [ hasSetBlocks, setHasSetBlocks ] = useState( false );
 
 	return (
 		<div className={ "space-y-2 rounded-xl border border-border bg-surface-secondary p-3" }>
@@ -45,6 +49,32 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 				Series y repeticiones
 				<span className={ "font-normal text-muted" }> · obligatorias</span>
 			</p>
+			{ hasSetBlocks ? (
+				<>
+					<RoutineSetBlocksEditor
+						exerciseName={ "el ejercicio" }
+						isMissingShown={ isMissingShown }
+						reps={ repsValue }
+						sets={ setsValue }
+						onChangeAction={ ( value ) => {
+							onSetsChange( value.sets );
+							onRepsChange( value.reps );
+						} }
+						onDisableAction={ ( value ) => {
+							onSetsChange( value.sets );
+							onRepsChange( value.reps );
+							setHasSetBlocks( false );
+						} }
+					/>
+					<RoutineRestSelect
+						showLabel
+						ariaLabel={ "Descanso" }
+						value={ restValue }
+						onChangeAction={ onRestChange }
+					/>
+				</>
+			) : (
+			<>
 			{ /* En el telefono va todo en un solo renglon que se desliza: envolviendo
 			     en dos renglones le sacaba lugar a la lista de ejercicios. */ }
 			<div className={ "flex items-center gap-2 overflow-x-auto [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden" }>
@@ -58,7 +88,13 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 					/>
 				</TextField>
 				<span aria-hidden className={ "shrink-0 text-sm text-muted" }>×</span>
-				<TextField className={ "w-24 shrink-0 sm:w-28" } name={ "exercise-reps" } value={ repsValue } onChange={ onRepsChange }>
+				<TextField
+					className={ "w-20 shrink-0 sm:w-24" }
+					name={ "exercise-reps" }
+					value={ repsValue }
+					// La barra separa las series diferentes por dentro: escrita aca las partiria sin que se vea.
+					onChange={ ( value ) => onRepsChange( value.replaceAll( REPS_PER_SET_SEPARATOR, "" ) ) }
+				>
 					<Input
 						aria-invalid={ isRepsMissing || undefined }
 						aria-label={ "Repeticiones" }
@@ -92,11 +128,13 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 					);
 				} ) }
 			</div>
-			{ /* Sin esto no hay forma de saber que existe: es para top set + back-off o piramides. */ }
-			<p className={ "text-xs text-muted" }>Distintas en cada serie: separalas con una barra, por ejemplo 5 / 6 / 6.</p>
-			{ repsPerSetWarning ? (
-				<p className={ "text-xs font-medium text-warning" } role={ "status" }>{ repsPerSetWarning }</p>
-			) : null }
+			{ /* Para una top set con back-off o una piramide. */ }
+			<Button size={ "sm" } variant={ "ghost" } onPress={ () => setHasSetBlocks( true ) }>
+				<Layers className={ "size-4" }/>
+				Series diferentes
+			</Button>
+			</>
+			) }
 			{ isSetsMissing || isRepsMissing ? (
 				<p className={ "text-xs font-medium text-danger" } role={ "alert" }>
 					Cargá series y repeticiones para agregar el ejercicio.

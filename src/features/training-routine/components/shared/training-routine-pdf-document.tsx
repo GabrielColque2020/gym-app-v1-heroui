@@ -4,6 +4,7 @@ import { Document, Font, Page, StyleSheet, Text, View, } from "@react-pdf/render
 
 import { monthYearLabel } from "@/constants/months";
 import { formatRestSeconds } from "@/features/routine/services/rest-seconds";
+import { formatSetBlocksSummary } from "@/features/routine/services/reps-per-set";
 import { getTrainingRoutineDayTitle } from "@/features/training-routine/services/training-routine-day-formatters";
 import type { TrainingRoutineWeek } from "@/features/training-routine/services/training-routines-by-student";
 
@@ -267,7 +268,7 @@ export function TrainingRoutinePdfDocument( {
 											<View key={ `${ row.exerciseName }-${ routineWeeks[ index ]?.id ?? index }` } style={ styles.colWeek }>
 												{ cell ? (
 													<>
-														<Text style={ styles.weekValue }>{ `${ cell.sets } x ${ cell.reps }` }</Text>
+														<Text style={ styles.weekValue }>{ formatSetBlocksSummary( cell.sets, cell.reps ) ?? `${ cell.sets } x ${ cell.reps }` }</Text>
 														{ cell.rest ? <Text style={ styles.rest }>{ `Descanso ${ cell.rest }` }</Text> : null }
 														{ cell.notes ? <Text style={ styles.notes }>{ cell.notes }</Text> : null }
 													</>
