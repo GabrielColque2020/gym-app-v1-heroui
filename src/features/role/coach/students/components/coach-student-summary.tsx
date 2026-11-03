@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Button, Card, Chip } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
 import { PencilLine, Target, UserPen, UserX } from "lucide-react";
 
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
@@ -92,7 +92,7 @@ export function CoachStudentSummary( { studentId }: { studentId: string } ) {
 	}
 
 	return (
-		<Card className={ "border border-border" } variant={ "default" }>
+		<Card className={ "gap-0 border border-border p-0" } variant={ "default" }>
 			{ /* Se puede abrir la ficha de un inactivo para ver su historial: que se
 			     sepa que no esta usando la app, y como devolverle el acceso. */ }
 			{ student.active ? null : (
@@ -107,50 +107,48 @@ export function CoachStudentSummary( { studentId }: { studentId: string } ) {
 					<StudentRestoreButton showLabel student={ student }/>
 				</div>
 			) }
-			<Card.Content className={ "flex flex-col gap-3 p-3 sm:flex-row sm:items-start sm:justify-between sm:p-4" }>
-				<div className={ "min-w-0 flex-1 space-y-2" }>
-					{ isEmpty ? (
-						<p className={ "text-sm text-muted" }>
-							Todavía no tiene objetivo, medidas ni observaciones cargadas.
-						</p>
-					) : (
-						<>
-							<div className={ "flex flex-wrap items-center gap-2" }>
-								{ objective ? (
-									<Chip color={ "accent" } size={ "sm" } variant={ "soft" }>
-										<Target className={ "size-3" }/>
-										{ objective }
-									</Chip>
-								) : (
-									<Chip size={ "sm" } variant={ "soft" }>Sin objetivo</Chip>
-								) }
-								{ facts.length > 0 ? (
-									<span className={ "text-sm text-muted" }>{ facts.join( " · " ) }</span>
-								) : null }
-							</div>
-							{ observations ? (
-								<div className={ "text-sm" }>
-									<span className={ "font-medium text-foreground" }>Observaciones: </span>
-									<span className={ `text-muted ${ isLongObservations && !showAllObservations ? "line-clamp-2" : "" }` }>
-										{ observations }
-									</span>
-									{ isLongObservations ? (
-										<button
-											className={ "ms-1 text-sm font-medium text-accent hover:underline" }
-											type={ "button" }
-											onClick={ () => setShowAllObservations( ( current ) => !current ) }
-										>
-											{ showAllObservations ? "Ver menos" : "Ver todo" }
-										</button>
-									) : null }
-								</div>
+			{ /* Una franja y no una tarjeta: es contexto mientras se arma la rutina, no
+			     lo principal de la pantalla. Con un chip suelto y un boton grande, el
+			     objetivo se perdia en una caja casi vacia. */ }
+			<Card.Content className={ "flex flex-row items-start gap-3 px-3 py-2.5 sm:px-4" }>
+				<Target aria-hidden className={ "mt-0.5 size-4 shrink-0 text-accent" }/>
+				<div className={ "min-w-0 flex-1 space-y-0.5" }>
+					<p className={ "text-sm" }>
+						<span className={ "text-muted" }>Objetivo: </span>
+						{ objective
+							? <span className={ "font-medium text-foreground" }>{ objective }</span>
+							: <span className={ "text-muted" }>sin cargar</span> }
+					</p>
+					{ facts.length > 0 ? (
+						<p className={ "text-xs text-muted" }>{ facts.join( " · " ) }</p>
+					) : null }
+					{ observations ? (
+						<p className={ "text-xs text-muted" }>
+							<span className={ "font-medium text-foreground" }>Observaciones: </span>
+							<span className={ isLongObservations && !showAllObservations ? "line-clamp-2" : "" }>
+								{ observations }
+							</span>
+							{ isLongObservations ? (
+								<button
+									className={ "ms-1 cursor-pointer font-medium text-accent hover:underline" }
+									type={ "button" }
+									onClick={ () => setShowAllObservations( ( current ) => !current ) }
+								>
+									{ showAllObservations ? "Ver menos" : "Ver todo" }
+								</button>
 							) : null }
-						</>
-					) }
+						</p>
+					) : null }
 				</div>
-				<Button className={ "shrink-0 self-start" } size={ "sm" } variant={ "secondary" } onPress={ () => setIsEditOpen( true ) }>
+				<Button
+					aria-label={ `Editar datos de ${ student.name }` }
+					className={ "-my-1 shrink-0" }
+					size={ "sm" }
+					variant={ "ghost" }
+					onPress={ () => setIsEditOpen( true ) }
+				>
 					<PencilLine className={ "size-4" }/>
-					Editar datos
+					Editar
 				</Button>
 			</Card.Content>
 
