@@ -266,7 +266,10 @@ export function EditRoutineDayLoadedContent( {
 			/>
 
 			<RoutineDayEditorActionsProvider value={ editorActions }>
+			{ /* Una por dia: pasar de dia no desmonta esta pantalla, y las filas del
+			     nuevo heredaban por posicion lo del anterior (la nota abierta). */ }
 			<EditRoutineDayMainCard
+				key={ routineDayId }
 				addedExerciseIds={ addedExerciseIds }
 				draftRoutines={ draftRoutines }
 				getSuggestedOrder={ getSuggestedOrder }

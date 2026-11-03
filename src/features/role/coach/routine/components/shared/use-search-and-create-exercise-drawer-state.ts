@@ -142,7 +142,9 @@ export function useSearchAndCreateExerciseDrawerState( {
 		} );
 		// El drawer queda abierto para seguir sumando: un dia son varios ejercicios.
 		setAddedCount( ( count ) => count + 1 );
-		setOrderValue( String( Math.max( parsedOrder + 1, suggestedOrder ) ) );
+		// El siguiente va debajo del recien agregado. `suggestedOrder` es el de antes
+		// de agregar (el final era ese), asi que ahora el final es uno mas.
+		setOrderValue( String( Math.min( parsedOrder + 1, suggestedOrder + 1 ) ) );
 		// Vuelve a la lista, con la busqueda vacia, para elegir el siguiente.
 		resetConfig();
 		setLastAddedName( otherDayIds.length > 0 ? `${ exercise.name } en ${ otherDayIds.length + 1 } días` : exercise.name );

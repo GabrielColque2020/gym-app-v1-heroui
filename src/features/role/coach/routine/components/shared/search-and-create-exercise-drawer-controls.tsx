@@ -66,7 +66,13 @@ export function SearchAndCreateExerciseDrawerControls( {
 			</Select>
 
 			{ onOrderChange ? (
-				<TextField className={ "w-24 shrink-0" } name={ "exercise-order" } value={ orderValue } onChange={ onOrderChange }>
+				<TextField
+					className={ "w-24 shrink-0" }
+					name={ "exercise-order" }
+					value={ orderValue }
+					// Es un lugar en la lista: solo numeros.
+					onChange={ ( value ) => onOrderChange( value.replace( /\D/g, "" ).slice( 0, 2 ) ) }
+				>
 					<Label>Orden</Label>
 					<Input
 						aria-label={ "Orden del ejercicio en la rutina" }

@@ -111,6 +111,12 @@ medida que se hace.
   se puede elegir otros días. Va al final de cada día, con las mismas series,
   repeticiones, descanso y variantes; si el último se agregó solo en este día, el
   siguiente arranca igual (`addRoutineExerciseToDaysAction`).
+- [x] Orden al agregar un ejercicio: es el lugar en la lista. Un orden ocupado mete el
+  ejercicio ahí y baja a los de abajo (antes se rechazaba por "mismo orden"); uno pasado
+  el último va al final. Quitar uno no deja huecos y "deshacer" lo vuelve a su lugar
+  (`insertDraftExerciseAt`). El campo solo acepta números.
+- [x] La nota abierta en un día ya no aparece abierta al pasar a otro día: cada día
+  monta su propia lista.
 
 ## Seguridad
 

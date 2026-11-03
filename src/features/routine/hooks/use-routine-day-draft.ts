@@ -13,6 +13,7 @@ import {
 } from "@/features/routine/hooks/use-routine-day-draft.utils";
 import { getRoutineDayDraft, useRoutineDayDraftStore } from "@/features/routine/stores/use-routine-day-draft-store";
 import { createDraftRoutineExercise, getDraftCatalogExerciseIds } from "@/features/routine/services/routine-day-editor";
+import { insertDraftExerciseAt } from "@/features/routine/stores/routine-day-draft-store.utils";
 import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
 
 type UseRoutineDayDraftOptions = {
@@ -129,19 +130,13 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 		} );
 	}
 
-	// Devuelve al borrador un ejercicio recien quitado. Si mientras tanto otro
-	// ocupo su lugar, va al final.
+	// Devuelve al borrador un ejercicio recien quitado, en el lugar que tenia.
 	function restoreExercise( routine: DraftRoutineDayExercise ) {
 		const currentDraft = getRoutineDayDraft( routineDayId ) ?? latestSourceRef.current;
 
 		if (currentDraft.some( ( current ) => current.exerciseId === routine.exerciseId )) return;
 
-		const isOrderTaken = currentDraft.some( ( current ) => current.order === routine.order );
-		const order = isOrderTaken
-			? currentDraft.reduce( ( highest, current ) => Math.max( highest, current.order ), 0 ) + 1
-			: routine.order;
-
-		setDraft( routineDayId, [ ...currentDraft, { ...routine, order } ] );
+		setDraft( routineDayId, insertDraftExerciseAt( currentDraft, routine, routine.order ) );
 	}
 
 	// Las variantes de un ejercicio que todavia no se guardo en el dia.

@@ -121,7 +121,7 @@ export const useRoutineDayDraftStore = create<RoutineDayDraftStoreState>()(
 					set( ( state ) => ( {
 						drafts: {
 							...state.drafts,
-							[ routineDayId ]: sortDraftRoutineExercises( [ ...currentDraft, result.routine ] ),
+							[ routineDayId ]: result.draft,
 						},
 					} ) );
 
