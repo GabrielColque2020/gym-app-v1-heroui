@@ -80,7 +80,7 @@ export default function CoachRoutineStructure( {
 	const [ objective, setObjective ] = useState( () => routineObjective ?? "" );
 
 	const Icon = mode === "create" ? Plus : PencilLine;
-	const title = mode === "create" ? "Crear rutina" : "Semanas y días";
+	const title = mode === "create" ? "Crear rutina" : "Editar semanas y días";
 
 	const createStructure = useCreateTrainingRoutineStructure();
 	const updateStructure = useUpdateTrainingRoutineStructure();

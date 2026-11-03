@@ -123,7 +123,7 @@ function RoutineTemplateStructureForm( {
 						<Icon className={ "size-5" }/>
 					</div>
 					<div className={ "min-w-0 flex-1" }>
-						<Typography className={ "text-lg font-semibold" }>{ isCreate ? "Nueva plantilla" : "Semanas y días" }</Typography>
+						<Typography className={ "text-lg font-semibold" }>{ isCreate ? "Nueva plantilla" : "Editar semanas y días" }</Typography>
 						<Description className={ "mt-1 text-sm" }>
 							{ isCreate
 								? "Elegí el nombre, las semanas y los días. Después cargás los ejercicios de cada día."

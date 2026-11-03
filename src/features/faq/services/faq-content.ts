@@ -216,7 +216,7 @@ const COACH_FAQ_SECTIONS: FaqSection[] = [
 				question: "Si cambio una plantilla, ¿cambian las rutinas de mis estudiantes?",
 			},
 			{
-				answer: "En Plantillas, abrí la que quieras. Se edita igual que la rutina de un estudiante: cada día abre el editor de ejercicios, Semanas y días agrega o quita días, y Repetir en las demás copia una semana en el resto. Desde los tres puntos de cada tarjeta podés cambiarle el nombre, duplicarla o eliminarla.",
+				answer: "En Plantillas, abrí la que quieras. Se edita igual que la rutina de un estudiante: cada día abre el editor de ejercicios, Editar semanas y días agrega o quita semanas y días, y Repetir en las demás copia una semana en el resto. Desde los tres puntos de cada tarjeta podés cambiarle el nombre, duplicarla o eliminarla.",
 				id: "coach-templates-edit",
 				question: "¿Cómo edito, duplico o elimino una plantilla?",
 			},

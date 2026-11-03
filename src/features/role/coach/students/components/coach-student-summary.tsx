@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { Button, Card, Chip } from "@heroui/react";
-import { PencilLine, Target, UserX } from "lucide-react";
+import { PencilLine, Target, UserPen, UserX } from "lucide-react";
 
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 import { StudentDrawer } from "@/features/students/components/shared/student-drawer";
@@ -56,6 +56,40 @@ export function CoachStudentSummary( { studentId }: { studentId: string } ) {
 	const isLongObservations = ( observations?.length ?? 0 ) > LONG_OBSERVATIONS_LENGTH;
 	const facts = [ weight, height, age !== null ? `${ age } años` : null ].filter( Boolean );
 	const isEmpty = !objective && !observations && facts.length === 0;
+	const editDrawer = (
+		<StudentDrawer
+			hideTrigger
+			isOpen={ isEditOpen }
+			mode={ "edit" }
+			placement={ placement }
+			student={ student }
+			onOpenChangeAction={ setIsEditOpen }
+		/>
+	);
+
+	// Sin nada cargado, una tarjeta entera con "todavia no tiene..." ocupaba lugar
+	// arriba de la rutina sin decir nada. Queda una sola invitacion a completarlo,
+	// con el mismo estilo que un dia vacio de la rutina.
+	if (isEmpty && student.active) {
+		return (
+			<>
+				<button
+					className={ "flex w-full cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border px-3 py-2.5 text-start transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent sm:px-4" }
+					type={ "button" }
+					onClick={ () => setIsEditOpen( true ) }
+				>
+					<UserPen aria-hidden className={ "size-4 shrink-0 text-accent" }/>
+					<span className={ "min-w-0 flex-1" }>
+						<span className={ "block text-sm font-medium text-foreground" }>Completar datos del estudiante</span>
+						<span className={ "block text-xs text-muted" }>Objetivo, peso, altura y observaciones, a mano al armar la rutina.</span>
+					</span>
+					{ /* En el telefono el titulo ya lo dice y le deja lugar a la descripcion. */ }
+					<span className={ "hidden shrink-0 text-sm font-medium text-accent sm:inline" }>Completar</span>
+				</button>
+				{ editDrawer }
+			</>
+		);
+	}
 
 	return (
 		<Card className={ "border border-border" } variant={ "default" }>
@@ -120,14 +154,7 @@ export function CoachStudentSummary( { studentId }: { studentId: string } ) {
 				</Button>
 			</Card.Content>
 
-			<StudentDrawer
-				hideTrigger
-				isOpen={ isEditOpen }
-				mode={ "edit" }
-				placement={ placement }
-				student={ student }
-				onOpenChangeAction={ setIsEditOpen }
-			/>
+			{ editDrawer }
 		</Card>
 	);
 }

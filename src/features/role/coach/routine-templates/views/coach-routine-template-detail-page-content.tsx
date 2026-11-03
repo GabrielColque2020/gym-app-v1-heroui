@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button, Card, Spinner } from "@heroui/react";
-import { CalendarRange, RotateCw } from "lucide-react";
+import { CalendarCog, RotateCw } from "lucide-react";
 
 import { PageBreadcrumbs } from "@/components/common";
 import { RoutineTemplateStructureDrawer } from "@/features/role/coach/routine-templates/components/routine-template-structure-drawer";
@@ -86,8 +86,8 @@ export default function CoachRoutineTemplateDetailPageContent( { templateId }: C
 									<RotateCw className={ isRefreshing ? "size-4 animate-spin" : "size-4" }/>
 								</Button>
 								<Button className={ "flex-1 sm:flex-none" } variant={ "secondary" } onPress={ () => setIsStructureOpen( true ) }>
-									<CalendarRange className={ "size-4" }/>
-									Semanas y días
+									<CalendarCog className={ "size-4" }/>
+									Editar semanas y días
 								</Button>
 							</div>
 							{ data.template.objective?.trim() ? (
@@ -101,7 +101,7 @@ export default function CoachRoutineTemplateDetailPageContent( { templateId }: C
 					{ weeks.length === 0 ? (
 						<Card className={ "border border-dashed border-border" } variant={ "default" }>
 							<Card.Content className={ "py-10 text-center text-sm text-muted" }>
-								Esta plantilla todavía no tiene semanas. Agregalas desde &quot;Semanas y días&quot;.
+								Esta plantilla todavía no tiene semanas. Agregalas desde &quot;Editar semanas y días&quot;.
 							</Card.Content>
 						</Card>
 					) : (

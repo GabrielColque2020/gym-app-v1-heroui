@@ -3,7 +3,7 @@
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 import { useMemo, useState } from "react";
 import { Button, toast } from "@heroui/react";
-import { CalendarRange } from "lucide-react";
+import { CalendarCog } from "lucide-react";
 
 import { CoachCopyRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-copy-routine-drawer";
 import { CoachOptionRoutineActionMenu } from "@/features/role/coach/training-routine/components/shared/coach-option-routine-action-menu";
@@ -109,10 +109,11 @@ export function CoachOptionRoutineDrawer( {
 	return (
 		<>
 			{ /* Agregar o quitar semanas y dias es parte de armar la rutina: va a la
-			     vista y con su nombre, no dentro del menu como un "Editar" mas. */ }
+			     vista y con su nombre, no dentro del menu. "Editar" adelante: solo
+			     "Semanas y días" no decia que es para cambiarlas. */ }
 			<Button className={ "flex-1 @xl:flex-none" } variant={ "secondary" } onPress={ () => setIsEditOpen( true ) }>
-				<CalendarRange className={ "size-4" }/>
-				Semanas y días
+				<CalendarCog className={ "size-4" }/>
+				Editar semanas y días
 			</Button>
 			<CoachOptionRoutineActionMenu
 				isDownloading={ isDownloading }
