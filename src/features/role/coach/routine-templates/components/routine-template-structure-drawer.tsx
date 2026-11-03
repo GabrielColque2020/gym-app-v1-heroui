@@ -17,6 +17,7 @@ import {
 import { FeatureDrawerLayout } from "@/features/shared/components/feature-drawer-layout";
 import { useResponsiveDrawerPlacement } from "@/features/shared/hooks/use-responsive-drawer-placement";
 import {
+	ROUTINE_OBJECTIVE_MAX_LENGTH,
 	buildSelectedDays,
 	buildSelectedWeeks,
 	DAY_OPTIONS,
@@ -175,7 +176,7 @@ function RoutineTemplateStructureForm( {
 					<TextField
 						fullWidth
 						className={ "p-1.5" }
-						maxLength={ 180 }
+						maxLength={ ROUTINE_OBJECTIVE_MAX_LENGTH }
 						name={ "objective" }
 						value={ objective }
 						onChange={ setObjective }
@@ -184,9 +185,9 @@ function RoutineTemplateStructureForm( {
 						<TextArea
 							className={ "min-h-24 border border-border" }
 							placeholder={ "Ej. hipertrofia de tren superior, ganancia de fuerza o enfoque técnico." }
-							rows={ 3 }
+							rows={ 5 }
 						/>
-						<Description className={ "text-xs" }>Al usar la plantilla, pasa a ser el objetivo del mes del estudiante.</Description>
+						<Description className={ "text-xs" }>{ `Al usar la plantilla, pasa a ser el objetivo del mes del estudiante. ${ objective.length } de ${ ROUTINE_OBJECTIVE_MAX_LENGTH }.` }</Description>
 					</TextField>
 
 					<CoachRoutineStructureSummary

@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Download, RotateCw } from "lucide-react";
 
 import { MonthJumpPicker } from "@/components/common/month-jump-picker";
 import { getRoutineMonthsWithContentAction } from "@/features/role/student/training-routine/actions/get-routine-months-with-content";
+import { RoutineObjectiveText } from "@/features/training-routine/components/shared/routine-objective-text";
 
 type TrainingRoutinesMonthHeaderProps = {
 	isDownloadDisabled: boolean;
@@ -77,9 +78,7 @@ export function TrainingRoutinesMonthHeader( {
 					</Button>
 				</div>
 				{ objective?.trim() ? (
-					<p className={ "w-full text-sm text-muted" }>
-						<span className={ "font-medium text-foreground" }>Objetivo del mes:</span> { objective }
-					</p>
+					<RoutineObjectiveText label={ "Objetivo del mes" } objective={ objective }/>
 				) : null }
 			</Card.Content>
 		</Card>

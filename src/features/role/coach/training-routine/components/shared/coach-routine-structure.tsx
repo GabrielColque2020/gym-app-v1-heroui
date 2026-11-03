@@ -7,6 +7,7 @@ import type { CoachTrainingRoutine } from "@/features/role/coach/training-routin
 import { Button, Description, Drawer, Label, ScrollShadow, Spinner, TextArea, TextField, toast, Typography } from "@heroui/react";
 
 import {
+	ROUTINE_OBJECTIVE_MAX_LENGTH,
 	buildRoutineStructureInput,
 	buildSelectedDays,
 	buildSelectedWeeks,
@@ -183,7 +184,7 @@ export default function CoachRoutineStructure( {
 
 						<TextField
 							fullWidth
-							maxLength={ 180 }
+							maxLength={ ROUTINE_OBJECTIVE_MAX_LENGTH }
 							name={ "objective" }
 							value={ objective }
 							onChange={ setObjective }
@@ -193,8 +194,9 @@ export default function CoachRoutineStructure( {
 							<TextArea
 								className={ "min-h-24 border border-border" }
 								placeholder={ "Ej. hipertrofia de tren superior, ganancia de fuerza o enfoque técnico del mes." }
-								rows={ 3 }
+								rows={ 5 }
 							/>
+							<Description className={ "text-xs" }>{ `También las pautas del mes: principio del bloque, calentamiento, cómo progresar. ${ objective.length } de ${ ROUTINE_OBJECTIVE_MAX_LENGTH }.` }</Description>
 						</TextField>
 
 						<CoachRoutineStructureSummary

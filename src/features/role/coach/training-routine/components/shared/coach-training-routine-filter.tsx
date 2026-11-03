@@ -10,6 +10,7 @@ import { MonthJumpPicker } from "@/components/common/month-jump-picker";
 import { getRoutineMonthsWithContentAction } from "@/features/role/coach/training-routine/actions/get-routine-months-with-content";
 import type { CoachTrainingRoutine } from "@/features/role/coach/training-routine/actions/get-training-routines-by-student";
 import { CoachOptionRoutineDrawer } from "@/features/role/coach/training-routine/components/shared/coach-option-routine-drawer";
+import { RoutineObjectiveText } from "@/features/training-routine/components/shared/routine-objective-text";
 
 type CoachTrainingRoutineFilterProps = {
 	isRefreshing: boolean;
@@ -103,9 +104,7 @@ export function CoachTrainingRoutineFilter( {
 					) }
 				</div>
 				{ routineObjective?.trim() ? (
-					<p className={ "w-full text-sm text-muted" }>
-						<span className={ "font-medium text-foreground" }>Objetivo del mes:</span> { routineObjective }
-					</p>
+					<RoutineObjectiveText label={ "Objetivo del mes" } objective={ routineObjective }/>
 				) : null }
 			</Card.Content>
 		</Card>

@@ -128,6 +128,10 @@ medida que se hace.
   repeticiones ("5 / 6 / 6", el coach no ve la barra), así que el estudiante, el
   historial y las copias no cambian. El estudiante, el PDF y las listas de días lo leen
   como "1×5 + 2×6" (`reps-per-set.ts`, `routine-set-blocks-editor.tsx`).
+- [x] Objetivo del mes con las pautas del plan: hasta 1500 caracteres (antes 180), campo
+  más grande con contador, en la rutina del estudiante y en plantillas. El coach y el
+  estudiante lo ven con sus renglones y, si es largo, recortado con "Ver más"
+  (`routine-objective-text.tsx`). El PDF ya lo incluía.
 - [x] Título y nota de cada día (migración `20261103120000_routine_day_title_and_note`): el
   coach los carga arriba de los ejercicios y se guardan solos. El título reemplaza a los
   grupos musculares en la grilla del mes, la lista de días del estudiante, su inicio y el
