@@ -7,7 +7,9 @@ import { Alert, Button, Drawer, toast } from "@heroui/react";
 import { useSaveExerciseVariants } from "@/features/exercises/hooks/use-exercise-variants";
 
 import { type DraftVariantItem, type ExerciseVariantsTarget } from "./exercise-variants-drawer.types";
+import { ExerciseVariantsOtherDays } from "./exercise-variants-other-days";
 import { ExerciseVariantsPicker } from "./exercise-variants-picker";
+import type { RoutineDayChecklistItem } from "@/features/role/coach/routine/components/shared/routine-day-checklist";
 
 type ExerciseVariantsDrawerContentProps = {
 	exercise: ExerciseVariantsTarget;
@@ -16,6 +18,8 @@ type ExerciseVariantsDrawerContentProps = {
 	// guardado en el dia y se le avisa a quien abrio el drawer, que las guarda
 	// junto con el dia.
 	onPendingChangeAction?: ( variantExerciseIds: string[] ) => void;
+	otherDays?: RoutineDayChecklistItem[];
+	onApplyToDaysAction?: ( routineDayIds: string[] ) => Promise<boolean>;
 	routineId: string | null;
 	onCloseAction: () => void;
 };
@@ -24,6 +28,8 @@ export function ExerciseVariantsDrawerContent( {
 	exercise,
 	initialVariants,
 	onPendingChangeAction,
+	otherDays,
+	onApplyToDaysAction,
 	routineId,
 	onCloseAction,
 }: ExerciseVariantsDrawerContentProps ) {
@@ -64,6 +70,16 @@ export function ExerciseVariantsDrawerContent( {
 							<Alert.Description>{ saveVariants.error?.message }</Alert.Description>
 						</Alert.Content>
 					</Alert>
+				) : null }
+
+				{ routineId && otherDays && otherDays.length > 0 && onApplyToDaysAction ? (
+					<ExerciseVariantsOtherDays
+						// Arriba: abajo de la busqueda (cientos de ejercicios) no se veia.
+						// Mientras se guarda un cambio de aca, todavia no es lo que se copiaria.
+						isDisabled={ saveVariants.isPending }
+						items={ otherDays }
+						onApplyAction={ onApplyToDaysAction }
+					/>
 				) : null }
 
 				<ExerciseVariantsPicker

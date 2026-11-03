@@ -8,6 +8,8 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { ExerciseVariantsDrawer } from "@/features/role/coach/exercises/components/shared/exercise-variants-drawer";
 import { ReplaceExerciseDrawer, type ReplaceExerciseDay } from "@/features/role/coach/routine/components/shared/replace-exercise-drawer";
+import type { RoutineDayChecklistItem } from "@/features/role/coach/routine/components/shared/routine-day-checklist";
+import { getExerciseName } from "@/features/role/coach/routine/components/shared/routine-day-exercise-editor.utils";
 import { RoutineDayEditorActionsProvider } from "@/features/role/coach/routine/components/shared/routine-day-editor-actions-context";
 
 import { buildEditRoutineDayHref, buildEditTemplateDayHref } from "@/features/role/coach/routine/views/edit-routine-day-page-content.utils";
@@ -54,6 +56,7 @@ export function EditRoutineDayLoadedContent( {
 											 }: EditRoutineDayLoadedContentProps ) {
 	const {
 		addedExerciseIds,
+		copyVariantsToDays,
 		draftRoutines,
 		getSuggestedOrder,
 		handleAddExercise,
@@ -135,6 +138,22 @@ export function EditRoutineDayLoadedContent( {
 	const variantsRoutine = pendingVariantsOrder !== null
 		? draftRoutines.find( ( routine ) => routine.order === pendingVariantsOrder ) ?? null
 		: null;
+	// El mismo ejercicio en los otros dias de la rutina, para aplicarle estas variantes.
+	const variantsOtherDays: RoutineDayChecklistItem[] = variantsRoutine
+		? ( monthWeeks ?? [] ).flatMap( ( week ) => week.routineDays.flatMap( ( day ) => {
+			const routine = day.routines.find( ( candidate ) => candidate.exerciseId === variantsRoutine.exerciseId );
+
+			if (day.id === routineDayId || !routine) return [];
+
+			return [ {
+				dayNumber: day.dayNumber,
+				detail: day.isFinalized ? "Terminado: no se cambia" : formatPrescription( routine.sets, routine.reps ),
+				id: day.id,
+				isUnavailable: day.isFinalized,
+				week: week.week,
+			} ];
+		} ) )
+		: [];
 	const variantCountByRoutineId = useMemo(
 		() => new Map( data.routines.map( ( routine ) => [ routine.id, routine.variants.length ] ) ),
 		[ data.routines ],
@@ -290,6 +309,12 @@ export function EditRoutineDayLoadedContent( {
 					exercise={ variantsRoutine.exercise }
 					routineId={ variantsRoutine.id }
 					pendingVariantExerciseIds={ variantsRoutine.pendingVariantExerciseIds }
+					otherDays={ variantsOtherDays }
+					onApplyToDaysAction={ ( dayIds ) => (
+						variantsRoutine.id
+							? copyVariantsToDays( variantsRoutine.id, getExerciseName( variantsRoutine ), dayIds )
+							: Promise.resolve( false )
+					) }
 					onPendingChangeAction={ ( variantExerciseIds ) => setExercisePendingVariants( variantsRoutine.clientId, variantExerciseIds ) }
 					onOpenChangeAction={ ( isOpen ) => {
 						if (!isOpen) setPendingVariantsOrder( null );

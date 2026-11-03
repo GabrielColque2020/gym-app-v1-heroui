@@ -1,4 +1,5 @@
 import type { CoachExerciseListItem } from "@/features/role/coach/exercises/types/coach-exercise-list-item";
+import type { RoutineDayChecklistItem } from "@/features/role/coach/routine/components/shared/routine-day-checklist";
 
 export type CoachExerciseSourceType = "coach" | "global";
 
@@ -32,6 +33,10 @@ export type ExerciseVariantsDrawerProps = {
 	// las variantes elegidas hasta ahora y a quien avisarle cuando cambian.
 	pendingVariantExerciseIds?: string[];
 	onPendingChangeAction?: ( variantExerciseIds: string[] ) => void;
+	// Los otros dias de la rutina con el mismo ejercicio, para dejarles estas
+	// mismas variantes. Solo con el ejercicio ya guardado (`routineId`).
+	otherDays?: RoutineDayChecklistItem[];
+	onApplyToDaysAction?: ( routineDayIds: string[] ) => Promise<boolean>;
 	hideTrigger?: boolean;
 	isOpen?: boolean;
 	onOpenChangeAction?: ( isOpen: boolean ) => void;

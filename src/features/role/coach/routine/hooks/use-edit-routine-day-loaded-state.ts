@@ -17,6 +17,7 @@ import { getDraftCatalogExerciseIds, mapDraftToSaveInput } from "@/features/rout
 import { coachRoutineTemplateDetailQueryKey } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
 import { replaceRoutineExerciseAction } from "@/features/routine/actions/replace-routine-exercise";
 import { addRoutineExerciseToDaysAction } from "@/features/routine/actions/add-routine-exercise-to-days";
+import { copyRoutineExerciseVariantsAction } from "@/features/routine/actions/copy-routine-exercise-variants";
 import { appendExerciseToRoutineDayDrafts, replaceExerciseInRoutineDayDrafts } from "@/features/routine/stores/use-routine-day-draft-store";
 import { routineDayQueryKey } from "@/features/routine/services/routine-day-query";
 import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
@@ -462,8 +463,48 @@ export function useEditRoutineDayLoadedState( {
 		}
 	}
 
+	// Deja las variantes que el ejercicio tiene en este dia en el mismo ejercicio
+	// de los otros dias marcados. Devuelve si se pudo.
+	async function copyVariantsToDays( routineId: string, exerciseName: string, routineDayIds: string[] ) {
+		try {
+			const result = await unwrapped( copyRoutineExerciseVariantsAction )( {
+				routineDayId,
+				routineDayIds,
+				routineId,
+				studentId,
+				templateId,
+			} );
+
+			// Las variantes de cada fila se piden por su id: las de esos dias cambiaron.
+			queryClient.removeQueries( {
+				predicate: ( query ) => query.queryKey[ 0 ] === "coach-exercise-variants" && query.queryKey[ 1 ] !== routineId,
+			} );
+			await refreshAfterRoutineWideChange( { includeCurrentDay: false } );
+
+			const updatedCount = result.updatedDayIds.length;
+
+			toast.success( `Variantes de ${ exerciseName } aplicadas`, {
+				description: [
+					`Este y ${ updatedCount } ${ updatedCount === 1 ? "día más" : "días más" }.`,
+					result.skippedFinalizedDays > 0
+						? `Sin cambiar: ${ result.skippedFinalizedDays } ${ result.skippedFinalizedDays === 1 ? "día terminado" : "días terminados" } por el estudiante.`
+						: null,
+				].filter( Boolean ).join( " " ),
+			} );
+
+			return true;
+		} catch (error) {
+			toast.danger( "No se pudieron aplicar las variantes", {
+				description: getErrorMessage( error, "Hubo un error al guardarlas en los otros días." ),
+			} );
+
+			return false;
+		}
+	}
+
 	return {
 		addedExerciseIds,
+		copyVariantsToDays,
 		draftRoutines,
 		getSuggestedOrder,
 		handleAddExercise,

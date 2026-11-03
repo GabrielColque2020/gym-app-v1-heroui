@@ -162,6 +162,8 @@ export function ExerciseVariantsDrawer( props: ExerciseVariantsDrawerProps ) {
 						exercise={ props.exercise }
 						routineId={ props.routineId }
 						initialVariants={ buildInitialVariants( variantsQuery.data ) }
+						otherDays={ props.otherDays }
+						onApplyToDaysAction={ props.onApplyToDaysAction }
 						onCloseAction={ () => setIsOpen( false ) }
 					/>
 				) }

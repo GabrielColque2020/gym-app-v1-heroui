@@ -117,6 +117,11 @@ medida que se hace.
   (`insertDraftExerciseAt`). El campo solo acepta números.
 - [x] La nota abierta en un día ya no aparece abierta al pasar a otro día: cada día
   monta su propia lista.
+- [x] Variantes en todo el mes: en la pantalla de variantes de un ejercicio guardado,
+  "Aplicar también en otros días" lista los días de la rutina (o plantilla) con el mismo
+  ejercicio, todos marcados, y les deja las mismas variantes en lugar de las que tenían.
+  Es a pedido (los otros días pueden tener otras a propósito) y los días terminados por
+  el estudiante no se tocan (`copyRoutineExerciseVariantsAction`).
 
 ## Seguridad
 
