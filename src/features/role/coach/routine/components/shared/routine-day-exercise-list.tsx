@@ -12,6 +12,7 @@ import { RoutineExerciseActions } from "@/features/role/coach/routine/components
 import { RoutineExerciseReplaceButton } from "@/features/role/coach/routine/components/shared/routine-exercise-replace-button";
 import { RoutineExerciseVariantsButton } from "@/features/role/coach/routine/components/shared/routine-exercise-variants-button";
 import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
+import { getRepsPerSetWarning } from "@/features/routine/services/reps-per-set";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
 type UpdateField = ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "sets", value: number | string | null ) => void;
@@ -44,6 +45,7 @@ function RoutineDayExerciseRow( {
 	// La nota es opcional: se despliega al pedirla o si ya tiene texto.
 	const [ isNoteOpen, setIsNoteOpen ] = useState( hasNote );
 	const missingClassName = "border-warning";
+	const repsPerSetWarning = getRepsPerSetWarning( routine.reps, routine.sets );
 
 	return (
 		<li className={ "min-w-0 space-y-2 rounded-xl border border-border bg-surface-secondary px-2.5 py-2.5" }>
@@ -103,9 +105,10 @@ function RoutineDayExerciseRow( {
 						<span aria-hidden className={ "pb-2 text-sm text-muted" }>×</span>
 						<RoutineDayExerciseField
 							ariaLabel={ `Repeticiones de ${ exerciseName }` }
-							className={ "w-20 min-w-14 shrink gap-0.5" }
+							// Un poco mas ancho que series: entra "5 / 6 / 6" (distintas por serie).
+							className={ "w-24 min-w-14 shrink gap-0.5" }
 							label={ "Repeticiones" }
-							inputClassName={ `w-full px-1 text-center ${ routine.reps.trim() ? "" : missingClassName }` }
+							inputClassName={ `w-full px-1 text-center ${ routine.reps.trim() && !repsPerSetWarning ? "" : missingClassName }` }
 							name={ `reps-${ routine.clientId }` }
 							placeholder={ "10-12" }
 							value={ routine.reps }
@@ -136,6 +139,10 @@ function RoutineDayExerciseRow( {
 					</div>
 				</div>
 			</div>
+
+			{ repsPerSetWarning ? (
+				<p className={ "text-xs font-medium text-warning" } role={ "status" }>{ repsPerSetWarning }</p>
+			) : null }
 
 			{ isNoteOpen ? (
 				<RoutineDayExerciseField

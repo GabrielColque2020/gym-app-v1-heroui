@@ -122,6 +122,10 @@ medida que se hace.
   ejercicio, todos marcados, y les deja las mismas variantes en lugar de las que tenían.
   Es a pedido (los otros días pueden tener otras a propósito) y los días terminados por
   el estudiante no se tocan (`copyRoutineExerciseVariantsAction`).
+- [x] Repeticiones distintas por serie (top set + back-off, pirámides): "5 / 6 / 6" con 3
+  series pide 5 en la primera y 6 en las otras; con menos valores, el último se repite.
+  El estudiante ve la meta de cada serie y "3 series · 5 / 6 / 6". Al cargarlo, el coach
+  ve la ayuda y un aviso si sobran valores (`reps-per-set.ts`).
 
 ## Seguridad
 

@@ -49,7 +49,8 @@ function buildTargetSummary(exercise: Exercise) {
         return `${exercise.sets.length} x ${sharedTargetReps}`;
     }
 
-    return `${exercise.sets.length} series`;
+    // Distintas por serie ("5 / 6 / 6"): se ve lo que pide cada una.
+    return `${exercise.sets.length} series · ${exercise.sets.map((set) => set.targetRepsLabel?.trim() || String(set.targetReps)).join(" / ")}`;
 }
 
 type StepperFieldProps = {

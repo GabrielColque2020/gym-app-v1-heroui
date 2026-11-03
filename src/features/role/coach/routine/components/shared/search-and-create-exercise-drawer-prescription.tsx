@@ -1,6 +1,7 @@
 import { Button, Input, TextField } from "@heroui/react";
 
 import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
+import { getRepsPerSetWarning } from "@/features/routine/services/reps-per-set";
 
 type SearchAndCreateExerciseDrawerPrescriptionProps = {
 	// Se intento agregar con algo vacio: se marca lo que falta.
@@ -36,6 +37,7 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 	const isSetsMissing = isMissingShown && !setsValue.trim();
 	const isRepsMissing = isMissingShown && !repsValue.trim();
 	const missingClassName = "border-danger";
+	const repsPerSetWarning = getRepsPerSetWarning( repsValue, setsValue );
 
 	return (
 		<div className={ "space-y-2 rounded-xl border border-border bg-surface-secondary p-3" }>
@@ -56,7 +58,7 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 					/>
 				</TextField>
 				<span aria-hidden className={ "shrink-0 text-sm text-muted" }>×</span>
-				<TextField className={ "w-20 shrink-0 sm:w-24" } name={ "exercise-reps" } value={ repsValue } onChange={ onRepsChange }>
+				<TextField className={ "w-24 shrink-0 sm:w-28" } name={ "exercise-reps" } value={ repsValue } onChange={ onRepsChange }>
 					<Input
 						aria-invalid={ isRepsMissing || undefined }
 						aria-label={ "Repeticiones" }
@@ -90,6 +92,11 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 					);
 				} ) }
 			</div>
+			{ /* Sin esto no hay forma de saber que existe: es para top set + back-off o piramides. */ }
+			<p className={ "text-xs text-muted" }>Distintas en cada serie: separalas con una barra, por ejemplo 5 / 6 / 6.</p>
+			{ repsPerSetWarning ? (
+				<p className={ "text-xs font-medium text-warning" } role={ "status" }>{ repsPerSetWarning }</p>
+			) : null }
 			{ isSetsMissing || isRepsMissing ? (
 				<p className={ "text-xs font-medium text-danger" } role={ "alert" }>
 					Cargá series y repeticiones para agregar el ejercicio.

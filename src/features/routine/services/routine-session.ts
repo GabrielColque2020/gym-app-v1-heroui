@@ -1,4 +1,5 @@
 import { formatBodyPart } from "@/features/exercises/services/exercise-formatters";
+import { getSetTargetReps } from "@/features/routine/services/reps-per-set";
 import {
 	buildSessionHistory,
 	getCurrentProgressEntriesByExercise,
@@ -189,8 +190,9 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 					previousReps,
 					previousWeight: previousSeriesWeight,
 					setNumber,
-					targetReps: parseInteger( routine.reps ) ?? currentReps ?? 0,
-					targetRepsLabel: routine.reps?.trim() || undefined,
+					// Cada serie toma lo suyo de "5 / 6 / 6" (`getSetTargetReps`).
+					targetReps: parseInteger( getSetTargetReps( routine.reps, setNumber ) ) ?? currentReps ?? 0,
+					targetRepsLabel: getSetTargetReps( routine.reps, setNumber ) || undefined,
 				};
 			} );
 
