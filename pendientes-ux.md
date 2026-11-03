@@ -126,6 +126,11 @@ medida que se hace.
   series pide 5 en la primera y 6 en las otras; con menos valores, el último se repite.
   El estudiante ve la meta de cada serie y "3 series · 5 / 6 / 6". Al cargarlo, el coach
   ve la ayuda y un aviso si sobran valores (`reps-per-set.ts`).
+- [x] Título y nota de cada día (migración `20261103120000_routine_day_title_and_note`): el
+  coach los carga arriba de los ejercicios y se guardan solos. El título reemplaza a los
+  grupos musculares en la grilla del mes, la lista de días del estudiante, su inicio y el
+  PDF; la nota se ve como "Indicaciones del día" al abrir el día y en el PDF. Viajan al
+  copiar la rutina, repetir una semana y con las plantillas.
 
 ## Seguridad
 

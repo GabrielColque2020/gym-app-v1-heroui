@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button, Card, Chip, Spinner } from "@heroui/react";
+import { Alert, Button, Card, Chip, Spinner } from "@heroui/react";
 import { ArrowLeft, CheckCircle2, Flag, Pencil, RotateCw, Save, WifiOff } from "lucide-react";
 
 import type { useRoutinePageState } from "@/features/role/student/routine/hooks/use-routine-page-state";
@@ -31,6 +31,7 @@ export function RoutinePageLoadedHeader( {
 		activeSession,
 		backHref,
 		canFinishDay,
+		data,
 		dayDoneDate,
 		halfLoadedSetCount,
 		handleOpenFinishDrawer,
@@ -53,6 +54,9 @@ export function RoutinePageLoadedHeader( {
 				: `Falta completar ${ halfLoadedSetCount } series`,
 		} as const
 		: SAVE_STATUS_CHIP[ saveStatus ];
+	// Titulo y nota que le puso el entrenador a este dia ("Pecho + espalda").
+	const dayTitle = data?.title?.trim() || null;
+	const dayNote = data?.note?.trim() || null;
 	const isBusy = saveStatus === "saving" || saveStatus === "pending";
 	// Un dia sin ninguna serie cargada no tiene nada que informar como "Guardado".
 	const hasLoadedSets = activeSession.exercises.some( ( exercise ) => exercise.sets.some( ( set ) => set.completed ) );
@@ -92,6 +96,7 @@ export function RoutinePageLoadedHeader( {
 	);
 
 	return (
+		<>
 		<Card className={ "py-2" }>
 			{ /* En el telefono el avance de la sesion va en el subtitulo y "Terminar día"
 			     queda en la barra fija de abajo. */ }
@@ -108,7 +113,8 @@ export function RoutinePageLoadedHeader( {
 					<PageHeader
 						title={ `Día ${ activeSession.dayNumber }` }
 						// Mas corto que en escritorio para que entre en un renglon.
-						description={ `${ activeSession.title } · ${ routineStatusDescription.replace( " ejercicios completos", " completos" ) }` }
+						// En el telefono, el titulo del dia en lugar del de la semana: es lo que mas dice.
+						description={ `${ dayTitle ?? activeSession.title } · ${ routineStatusDescription.replace( " ejercicios completos", " completos" ) }` }
 					/>
 					</div>
 					<Button
@@ -129,7 +135,7 @@ export function RoutinePageLoadedHeader( {
 					<div className={ "flex min-w-64 flex-1 flex-col items-start gap-2" }>
 						<PageHeader
 							title={ `Rutina - Día ${ activeSession.dayNumber }` }
-							description={ `${ activeSession.title } · ${ routineStatusDescription }` }
+							description={ [ dayTitle, activeSession.title, routineStatusDescription ].filter( Boolean ).join( " · " ) }
 						/>
 						{ statusChips }
 					</div>
@@ -155,5 +161,15 @@ export function RoutinePageLoadedHeader( {
 				</div>
 			</Card.Content>
 		</Card>
+		{ /* La indicacion del entrenador para todo el dia, a la vista antes de empezar. */ }
+		{ dayNote ? (
+			<Alert status={ "accent" }>
+				<Alert.Content>
+					<Alert.Title>Indicaciones del día</Alert.Title>
+					<Alert.Description className={ "whitespace-pre-line" }>{ dayNote }</Alert.Description>
+				</Alert.Content>
+			</Alert>
+		) : null }
+		</>
 	);
 }

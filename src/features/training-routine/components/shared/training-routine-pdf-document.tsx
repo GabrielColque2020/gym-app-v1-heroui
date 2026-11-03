@@ -239,6 +239,8 @@ export function TrainingRoutinePdfDocument( {
 									<View>
 										<Text style={ styles.dayTitle }>{ `Día ${ day.dayNumber }` }</Text>
 										<Text style={ styles.daySubtitle }>{ getTrainingRoutineDayTitle( day ) }</Text>
+										{ /* La nota del dia de la primera semana, como el titulo. */ }
+										{ day.note?.trim() ? <Text style={ styles.daySubtitle }>{ day.note.trim() }</Text> : null }
 									</View>
 								</View>
 								<Text style={ styles.daySubtitle }>{ `${ day.routines.length } ${ day.routines.length === 1 ? "ejercicio" : "ejercicios" }` }</Text>

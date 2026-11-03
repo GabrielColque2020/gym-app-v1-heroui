@@ -16,6 +16,7 @@ import { buildEditRoutineDayHref, buildEditTemplateDayHref } from "@/features/ro
 import { useRoutineTemplateDetail } from "@/features/role/coach/training-routine/hooks/use-routine-templates";
 import { useTrainingRoutines } from "@/features/role/coach/training-routine/hooks/use-training-routines";
 
+import { EditRoutineDayInfoCard } from "@/features/role/coach/routine/components/shared/edit-routine-day-info-card";
 import { EditRoutineDayLoadedHeader } from "@/features/role/coach/routine/components/shared/edit-routine-day-loaded-header";
 import { EditRoutineDayNavigation } from "@/features/role/coach/routine/components/shared/edit-routine-day-navigation";
 import { EditRoutineDayMainCard } from "@/features/role/coach/routine/components/shared/edit-routine-day-main-card";
@@ -58,6 +59,7 @@ export function EditRoutineDayLoadedContent( {
 		addedExerciseIds,
 		copyVariantsToDays,
 		draftRoutines,
+		saveDayInfo,
 		getSuggestedOrder,
 		handleAddExercise,
 		handleConfirmRefresh,
@@ -282,6 +284,12 @@ export function EditRoutineDayLoadedContent( {
 				isCurrentDayDirty={ isDirty }
 				routineDayId={ routineDayId }
 				weeks={ monthWeeks ?? NO_WEEKS }
+			/>
+
+			<EditRoutineDayInfoCard
+				key={ routineDayId }
+				initialInfo={ { note: data.note, title: data.title } }
+				onSaveAction={ saveDayInfo }
 			/>
 
 			<RoutineDayEditorActionsProvider value={ editorActions }>

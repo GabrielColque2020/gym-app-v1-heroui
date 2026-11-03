@@ -62,6 +62,8 @@ export type StudentDashboardSummary = {
 		hasCurrentMonthRoutine: boolean;
 		nextRoutineDay: {
 			dayNumber: number;
+			// El titulo que le puso el entrenador al dia, si tiene.
+			dayTitle: string | null;
 			exerciseCount: number;
 			// Ya cargo series en este dia y todavia no lo termino.
 			hasProgress: boolean;
@@ -181,6 +183,8 @@ export async function getStudentDashboardSummaryAction(): Promise<ActionResult<S
 		const orderedRoutineDays = currentMonthRoutines.flatMap( ( routine ) =>
 			routine.routineDays.map( ( day ) => ( {
 				dayNumber: day.dayNumber,
+				// El que le puso el entrenador ("Pierna + core"), si tiene.
+				dayTitle: day.title?.trim() || null,
 				exerciseCount: day.routines.length,
 				hasProgress: lastProgressByDay.has( `${ routine.week }-${ day.dayNumber }` ),
 				id: day.id,

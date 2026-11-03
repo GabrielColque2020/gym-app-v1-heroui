@@ -15,6 +15,7 @@ type StudentDashboardTodayCardProps = {
 	hasCurrentMonthRoutine: boolean;
 	nextRoutineDay: {
 		dayNumber: number;
+		dayTitle: string | null;
 		exerciseCount: number;
 		hasProgress: boolean;
 		id: string;
@@ -99,6 +100,7 @@ export function StudentDashboardTodayCard( {
 							<p className={ "text-sm text-muted" }>
 								{ /* El titulo suele ser el nombre de la semana: no se repite si ya lo dice. */ }
 								{ [
+									nextRoutineDay.dayTitle,
 									nextRoutineDay.title === `Semana ${ nextRoutineDay.week }` ? null : nextRoutineDay.title,
 									`Semana ${ nextRoutineDay.week }`,
 									`${ exercisesInNextDay } ${ exercisesInNextDay === 1 ? "ejercicio" : "ejercicios" }`,

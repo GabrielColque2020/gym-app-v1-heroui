@@ -5,12 +5,16 @@ export function getTrainingRoutineDayTitle( dayNumber: number ) {
 }
 
 export function getTrainingRoutineDayDescription( day: {
+	// El que le puso el entrenador; sin titulo, los grupos musculares.
+	title?: string | null;
 	routines: Array<{
 		exercise?: {
 			bodyPart?: Parameters<typeof formatBodyPart>[0] | null;
 		} | null;
 	}>;
 } ) {
+	if (day.title?.trim()) return day.title.trim();
+
 	const bodyParts = Array.from(
 		new Set(
 			day.routines

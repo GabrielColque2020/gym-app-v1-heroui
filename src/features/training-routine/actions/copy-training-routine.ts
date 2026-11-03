@@ -225,6 +225,9 @@ export async function copyTrainingRoutineMonthAction( input: CopyTrainingRoutine
 						data: {
 							dayNumber: sourceDay.dayNumber,
 							isFinalized: false,
+							// El titulo y la nota del dia son parte de lo que armo el entrenador.
+							note: sourceDay.note,
+							title: sourceDay.title,
 							trainingRoutineWeekId: destinationRoutine.id,
 						},
 						select: {
@@ -320,6 +323,9 @@ export async function copyTrainingRoutineWeeksAction( input: CopyTrainingRoutine
 						data: {
 							dayNumber: sourceDay.dayNumber,
 							isFinalized: false,
+							// El titulo y la nota del dia son parte de lo que armo el entrenador.
+							note: sourceDay.note,
+							title: sourceDay.title,
 							trainingRoutineWeekId: destinationRoutine.id,
 						},
 						select: {

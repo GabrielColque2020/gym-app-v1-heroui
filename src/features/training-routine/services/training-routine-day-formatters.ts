@@ -1,6 +1,8 @@
 import { formatBodyPart, isBodyPartValue } from "@/features/exercises/services/exercise-formatters";
 
 type RoutineDayTitleInput = {
+	// El que le puso el entrenador; sin titulo, los grupos musculares.
+	title?: string | null;
 	routines: Array<{
 		exercise?: {
 			bodyPart?: string | null;
@@ -9,6 +11,8 @@ type RoutineDayTitleInput = {
 };
 
 export function getTrainingRoutineDayTitle( day: RoutineDayTitleInput ) {
+	if (day.title?.trim()) return day.title.trim();
+
 	const bodyParts = Array.from(
 		new Set(
 			day.routines

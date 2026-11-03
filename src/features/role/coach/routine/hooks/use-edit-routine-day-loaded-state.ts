@@ -18,6 +18,7 @@ import { coachRoutineTemplateDetailQueryKey } from "@/features/role/coach/traini
 import { replaceRoutineExerciseAction } from "@/features/routine/actions/replace-routine-exercise";
 import { addRoutineExerciseToDaysAction } from "@/features/routine/actions/add-routine-exercise-to-days";
 import { copyRoutineExerciseVariantsAction } from "@/features/routine/actions/copy-routine-exercise-variants";
+import { updateRoutineDayInfoAction } from "@/features/routine/actions/update-routine-day-info";
 import { appendExerciseToRoutineDayDrafts, replaceExerciseInRoutineDayDrafts } from "@/features/routine/stores/use-routine-day-draft-store";
 import { routineDayQueryKey } from "@/features/routine/services/routine-day-query";
 import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
@@ -502,9 +503,29 @@ export function useEditRoutineDayLoadedState( {
 		}
 	}
 
+	// Titulo y nota del dia. Tira el error para que quien llama muestre el estado.
+	async function saveDayInfo( info: { note: string | null; title: string | null } ) {
+		const saved = await unwrapped( updateRoutineDayInfoAction )( { ...info, routineDayId, studentId, templateId } );
+
+		queryClient.setQueryData<RoutineDayDetailBase>(
+			routineDayQueryKey( routineDayId, studentId, templateId ),
+			( current ) => current ? { ...current, ...saved } : current,
+		);
+		// La grilla del mes y las pestanas de dias muestran el titulo. Los otros
+		// dias no cambian: no hace falta volver a pedirlos.
+		await queryClient.invalidateQueries( {
+			queryKey: routine.template
+				? coachRoutineTemplateDetailQueryKey( routine.template.id )
+				: coachTrainingRoutinesQueryKey( routine.student?.id ?? "", routine.month, routine.year ),
+		} );
+
+		return saved;
+	}
+
 	return {
 		addedExerciseIds,
 		copyVariantsToDays,
+		saveDayInfo,
 		draftRoutines,
 		getSuggestedOrder,
 		handleAddExercise,

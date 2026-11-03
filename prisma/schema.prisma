@@ -196,6 +196,10 @@ model TrainingRoutineWeek {
 model RoutineDay {
   id                    String              @id @default(uuid())
   dayNumber             Int // 1 a 5
+  // Lo que se trabaja ese dia ("Pecho + espalda + brazos"). Opcional.
+  title                 String?
+  // Indicaciones del dia para el estudiante ("La banca tiene prioridad..."). Opcional.
+  note                  String?
   trainingRoutineWeek   TrainingRoutineWeek @relation(fields: [trainingRoutineWeekId], references: [id], onDelete: Cascade)
   trainingRoutineWeekId String
   isFinalized           Boolean             @default(false)

@@ -71,6 +71,9 @@ export async function createRoutineWeeksCopy(
 				data: {
 					dayNumber: sourceDay.dayNumber,
 					isFinalized: false,
+					// El titulo y la nota del dia son parte de lo que armo el entrenador.
+					note: sourceDay.note,
+					title: sourceDay.title,
 					trainingRoutineWeekId: week.id,
 				},
 				select: {
