@@ -36,10 +36,35 @@ type DayCellProps = {
 	hasUnsavedChanges: boolean;
 	href: string;
 	progress: DayProgress;
+	// El mes de un estudiante: la celda dice cuanto hizo el de ese dia.
+	showStudentProgress: boolean;
 };
 
-function DayCell( { day, hasUnsavedChanges, href, progress }: DayCellProps ) {
+// Las series que pide el dia, sumando las de cada ejercicio.
+function getPlannedSetCount( day: CoachTrainingRoutineDay ) {
+	return day.routines.reduce( ( total, routine ) => total + ( Number.parseInt( routine.sets, 10 ) || 0 ), 0 );
+}
+
+// Lo que hizo el estudiante en el dia, dicho con todas las letras: la etiqueta
+// sola ("Sin terminar") se leia como si al dia le faltara algo por armar.
+function getStudentProgressText( day: CoachTrainingRoutineDay, progress: DayProgress ) {
+	if (day.isFinalized) return "El estudiante lo terminó";
+	if (progress === "skipped") return "El estudiante no lo hizo";
+	if (day.loadedSetCount === 0) return null;
+
+	const plannedSetCount = getPlannedSetCount( day );
+	const setsLabel = plannedSetCount > 0
+		? `${ Math.min( day.loadedSetCount, plannedSetCount ) } de ${ plannedSetCount } series`
+		: `${ day.loadedSetCount } ${ day.loadedSetCount === 1 ? "serie" : "series" }`;
+
+	return progress === "unfinished"
+		? `El estudiante hizo ${ setsLabel } y siguió con otro día`
+		: `El estudiante va ${ setsLabel }`;
+}
+
+function DayCell( { day, hasUnsavedChanges, href, progress, showStudentProgress }: DayCellProps ) {
 	const isEmpty = day.routines.length === 0;
+	const studentProgressText = showStudentProgress && !isEmpty ? getStudentProgressText( day, progress ) : null;
 
 	return (
 		<Link
@@ -95,6 +120,9 @@ function DayCell( { day, hasUnsavedChanges, href, progress }: DayCellProps ) {
 					<p className={ "text-xs text-muted" }>
 						{ day.routines.length } { day.routines.length === 1 ? "ejercicio" : "ejercicios" }
 					</p>
+					{ studentProgressText ? (
+						<p className={ `text-xs leading-4 ${ progress ? "text-warning" : "text-muted" }` }>{ studentProgressText }</p>
+					) : null }
 					{ /* La accion a la vista, igual que "Cargar" en un dia vacio: sin esto no
 					     se nota que la celda entera abre el editor. */ }
 					<p className={ "mt-auto flex items-center gap-1 pt-1 text-sm font-medium text-accent" }>
@@ -143,9 +171,9 @@ export function CoachTrainingRoutineMonthGrid( {
 	const hasAlerts = skippedCount > 0 || unfinishedCount > 0;
 	const summaryLabel = monthProgress && monthProgress.summary.totalCount > 0
 		? [
-			`${ monthProgress.summary.doneCount } de ${ monthProgress.summary.totalCount } ${ monthProgress.summary.totalCount === 1 ? "día hecho" : "días hechos" }`,
+			`El estudiante hizo ${ monthProgress.summary.doneCount } de ${ monthProgress.summary.totalCount } ${ monthProgress.summary.totalCount === 1 ? "día" : "días" }`,
 			skippedCount > 0 ? `${ skippedCount } ${ skippedCount === 1 ? "salteado" : "salteados" }` : null,
-			unfinishedCount > 0 ? `${ unfinishedCount } sin terminar` : null,
+			unfinishedCount > 0 ? `dejó ${ unfinishedCount } sin terminar` : null,
 		].filter( Boolean ).join( " · " )
 		: null;
 
@@ -184,6 +212,7 @@ export function CoachTrainingRoutineMonthGrid( {
 											hasUnsavedChanges={ isRoutineDayDraftDirty( drafts[ day.id ], day.routines ) }
 											href={ buildDayHrefAction( day.id ) }
 											progress={ monthProgress?.progressByDayId.get( day.id ) ?? null }
+											showStudentProgress={ showStudentProgress }
 										/>
 									) ) }
 								</div>
