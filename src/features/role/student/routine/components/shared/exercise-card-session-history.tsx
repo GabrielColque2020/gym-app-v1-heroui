@@ -22,6 +22,12 @@ function formatWeightLabel( weight: number | null ) {
 	return weight === null ? "sin peso" : `${ weight.toLocaleString( "es-AR" ) } kg`;
 }
 
+// Solo cuando la referencia vino de otro dia: el mismo ejercicio puede ir con
+// otra carga en cada dia de la semana.
+function formatOtherDayLabel( history: ExerciseSessionHistory ) {
+	return `Del día ${ history.dayNumber } · semana ${ history.week }`;
+}
+
 export function ExerciseCardSessionHistory( {
 												history,
 												isHighlighted = false,
@@ -47,6 +53,9 @@ export function ExerciseCardSessionHistory( {
 			<p className={ `text-sm font-normal ${ isHighlighted ? "text-warning" : "text-muted" }` }>
 				<span className={ "font-medium text-foreground" }>{ summary }</span>
 				{ ` · ${ formatSessionDateLabel( history.date ) }` }
+				{ history.isFromOtherDay ? (
+					<span className={ "block text-xs font-medium text-warning" }>{ formatOtherDayLabel( history ) }</span>
+				) : null }
 			</p>
 		);
 	}
@@ -59,6 +68,11 @@ export function ExerciseCardSessionHistory( {
 
 	return (
 		<div className={ containerClassName }>
+			{ history.isFromOtherDay ? (
+				<Chip className={ chipClassName } color={ "warning" } size={ "sm" } variant={ "soft" }>
+					<Chip.Label>{ formatOtherDayLabel( history ) }</Chip.Label>
+				</Chip>
+			) : null }
 			<Chip className={ chipClassName } color={ chipColor } size={ "sm" } variant={ "soft" }>
 				<Chip.Label>{ formatSessionDateLabel( history.date ) }</Chip.Label>
 			</Chip>

@@ -137,6 +137,21 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 	const isEarlierSession = ( entry: StudentRoutineSessionDetail["progressEntries"][ number ] ) =>
 		getSessionKey( entry ) !== ownSessionKey
 		&& ( ownSessionStart === null || new Date( entry.date ).getTime() < ownSessionStart );
+	// Un mismo ejercicio puede estar en varios dias con otra carga (dia 1 pesado,
+	// dia 3 liviano). La referencia es el mismo dia de una semana anterior; solo
+	// si nunca se hizo en ese dia se usa la ultima vez que se hizo.
+	const getEarlierHistory = ( entries: StudentRoutineSessionDetail["progressEntries"] ) => {
+		const earlierEntries = entries.filter( isEarlierSession );
+		const sameDayEntries = earlierEntries.filter( ( entry ) => entry.dayNumber === detail.dayNumber );
+
+		return sameDayEntries.length > 0 ? sameDayEntries : earlierEntries;
+	};
+	// Marca la sesion que vino del respaldo (otro dia) para avisarlo en pantalla.
+	const toLastSession = ( historyEntries: StudentRoutineSessionDetail["progressEntries"] ) => {
+		const history = buildSessionHistory( historyEntries );
+
+		return history ? { ...history, isFromOtherDay: history.dayNumber !== detail.dayNumber } : null;
+	};
 	const exercises = [ ...detail.routines ]
 		.sort( ( left, right ) => left.order - right.order )
 		.map( ( routine ) => {
@@ -152,12 +167,12 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				? routine.variants.find( ( variant ) => variant.variantExercise.id === variantExerciseId )?.variantExercise ?? null
 				: null;
 			const currentExerciseEntries = getCurrentProgressEntriesByExercise( detail, exerciseId, selectedVariant?.id ?? null );
-			const historyExerciseEntries = (
+			const historyExerciseEntries = getEarlierHistory(
 				selectedVariant
 					? getProgressEntriesByVariant( detail, selectedVariant.id )
-					: getProgressEntriesByExercise( detail, exerciseId )
-			).filter( isEarlierSession );
-			const lastSession = buildSessionHistory(
+					: getProgressEntriesByExercise( detail, exerciseId ),
+			);
+			const lastSession = toLastSession(
 				historyExerciseEntries,
 			);
 			const setCount = Math.max(
@@ -214,7 +229,7 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				notes: exercise?.tips ?? routine.observation ?? undefined,
 				lastSession,
 				baseLastSession: selectedVariant
-					? buildSessionHistory( getProgressEntriesByExercise( detail, exerciseId ).filter( isEarlierSession ) )
+					? toLastSession( getEarlierHistory( getProgressEntriesByExercise( detail, exerciseId ) ) )
 					: lastSession,
 				originalVariantExerciseId: variantExerciseId,
 				variantExerciseId,
@@ -238,8 +253,8 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 						variant.variantExercise.instructions,
 						variant.variantExercise.globalExercise?.instructions,
 					),
-					lastSession: buildSessionHistory(
-						getProgressEntriesByVariant( detail, variant.variantExercise.id ).filter( isEarlierSession ),
+					lastSession: toLastSession(
+						getEarlierHistory( getProgressEntriesByVariant( detail, variant.variantExercise.id ) ),
 					),
 					name: variant.variantExercise.name,
 					videoUrl: pickFirstText(

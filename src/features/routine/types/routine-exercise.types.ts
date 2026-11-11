@@ -25,6 +25,9 @@ export interface ExerciseSessionHistory {
 	completed: boolean;
 	date: Date;
 	dayNumber: number;
+	// El ejercicio nunca se hizo en este dia y la referencia es de otro dia (con
+	// otra carga, quizas). La pantalla lo aclara para no confundir.
+	isFromOtherDay?: boolean;
 	month: number;
 	sets: ExerciseSessionHistorySet[];
 	week: number;
