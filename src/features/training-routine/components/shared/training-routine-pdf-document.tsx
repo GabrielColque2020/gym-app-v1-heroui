@@ -4,6 +4,7 @@ import { Document, Font, Page, StyleSheet, Text, View, } from "@react-pdf/render
 
 import { monthYearLabel } from "@/constants/months";
 import { formatRestSeconds } from "@/features/routine/services/rest-seconds";
+import { normalizeRir } from "@/features/routine/services/rir";
 import { formatSetBlocksSummary } from "@/features/routine/services/reps-per-set";
 import { getTrainingRoutineDayTitle } from "@/features/training-routine/services/training-routine-day-formatters";
 import type { TrainingRoutineWeek } from "@/features/training-routine/services/training-routines-by-student";
@@ -26,6 +27,7 @@ type PrintableWeekCell = {
 	reps: string;
 	// Descanso entre series que fijo el entrenador, ya con formato. Sin valor, no se imprime.
 	rest: string | null;
+	rir: string | null;
 	sets: string;
 };
 
@@ -192,6 +194,7 @@ function getDayRows( dayNumber: number, routineWeeks: TrainingRoutineWeek[] ): P
 				notes: formatNotes( exercise.observation, null ),
 				reps: exercise.reps,
 				rest: exercise.restSeconds ? formatRestSeconds( exercise.restSeconds ) : null,
+				rir: normalizeRir( exercise.rir ),
 				sets: exercise.sets,
 			};
 		} ),
@@ -223,7 +226,7 @@ export function TrainingRoutinePdfDocument( {
 					<Text style={ styles.title }>Planificación de rutina</Text>
 					<Text style={ styles.line }>{ `Estudiante: ${ studentName }` }</Text>
 					<Text style={ [ styles.line, styles.muted ] }>{ `Objetivo del mes: ${ objective }` }</Text>
-					<Text style={ [ styles.line, styles.muted ] }>Resumen por día con semanas, ejercicios, series, repeticiones, descanso entre series y observaciones.</Text>
+					<Text style={ [ styles.line, styles.muted ] }>Resumen por día con semanas, ejercicios, series, repeticiones, RIR, descanso entre series y observaciones.</Text>
 					<View style={ styles.chips }>
 						<Text style={ styles.chip }>{ periodLabel }</Text>
 						<Text style={ styles.chip }>{ `${ routineWeeks.length } ${ routineWeeks.length === 1 ? "semana" : "semanas" }` }</Text>
@@ -269,6 +272,7 @@ export function TrainingRoutinePdfDocument( {
 												{ cell ? (
 													<>
 														<Text style={ styles.weekValue }>{ formatSetBlocksSummary( cell.sets, cell.reps ) ?? `${ cell.sets } x ${ cell.reps }` }</Text>
+														{ cell.rir ? <Text style={ styles.rest }>{ `RIR ${ cell.rir }` }</Text> : null }
 														{ cell.rest ? <Text style={ styles.rest }>{ `Descanso ${ cell.rest }` }</Text> : null }
 														{ cell.notes ? <Text style={ styles.notes }>{ cell.notes }</Text> : null }
 													</>

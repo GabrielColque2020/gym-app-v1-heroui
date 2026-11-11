@@ -9,7 +9,7 @@ type EditRoutineDayMainCardContentProps = {
 	requiredFieldsMessage: string | null;
 	validationError: string | null;
 	onDeleteExercise: ( clientId: string ) => void;
-	onUpdateExerciseField: ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "sets", value: number | string | null ) => void;
+	onUpdateExerciseField: ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "rir" | "sets", value: number | string | null ) => void;
 };
 
 export function EditRoutineDayMainCardContent( {

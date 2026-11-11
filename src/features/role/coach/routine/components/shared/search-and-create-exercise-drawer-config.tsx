@@ -20,10 +20,12 @@ type SearchAndCreateExerciseDrawerConfigProps = {
 	onBackAction: () => void;
 	onRepsChange: ( value: string ) => void;
 	onRestChange: ( value: number | null ) => void;
+	onRirChange: ( value: string ) => void;
 	onSetsChange: ( value: string ) => void;
 	onVariantsChangeAction: ( variants: DraftVariantItem[] ) => void;
 	repsValue: string;
 	restValue: number | null;
+	rirValue: string;
 	setsValue: string;
 	variants: DraftVariantItem[];
 };
@@ -38,10 +40,12 @@ export function SearchAndCreateExerciseDrawerConfig( {
 	onBackAction,
 	onRepsChange,
 	onRestChange,
+	onRirChange,
 	onSetsChange,
 	onVariantsChangeAction,
 	repsValue,
 	restValue,
+	rirValue,
 	setsValue,
 	variants,
 }: SearchAndCreateExerciseDrawerConfigProps ) {
@@ -76,9 +80,11 @@ export function SearchAndCreateExerciseDrawerConfig( {
 				isMissingShown={ isMissingShown }
 				repsValue={ repsValue }
 				restValue={ restValue }
+				rirValue={ rirValue }
 				setsValue={ setsValue }
 				onRepsChange={ onRepsChange }
 				onRestChange={ onRestChange }
+				onRirChange={ onRirChange }
 				onSetsChange={ onSetsChange }
 			/>
 

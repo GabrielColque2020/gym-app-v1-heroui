@@ -51,6 +51,8 @@ export interface Exercise {
 	// Descanso entre series que fijo el entrenador, en segundos. Sin valor, el
 	// estudiante usa el que tenga elegido en su telefono.
 	restSeconds?: number | null;
+	// Repeticiones en reserva que pidio el entrenador ("2", "1-2"), si las pidio.
+	rir?: string | null;
 	sets: ExerciseSet[];
 	notes?: string;
 	lastSession: ExerciseSessionHistory | null;

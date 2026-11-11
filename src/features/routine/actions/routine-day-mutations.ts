@@ -29,6 +29,7 @@ export type SavedRoutineRow = {
 	order: number;
 	reps: string;
 	restSeconds: number | null;
+	rir: string | null;
 	sets: string;
 };
 

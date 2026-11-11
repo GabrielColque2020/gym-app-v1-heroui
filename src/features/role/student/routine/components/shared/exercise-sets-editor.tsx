@@ -163,7 +163,11 @@ function ExerciseSetsEditorContent({
                     <div className={ "flex flex-wrap items-center justify-between gap-2" }>
                         <div className={ "min-w-0" }>
                             <p className={ "text-xs font-medium text-muted" }>Objetivo</p>
-                            <p className={ "text-base font-semibold text-foreground" }>{ buildTargetSummary(exercise) }</p>
+                            <p className={ "text-base font-semibold text-foreground" }>
+                                { buildTargetSummary(exercise) }
+                                { /* El RIR va con el objetivo: es parte de lo que pide el entrenador para cada serie. */ }
+                                { exercise.rir ? ` · RIR ${ exercise.rir }` : null }
+                            </p>
                         </div>
                         { hasLastSession && onRepeatLastSession && !isLocked ? (
                             <Button size={ "sm" } variant={ "secondary" } onPress={ onRepeatLastSession }>

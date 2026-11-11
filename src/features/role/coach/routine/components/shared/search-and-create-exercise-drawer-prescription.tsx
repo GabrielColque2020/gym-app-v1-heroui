@@ -5,15 +5,18 @@ import { Layers } from "lucide-react";
 import { RoutineRestSelect } from "@/features/role/coach/routine/components/shared/routine-rest-select";
 import { RoutineSetBlocksEditor } from "@/features/role/coach/routine/components/shared/routine-set-blocks-editor";
 import { REPS_PER_SET_SEPARATOR } from "@/features/routine/services/reps-per-set";
+import { RIR_MAX_LENGTH } from "@/features/routine/services/rir";
 
 type SearchAndCreateExerciseDrawerPrescriptionProps = {
 	// Se intento agregar con algo vacio: se marca lo que falta.
 	isMissingShown: boolean;
 	onRepsChange: ( value: string ) => void;
 	onRestChange: ( value: number | null ) => void;
+	onRirChange: ( value: string ) => void;
 	onSetsChange: ( value: string ) => void;
 	repsValue: string;
 	restValue: number | null;
+	rirValue: string;
 	setsValue: string;
 };
 
@@ -24,7 +27,7 @@ const PRESETS = [
 	{ reps: "12", sets: "4" },
 ] as const;
 
-// Series, repeticiones y descanso del ejercicio que se esta agregando. Los
+// Series, repeticiones, RIR y descanso del ejercicio que se esta agregando. Los
 // atajos cargan las combinaciones mas comunes de un toque. Series y repeticiones
 // son obligatorias: un ejercicio sin ellas no le sirve al estudiante, y agregado
 // en otros dias les llegaria vacio.
@@ -32,9 +35,11 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 															   isMissingShown,
 															   onRepsChange,
 															   onRestChange,
+															   onRirChange,
 															   onSetsChange,
 															   repsValue,
 															   restValue,
+															   rirValue,
 															   setsValue,
 														   }: SearchAndCreateExerciseDrawerPrescriptionProps ) {
 	const isSetsMissing = isMissingShown && !setsValue.trim();
@@ -42,6 +47,12 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 	const missingClassName = "border-danger";
 	// Series diferentes (1 × 5 y 2 × 6): bloques en lugar de un solo "series × reps".
 	const [ hasSetBlocks, setHasSetBlocks ] = useState( false );
+	// Opcional: las repeticiones que el estudiante deja en reserva ("2", "1-2").
+	const rirField = (
+		<TextField className={ "w-16 shrink-0" } name={ "exercise-rir" } value={ rirValue } onChange={ ( value ) => onRirChange( value.slice( 0, RIR_MAX_LENGTH ) ) }>
+			<Input aria-label={ "RIR (repeticiones en reserva)" } className={ "border border-border" } placeholder={ "RIR" }/>
+		</TextField>
+	);
 
 	return (
 		<div className={ "space-y-2 rounded-xl border border-border bg-surface-secondary p-3" }>
@@ -66,12 +77,15 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 							setHasSetBlocks( false );
 						} }
 					/>
-					<RoutineRestSelect
-						showLabel
-						ariaLabel={ "Descanso" }
-						value={ restValue }
-						onChangeAction={ onRestChange }
-					/>
+					<div className={ "flex items-center gap-2" }>
+						{ rirField }
+						<RoutineRestSelect
+							showLabel
+							ariaLabel={ "Descanso" }
+							value={ restValue }
+							onChangeAction={ onRestChange }
+						/>
+					</div>
 				</>
 			) : (
 			<>
@@ -102,6 +116,7 @@ export function SearchAndCreateExerciseDrawerPrescription( {
 						placeholder={ "Reps" }
 					/>
 				</TextField>
+				{ rirField }
 				<RoutineRestSelect
 					showLabel
 					ariaLabel={ "Descanso" }

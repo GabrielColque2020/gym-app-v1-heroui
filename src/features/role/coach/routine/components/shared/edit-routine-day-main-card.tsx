@@ -16,7 +16,7 @@ type EditRoutineDayMainCardProps = {
 	onAddExerciseAction: ( exercise: ExerciseListItem, order: number, prescription: ExercisePrescription ) => void;
 	onDeleteExerciseAction: ( clientId: string ) => void;
 	onRefreshAction: () => void;
-	onUpdateExerciseField: ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "sets", value: number | string | null ) => void;
+	onUpdateExerciseField: ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "rir" | "sets", value: number | string | null ) => void;
 };
 
 export function EditRoutineDayMainCard( {

@@ -7,6 +7,7 @@ import { requireCoachSession } from "@/features/auth/coach-session";
 import { emptyToNull } from "@/features/exercises/services/exercise-form";
 import { assertRoutineCatalogExercisesAvailable, getRoutineWeekScope } from "@/features/routine/actions/routine-day-mutations.utils";
 import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
+import { normalizeRir } from "@/features/routine/services/rir";
 
 export type AddRoutineExerciseToDaysInput = {
 	// Puede ser un ejercicio del catalogo global: se usa la copia del coach.
@@ -14,6 +15,7 @@ export type AddRoutineExerciseToDaysInput = {
 	observation?: string;
 	reps: string;
 	restSeconds: number | null;
+	rir?: string | null;
 	// El dia desde el que se agrega: de ahi sale cual es la rutina. Ese dia se
 	// guarda por su lado, como siempre; aca van los otros.
 	routineDayId: string;
@@ -34,7 +36,7 @@ export type AddRoutineExerciseToDaysResult = {
 	skippedFinalizedDays: number;
 };
 
-// Agrega un ejercicio, con sus series, repeticiones, descanso y variantes, al
+// Agrega un ejercicio, con sus series, repeticiones, descanso, RIR y variantes, al
 // final de otros dias de la misma rutina (o plantilla).
 export async function addRoutineExerciseToDaysAction( input: AddRoutineExerciseToDaysInput ): Promise<ActionResult<AddRoutineExerciseToDaysResult>> {
 	return runAction( "No se pudo agregar el ejercicio en los otros días.", async () => {
@@ -59,6 +61,7 @@ export async function addRoutineExerciseToDaysAction( input: AddRoutineExerciseT
 			order: 1,
 			reps,
 			restSeconds: null,
+			rir: null,
 			sets,
 		} ] );
 		const exerciseId = resolved.exerciseId;
@@ -106,6 +109,7 @@ export async function addRoutineExerciseToDaysAction( input: AddRoutineExerciseT
 						order,
 						reps,
 						restSeconds: normalizeRestSeconds( input.restSeconds ),
+						rir: normalizeRir( input.rir ),
 						routineDayId: day.id,
 						sets,
 						variants: variantIds.length > 0

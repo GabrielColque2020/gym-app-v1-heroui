@@ -41,6 +41,7 @@ function buildDetail( dayNumber: number, progressEntries: StudentRoutineProgress
 			order: 1,
 			reps: "4",
 			restSeconds: null,
+			rir: " 2 ",
 			sets: "1",
 			variants: [],
 		} ],
@@ -62,6 +63,12 @@ describe( "sesion anterior de un ejercicio", () => {
 		expect( exercise.lastSession?.dayNumber ).toBe( 1 );
 		expect( exercise.lastSession?.isFromOtherDay ).toBe( false );
 		expect( exercise.sets[ 0 ] ).toMatchObject( { previousReps: 4, previousWeight: 70 } );
+	} );
+
+	it( "el estudiante recibe el RIR que pidio el entrenador", () => {
+		const session = mapStudentRoutineSessionDetailToSession( buildDetail( 1, [] ) );
+
+		expect( session.exercises[ 0 ].rir ).toBe( "2" );
 	} );
 
 	it( "usa el dia 3 anterior al entrar al dia 3", () => {

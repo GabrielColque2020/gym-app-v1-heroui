@@ -6,6 +6,7 @@ import { buildCoachExerciseSearchName, mapCategoryToBodyPart } from "@/features/
 import type { SaveRoutineDayExercisesActionInput, SavedRoutineRow } from "@/features/routine/actions/routine-day-mutations";
 import { validateRoutineDayDraft, type SaveRoutineDayExerciseInput } from "@/features/routine/services/routine-day-editor";
 import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
+import { normalizeRir } from "@/features/routine/services/rir";
 
 type NormalizedRoutineDayExerciseInput = SaveRoutineDayExerciseInput;
 
@@ -16,6 +17,7 @@ export function normalizeRoutineDayExercises( exercises: SaveRoutineDayExerciseI
 		order: exercise.order,
 		reps: exercise.reps,
 		restSeconds: normalizeRestSeconds( exercise.restSeconds ),
+		rir: normalizeRir( exercise.rir ),
 		sets: exercise.sets,
 		variantExerciseIds: Array.from( new Set(
 			( exercise.variantExerciseIds ?? [] ).map( ( variantExerciseId ) => variantExerciseId.trim() ).filter( Boolean ),
@@ -33,6 +35,7 @@ export function validateNormalizedRoutineDayExercises( exercises: NormalizedRout
 		order: exercise.order,
 		reps: exercise.reps,
 		restSeconds: exercise.restSeconds,
+		rir: exercise.rir,
 		sets: exercise.sets,
 	} ) ) );
 
@@ -240,6 +243,7 @@ export async function persistRoutineDayExercises(
 				order: true,
 				reps: true,
 				restSeconds: true,
+				rir: true,
 				sets: true,
 			},
 			where: {
@@ -264,6 +268,7 @@ export async function persistRoutineDayExercises(
 			order: number;
 			reps: string;
 			restSeconds: number | null;
+			rir: string | null;
 			routineDayId: string;
 			sets: string;
 		}> = [];
@@ -274,6 +279,7 @@ export async function persistRoutineDayExercises(
 				order: exercise.order,
 				reps: exercise.reps.trim(),
 				restSeconds: exercise.restSeconds,
+				rir: exercise.rir,
 				sets: exercise.sets.trim(),
 			};
 			const existing = existingByExerciseId.get( exercise.exerciseId );
@@ -291,6 +297,7 @@ export async function persistRoutineDayExercises(
 				|| existing.order !== data.order
 				|| existing.reps !== data.reps
 				|| existing.restSeconds !== data.restSeconds
+				|| existing.rir !== data.rir
 				|| existing.sets !== data.sets;
 
 			if (hasChanges) {

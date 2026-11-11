@@ -7,7 +7,7 @@ import {
 	validateRoutineDayDraft,
 } from "@/features/routine/services/routine-day-editor";
 
-type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "pendingVariantExerciseIds" | "reps" | "restSeconds" | "sets">;
+type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "pendingVariantExerciseIds" | "reps" | "restSeconds" | "rir" | "sets">;
 
 export type AddDraftExerciseResult =
 	| { draft?: never; error: string; routine?: never }
@@ -38,6 +38,8 @@ export function patchDraftExercise(
 				reps: patch.reps ?? routine.reps,
 				// `null` es un valor valido (sin descanso): solo se conserva si no vino.
 				restSeconds: patch.restSeconds !== undefined ? patch.restSeconds : routine.restSeconds ?? null,
+				// Igual con el RIR: `null` es "sin RIR". Un borrador viejo no lo trae.
+				rir: patch.rir !== undefined ? patch.rir : routine.rir ?? null,
 				sets: patch.sets ?? routine.sets,
 			}
 			: routine

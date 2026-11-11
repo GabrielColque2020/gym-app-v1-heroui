@@ -16,7 +16,7 @@ import { RoutineSetBlocksEditor } from "@/features/role/coach/routine/components
 import { formatSetBlocksSummary, parseSetBlocks, REPS_PER_SET_SEPARATOR } from "@/features/routine/services/reps-per-set";
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 
-type UpdateField = ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "sets", value: number | string | null ) => void;
+type UpdateField = ( clientId: string, field: "observation" | "order" | "reps" | "restSeconds" | "rir" | "sets", value: number | string | null ) => void;
 
 type RoutineDayExerciseListProps = {
 	onDeleteAction: ( clientId: string ) => void;
@@ -105,6 +105,7 @@ function RoutineDayExerciseRow( {
 				{ /* En angosto arranca desde el borde y no debajo de la imagen: con la sangria,
 				     el descanso con su tiempo empujaba las acciones afuera de la tarjeta. */ }
 				<div className={ "flex min-w-0 items-end justify-between gap-1 @xl:shrink-0 @xl:justify-end @xl:gap-3" }>
+					<div className={ "flex min-w-0 items-end gap-1.5" }>
 					{ hasSetBlocks ? (
 						// Los bloques se cargan abajo; aca queda lo que se pide, de un vistazo.
 						<div className={ "flex min-w-0 flex-col gap-0.5" }>
@@ -141,6 +142,18 @@ function RoutineDayExerciseRow( {
 						/>
 					</div>
 					) }
+					{ /* Opcional: las repeticiones que el estudiante deja en reserva ("2", "1-2"). */ }
+					<RoutineDayExerciseField
+						ariaLabel={ `RIR de ${ exerciseName }` }
+						className={ "w-12 shrink-0 gap-0.5" }
+						label={ "RIR" }
+						inputClassName={ "w-full px-1 text-center" }
+						name={ `rir-${ routine.clientId }` }
+						placeholder={ "–" }
+						value={ routine.rir ?? "" }
+						onChange={ ( value ) => onUpdateField( routine.clientId, "rir", value ) }
+					/>
+					</div>
 					<div className={ "flex shrink-0 items-center" }>
 						{ /* Opcional: es el tiempo con el que arranca el reloj del estudiante. */ }
 						<RoutineRestSelect

@@ -1,5 +1,6 @@
 import { formatBodyPart } from "@/features/exercises/services/exercise-formatters";
 import { getSetTargetReps } from "@/features/routine/services/reps-per-set";
+import { normalizeRir } from "@/features/routine/services/rir";
 import {
 	buildSessionHistory,
 	getCurrentProgressEntriesByExercise,
@@ -236,6 +237,7 @@ export function mapStudentRoutineSessionDetailToSession( detail: StudentRoutineS
 				variantSelectionExplicit: false,
 				restTime: Math.max( setCount * 30, 0 ),
 				restSeconds: routine.restSeconds ?? null,
+				rir: normalizeRir( routine.rir ),
 				sets: currentSets,
 				videoUrl: pickFirstText(
 					routine.exercise?.videoUrl,

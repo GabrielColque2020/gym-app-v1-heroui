@@ -22,6 +22,7 @@ import { updateRoutineDayInfoAction } from "@/features/routine/actions/update-ro
 import { appendExerciseToRoutineDayDrafts, replaceExerciseInRoutineDayDrafts } from "@/features/routine/stores/use-routine-day-draft-store";
 import { routineDayQueryKey } from "@/features/routine/services/routine-day-query";
 import { coachTrainingRoutinesQueryKey } from "@/features/training-routine/services/training-routines-keys";
+import { normalizeRir } from "@/features/routine/services/rir";
 
 // Espera despues del ultimo cambio antes de guardar solo: lo justo para no
 // guardar a mitad de una palabra o de un numero de dos cifras.
@@ -37,6 +38,7 @@ type AddExercisePrescription = {
 	otherDayIds?: string[];
 	reps: string;
 	restSeconds?: number | null;
+	rir?: string | null;
 	sets: string;
 	variantExerciseIds?: string[];
 };
@@ -180,6 +182,7 @@ export function useEditRoutineDayLoadedState( {
 				exerciseId: exercise.id,
 				reps: prescription.reps,
 				restSeconds: prescription.restSeconds ?? null,
+				rir: normalizeRir( prescription.rir ),
 				routineDayId,
 				routineDayIds: otherDayIds,
 				sets: prescription.sets,
@@ -191,6 +194,7 @@ export function useEditRoutineDayLoadedState( {
 			appendExerciseToRoutineDayDrafts( result.addedDayIds, { ...exercise, id: result.resolvedExerciseId }, {
 				reps: prescription.reps,
 				restSeconds: prescription.restSeconds ?? null,
+				rir: normalizeRir( prescription.rir ),
 				sets: prescription.sets,
 			} );
 			await refreshAfterRoutineWideChange( { includeCurrentDay: false } );
@@ -237,6 +241,7 @@ export function useEditRoutineDayLoadedState( {
 		if (prescription?.sets) updateExerciseField( result.routine.clientId, "sets", prescription.sets );
 		if (prescription?.reps) updateExerciseField( result.routine.clientId, "reps", prescription.reps );
 		if (prescription?.restSeconds) updateExerciseField( result.routine.clientId, "restSeconds", prescription.restSeconds );
+		if (prescription?.rir?.trim()) updateExerciseField( result.routine.clientId, "rir", prescription.rir.trim() );
 		// Las variantes elegidas al agregar esperan en el borrador y se guardan con el dia.
 		if (prescription?.variantExerciseIds?.length) {
 			setExercisePendingVariants( result.routine.clientId, prescription.variantExerciseIds );

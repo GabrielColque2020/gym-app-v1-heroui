@@ -54,6 +54,7 @@ export async function replaceRoutineExerciseAction( input: ReplaceRoutineExercis
 			order: 1,
 			reps: "",
 			restSeconds: null,
+			rir: null,
 			sets: "",
 		} ] );
 		const resolvedExerciseId = resolved.exerciseId;

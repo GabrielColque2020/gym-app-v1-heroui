@@ -87,6 +87,7 @@ export async function createRoutineWeeksCopy(
 					order: routine.order,
 					reps: routine.reps,
 					restSeconds: routine.restSeconds,
+					rir: routine.rir,
 					routineDayId: day.id,
 					sets: routine.sets,
 				},

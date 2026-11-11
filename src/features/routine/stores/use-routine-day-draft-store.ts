@@ -20,7 +20,7 @@ import {
 	sortAndValidateDraft,
 } from "@/features/routine/stores/routine-day-draft-store.utils";
 
-type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "pendingVariantExerciseIds" | "reps" | "restSeconds" | "sets">;
+type DayExercisePatch = Pick<DayExercise, "observation" | "order" | "pendingVariantExerciseIds" | "reps" | "restSeconds" | "rir" | "sets">;
 
 type SetDraftResult =
 	| { error: string; routine?: never }
@@ -213,7 +213,7 @@ export function replaceExerciseInRoutineDayDrafts( routineDayIds: string[], from
 export function appendExerciseToRoutineDayDrafts(
 	routineDayIds: string[],
 	exercise: ExerciseListItem,
-	prescription: Pick<DayExercise, "reps" | "restSeconds" | "sets">,
+	prescription: Pick<DayExercise, "reps" | "restSeconds" | "rir" | "sets">,
 ) {
 	useRoutineDayDraftStore.setState( ( state ) => {
 		const nextDrafts = { ...state.drafts };

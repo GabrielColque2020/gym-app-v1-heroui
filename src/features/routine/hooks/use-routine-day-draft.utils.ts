@@ -1,6 +1,7 @@
 import type { DraftRoutineDayExercise } from "@/features/routine/services/routine-day-editor";
 import type { RoutineDayExerciseBase } from "@/features/routine/actions/get-routine-day";
 import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
+import { normalizeRir, RIR_MAX_LENGTH } from "@/features/routine/services/rir";
 
 import {
 	getDraftCatalogExerciseIds,
@@ -47,11 +48,18 @@ export function buildActiveDraftState(
 }
 
 export function getRoutineExerciseFieldPatch(
-	field: "observation" | "order" | "reps" | "restSeconds" | "sets",
+	field: "observation" | "order" | "reps" | "restSeconds" | "rir" | "sets",
 	value: number | string | null,
 ) {
 	if (field === "restSeconds") {
 		return { restSeconds: normalizeRestSeconds( value ) };
+	}
+
+	// Se guarda tal como se escribe (recortado al largo maximo): normalizarlo en
+	// cada tecla comeria el espacio de "1 - 2" antes de escribir el 2. Al guardar
+	// se recorta y vacio queda en `null`.
+	if (field === "rir") {
+		return { rir: typeof value === "string" ? value.slice( 0, RIR_MAX_LENGTH ) : normalizeRir( value ) };
 	}
 
 	return {

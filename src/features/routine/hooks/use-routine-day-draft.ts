@@ -15,6 +15,7 @@ import { getRoutineDayDraft, useRoutineDayDraftStore } from "@/features/routine/
 import { createDraftRoutineExercise, getDraftCatalogExerciseIds } from "@/features/routine/services/routine-day-editor";
 import { insertDraftExerciseAt } from "@/features/routine/stores/routine-day-draft-store.utils";
 import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
+import { normalizeRir } from "@/features/routine/services/rir";
 
 type UseRoutineDayDraftOptions = {
 	// Hay un guardado de este dia viajando al servidor.
@@ -29,6 +30,7 @@ export type RoutineDayCopySource = {
 	observation: string | null;
 	reps: string;
 	restSeconds?: number | null;
+	rir?: string | null;
 	sets: string;
 	// Las variantes del ejercicio en el dia de origen, para copiarlas tambien.
 	variantExerciseIds?: string[];
@@ -119,7 +121,7 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 
 	function updateExerciseField(
 		clientId: string,
-		field: "observation" | "order" | "reps" | "restSeconds" | "sets",
+		field: "observation" | "order" | "reps" | "restSeconds" | "rir" | "sets",
 		value: number | string | null,
 	) {
 		hydrateDraftIfNeeded();
@@ -179,6 +181,7 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 				observation: routine.observation ?? "",
 				reps: routine.reps,
 				restSeconds: normalizeRestSeconds( routine.restSeconds ),
+				rir: normalizeRir( routine.rir ),
 				sets: routine.sets,
 				// Viajan con la fila nueva y se crean cuando el dia se guarda.
 				...( routine.variantExerciseIds?.length ? { pendingVariantExerciseIds: routine.variantExerciseIds } : {} ),
@@ -187,7 +190,7 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 	}
 
 	// Cambia el ejercicio de una fila por otro y deja series, repeticiones,
-	// descanso, orden y nota. Es una fila nueva (sin id ni variantes): al
+	// descanso, RIR, orden y nota. Es una fila nueva (sin id ni variantes): al
 	// guardar se crea la del ejercicio nuevo y se borra la del anterior.
 	function replaceExercise( clientId: string, exercise: ExerciseListItem ): DraftMutationResult {
 		hydrateDraftIfNeeded();
@@ -206,6 +209,7 @@ export function useRoutineDayDraft( { isSaving = false, routineDayId, sourceRout
 			observation: current.observation,
 			reps: current.reps,
 			restSeconds: current.restSeconds,
+			rir: current.rir,
 			sets: current.sets,
 		};
 

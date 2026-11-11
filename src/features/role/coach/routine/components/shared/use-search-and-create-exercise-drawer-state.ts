@@ -10,6 +10,7 @@ import type { DraftVariantItem } from "@/features/role/coach/exercises/component
 export type ExercisePrescription = {
 	reps: string;
 	restSeconds: number | null;
+	rir: string;
 	sets: string;
 	// Variantes elegidas para el ejercicio que se esta agregando.
 	variantExerciseIds: string[];
@@ -48,6 +49,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 	const [ setsValue, setSetsValue ] = useState( "" );
 	const [ repsValue, setRepsValue ] = useState( "" );
 	const [ restValue, setRestValue ] = useState<number | null>( null );
+	const [ rirValue, setRirValue ] = useState( "" );
 	// El ejercicio elegido en la lista, al que se le estan cargando series,
 	// repeticiones y variantes antes de agregarlo. `null`: se esta en la lista.
 	const [ configExercise, setConfigExercise ] = useState<ExerciseListItem | null>( null );
@@ -82,6 +84,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 		setSetsValue( "" );
 		setRepsValue( "" );
 		setRestValue( null );
+		setRirValue( "" );
 		setVariantItems( [] );
 		setLastAddedName( null );
 		setConfigExercise( exercise );
@@ -100,6 +103,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 		setSetsValue( "" );
 		setRepsValue( "" );
 		setRestValue( null );
+		setRirValue( "" );
 		setVariantItems( [] );
 	}, [] );
 
@@ -137,6 +141,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 			otherDayIds,
 			reps: repsValue.trim(),
 			restSeconds: restValue,
+			rir: rirValue.trim(),
 			sets: setsValue.trim(),
 			variantExerciseIds: variantItems.map( ( variant ) => variant.exercise.id ),
 		} );
@@ -149,7 +154,7 @@ export function useSearchAndCreateExerciseDrawerState( {
 		resetConfig();
 		setLastAddedName( otherDayIds.length > 0 ? `${ exercise.name } en ${ otherDayIds.length + 1 } días` : exercise.name );
 		onAddedAction();
-	}, [ configExercise, getOtherDayIds, orderValue, onAddedAction, onAddExerciseAction, repsValue, resetConfig, restValue, setsValue, suggestedOrder, variantItems ] );
+	}, [ configExercise, getOtherDayIds, orderValue, onAddedAction, onAddExerciseAction, repsValue, resetConfig, restValue, rirValue, setsValue, suggestedOrder, variantItems ] );
 
 	const handlePickerOpenChange = useCallback( ( isOpen: boolean ) => {
 		if (isOpen) {
@@ -178,7 +183,9 @@ export function useSearchAndCreateExerciseDrawerState( {
 		registerAddButtonRef,
 		repsValue,
 		restValue,
+		rirValue,
 		setRestValue,
+		setRirValue,
 		setIsCreateDrawerOpen,
 		setIsPickerOpen,
 		setOrderValue,

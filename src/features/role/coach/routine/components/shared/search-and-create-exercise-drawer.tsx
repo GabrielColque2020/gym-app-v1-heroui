@@ -82,7 +82,9 @@ export function SearchAndCreateExerciseDrawer({
         setOrderValue,
         setRepsValue,
         restValue,
+        rirValue,
         setRestValue,
+        setRirValue,
         setSetsValue,
         setsValue,
         setVariantItems,
@@ -196,11 +198,13 @@ export function SearchAndCreateExerciseDrawer({
                             ) : null }
                             repsValue={ repsValue }
                             restValue={ restValue }
+                            rirValue={ rirValue }
                             setsValue={ setsValue }
                             variants={ variantItems }
                             onBackAction={ handleCancelConfig }
                             onRepsChange={ setRepsValue }
                             onRestChange={ setRestValue }
+                            onRirChange={ setRirValue }
                             onSetsChange={ setSetsValue }
                             onVariantsChangeAction={ setVariantItems }
                         />

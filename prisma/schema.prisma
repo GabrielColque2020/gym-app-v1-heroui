@@ -227,6 +227,8 @@ model Routine {
   sets        String
   // Descanso entre series que fija el entrenador, en segundos. Opcional.
   restSeconds Int?
+  // Repeticiones en reserva que pide el entrenador ("2", "1-2"). Texto libre y opcional.
+  rir         String?
   order       Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

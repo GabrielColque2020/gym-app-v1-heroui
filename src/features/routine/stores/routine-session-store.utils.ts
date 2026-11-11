@@ -80,6 +80,7 @@ export function serializeSession( session: StudentRoutineSession ): PersistedDra
 			notes: exercise.notes,
 			restTime: exercise.restTime,
 			restSeconds: exercise.restSeconds ?? null,
+			rir: exercise.rir ?? null,
 			sets: exercise.sets.map( ( set ) => ( {
 				completed: set.completed,
 				currentReps: set.currentReps,

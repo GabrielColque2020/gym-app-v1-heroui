@@ -5,6 +5,7 @@ import type {
 	SaveRoutineDayExerciseInput,
 } from "@/features/routine/services/routine-day-editor.types";
 import { normalizeRestSeconds } from "@/features/routine/services/rest-seconds";
+import { normalizeRir } from "@/features/routine/services/rir";
 
 export function mapRoutineExerciseToDraft( routine: RoutineDayExerciseBase ): DraftRoutineDayExercise {
 	return {
@@ -16,6 +17,7 @@ export function mapRoutineExerciseToDraft( routine: RoutineDayExerciseBase ): Dr
 		order: routine.order,
 		reps: routine.reps,
 		restSeconds: normalizeRestSeconds( routine.restSeconds ),
+		rir: normalizeRir( routine.rir ),
 		sets: routine.sets,
 	};
 }
@@ -37,6 +39,7 @@ export function createDraftRoutineExercise(
 		order,
 		reps: "",
 		restSeconds: null,
+		rir: null,
 		sets: "",
 	};
 }
@@ -104,6 +107,7 @@ export function serializeRoutineDayDraft( routines: DraftRoutineDayExercise[] ) 
 			reps: routine.reps.trim(),
 			// Un borrador guardado antes de que existiera el campo no lo trae.
 			restSeconds: normalizeRestSeconds( routine.restSeconds ),
+			rir: normalizeRir( routine.rir ),
 			sets: routine.sets.trim(),
 		} ) ),
 	);
@@ -115,6 +119,7 @@ type SavedRoutineLike = {
 	order: number;
 	reps: string;
 	restSeconds?: number | null;
+	rir?: string | null;
 	sets: string;
 };
 
@@ -135,6 +140,7 @@ export function isRoutineDayDraftDirty(
 				order: routine.order,
 				reps: routine.reps.trim(),
 				restSeconds: normalizeRestSeconds( routine.restSeconds ),
+				rir: normalizeRir( routine.rir ),
 				sets: routine.sets.trim(),
 			} ) ),
 	);
@@ -149,6 +155,7 @@ export function mapDraftToSaveInput( routines: DraftRoutineDayExercise[] ): Save
 		order: routine.order,
 		reps: routine.reps.trim(),
 		restSeconds: normalizeRestSeconds( routine.restSeconds ),
+		rir: normalizeRir( routine.rir ),
 		sets: routine.sets.trim(),
 		...( !routine.id && routine.pendingVariantExerciseIds?.length
 			? { variantExerciseIds: routine.pendingVariantExerciseIds }
