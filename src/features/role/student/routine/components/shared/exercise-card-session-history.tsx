@@ -22,10 +22,21 @@ function formatWeightLabel( weight: number | null ) {
 	return weight === null ? "sin peso" : `${ weight.toLocaleString( "es-AR" ) } kg`;
 }
 
-// Solo cuando la referencia vino de otro dia: el mismo ejercicio puede ir con
-// otra carga en cada dia de la semana.
-function formatOtherDayLabel( history: ExerciseSessionHistory ) {
-	return `Del día ${ history.dayNumber } · semana ${ history.week }`;
+// De que semana y dia viene la referencia. Se muestra siempre, en blanco, para
+// que el estudiante sepa con que sesion se esta comparando.
+function formatSessionOriginLabel( history: ExerciseSessionHistory ) {
+	return `Semana ${ history.week } · Día ${ history.dayNumber }`;
+}
+
+// Cuando la referencia vino de otro dia se aclara aparte: el mismo ejercicio
+// puede ir con otra carga en cada dia de la semana.
+function SessionOriginLabel( { history }: { history: ExerciseSessionHistory } ) {
+	return (
+		<span className={ "text-xs font-medium text-foreground" }>
+			{ formatSessionOriginLabel( history ) }
+			{ history.isFromOtherDay ? <span className={ "text-warning" }>{ " · otro día" }</span> : null }
+		</span>
+	);
 }
 
 export function ExerciseCardSessionHistory( {
@@ -53,9 +64,9 @@ export function ExerciseCardSessionHistory( {
 			<p className={ `text-sm font-normal ${ isHighlighted ? "text-warning" : "text-muted" }` }>
 				<span className={ "font-medium text-foreground" }>{ summary }</span>
 				{ ` · ${ formatSessionDateLabel( history.date ) }` }
-				{ history.isFromOtherDay ? (
-					<span className={ "block text-xs font-medium text-warning" }>{ formatOtherDayLabel( history ) }</span>
-				) : null }
+				<span className={ "block" }>
+					<SessionOriginLabel history={ history } />
+				</span>
 			</p>
 		);
 	}
@@ -68,11 +79,7 @@ export function ExerciseCardSessionHistory( {
 
 	return (
 		<div className={ containerClassName }>
-			{ history.isFromOtherDay ? (
-				<Chip className={ chipClassName } color={ "warning" } size={ "sm" } variant={ "soft" }>
-					<Chip.Label>{ formatOtherDayLabel( history ) }</Chip.Label>
-				</Chip>
-			) : null }
+			<SessionOriginLabel history={ history } />
 			<Chip className={ chipClassName } color={ chipColor } size={ "sm" } variant={ "soft" }>
 				<Chip.Label>{ formatSessionDateLabel( history.date ) }</Chip.Label>
 			</Chip>
